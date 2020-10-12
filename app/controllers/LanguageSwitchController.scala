@@ -18,19 +18,29 @@ package controllers
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import play.api.Configuration
-import play.api.i18n.Lang
+import models.Language
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
 class LanguageSwitchController @Inject()(
-                                          configuration: Configuration,
-                                          appConfig: FrontendAppConfig,
-                                          languageUtils: LanguageUtils,
-                                          cc: ControllerComponents
-                                        ) extends LanguageController(configuration, languageUtils, cc) {
+    appConfig: FrontendAppConfig,
+    override implicit val messagesApi: MessagesApi,
+    val controllerComponents: MessagesControllerComponents
+) extends FrontendBaseController
+    with I18nSupport {
 
-  override def fallbackURL: String = routes.IndexController.onPageLoad().url
+  private def fallbackURL: String = routes.IndexController.onPageLoad().url
 
-  override def languageMap: Map[String, Lang] = appConfig.languageMap
+  def switchToLanguage(language: Language): Action[AnyContent] = Action {
+    implicit request =>
+      val languageToUse = if (appConfig.languageTranslationEnabled) {
+        language
+      } else {
+        Language.English
+      }
+
+      val redirectURL = request.headers.get(REFERER).getOrElse(fallbackURL)
+      Redirect(redirectURL).withLang(languageToUse.lang)
+  }
 }

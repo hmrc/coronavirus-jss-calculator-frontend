@@ -81,21 +81,27 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
 
           val doc = asDocument(createView(form.withError(error)))
           val errorSpan = doc.getElementsByClass("error-message").first
-          errorSpan.text mustBe (messages("error.browser.title.prefix") + " " + messages(errorMessage))
-          doc.getElementsByTag("fieldset").first.attr("aria-describedby") contains errorSpan.attr("id")
+          errorSpan.text mustBe (messages("error.browser.title.prefix") + " " + messages(
+            errorMessage))
+          doc
+            .getElementsByTag("fieldset")
+            .first
+            .attr("aria-describedby") contains errorSpan.attr("id")
         }
 
         "show an error prefix in the browser title" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertEqualsValue(doc, "title", s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")}""")
+          assertEqualsValue(doc, "title", s"""${messages(
+            "error.browser.title.prefix")} ${messages(
+            s"$messageKeyPrefix.title")}""")
         }
       }
     }
   }
 
-
-  def answeredYesNoPage(createView: Form[Boolean] => HtmlFormat.Appendable, answer: Boolean): Unit = {
+  def answeredYesNoPage(createView: Form[Boolean] => HtmlFormat.Appendable,
+                        answer: Boolean): Unit = {
 
     "have only the correct value checked" in {
 

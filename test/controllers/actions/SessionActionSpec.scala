@@ -26,7 +26,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class SessionActionSpec extends SpecBase {
 
   class Harness(action: IdentifierAction) {
-    def onPageLoad() = action { request => Results.Ok }
+    def onPageLoad() = action { request =>
+      Results.Ok
+    }
   }
 
   "Session Action" when {
@@ -39,14 +41,16 @@ class SessionActionSpec extends SpecBase {
 
         val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
 
-        val sessionAction = new SessionIdentifierAction(frontendAppConfig, bodyParsers)
+        val sessionAction =
+          new SessionIdentifierAction(frontendAppConfig, bodyParsers)
 
         val controller = new Harness(sessionAction)
 
         val result = controller.onPageLoad()(fakeRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result).get must startWith(
+          controllers.routes.SessionExpiredController.onPageLoad().url)
       }
     }
 
@@ -58,7 +62,8 @@ class SessionActionSpec extends SpecBase {
 
         val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
 
-        val sessionAction = new SessionIdentifierAction(frontendAppConfig, bodyParsers)
+        val sessionAction =
+          new SessionIdentifierAction(frontendAppConfig, bodyParsers)
 
         val controller = new Harness(sessionAction)
 

@@ -20,4 +20,8 @@ import org.scalacheck.Arbitrary
 import pages._
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryClaimStartDatePage
+    : Arbitrary[ClaimStartDatePage.type] =
+    Arbitrary(ClaimStartDatePage)
 }

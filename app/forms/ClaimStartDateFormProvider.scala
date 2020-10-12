@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package views
+package forms
 
-import views.behaviours.ViewBehaviours
-import views.html.UnauthorisedView
+import java.time.LocalDate
 
-class UnauthorisedViewSpec extends ViewBehaviours {
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-  "Unauthorised view" must {
+class ClaimStartDateFormProvider @Inject() extends Mappings {
 
-    val application = applicationBuilder().build()
-
-    val view = application.injector.instanceOf[UnauthorisedView]
-
-    val applyView = view.apply()(fakeRequest, messages)
-
-    behave like normalPage(applyView, "unauthorised")
-  }
+  def apply(): Form[LocalDate] =
+    Form(
+      "startDate" -> localDate(
+        invalidKey = "claimStartDate.error.invalid"
+      )
+    )
 }

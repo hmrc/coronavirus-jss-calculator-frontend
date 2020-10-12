@@ -14,21 +14,16 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
+@this(govukFieldset: GovukFieldset)
 
-@this(
-    govuk_wrapper: GovukWrapper,
-    appConfig: FrontendAppConfig
-)
+@(legend: String, asHeading: Boolean = true)(content: Html)(implicit messages: Messages)
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
+@govukFieldset(Fieldset(
+    legend = Some(Legend(
+        content = Text(messages(legend)),
+        classes = if(asHeading) "govuk-fieldset__legend--xl" else "",
+        isPageHeading = asHeading
+    )),
+    html = content
+))
 
-@contentHeader = {
-  @components.heading(heading)
-}
-
-@mainContent = {
-  <p>@message</p>
-}
-
-@govuk_wrapper(appConfig = appConfig, title = pageTitle, contentHeader = Some(contentHeader), mainContent = mainContent)

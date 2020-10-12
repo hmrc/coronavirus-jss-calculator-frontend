@@ -32,10 +32,10 @@ import reactivemongo.play.json.collection.JSONCollection
 import scala.concurrent.{ExecutionContext, Future}
 
 class DefaultSessionRepository @Inject()(
-                                          mongo: ReactiveMongoApi,
-                                          config: Configuration
-                                        )(implicit ec: ExecutionContext, m: Materializer) extends SessionRepository {
-
+    mongo: ReactiveMongoApi,
+    config: Configuration
+)(implicit ec: ExecutionContext, m: Materializer)
+    extends SessionRepository {
 
   private val collectionName: String = "user-answers"
 
@@ -45,15 +45,17 @@ class DefaultSessionRepository @Inject()(
     mongo.database.map(_.collection[JSONCollection](collectionName))
 
   private val lastUpdatedIndex = Index(
-    key     = Seq("lastUpdated" -> IndexType.Ascending),
-    name    = Some("user-answers-last-updated-index"),
+    key = Seq("lastUpdated" -> IndexType.Ascending),
+    name = Some("user-answers-last-updated-index"),
     options = BSONDocument("expireAfterSeconds" -> cacheTtl)
   )
 
   val started: Future[Unit] =
-    collection.flatMap {
-      _.indexesManager.ensure(lastUpdatedIndex)
-    }.map(_ => ())
+    collection
+      .flatMap {
+        _.indexesManager.ensure(lastUpdatedIndex)
+      }
+      .map(_ => ())
 
   override def get(id: String): Future[Option[UserAnswers]] =
     collection.flatMap(_.find(Json.obj("_id" -> id), None).one[UserAnswers])
@@ -70,10 +72,10 @@ class DefaultSessionRepository @Inject()(
 
     collection.flatMap {
       _.update(ordered = false)
-        .one(selector, modifier, upsert = true).map {
-          lastError =>
-            lastError.ok
-      }
+        .one(selector, modifier, upsert = true)
+        .map { lastError =>
+          lastError.ok
+        }
     }
   }
 }

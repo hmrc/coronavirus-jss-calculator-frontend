@@ -1,6 +1,27 @@
-checkYourAnswers.title = Check Your Answers
-checkYourAnswers.heading = Check Your Answers
-checkYourAnswers.guidance = Guidance for check your answers
+service.name = Coronavirus Job Support Scheme Calculator
+
+# BETA Banner
+# ----------------------------------------------------------
+feedback.before = This is a new service - your
+feedback.link = feedback
+feedback.after = will help us to improve it.
+
+footer.accessibility   = Accessibility Statement
+footer.cookies         = Cookies
+footer.privacy         = Privacy policy
+footer.termsConditions = Terms and conditions
+footer.govukHelp       = Help using GOV.UK
+
+footer.license.text1 = All content is available under the
+footer.license.text2 = Open Government Licence v3.0
+footer.license.text3 = except where otherwise stated
+footer.license.copyright = © Crown copyright
+
+language.cymraeg = Cymraeg
+language.change.cymraeg = Newid yr iaith i’r Gymraeg
+language.english = English
+language.change.english = Change the language to English
+language.switcher = Language switcher
 
 date.day = Day
 date.month = Month
@@ -39,6 +60,24 @@ site.yes = Yes
 site.continue = Continue
 site.service_name = coronavirus-jss-calculator-frontend
 site.textarea.char_limit = (Limit is {0} characters)
+site.getHelpWithThisPage = Get help with this page
+site.notProvided = Not Provided
+site.incomplete = Incomplete
+
+site.service_banner.top=Help improve GOV.UK
+site.service_banner.content=Help improve digital services by joining the HMRC user panel (opens in a new window).
+site.service_banner.href=https://signup.take-part-in-research.service.gov.uk/?utm_campaign=JRSCalc&utm_source=Other&utm_medium=other&t=HMRC&id=248
+site.service_banner.dismiss=No thanks
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+claimPeriodStart.title = What’s the start date of this claim
+claimPeriodStart.heading = What’s the start date of this claim
+claimPeriodStart.checkYourAnswersLabel = What's the start date of this claim
+claimPeriodStart.p1 = Your first claim under the Job Support scheme starts from the employee started furlough
+claimPeriodStart.p2 = add 2nd paragraph once content is ready
+claimPeriodStart.error.required.all = Enter the claimStartDate
+claimPeriodStart.error.required.two = The claimStartDate must include {0} and {1}
+claimPeriodStart.error.required = The claimStartDate must include {0}
+claimPeriodStart.error.invalid = Enter a real ClaimStartDate

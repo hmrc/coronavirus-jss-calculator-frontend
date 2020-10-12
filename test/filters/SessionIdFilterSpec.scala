@@ -22,7 +22,12 @@ import akka.stream.Materializer
 import com.google.inject.Inject
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import org.scalatestplus.play.components.OneAppPerSuiteWithComponents
-import play.api.{Application, BuiltInComponents, BuiltInComponentsFromContext, NoHttpFiltersComponents}
+import play.api.{
+  Application,
+  BuiltInComponents,
+  BuiltInComponentsFromContext,
+  NoHttpFiltersComponents
+}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Results, SessionCookieBaker}
@@ -38,39 +43,49 @@ object SessionIdFilterSpec {
   val sessionId = "28836767-a008-46be-ac18-695ab140e705"
 
   class TestSessionIdFilter @Inject()(
-                                       override val mat: Materializer,
-                                       sessionCookieBaker: SessionCookieBaker,
-                                       ec: ExecutionContext
-                                     ) extends SessionIdFilter(mat, UUID.fromString(sessionId), sessionCookieBaker, ec)
+      override val mat: Materializer,
+      sessionCookieBaker: SessionCookieBaker,
+      ec: ExecutionContext
+  ) extends SessionIdFilter(mat,
+                              UUID.fromString(sessionId),
+                              sessionCookieBaker,
+                              ec)
 
 }
 
-class SessionIdFilterSpec extends WordSpec with MustMatchers with OptionValues  with OneAppPerSuiteWithComponents {
+class SessionIdFilterSpec
+    extends WordSpec
+    with MustMatchers
+    with OptionValues
+    with OneAppPerSuiteWithComponents {
 
-  override def components: BuiltInComponents = new BuiltInComponentsFromContext(context) with NoHttpFiltersComponents {
+  override def components: BuiltInComponents =
+    new BuiltInComponentsFromContext(context) with NoHttpFiltersComponents {
 
-    import play.api.mvc.Results
-    import play.api.routing.Router
-    import play.api.routing.sird._
+      import play.api.mvc.Results
+      import play.api.routing.Router
+      import play.api.routing.sird._
 
-    lazy val router: Router = Router.from {
-      case GET(p"/test") => defaultActionBuilder.apply {
-        request =>
-          val fromHeader = request.headers.get(HeaderNames.xSessionId).getOrElse("")
-          val fromSession = request.session.get(SessionKeys.sessionId).getOrElse("")
-          Results.Ok(
-            Json.obj(
-              "fromHeader" -> fromHeader,
-              "fromSession" -> fromSession
+      lazy val router: Router = Router.from {
+        case GET(p"/test") =>
+          defaultActionBuilder.apply { request =>
+            val fromHeader =
+              request.headers.get(HeaderNames.xSessionId).getOrElse("")
+            val fromSession =
+              request.session.get(SessionKeys.sessionId).getOrElse("")
+            Results.Ok(
+              Json.obj(
+                "fromHeader" -> fromHeader,
+                "fromSession" -> fromSession
+              )
             )
-          )
-      }
-      case GET(p"/test2") => defaultActionBuilder.apply {
-        implicit request =>
-          Results.Ok.addingToSession("foo" -> "bar")
+          }
+        case GET(p"/test2") =>
+          defaultActionBuilder.apply { implicit request =>
+            Results.Ok.addingToSession("foo" -> "bar")
+          }
       }
     }
-  }
 
   import SessionIdFilterSpec._
 
@@ -83,7 +98,8 @@ class SessionIdFilterSpec extends WordSpec with MustMatchers with OptionValues  
         bind[SessionIdFilter].to[TestSessionIdFilter]
       )
       .configure(
-        "play.filters.disabled" -> List("uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter")
+        "play.filters.disabled" -> List(
+          "uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter")
       )
       .router(components.router)
       .build()
@@ -105,7 +121,9 @@ class SessionIdFilterSpec extends WordSpec with MustMatchers with OptionValues  
 
     "not override a sessionId if one doesn't already exist" in {
 
-      val result = route(app, FakeRequest(GET, "/test").withSession(SessionKeys.sessionId -> "foo")).value
+      val result = route(app,
+                         FakeRequest(GET, "/test").withSession(
+                           SessionKeys.sessionId -> "foo")).value
 
       val body = contentAsJson(result)
 
@@ -122,7 +140,8 @@ class SessionIdFilterSpec extends WordSpec with MustMatchers with OptionValues  
 
     "not override other session values from the request" in {
 
-      val result = route(app, FakeRequest(GET, "/test").withSession("foo" -> "bar")).value
+      val result =
+        route(app, FakeRequest(GET, "/test").withSession("foo" -> "bar")).value
       session(result).data must contain("foo" -> "bar")
     }
   }

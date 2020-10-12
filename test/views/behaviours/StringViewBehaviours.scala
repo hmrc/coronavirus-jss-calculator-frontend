@@ -37,7 +37,10 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
 
           val doc = asDocument(createView(form))
           val expectedHintText = expectedHintKey map (k => messages(k))
-          assertContainsLabel(doc, "value", messages(s"$messageKeyPrefix.heading"), expectedHintText)
+          assertContainsLabel(doc,
+                              "value",
+                              messages(s"$messageKeyPrefix.heading"),
+                              expectedHintText)
         }
 
         "contain an input for the value" in {
@@ -68,13 +71,16 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
 
           val doc = asDocument(createView(form.withError(error)))
           val errorSpan = doc.getElementsByClass("error-message").first
-          errorSpan.text mustBe (messages("error.browser.title.prefix") + " " + messages(errorMessage))
+          errorSpan.text mustBe (messages("error.browser.title.prefix") + " " + messages(
+            errorMessage))
         }
 
         "show an error prefix in the browser title" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertEqualsValue(doc, "title", s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")}""")
+          assertEqualsValue(doc, "title", s"""${messages(
+            "error.browser.title.prefix")} ${messages(
+            s"$messageKeyPrefix.title")}""")
         }
       }
     }

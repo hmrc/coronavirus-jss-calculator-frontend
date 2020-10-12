@@ -57,7 +57,9 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
         "show an error prefix in the browser title" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertEqualsValue(doc, "title", s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")}""")
+          assertEqualsValue(doc, "title", s"""${messages(
+            "error.browser.title.prefix")} ${messages(
+            s"$messageKeyPrefix.title")}""")
         }
       }
 
@@ -67,15 +69,19 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
           "show an error summary" in {
 
-            val doc = asDocument(createView(form.withError(FormError(field, "error"))))
+            val doc =
+              asDocument(createView(form.withError(FormError(field, "error"))))
             assertRenderedById(doc, "error-summary-heading")
           }
 
           s"show an error associated with the field '$field'" in {
 
-            val doc = asDocument(createView(form.withError(FormError(field, "error"))))
+            val doc =
+              asDocument(createView(form.withError(FormError(field, "error"))))
             val errorSpan = doc.getElementsByClass("error-message").first
-            doc.getElementById(field).attr("aria-describedby") contains errorSpan.attr("id")
+            doc
+              .getElementById(field)
+              .attr("aria-describedby") contains errorSpan.attr("id")
             errorSpan.parent.attr("for") mustBe field
           }
         }

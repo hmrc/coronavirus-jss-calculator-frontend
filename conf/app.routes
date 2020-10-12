@@ -4,10 +4,15 @@ GET        /                                            controllers.IndexControl
 
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
-GET        /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /keepalive                                       controllers.IndexController.keepalive
+
+GET        /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: Language)
 
 GET        /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad
 
-GET        /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
+#GET        /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
+
+GET        /claimStartDate                  controllers.ClaimStartDateController.onPageLoad()
+POST       /claimStartDate                  controllers.ClaimStartDateController.onSubmit()
