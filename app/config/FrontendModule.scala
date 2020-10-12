@@ -20,7 +20,7 @@ import com.google.inject.AbstractModule
 import controllers.actions._
 import repositories.{DefaultSessionRepository, SessionRepository}
 
-class Module extends AbstractModule {
+class FrontendModule extends AbstractModule {
 
   override def configure(): Unit = {
 
@@ -28,7 +28,7 @@ class Module extends AbstractModule {
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
 
     // For session based storage instead of cred based, change to SessionIdentifierAction
-    bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
+    bind(classOf[IdentifierAction]).to(classOf[SessionIdentifierAction]).asEagerSingleton()
 
     bind(classOf[SessionRepository]).to(classOf[DefaultSessionRepository]).asEagerSingleton()
   }
