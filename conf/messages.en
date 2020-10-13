@@ -1,6 +1,6 @@
 # Site-wide Messages
 # ----------------------------------------------------------
-service.name = Job Support Scheme calculator
+service.name = Coronavirus Job Support Scheme calculator
 
 site.back = Back
 site.delete = Delete
@@ -140,3 +140,14 @@ error.summary.title = There is a problem
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
 session_expired.guidance = The details you have given have been deleted because you did not continue the service for 15 minutes.
+
+claimPeriodStart.title = What’s the start date of this claim?
+claimPeriodStart.heading = What’s the start date of this claim?
+claimPeriodStart.p1 = Your first claim under the Job Support scheme starts from the employee started furlough
+claimPeriodStart.p2 = You can claim from 1 November 2020 which is the date the scheme is started
+claimPeriodStart.hint= For example 1 11 2020
+claimPeriodStart.label = Start date
+claimPeriodStart.error.required.all = Enter the claim period start
+claimPeriodStart.error.required.two = The claim period start must include {0} and {1}
+claimPeriodStart.error.required = The claim period start must include {0}
+claimPeriodStart.error.invalid = Enter a real claim period start

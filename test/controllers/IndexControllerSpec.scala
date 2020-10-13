@@ -27,7 +27,7 @@ class IndexControllerSpec extends SpecBase {
 
   "Index Controller" must {
 
-    "redirect to the first page" in {
+    "redirect to the claim start page" in {
 
       val navigator = new FakeNavigator(desiredRoute = Call("", ""))
       val application = applicationBuilder(userAnswers = None).overrides(bind[Navigator].toInstance(navigator)).build()
@@ -39,7 +39,7 @@ class IndexControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual navigator.firstPage.url
+        redirectLocation(result).value mustEqual routes.ClaimPeriodStartController.onPageLoad().url
       }
     }
   }

@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import models._
-import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary.arbitrary
-import pages._
-import play.api.libs.json.{JsValue, Json}
+import java.time.LocalDate
 
-trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
-  self: Generators =>
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-  implicit lazy val arbitraryClaimPeriodStartUserAnswersEntry: Arbitrary[(ClaimPeriodStartPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[ClaimPeriodStartPage.type]
-        value <- arbitrary[Int].map(Json.toJson(_))
-      } yield (page, value)
-    }
+class ClaimPeriodStartFormProvider @Inject() extends Mappings {
 
+  def apply(): Form[LocalDate] =
+    Form(
+      "startDate" -> localDate(
+        invalidKey     = "claimPeriodStart.error.invalid",
+        allRequiredKey = "claimPeriodStart.error.required.all",
+        twoRequiredKey = "claimPeriodStart.error.required.two",
+        requiredKey    = "claimPeriodStart.error.required"
+      )
+    )
 }

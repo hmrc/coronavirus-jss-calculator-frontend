@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import models._
+import java.time.LocalDate
+
 import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary.arbitrary
-import pages._
-import play.api.libs.json.{JsValue, Json}
+import pages.behaviours.PageBehaviours
 
-trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
-  self: Generators =>
+class ClaimPeriodStartPageSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryClaimPeriodStartUserAnswersEntry: Arbitrary[(ClaimPeriodStartPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[ClaimPeriodStartPage.type]
-        value <- arbitrary[Int].map(Json.toJson(_))
-      } yield (page, value)
+  "ClaimPeriodStartPage" must {
+
+    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
+      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
     }
 
+    beRetrievable[LocalDate](ClaimPeriodStartPage)
+
+    beSettable[LocalDate](ClaimPeriodStartPage)
+
+    beRemovable[LocalDate](ClaimPeriodStartPage)
+  }
 }

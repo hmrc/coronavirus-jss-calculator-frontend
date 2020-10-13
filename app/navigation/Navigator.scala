@@ -26,6 +26,7 @@ import play.api.mvc.Call
 class Navigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => Call = {
+    case ClaimPeriodStartPage => _ => routes.IndexController.onPageLoad()
     case _                                => _ => routes.IndexController.onPageLoad()
   }
 
@@ -40,5 +41,4 @@ class Navigator @Inject()() {
       checkRouteMap(page)(userAnswers)
   }
 
-  def firstPage: Call = ???
 }
