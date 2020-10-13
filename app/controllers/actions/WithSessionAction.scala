@@ -26,12 +26,12 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
+trait WithSessionAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
 
-class SessionIdentifierAction @Inject()(
+class WithSessionActionImpl @Inject()(
                                          val parser: BodyParsers.Default
                                        )(implicit val executionContext: ExecutionContext)
-  extends IdentifierAction {
+  extends WithSessionAction {
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 

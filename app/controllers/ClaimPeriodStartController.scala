@@ -31,20 +31,20 @@ import views.html.ClaimPeriodStartView
 import scala.concurrent.{ExecutionContext, Future}
 
 class ClaimPeriodStartController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        navigator: Navigator,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: ClaimPeriodStartFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: ClaimPeriodStartView
+                                            override val messagesApi: MessagesApi,
+                                            sessionRepository: SessionRepository,
+                                            navigator: Navigator,
+                                            withSession: WithSessionAction,
+                                            getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction,
+                                            formProvider: ClaimPeriodStartFormProvider,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            view: ClaimPeriodStartView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private def form = formProvider()
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad: Action[AnyContent] = (withSession andThen getData) {
     implicit request =>
 
       val userAnswers = request.userAnswers
@@ -59,7 +59,7 @@ class ClaimPeriodStartController @Inject()(
       Ok(view(preparedForm))
   }
 
-  def onSubmit: Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit: Action[AnyContent] = (withSession andThen getData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
