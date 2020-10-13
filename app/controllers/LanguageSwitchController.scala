@@ -24,23 +24,21 @@ import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
 class LanguageSwitchController @Inject()(
-                                          appConfig: FrontendAppConfig,
-                                          override implicit val messagesApi: MessagesApi,
-                                          val controllerComponents: MessagesControllerComponents
-                                        ) extends FrontendBaseController with I18nSupport {
+  appConfig: FrontendAppConfig,
+  override implicit val messagesApi: MessagesApi,
+  val controllerComponents: MessagesControllerComponents
+) extends FrontendBaseController with I18nSupport {
 
   private def fallbackURL: String = routes.IndexController.onPageLoad().url
 
-  def switchToLanguage(language: Language): Action[AnyContent] = Action {
-    implicit request =>
+  def switchToLanguage(language: Language): Action[AnyContent] = Action { implicit request =>
+    val languageToUse = if (appConfig.languageTranslationEnabled) {
+      language
+    } else {
+      Language.English
+    }
 
-      val languageToUse = if (appConfig.languageTranslationEnabled) {
-        language
-      } else {
-        Language.English
-      }
-
-      val redirectURL = request.headers.get(REFERER).getOrElse(fallbackURL)
-      Redirect(redirectURL).withLang(languageToUse.lang)
+    val redirectURL = request.headers.get(REFERER).getOrElse(fallbackURL)
+    Redirect(redirectURL).withLang(languageToUse.lang)
   }
 }

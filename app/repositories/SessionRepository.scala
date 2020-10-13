@@ -31,10 +31,10 @@ import reactivemongo.play.json.collection.JSONCollection
 import scala.concurrent.{ExecutionContext, Future}
 
 class DefaultSessionRepository @Inject()(
-                                          mongo: ReactiveMongoApi,
-                                          config: Configuration
-                                        )(implicit ec: ExecutionContext) extends SessionRepository {
-
+  mongo: ReactiveMongoApi,
+  config: Configuration
+)(implicit ec: ExecutionContext)
+    extends SessionRepository {
 
   private val collectionName: String = "user-answers"
 
@@ -50,9 +50,11 @@ class DefaultSessionRepository @Inject()(
   )
 
   val started: Future[Unit] =
-    collection.flatMap {
-      _.indexesManager.ensure(lastUpdatedIndex)
-    }.map(_ => ())
+    collection
+      .flatMap {
+        _.indexesManager.ensure(lastUpdatedIndex)
+      }
+      .map(_ => ())
 
   override def get(id: String): Future[Option[UserAnswers]] = {
 
@@ -87,10 +89,10 @@ class DefaultSessionRepository @Inject()(
 
     collection.flatMap {
       _.update(ordered = false)
-        .one(selector, modifier, upsert = true).map {
-        lastError =>
+        .one(selector, modifier, upsert = true)
+        .map { lastError =>
           lastError.ok
-      }
+        }
     }
   }
 }

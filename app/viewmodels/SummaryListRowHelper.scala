@@ -23,7 +23,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, Key, Sum
 
 trait SummaryListRowHelper {
 
-  def summaryListRow(label: String, value: String, actions: Actions): SummaryListRow = {
+  def summaryListRow(label: String, value: String, actions: Actions): SummaryListRow =
     SummaryListRow(
       key = Key(
         content = Text(label)
@@ -33,7 +33,6 @@ trait SummaryListRowHelper {
       ),
       actions = Some(actions)
     )
-  }
 
   protected def yesOrNo(value: Boolean)(implicit messages: Messages): String =
     if (value) messages("site.yes") else messages("site.no")

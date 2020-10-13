@@ -25,11 +25,11 @@ import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 
 import scala.concurrent.Future
 
-class WhitelistFilter @Inject() (
-                                  config: FrontendAppConfig,
-                                  override val mat: Materializer,
-                                  view: views.html.whitelistFilter.TaxServiceGovUkNotFound
-                                ) extends AkamaiWhitelistFilter {
+class WhitelistFilter @Inject()(
+  config: FrontendAppConfig,
+  override val mat: Materializer,
+  view: views.html.whitelistFilter.TaxServiceGovUkNotFound
+) extends AkamaiWhitelistFilter {
 
   override val whitelist: Seq[String] = {
     config.whitelistIps
@@ -43,13 +43,11 @@ class WhitelistFilter @Inject() (
   override val destination: Call = Call("GET", config.whitelistDestination)
 
   override val excludedPaths: Seq[Call] = {
-    config.whitelistExcluded.split(",").map {
-      path =>
-        Call("GET", path.trim)
+    config.whitelistExcluded.split(",").map { path =>
+      Call("GET", path.trim)
     }
   }
 
-  override def apply(requestFunc: RequestHeader => Future[Result])(requestHeader: RequestHeader): Future[Result] = {
+  override def apply(requestFunc: RequestHeader => Future[Result])(requestHeader: RequestHeader): Future[Result] =
     if (config.whitelistEnabled) super.apply(requestFunc)(requestHeader) else requestFunc(requestHeader)
-  }
 }

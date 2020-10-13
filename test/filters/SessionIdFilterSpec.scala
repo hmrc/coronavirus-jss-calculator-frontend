@@ -37,14 +37,14 @@ object SessionIdFilterSpec {
   val sessionId = "28836767-a008-46be-ac18-695ab140e705"
 
   class TestSessionIdFilter @Inject()(
-                                       override val mat: Materializer,
-                                       sessionCookieBaker: SessionCookieBaker,
-                                       ec: ExecutionContext
-                                     ) extends SessionIdFilter(mat, UUID.fromString(sessionId), sessionCookieBaker, ec)
+    override val mat: Materializer,
+    sessionCookieBaker: SessionCookieBaker,
+    ec: ExecutionContext
+  ) extends SessionIdFilter(mat, UUID.fromString(sessionId), sessionCookieBaker, ec)
 
 }
 
-class SessionIdFilterSpec extends WordSpec with MustMatchers with OptionValues  with OneAppPerSuiteWithComponents {
+class SessionIdFilterSpec extends WordSpec with MustMatchers with OptionValues with OneAppPerSuiteWithComponents {
 
   override def components: BuiltInComponents = new BuiltInComponentsFromContext(context) with NoHttpFiltersComponents {
 
@@ -53,21 +53,21 @@ class SessionIdFilterSpec extends WordSpec with MustMatchers with OptionValues  
     import play.api.routing.sird._
 
     lazy val router: Router = Router.from {
-      case GET(p"/test") => defaultActionBuilder.apply {
-        request =>
+      case GET(p"/test") =>
+        defaultActionBuilder.apply { request =>
           val fromHeader = request.headers.get(HeaderNames.xSessionId).getOrElse("")
           val fromSession = request.session.get(SessionKeys.sessionId).getOrElse("")
           Results.Ok(
             Json.obj(
-              "fromHeader" -> fromHeader,
+              "fromHeader"  -> fromHeader,
               "fromSession" -> fromSession
             )
           )
-      }
-      case GET(p"/test2") => defaultActionBuilder.apply {
-        implicit request =>
+        }
+      case GET(p"/test2") =>
+        defaultActionBuilder.apply { implicit request =>
           Results.Ok.addingToSession("foo" -> "bar")
-      }
+        }
     }
   }
 

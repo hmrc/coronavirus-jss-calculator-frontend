@@ -26,8 +26,12 @@ import play.api.mvc.Call
 class Navigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => Call = {
-    case ClaimPeriodStartPage => _ => routes.IndexController.onPageLoad()
-    case _                                => _ => routes.IndexController.onPageLoad()
+    case ClaimPeriodStartPage =>
+      _ =>
+        routes.IndexController.onPageLoad()
+    case _ =>
+      _ =>
+        routes.IndexController.onPageLoad()
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
