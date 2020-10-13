@@ -34,7 +34,7 @@ class ClaimPeriodStartController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             sessionRepository: SessionRepository,
                                             navigator: Navigator,
-                                            withSession: WithSessionAction,
+                                            getSession: GetSessionAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             formProvider: ClaimPeriodStartFormProvider,
@@ -44,7 +44,7 @@ class ClaimPeriodStartController @Inject()(
 
   private def form = formProvider()
 
-  def onPageLoad: Action[AnyContent] = (withSession andThen getData) {
+  def onPageLoad: Action[AnyContent] = (getSession andThen getData) {
     implicit request =>
 
       val userAnswers = request.userAnswers
@@ -59,7 +59,7 @@ class ClaimPeriodStartController @Inject()(
       Ok(view(preparedForm))
   }
 
-  def onSubmit: Action[AnyContent] = (withSession andThen getData).async {
+  def onSubmit: Action[AnyContent] = (getSession andThen getData).async {
     implicit request =>
 
       form.bindFromRequest().fold(

@@ -52,7 +52,7 @@ trait SpecBase extends PlaySpec with TryValues with ScalaFutures with Integratio
     new GuiceApplicationBuilder()
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
-        bind[WithSessionAction].to[FakeWithSessionAction],
+        bind[GetSessionAction].to[FakeGetSessionAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
         bind[Metrics].toInstance(new FakeMetrics)
       )

@@ -22,7 +22,7 @@ import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeWithSessionAction @Inject()(bodyParsers: PlayBodyParsers) extends WithSessionAction {
+class FakeGetSessionAction @Inject()(bodyParsers: PlayBodyParsers) extends GetSessionAction {
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] =
     block(IdentifierRequest(request, "id"))
