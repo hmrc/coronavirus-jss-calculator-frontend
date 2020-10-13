@@ -22,7 +22,7 @@ import play.api.mvc.RequestHeader
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration) {
+class FrontendAppConfig @Inject()(configuration: Configuration) {
 
   lazy val host: String = configuration.get[String]("host")
 
@@ -45,15 +45,16 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val origin: String = configuration.get[String]("origin")
 
-  lazy val cookies: String          = host + configuration.get[String]("urls.footer.cookies")
-  lazy val privacy: String          = host + configuration.get[String]("urls.footer.privacy")
-  lazy val termsConditions: String  = host + configuration.get[String]("urls.footer.termsConditions")
-  lazy val govukHelp: String        = configuration.get[String]("urls.footer.govukHelp")
+  lazy val cookies: String = host + configuration.get[String]("urls.footer.cookies")
+  lazy val privacy: String = host + configuration.get[String]("urls.footer.privacy")
+  lazy val termsConditions: String = host + configuration.get[String]("urls.footer.termsConditions")
+  lazy val govukHelp: String = configuration.get[String]("urls.footer.govukHelp")
   lazy val daysTillAbleToClaim: Int = configuration.get[Int]("daysTillAbleToClaim")
 
-  lazy val appName: String          = configuration.get[String]("appName")
+  lazy val appName: String = configuration.get[String]("appName")
 
-  private lazy val exitSurveyBaseUrl = configuration.get[String]("feedback-frontend.host") + configuration.get[String]("feedback-frontend.url")
+  private lazy val exitSurveyBaseUrl = configuration.get[String]("feedback-frontend.host") + configuration.get[String](
+    "feedback-frontend.url")
   lazy val exitSurveyUrl = s"$exitSurveyBaseUrl/coronavirus-jss-calculator"
 
   lazy val whitelistEnabled: Boolean = configuration.get[Boolean]("filters.whitelist.enabled")

@@ -26,7 +26,7 @@ class IndexSpec extends FreeSpecLike with MustMatchers with OptionValues with Ei
 
   "indexPathBindable" - {
     val binder = Index.indexPathBindable
-    val key    = "index"
+    val key = "index"
 
     "bind a valid index" in {
       binder.bind(key, "1").right.value mustEqual Index(0)

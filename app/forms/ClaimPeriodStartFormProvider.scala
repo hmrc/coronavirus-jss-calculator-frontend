@@ -27,10 +27,10 @@ class ClaimPeriodStartFormProvider @Inject() extends Mappings {
   def apply(): Form[LocalDate] =
     Form(
       "startDate" -> localDate(
-        invalidKey     = "claimPeriodStart.error.invalid",
+        invalidKey = "claimPeriodStart.error.invalid",
         allRequiredKey = "claimPeriodStart.error.required.all",
         twoRequiredKey = "claimPeriodStart.error.required.two",
-        requiredKey    = "claimPeriodStart.error.required"
+        requiredKey = "claimPeriodStart.error.required"
       )
     )
 }

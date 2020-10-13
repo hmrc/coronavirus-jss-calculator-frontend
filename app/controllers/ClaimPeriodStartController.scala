@@ -31,45 +31,43 @@ import views.html.ClaimPeriodStartView
 import scala.concurrent.{ExecutionContext, Future}
 
 class ClaimPeriodStartController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            sessionRepository: SessionRepository,
-                                            navigator: Navigator,
-                                            getSession: GetSessionAction,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            formProvider: ClaimPeriodStartFormProvider,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: ClaimPeriodStartView
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: Navigator,
+  getSession: GetSessionAction,
+  getData: DataRetrievalAction,
+  requireData: DataRequiredAction,
+  formProvider: ClaimPeriodStartFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: ClaimPeriodStartView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private def form = formProvider()
 
-  def onPageLoad: Action[AnyContent] = (getSession andThen getData) {
-    implicit request =>
+  def onPageLoad: Action[AnyContent] = (getSession andThen getData) { implicit request =>
+    val userAnswers = request.userAnswers
+      .getOrElse(UserAnswers(request.identifier))
+      .get(ClaimPeriodStartPage)
 
-      val userAnswers = request.userAnswers
-        .getOrElse(UserAnswers(request.identifier))
-        .get(ClaimPeriodStartPage)
+    val preparedForm = userAnswers match {
+      case Some(date) => form.fill(date)
+      case None       => form
+    }
 
-      val preparedForm = userAnswers match {
-        case Some(date) => form.fill(date)
-        case None       => form
-      }
-
-      Ok(view(preparedForm))
+    Ok(view(preparedForm))
   }
 
-  def onSubmit: Action[AnyContent] = (getSession andThen getData).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
-
+  def onSubmit: Action[AnyContent] = (getSession andThen getData).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.identifier)).set(ClaimPeriodStartPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            updatedAnswers <- Future.fromTry(
+                               request.userAnswers.getOrElse(UserAnswers(request.identifier)).set(ClaimPeriodStartPage, value))
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(ClaimPeriodStartPage, NormalMode, updatedAnswers))
       )
   }

@@ -20,7 +20,7 @@ import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.Timer.Context
 import javax.inject.Inject
 
-class MetricsService @Inject()(kenshooMetrics: com.kenshoo.play.metrics.Metrics)  {
+class MetricsService @Inject()(kenshooMetrics: com.kenshoo.play.metrics.Metrics) {
   private val registry: MetricRegistry = kenshooMetrics.defaultRegistry
 
   def startTimer(metric: Timer): Context = registry.timer(metric.path).time()
@@ -34,17 +34,16 @@ class MetricsService @Inject()(kenshooMetrics: com.kenshoo.play.metrics.Metrics)
     def end(): Unit = end(None)
     def end(statusCode: Int): Unit = end(Some(statusCode))
 
-    private def end(statusCode: Option[Int]): Unit = {
+    private def end(statusCode: Option[Int]): Unit =
       if (!ended) {
         dec(openRequestCounter)
         statusCode.foreach(sc => inc(statusCounter(sc)))
         timerContext.stop()
         ended = true
-      } else {()}
-    }
+      } else { () }
   }
 
-  def beginRequest[A](monitor: RequestMonitor)(block : InflightRequestMonitor => A): A = {
+  def beginRequest[A](monitor: RequestMonitor)(block: InflightRequestMonitor => A): A = {
     inc(monitor.openRequestCounter)
     inc(monitor.counter)
     val context = startTimer(monitor.timer)
@@ -57,9 +56,9 @@ class MetricsService @Inject()(kenshooMetrics: com.kenshoo.play.metrics.Metrics)
   }
 }
 
-case class Timer(name:String) {val path = s"$name.timer"}
-case class Meter(name:String) {val path = s"$name.rate"}
-case class Counter(name:String) {val path = s"$name"}
+case class Timer(name: String) { val path = s"$name.timer" }
+case class Meter(name: String) { val path = s"$name.rate" }
+case class Counter(name: String) { val path = s"$name" }
 
 case class RequestMonitor(name: String) {
   val path = s"$name.request"
@@ -69,6 +68,4 @@ case class RequestMonitor(name: String) {
   def statusCounter(statusCode: Int): Counter = Counter(s"$path.responseStatus.$statusCode")
 }
 
-object Monitors {
-
-}
+object Monitors {}

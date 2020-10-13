@@ -29,9 +29,9 @@ import scala.concurrent.{ExecutionContext, Future}
 trait GetSessionAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
 
 class GetSessionActionImpl @Inject()(
-                                         val parser: BodyParsers.Default
-                                       )(implicit val executionContext: ExecutionContext)
-  extends GetSessionAction {
+  val parser: BodyParsers.Default
+)(implicit val executionContext: ExecutionContext)
+    extends GetSessionAction {
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 

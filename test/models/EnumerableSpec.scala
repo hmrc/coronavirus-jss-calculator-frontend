@@ -16,7 +16,7 @@
 
 package models
 
-import org.scalatest.{EitherValues, OptionValues, MustMatchers, WordSpec}
+import org.scalatest.{EitherValues, MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json._
 
 object EnumerableSpec {
@@ -44,11 +44,10 @@ class EnumerableSpec extends WordSpec with MustMatchers with EitherValues with O
       implicitly[Reads[Foo]]
     }
 
-    Foo.values.foreach {
-      value =>
-        s"bind correctly for: $value" in {
-          Json.fromJson[Foo](JsString(value.toString)).asEither.right.value mustEqual value
-        }
+    Foo.values.foreach { value =>
+      s"bind correctly for: $value" in {
+        Json.fromJson[Foo](JsString(value.toString)).asEither.right.value mustEqual value
+      }
     }
 
     "fail to bind for invalid values" in {
@@ -62,11 +61,10 @@ class EnumerableSpec extends WordSpec with MustMatchers with EitherValues with O
       implicitly[Writes[Foo]]
     }
 
-    Foo.values.foreach {
-      value =>
-        s"write $value" in {
-          Json.toJson(value) mustEqual JsString(value.toString)
-        }
+    Foo.values.foreach { value =>
+      s"write $value" in {
+        Json.toJson(value) mustEqual JsString(value.toString)
+      }
     }
   }
 
