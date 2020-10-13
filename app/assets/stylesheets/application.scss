@@ -1,0 +1,10 @@
+$govuk-assets-path: "/coronavirus-job-support-scheme-calculator/assets/lib/govuk-frontend/govuk/assets/";
+$hmrc-assets-path: "/coronavirus-job-support-scheme-calculator/assets/lib/hmrc-frontend/hmrc/";
+@import "lib/govuk-frontend/govuk/all";
+@import "lib/hmrc-frontend/hmrc/all";
+
+
+@import "timeout-dialog";
+@import "language-selection";
+
+@import "shame";

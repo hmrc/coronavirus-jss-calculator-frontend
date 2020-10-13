@@ -18,25 +18,33 @@ package filters
 
 import akka.stream.Materializer
 import com.typesafe.config.ConfigException
+import config.FrontendAppConfig
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import org.scalatest.{FreeSpec, MustMatchers}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalatest.{FreeSpec, MustMatchers}
 import play.api.Configuration
 import play.api.mvc.Call
+import play.api.mvc.Results.Ok
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class WhitelistFilterSpec extends FreeSpec with MustMatchers with ScalaCheckPropertyChecks with MockitoSugar with Generators {
 
-  val mockMaterializer = mock[Materializer]
+  private val mockMaterializer = mock[Materializer]
 
-  val otherConfigGen = Gen.mapOf[String, String](
+  private val otherConfigGen = Gen.mapOf[String, String](
     for {
       key   <- Gen.alphaNumStr suchThat (_.nonEmpty)
       value <- arbitrary[String]
     } yield (key, value)
   )
+
+  private val view = new views.html.whitelistFilter.TaxServiceGovUkNotFound()
 
   "the list of whitelisted IP addresses" - {
 
@@ -49,15 +57,16 @@ class WhitelistFilterSpec extends FreeSpec with MustMatchers with ScalaCheckProp
 
             whenever(!otherConfig.contains("filters.whitelist.ips")) {
 
-              val config = Configuration(
+              val config = new FrontendAppConfig(Configuration(
                 (otherConfig +
                   ("filters.whitelist.destination" -> destination) +
-                  ("filters.whitelist.excluded"    -> excluded)
-                ).toSeq: _*
-              )
+                  ("filters.whitelist.excluded"    -> excluded) +
+                  ("claim-periods" -> Seq.empty)
+                  ).toSeq: _*
+              ))
 
               assertThrows[ConfigException] {
-                new WhitelistFilter(config, mockMaterializer)
+                new WhitelistFilter(config, mockMaterializer, view)
               }
             }
         }
@@ -71,18 +80,19 @@ class WhitelistFilterSpec extends FreeSpec with MustMatchers with ScalaCheckProp
         forAll(otherConfigGen, arbitrary[String], arbitrary[String]) {
           (otherConfig, destination, excluded) =>
 
-            val config = Configuration(
+            val config = new FrontendAppConfig(Configuration(
               (otherConfig +
                 ("filters.whitelist.destination" -> destination) +
                 ("filters.whitelist.excluded"    -> excluded) +
-                ("filters.whitelist.ips"         -> "")
-              ).toSeq: _*
-            )
+                ("filters.whitelist.ips"         -> "") +
+                ("claim-periods" -> Seq.empty)
+                ).toSeq: _*
+            ))
 
-            val whitelistFilter = new WhitelistFilter(config, mockMaterializer)
+            val whitelistFilter = new WhitelistFilter(config, mockMaterializer, view)
 
             whitelistFilter.whitelist mustBe empty
-          }
+        }
       }
     }
 
@@ -97,15 +107,16 @@ class WhitelistFilterSpec extends FreeSpec with MustMatchers with ScalaCheckProp
 
             val ipString = ips.mkString(",")
 
-            val config = Configuration(
+            val config = new FrontendAppConfig(Configuration(
               (otherConfig +
                 ("filters.whitelist.destination" -> destination) +
                 ("filters.whitelist.excluded"    -> excluded) +
-                ("filters.whitelist.ips"         -> ipString)
-              ).toSeq: _*
-            )
+                ("filters.whitelist.ips"         -> ipString) +
+                ("claim-periods" -> Seq.empty)
+                ).toSeq: _*
+            ))
 
-            val whitelistFilter = new WhitelistFilter(config, mockMaterializer)
+            val whitelistFilter = new WhitelistFilter(config, mockMaterializer, view)
 
             whitelistFilter.whitelist must contain theSameElementsAs ips
         }
@@ -124,15 +135,16 @@ class WhitelistFilterSpec extends FreeSpec with MustMatchers with ScalaCheckProp
 
             whenever(!otherConfig.contains("filters.whitelist.destination")) {
 
-              val config = Configuration(
+              val config = new FrontendAppConfig(Configuration(
                 (otherConfig +
                   ("filters.whitelist.ips"      -> destination) +
-                  ("filters.whitelist.excluded" -> excluded)
+                  ("filters.whitelist.excluded" -> excluded) +
+                  ("claim-periods" -> Seq.empty)
                   ).toSeq: _*
-              )
+              ))
 
               assertThrows[ConfigException] {
-                new WhitelistFilter(config, mockMaterializer)
+                new WhitelistFilter(config, mockMaterializer, view)
               }
             }
         }
@@ -144,15 +156,16 @@ class WhitelistFilterSpec extends FreeSpec with MustMatchers with ScalaCheckProp
       forAll(otherConfigGen, arbitrary[String], arbitrary[String], arbitrary[String]) {
         (otherConfig, ips, destination, excluded) =>
 
-          val config = Configuration(
+          val config = new FrontendAppConfig(Configuration(
             (otherConfig +
-              ("filters.whitelist.ips"         -> destination) +
+              ("filters.whitelist.ips"         -> ips) +
               ("filters.whitelist.excluded"    -> excluded) +
-              ("filters.whitelist.destination" -> destination)
+              ("filters.whitelist.destination" -> destination) +
+              ("claim-periods" -> Seq.empty)
               ).toSeq: _*
-          )
+          ))
 
-          val whitelistFilter = new WhitelistFilter(config, mockMaterializer)
+          val whitelistFilter = new WhitelistFilter(config, mockMaterializer, view)
 
           whitelistFilter.destination mustEqual Call("GET", destination)
       }
@@ -170,15 +183,16 @@ class WhitelistFilterSpec extends FreeSpec with MustMatchers with ScalaCheckProp
 
             whenever(!otherConfig.contains("filters.whitelist.excluded")) {
 
-              val config = Configuration(
+              val config = new FrontendAppConfig(Configuration(
                 (otherConfig +
                   ("filters.whitelist.destination" -> destination) +
-                  ("filters.whitelist.ips"    -> excluded)
+                  ("filters.whitelist.ips"    -> excluded) +
+                  ("claim-periods" -> Seq.empty)
                   ).toSeq: _*
-              )
+              ))
 
               assertThrows[ConfigException] {
-                new WhitelistFilter(config, mockMaterializer)
+                new WhitelistFilter(config, mockMaterializer, view)
               }
             }
         }
@@ -196,21 +210,125 @@ class WhitelistFilterSpec extends FreeSpec with MustMatchers with ScalaCheckProp
 
             val excludedPathString = excludedPaths.mkString(",")
 
-            val config = Configuration(
+            val config = new FrontendAppConfig(Configuration(
               (otherConfig +
                 ("filters.whitelist.destination" -> destination) +
                 ("filters.whitelist.excluded"    -> excludedPathString) +
-                ("filters.whitelist.ips"         -> ips)
+                ("filters.whitelist.ips"         -> ips) +
+                ("claim-periods" -> Seq.empty)
                 ).toSeq: _*
-            )
+            ))
 
             val expectedCalls = excludedPaths.map(Call("GET", _))
 
-            val whitelistFilter = new WhitelistFilter(config, mockMaterializer)
+            val whitelistFilter = new WhitelistFilter(config, mockMaterializer, view)
 
             whitelistFilter.excludedPaths must contain theSameElementsAs expectedCalls
         }
       }
     }
+  }
+
+  "the filter" - {
+
+    "when enabled" - {
+
+      "must allow requests from a configured IP through" in {
+
+        val excludedPathString = "/ping/ping"
+
+        val config = new FrontendAppConfig(Configuration(
+          "filters.whitelist.destination" -> "",
+          "filters.whitelist.excluded" -> excludedPathString,
+          "filters.whitelist.ips" -> "123.456.789.0",
+          "filters.whitelist.enabled" -> "true",
+          "claim-periods" -> List()
+        ))
+
+        val whitelistFilter = new WhitelistFilter(config, mockMaterializer, view)
+
+        val request = FakeRequest("GET", "/foo")
+          .withHeaders("True-Client-IP" -> "123.456.789.0")
+
+        val result = whitelistFilter.apply(_ => Future.successful(Ok("Hooray")))(request)
+
+        status(result) mustBe OK
+        contentAsString(result) mustBe "Hooray"
+      }
+
+      "must respond with NOT_FOUND for an IP not on the list" in {
+
+        val excludedPathString = "/ping/ping"
+
+        val config = new FrontendAppConfig(Configuration(
+          "filters.whitelist.destination" -> "",
+          "filters.whitelist.excluded" -> excludedPathString,
+          "filters.whitelist.ips" -> "123.456.789.0",
+          "filters.whitelist.enabled" -> "true",
+          "claim-periods" -> List()
+        ))
+
+        val whitelistFilter = new WhitelistFilter(config, mockMaterializer, view)
+
+        val request = FakeRequest("GET", "/foo")
+          .withHeaders("True-Client-IP" -> "123.456.789.1")
+
+        val result = whitelistFilter.apply(_ => Future.successful(Ok("Hooray")))(request)
+
+        status(result) mustBe NOT_FOUND
+      }
+
+    }
+
+    "when disabled" - {
+
+      "must allow requests with any ip" in {
+
+        val excludedPathString = "/ping/ping"
+
+        val config = new FrontendAppConfig(Configuration(
+          "filters.whitelist.destination" -> "",
+          "filters.whitelist.excluded" -> excludedPathString,
+          "filters.whitelist.ips" -> "123.456.789.0",
+          "filters.whitelist.enabled" -> "false",
+          "claim-periods" -> List()
+        ))
+
+        val whitelistFilter = new WhitelistFilter(config, mockMaterializer, view)
+
+        val request = FakeRequest("GET", "/foo")
+          .withHeaders("True-Client-IP" -> "123.456.789.1")
+
+        val result = whitelistFilter.apply(_ => Future.successful(Ok("Hooray")))(request)
+
+        status(result) mustBe OK
+        contentAsString(result) mustBe "Hooray"
+      }
+
+      "must allow requests without a true-client-ip" in {
+
+        val excludedPathString = "/ping/ping"
+
+        val config = new FrontendAppConfig(Configuration(
+          "filters.whitelist.destination" -> "",
+          "filters.whitelist.excluded" -> excludedPathString,
+          "filters.whitelist.ips" -> "123.456.789.0",
+          "filters.whitelist.enabled" -> "false",
+          "claim-periods" -> List()
+        ))
+
+        val whitelistFilter = new WhitelistFilter(config, mockMaterializer, view)
+
+        val request = FakeRequest("GET", "/foo")
+
+        val result = whitelistFilter.apply(_ => Future.successful(Ok("Hooray")))(request)
+
+        status(result) mustBe OK
+        contentAsString(result) mustBe "Hooray"
+      }
+
+    }
+
+
   }
 }

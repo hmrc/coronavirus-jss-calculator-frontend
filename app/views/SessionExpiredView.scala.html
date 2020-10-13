@@ -15,16 +15,15 @@
  *@
 
 @this(
-    main_template: MainTemplate
+    main_template: templates.GovukLayoutWrapper,
+    h1: components.h1
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("session_expired.title")
-    ) {
+@main_template(Some(titleNoForm("session_expired.title")), timeout = false) {
 
-    @components.heading("session_expired.heading")
+    @h1(messages("session_expired.heading"))
 
-    <p>@messages("session_expired.guidance")</p>
+    <p class="govuk-body">@messages("session_expired.guidance")</p>
 }

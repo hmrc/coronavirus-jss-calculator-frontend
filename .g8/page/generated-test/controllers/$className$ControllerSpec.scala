@@ -1,7 +1,6 @@
 package controllers
 
 import base.SpecBase
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.$className$View
 
@@ -13,18 +12,19 @@ class $className$ControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.$className$Controller.onPageLoad().url)
+      running(application) {
 
-      val result = route(application, request).value
+        val request = fakeRequest(GET, routes.$className$Controller.onPageLoad().url)
 
-      val view = application.injector.instanceOf[$className$View]
+        val result = route(application, request).value
 
-      status(result) mustEqual OK
+        val view = application.injector.instanceOf[$className$View]
 
-      contentAsString(result) mustEqual
-        view()(fakeRequest, messages).toString
+        status(result) mustEqual OK
 
-      application.stop()
+        contentAsString(result) mustEqual
+          view()(request, messages(application)).toString
+      }
     }
   }
 }

@@ -18,33 +18,38 @@ package filters
 
 import akka.stream.Materializer
 import com.google.inject.Inject
-import play.api.Configuration
-import play.api.mvc.Call
+import config.FrontendAppConfig
+import play.api.mvc.Results.NotFound
+import play.api.mvc.{Call, RequestHeader, Result}
 import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 
+import scala.concurrent.Future
+
 class WhitelistFilter @Inject() (
-                                  config: Configuration,
-                                  override val mat: Materializer
+                                  config: FrontendAppConfig,
+                                  override val mat: Materializer,
+                                  view: views.html.whitelistFilter.TaxServiceGovUkNotFound
                                 ) extends AkamaiWhitelistFilter {
 
   override val whitelist: Seq[String] = {
-    config
-      .underlying
-      .getString("filters.whitelist.ips")
+    config.whitelistIps
       .split(",")
       .map(_.trim)
       .filter(_.nonEmpty)
   }
 
-  override val destination: Call = {
-    val path = config.underlying.getString("filters.whitelist.destination")
-    Call("GET", path)
-  }
+  override def response: Result = NotFound(view())
+
+  override val destination: Call = Call("GET", config.whitelistDestination)
 
   override val excludedPaths: Seq[Call] = {
-    config.underlying.getString("filters.whitelist.excluded").split(",").map {
+    config.whitelistExcluded.split(",").map {
       path =>
         Call("GET", path.trim)
     }
+  }
+
+  override def apply(requestFunc: RequestHeader => Future[Result])(requestHeader: RequestHeader): Future[Result] = {
+    if (config.whitelistEnabled) super.apply(requestFunc)(requestHeader) else requestFunc(requestHeader)
   }
 }

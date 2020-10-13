@@ -1,0 +1,44 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@this(govukLabel: govukLabel)
+
+@(id: String,
+  label: String,
+  isPageHeading: Boolean = false,
+  section: Option[String] = None)
+
+
+@standardLabel = {
+    @govukLabel(Label(
+        forAttr = Some(id),
+        isPageHeading = isPageHeading,
+        classes = if(isPageHeading) "govuk-label--xl" else "",
+        content = Text(label)
+    ))
+}
+
+@customLabel = { @section.map { sectionText =>
+    <h1 class="govuk-label-wrapper">
+        <label class="govuk-label govuk-label--xl hmrc-page-heading govuk-!-margin-top-0 govuk-!-margin-bottom-2" for="value">
+            @label
+            <span class="govuk-caption-xl hmrc-caption-xl">@sectionText</span>
+        </label>
+    </h1>
+    }
+}
+
+@if(section.isDefined) { @customLabel } else { @standardLabel }

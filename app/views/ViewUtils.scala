@@ -16,12 +16,35 @@
 
 package views
 
+import java.text.NumberFormat
+import java.time.LocalDate
+
 import play.api.data.Form
 import play.api.i18n.Messages
 
 object ViewUtils {
 
+  def title(form: Form[_], titleStr: String, section: Option[String] = None, titleMessageArgs: Seq[String] = Seq())
+           (implicit messages: Messages): String = {
+    titleNoForm(s"${errorPrefix(form)} ${messages(titleStr, titleMessageArgs:_*)}", section)
+  }
+
+  def titleNoForm(title: String, section: Option[String] = None, titleMessageArgs: Seq[String] = Seq())(implicit messages: Messages): String =
+    s"${messages(title, titleMessageArgs:_*)} - ${section.fold("")(messages(_) + " - ")}${messages("service.name")} - ${messages("site.govuk")}"
+
   def errorPrefix(form: Form[_])(implicit messages: Messages): String = {
     if (form.hasErrors || form.hasGlobalErrors) messages("error.browser.title.prefix") else ""
   }
+
+  val numberFormatter: NumberFormat = NumberFormat.getNumberInstance
+  numberFormatter.setMaximumFractionDigits(2)
+
+  val monetaryFormatter: NumberFormat = NumberFormat.getNumberInstance
+  monetaryFormatter.setMinimumFractionDigits(2)
+
+  def displayMoney(amountInPence: Long) = s"£${monetaryFormatter.format((BigDecimal(amountInPence) / 100).setScale(2))}"
+
+  def displayNumber(number: Long): String = numberFormatter.format(number)
+
+  implicit val localDateOrdering: Ordering[LocalDate] = Ordering.by(_.toEpochDay)
 }

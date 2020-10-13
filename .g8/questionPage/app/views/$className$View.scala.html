@@ -1,35 +1,42 @@
-@import controllers.routes._
-@import models.Mode
-
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+        govukLayout: templates.GovukLayoutWrapper,
+        formHelper: FormWithCSRF,
+        errorSummary: components.errorSummary,
+        button: components.button,
+        inputText: components.inputText,
+        fieldset: components.fieldset,
+        h1: components.h1
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"\${errorPrefix(form)} \${messages("$className;format="decap"$.title")}"
-    ) {
+@govukLayout(pageTitle = Some(title(form, "$className;format="decap"$.title"))) {
 
-    @formHelper(action = $className;format="cap"$Controller.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
-        
-        @components.error_summary(form.errors)
+    @formHelper(action = $className$Controller.onSubmit(mode)) {
 
-        @components.heading("$className;format="decap"$.heading")
+        @errorSummary(form.errors)
 
-        @components.input_text(
-            field = form("$field1Name$"),
-            label = messages("$className;format="decap"$.$field1Name$")
-        )
+        @fieldset("$className;format="decap"$.heading") {
+            @inputText(
+                form,
+                id = "$field1Name$",
+                name = "$field1Name$",
+                label = "$className;format="decap"$.$field1Name$",
+                isPageHeading = false,
+                classes = Some("govuk-!-width-two-thirds")
+            )
 
-        @components.input_text(
-            field = form("$field2Name$"),
-            label = messages("$className;format="decap"$.$field2Name$")
-        )
+            @inputText(
+                form,
+                id = "$field2Name$",
+                name = "$field2Name$",
+                label = "$className;format="decap"$.$field2Name$",
+                isPageHeading = false,
+                classes = Some("govuk-!-width-two-thirds")
+            )
+        }
 
-        @components.submit_button()
+        @button("site.saveAndContinue")
     }
 }

@@ -17,36 +17,47 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
-import controllers.routes
 import play.api.Configuration
-import play.api.i18n.Lang
-import play.api.mvc.Call
+import play.api.mvc.RequestHeader
+import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {
 
-  private val contactHost = configuration.get[String]("contact-frontend.host")
-  private val contactFormServiceIdentifier = "play26frontend"
+  lazy val host: String = configuration.get[String]("host")
 
-  val analyticsToken: String = configuration.get[String](s"google-analytics.token")
-  val analyticsHost: String = configuration.get[String](s"google-analytics.host")
-  val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-  val betaFeedbackUrl = s"$contactHost/contact/beta-feedback"
-  val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
+  private lazy val contactHost = configuration.get[String]("contact-frontend.host")
+  private val contactFormServiceIdentifier = "dd-claim"
 
-  lazy val authUrl: String = configuration.get[Service]("auth").baseUrl
-  lazy val loginUrl: String = configuration.get[String]("urls.login")
-  lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
+  lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+  lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
-  lazy val languageTranslationEnabled: Boolean =
-    configuration.get[Boolean]("microservice.services.features.welsh-translation")
+  def feedbackUrl(implicit request: RequestHeader): String =
+    s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
 
-  def languageMap: Map[String, Lang] = Map(
-    "english" -> Lang("en"),
-    "cymraeg" -> Lang("cy")
-  )
+  lazy val timeout: Int = configuration.get[Int]("timeout.timeout")
+  lazy val countdown: Int = configuration.get[Int]("timeout.countdown")
 
-  def routeToSwitchLanguage: String => Call =
-    (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
+  lazy val govukHome: String = configuration.get[String]("urls.govUkHome")
+  lazy val contactByPhone: String = configuration.get[String]("urls.contactByPhone")
+
+  lazy val languageTranslationEnabled: Boolean = configuration.get[Boolean]("features.welsh-translation")
+
+  lazy val origin: String = configuration.get[String]("origin")
+
+  lazy val cookies: String          = host + configuration.get[String]("urls.footer.cookies")
+  lazy val privacy: String          = host + configuration.get[String]("urls.footer.privacy")
+  lazy val termsConditions: String  = host + configuration.get[String]("urls.footer.termsConditions")
+  lazy val govukHelp: String        = configuration.get[String]("urls.footer.govukHelp")
+  lazy val daysTillAbleToClaim: Int = configuration.get[Int]("daysTillAbleToClaim")
+
+  lazy val appName: String          = configuration.get[String]("appName")
+
+  private lazy val exitSurveyBaseUrl = configuration.get[String]("feedback-frontend.host") + configuration.get[String]("feedback-frontend.url")
+  lazy val exitSurveyUrl = s"$exitSurveyBaseUrl/coronavirus-jss-calculator"
+
+  lazy val whitelistEnabled: Boolean = configuration.get[Boolean]("filters.whitelist.enabled")
+  lazy val whitelistDestination: String = configuration.get[String]("filters.whitelist.destination")
+  lazy val whitelistExcluded: String = configuration.get[String]("filters.whitelist.excluded")
+  lazy val whitelistIps: String = configuration.get[String]("filters.whitelist.ips")
 }

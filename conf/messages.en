@@ -1,5 +1,121 @@
-checkYourAnswers.title = Check Your Answers
-checkYourAnswers.heading = Check Your Answers
+# Site-wide Messages
+# ----------------------------------------------------------
+service.name = Job Support Scheme calculator
+
+site.back = Back
+site.delete = Delete
+site.hidden-delete = Delete {0}
+site.hidden-edit = Change {0}
+site.no = No
+site.yes = Yes
+site.continue = Continue
+site.tryAgain = Try again
+site.startAgain = Start again
+site.confirm = Confirm
+site.saveAndContinue = Save and continue
+site.submitAndContinue = Submit and continue
+site.textarea.char_limit = (Limit is {0} characters)
+site.govuk = GOV.UK
+site.signOut = Sign out
+site.getHelpWithThisPage = Get help with this page
+site.notProvided = Not Provided
+site.incomplete = Incomplete
+site.change = Change
+site.confirmAndSend = Confirm and send
+site.acceptAndSend = Accept and send
+
+footer.accessibility   = Accessibility statement
+footer.cookies         = Cookies
+footer.privacy         = Privacy policy
+footer.termsConditions = Terms and conditions
+footer.govukHelp       = Help using GOV.UK
+
+language.cymraeg = Cymraeg
+language.change.cymraeg = Newid yr iaith i'r Gymraeg
+language.english = English
+language.change.english = Change the language to English
+language.switcher = Language switcher
+
+# Timeout Messages
+# ----------------------------------------------------------
+timeout.title = You’re about to be signed out
+timeout.message = For security reasons, you will be signed out of this service in
+timeout.keepAlive = Stay signed in
+timeout.signOut = Sign out
+
+# BETA Banner
+# ----------------------------------------------------------
+feedback.before = This is a new service - your
+feedback.link = feedback
+feedback.after = will help us to improve it.
+
+# Compliance statement
+# ----------------------------------------------------------
+
+accessibility.title = Accessibility statement for the Job Support Scheme calculator
+## section one
+compliant.one.heading=Accessibility statement for the Eat Out to Help Out Scheme
+compliant.one.lede=This accessibility statement explains how accessible this service is, what to do if you have difficulty using it, and how to report accessibility problems with the service.
+compliant.one.p1.1=This service is part of the wider GOV.UK website. There is a separate
+compliant.one.p1.2=accessibility statement
+compliant.one.p1.3=for the main GOV.UK website.
+compliant.one.p2=This page only contains information about the Job Support Scheme calculator, available at tax.service.gov.uk
+
+## section two
+compliant.two.heading=Using this service
+compliant.two.p1=<To be completed>
+compliant.two.p2=This service is run by HM Revenue and Customs (HMRC). We want as many people as possible to be able to use this service. This means you should be able to:
+compliant.two.l1=change colours, contrast levels and fonts
+compliant.two.l2=zoom in up to 300% without the text spilling off the screen
+compliant.two.l3=get from the start of the service to the end using just a keyboard
+compliant.two.l4=get from the start of the service to the end using speech recognition software
+compliant.two.l5=listen to the service using a screen reader (including the most recent versions of JAWS, NVDA and VoiceOver)
+compliant.two.p3=We have also made the text in the service as simple as possible to understand.
+compliant.two.p4.0=
+compliant.two.p4.1=AbilityNet
+compliant.two.p4.2=has advice on making your device easier to use if you have a disability.
+
+## section three
+compliant.three.heading=How accessible this service is
+compliant.three.p1.1=This service is fully compliant with the
+compliant.three.p1.2=Web Content Accessibility Guidelines version 2.1 AA standard
+compliant.three.p2=There are no known accessibility issues within this service.
+
+## section five
+compliant.five.heading=Reporting accessibility problems with this service
+compliant.five.p.1=We are always looking to improve the accessibility of this service. If you find any problems that are not listed on this page or think we are not meeting accessibility requirements, report the
+compliant.five.p.2=accessibility problem (opens in a new window or tab)
+
+## section six
+compliant.six.heading=What to do if you are not happy with how we respond to your complaint
+compliant.six.p.1=The Equality and Human Rights Commission (EHRC) is responsible for enforcing the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018 (the ‘accessibility regulations’). If you are not happy with how we respond to your complaint,
+compliant.six.p.2=contact the Equality Advisory and Support Service
+compliant.six.p.3=(EASS), or the
+compliant.six.p.4=Equality Commission for Northern Ireland
+compliant.six.p.5=(ECNI) if you live in Northern Ireland.
+
+## section seven
+compliant.seven.heading=Contacting us by phone or getting a visit from us in person
+compliant.seven.p1=We provide a text relay service if you are deaf, hearing impaired or have a speech impediment.
+compliant.seven.p2=We can provide a British Sign Language (BSL) interpreter, or you can arrange a visit from an HMRC advisor to help you complete the service.
+compliant.seven.p3.1=Find out how to
+compliant.seven.p3.2=contact us
+
+## section eight
+compliant.eight.heading=Technical information about this service’s accessibility
+compliant.eight.p1=HMRC is committed to making this service accessible, in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.
+compliant.eight.p2.1=This service is fully compliant with the
+compliant.eight.p2.2=Web Content Accessibility Guidelines version 2.1 AA standard
+
+## section nine
+compliant.nine.heading=How we tested this service
+compliant.nine.p1=The service was last tested on <date> and was checked for compliance with WCAG 2.1 AA.
+compliant.nine.p2.1=The service was built using parts that were tested by the
+compliant.nine.p2.2=Digital Accessibility Centre
+compliant.nine.p2.3=The full service was tested by HMRC and included disabled users.
+compliant.nine.p3=This page was prepared on <date>. It was last updated on <date>.
+
+checkYourAnswers.heading = Check your answers before claiming for this business
 checkYourAnswers.guidance = Guidance for check your answers
 
 date.day = Day
@@ -16,29 +132,11 @@ error.date.month_invalid = Give a correct month using numbers 1 to 12
 error.date.year_blank = Enter a year
 error.date.year_invalid = Give a correct year
 error.integer = Give an answer in whole numbers
-error.non_numeric = Give a value using only numbers
+error.nonNumeric = Give a value using only numbers
 error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 
-index.title = coronavirus-jss-calculator-frontend
-index.heading = coronavirus-jss-calculator-frontend
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
-
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
 session_expired.guidance = The details you have given have been deleted because you did not continue the service for 15 minutes.
-
-site.back = Back
-site.delete = Remove
-site.edit = Change
-site.hidden-delete = Delete {0}
-site.hidden-edit = Change {0}
-site.no = No
-site.yes = Yes
-site.continue = Continue
-site.service_name = coronavirus-jss-calculator-frontend
-site.textarea.char_limit = (Limit is {0} characters)
-
-unauthorised.title = You can’t access this service with this account
-unauthorised.heading = You can’t access this service with this account
