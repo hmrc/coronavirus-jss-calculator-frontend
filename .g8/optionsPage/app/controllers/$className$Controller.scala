@@ -18,7 +18,7 @@ class $className$Controller @Inject()(
                                        override val messagesApi: MessagesApi,
                                        sessionRepository: SessionRepository,
                                        navigator: Navigator,
-                                       identify: IdentifierAction,
+                                       getSession: GetSessionAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: $className$FormProvider,
@@ -28,7 +28,7 @@ class $className$Controller @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (getSession andThen getData andThen requireData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get($className$Page) match {
@@ -39,7 +39,7 @@ class $className$Controller @Inject()(
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(

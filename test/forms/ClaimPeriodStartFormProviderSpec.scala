@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import models._
-import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary.arbitrary
-import pages._
-import play.api.libs.json.{JsValue, Json}
+import java.time.{LocalDate, ZoneOffset}
 
-trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
-  self: Generators =>
+import forms.behaviours.DateBehaviours
+import play.api.data.FormError
 
-  implicit lazy val arbitraryClaimPeriodStartUserAnswersEntry: Arbitrary[(ClaimPeriodStartPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[ClaimPeriodStartPage.type]
-        value <- arbitrary[Int].map(Json.toJson(_))
-      } yield (page, value)
-    }
+class ClaimPeriodStartFormProviderSpec extends DateBehaviours {
 
+  val form = new ClaimPeriodStartFormProvider()()
+
+  ".startDate" should {
+
+    val validData = datesBetween(
+      min = LocalDate.of(2000, 1, 1),
+      max = LocalDate.now(ZoneOffset.UTC)
+    )
+
+    behave like dateField(form, "startDate", validData)
+
+    behave like mandatoryDateField(form, "startDate", "claimPeriodStart.error.required.all")
+  }
 }

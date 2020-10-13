@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-package controllers
+package pages
 
-import base.SpecBase
-import play.api.test.Helpers._
+import java.time.LocalDate
 
-class CheckYourAnswersControllerSpec extends SpecBase {
+import org.scalacheck.Arbitrary
+import pages.behaviours.PageBehaviours
 
-  "Check Your Answers Controller" must {
+class ClaimPeriodStartPageSpec extends PageBehaviours {
 
-    "return OK and the correct view for a GET" in {
+  "ClaimPeriodStartPage" must {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      running(application) {
-        val request = fakeRequest(GET, routes.CheckYourAnswersController.onPageLoad().url)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-      }
+    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
+      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
     }
+
+    beRetrievable[LocalDate](ClaimPeriodStartPage)
+
+    beSettable[LocalDate](ClaimPeriodStartPage)
+
+    beRemovable[LocalDate](ClaimPeriodStartPage)
   }
 }
