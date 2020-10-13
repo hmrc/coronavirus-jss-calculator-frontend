@@ -1,14 +1,11 @@
 @this(
-    main_template: MainTemplate
+    govukLayout: templates.GovukLayoutWrapper,
+    h1: components.h1
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("$className;format="decap"$.title")
-    ) {
+@govukLayout(pageTitle = Some(titleNoForm("$className;format="decap"$.title"))) {
 
-    @components.back_link()
-
-    @components.heading("$className;format="decap"$.heading")
+    @h1("$className;format="decap"$.heading")
 }

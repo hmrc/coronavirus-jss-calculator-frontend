@@ -29,18 +29,19 @@ class SessionExpiredControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, routes.SessionExpiredController.onPageLoad().url)
+      running(application) {
 
-      val result = route(application, request).value
+        val request = FakeRequest(GET, routes.SessionExpiredController.onPageLoad().url)
 
-      val view = application.injector.instanceOf[SessionExpiredView]
+        val result = route(application, request).value
 
-      status(result) mustEqual OK
+        val view = application.injector.instanceOf[SessionExpiredView]
 
-      contentAsString(result) mustEqual
-        view()(fakeRequest, messages).toString
+        status(result) mustEqual OK
 
-      application.stop()
+        contentAsString(result) mustEqual
+          view()(request, messages(application)).toString
+      }
     }
   }
 }

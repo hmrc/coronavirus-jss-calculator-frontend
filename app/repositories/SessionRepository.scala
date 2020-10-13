@@ -18,9 +18,8 @@ package repositories
 
 import java.time.LocalDateTime
 
-import akka.stream.Materializer
 import javax.inject.Inject
-import models.UserAnswers
+import models.{MongoDateTimeFormats, UserAnswers}
 import play.api.Configuration
 import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoApi
@@ -34,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DefaultSessionRepository @Inject()(
                                           mongo: ReactiveMongoApi,
                                           config: Configuration
-                                        )(implicit ec: ExecutionContext, m: Materializer) extends SessionRepository {
+                                        )(implicit ec: ExecutionContext) extends SessionRepository {
 
 
   private val collectionName: String = "user-answers"
@@ -45,8 +44,8 @@ class DefaultSessionRepository @Inject()(
     mongo.database.map(_.collection[JSONCollection](collectionName))
 
   private val lastUpdatedIndex = Index(
-    key     = Seq("lastUpdated" -> IndexType.Ascending),
-    name    = Some("user-answers-last-updated-index"),
+    key = Seq("lastUpdated" -> IndexType.Ascending),
+    name = Some("user-answers-last-updated-index"),
     options = BSONDocument("expireAfterSeconds" -> cacheTtl)
   )
 
@@ -55,8 +54,26 @@ class DefaultSessionRepository @Inject()(
       _.indexesManager.ensure(lastUpdatedIndex)
     }.map(_ => ())
 
-  override def get(id: String): Future[Option[UserAnswers]] =
-    collection.flatMap(_.find(Json.obj("_id" -> id), None).one[UserAnswers])
+  override def get(id: String): Future[Option[UserAnswers]] = {
+
+    implicit val dateWriter: Writes[LocalDateTime] = MongoDateTimeFormats.localDateTimeWrite
+
+    val selector = Json.obj(
+      "_id" -> id
+    )
+
+    val modifier = Json.obj(
+      "$set" -> Json.obj("lastUpdated" -> LocalDateTime.now)
+    )
+
+    collection.flatMap {
+      _.findAndUpdate(selector, modifier)
+        .map(_.value.map(_.as[UserAnswers]))
+    }
+  }
+
+  override def clear(id: String): Future[Boolean] =
+    collection.flatMap(_.delete.one(Json.obj("_id" -> id)).map(_.ok))
 
   override def set(userAnswers: UserAnswers): Future[Boolean] = {
 
@@ -71,8 +88,8 @@ class DefaultSessionRepository @Inject()(
     collection.flatMap {
       _.update(ordered = false)
         .one(selector, modifier, upsert = true).map {
-          lastError =>
-            lastError.ok
+        lastError =>
+          lastError.ok
       }
     }
   }
@@ -85,4 +102,6 @@ trait SessionRepository {
   def get(id: String): Future[Option[UserAnswers]]
 
   def set(userAnswers: UserAnswers): Future[Boolean]
+
+  def clear(id: String): Future[Boolean]
 }

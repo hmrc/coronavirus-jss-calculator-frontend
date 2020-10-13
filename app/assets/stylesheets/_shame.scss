@@ -1,0 +1,52 @@
+// To be removed when fixes progress to library code
+
+// temp fix to ensure HMRC status tags sit left-aligned on small screens
+.hmrc-status-tag {
+    float: none;
+}
+@media (min-width: 28.125em){
+    .hmrc-status-tag {
+        float: right;
+    }
+}
+
+// adds focus state to sign out link
+.hmrc-header.hmrc-header--with-additional-navigation .hmrc-sign-out-nav__link:focus {
+  color: #0B0C0C;
+}
+
+// govuk-summary-list--singleitem
+// allows styles to be used without dl for when only a single item is presented
+@media (max-width: 40.06em){
+  .govuk-summary-list--singleitem .govuk-summary-list__key,
+  .govuk-summary-list--singleitem .govuk-summary-list__value,
+  .govuk-summary-list--singleitem .govuk-summary-list__actions {
+    display: block;
+  }
+}
+
+// govuk-summary-list--wide
+// gives more space to the key for longer questions
+@media (min-width: 40.0625em){
+  .govuk-summary-list--wide .govuk-summary-list__key {
+    width: 40%;
+  }
+  .govuk-summary-list--wide .govuk-summary-list__value {
+    width: 40%;
+  }
+  .govuk-summary-list__key--novalue {
+    width: 80%;
+  }
+}
+
+// hide when no js available
+.hmrc-js-only,
+.govuk-back-link {
+  display: none;
+}
+.js-enabled .govuk-back-link {
+  display: inline-block;
+}
+.js-enabled .hmrc-js-only {
+  display: block;
+}

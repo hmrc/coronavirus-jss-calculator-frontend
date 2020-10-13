@@ -2,29 +2,28 @@
 @import models.{Mode, $className$}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    govukLayout: templates.GovukLayoutWrapper,
+    formHelper: FormWithCSRF,
+    errorSummary: components.errorSummary,
+    button: components.button,
+    checkboxes: components.inputCheckboxes
 )
 
 @(form: Form[Set[$className$]], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"\${errorPrefix(form)} \${messages("$className;format="decap"$.title")}"
-    ) {
+@govukLayout(pageTitle = Some(title(form, "$className;format="decap"$.title"))) {
 
-    @formHelper(action = $className$Controller.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = $className$Controller.onSubmit(mode)) {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_checkboxes(
-            field = form("value"),
+        @checkboxes(
+            form = form,
             legend = messages("$className;format="decap"$.heading"),
-            headingIsLegend = true,
-            inputs = $className$.options
+            legendAsHeading = true,
+            items = $className$.options(form)
         )
 
-        @components.submit_button()
+        @button("site.saveAndContinue")
     }
 }

@@ -1,26 +1,29 @@
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+        govukLayout: templates.GovukLayoutWrapper,
+        formHelper: FormWithCSRF,
+        errorSummary: components.errorSummary,
+        inputNumber: components.inputNumber,
+        h1: components.h1,
+        button: components.button
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"\${errorPrefix(form)} \${messages("$className;format="decap"$.title")}"
-    ) {
+@govukLayout(pageTitle = Some(title(form, "$className;format="decap"$.title"))) {
 
     @formHelper(action = $className$Controller.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_text(
-            field = form("value"),
-            label = messages("$className;format="decap"$.heading"),
-            headingIsLabel = true
+        @inputNumber(
+            form,
+            id = "value",
+            name = "value",
+            label = Text(messages("$className;format="decap"$.heading")),
+            isPageHeading = true,
+            classes = Some("govuk-input--width-10")
         )
 
-        @components.submit_button()
+        @button("site.saveAndContinue")
     }
 }

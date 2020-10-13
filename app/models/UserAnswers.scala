@@ -29,12 +29,12 @@ final case class UserAnswers(
                               lastUpdated: LocalDateTime = LocalDateTime.now
                             ) {
 
-  def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
-    Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
+  def get[A](query: Gettable[A])(implicit rds: Reads[A]): Option[A] =
+    Reads.optionNoError(Reads.at(query.path)).reads(data).getOrElse(None)
 
-  def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
+  def set[A](query: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
-    val updatedData = data.setObject(page.path, Json.toJson(value)) match {
+    val updatedData = data.setObject(query.path, Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
       case JsError(errors) =>
@@ -44,13 +44,13 @@ final case class UserAnswers(
     updatedData.flatMap {
       d =>
         val updatedAnswers = copy (data = d)
-        page.cleanup(Some(value), updatedAnswers)
+        query.cleanup(Some(value), updatedAnswers)
     }
   }
 
-  def remove[A](page: Settable[A]): Try[UserAnswers] = {
+  def remove[A](query: Settable[A]): Try[UserAnswers] = {
 
-    val updatedData = data.removeObject(page.path) match {
+    val updatedData = data.setObject(query.path, JsNull) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
       case JsError(_) =>
@@ -60,7 +60,7 @@ final case class UserAnswers(
     updatedData.flatMap {
       d =>
         val updatedAnswers = copy (data = d)
-        page.cleanup(None, updatedAnswers)
+        query.cleanup(None, updatedAnswers)
     }
   }
 }

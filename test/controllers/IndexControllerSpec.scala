@@ -17,30 +17,30 @@
 package controllers
 
 import base.SpecBase
+import navigation.{FakeNavigator, Navigator}
+import play.api.inject.bind
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.IndexView
 
 class IndexControllerSpec extends SpecBase {
 
   "Index Controller" must {
 
-    "return OK and the correct view for a GET" in {
+    "redirect to the first page" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val navigator = new FakeNavigator(desiredRoute = Call("", ""))
+      val application = applicationBuilder(userAnswers = None).overrides(bind[Navigator].toInstance(navigator)).build()
 
-      val request = FakeRequest(GET, routes.IndexController.onPageLoad().url)
+      running(application) {
 
-      val result = route(application, request).value
+        val request = FakeRequest(GET, routes.IndexController.onPageLoad().url)
 
-      val view = application.injector.instanceOf[IndexView]
+        val result = route(application, request).value
 
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view()(fakeRequest, messages).toString
-
-      application.stop()
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual navigator.firstPage.url
+      }
     }
   }
 }
