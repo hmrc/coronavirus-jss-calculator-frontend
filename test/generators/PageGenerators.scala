@@ -16,7 +16,6 @@
 
 package generators
 
-import models.Index
 import org.scalacheck.Arbitrary
 import pages._
 

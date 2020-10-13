@@ -27,7 +27,7 @@ class IndexController @Inject()(
   navigator: Navigator
 ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = Action { implicit request =>
+  def onPageLoad: Action[AnyContent] = Action { _ =>
     Redirect(routes.ClaimPeriodStartController.onPageLoad())
   }
 }
