@@ -16,12 +16,6 @@
 
 package generators
 
-import java.time.LocalDate
-
-import models._
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Arbitrary.arbitrary
-
 trait ModelGenerators {
   self: Generators =>
 

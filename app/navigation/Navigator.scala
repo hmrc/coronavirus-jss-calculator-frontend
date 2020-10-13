@@ -37,6 +37,7 @@ class Navigator @Inject()() {
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
     case NormalMode =>
       normalRoutes(page)(userAnswers)
+    case m => throw new RuntimeException(s"nextPage not yet implemented in $m")
   }
 
 }
