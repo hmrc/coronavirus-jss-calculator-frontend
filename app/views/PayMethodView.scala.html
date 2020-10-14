@@ -20,6 +20,8 @@
 @this(
         govukLayout: templates.GovukLayoutWrapper,
         formHelper: FormWithCSRF,
+        h1: components.h1,
+        p: components.p,
         errorSummary: components.errorSummary,
         inputRadio: components.inputRadio,
         button: components.button
@@ -33,9 +35,15 @@
 
         @errorSummary(form.errors)
 
+        @h1("payMethod.heading")
+
+        @p(Html(Messages("payMethod.p1")))
+
         @inputRadio(
             form = form,
             legend = messages("payMethod.heading"),
+            legendAsHeading = false,
+            classes = "govuk-visually-hidden",
             items = PayMethod.options(form)
         )
 

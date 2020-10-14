@@ -30,9 +30,16 @@ class NavigatorSpec extends SpecBase {
     "in Normal mode" must {
 
       "go to Index from a page that doesn't exist in the route map" in {
-
         case object UnknownPage extends Page
         navigator.nextPage(UnknownPage, NormalMode, emptyUserAnswers) mustBe routes.StartPageController.onPageLoad()
+      }
+
+      "go to PayFrequencyPage after ClaimPeriod" in {
+        navigator.nextPage(ClaimPeriodPage, NormalMode, emptyUserAnswers) mustBe routes.PayFrequencyController.onPageLoad()
+      }
+
+      "go to PayMethodPage after PayFrequency" in {
+        navigator.nextPage(PayFrequencyPage, NormalMode, emptyUserAnswers) mustBe routes.PayMethodController.onPageLoad()
       }
     }
   }
