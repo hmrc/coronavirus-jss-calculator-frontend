@@ -61,4 +61,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
   lazy val whitelistDestination: String = configuration.get[String]("filters.whitelist.destination")
   lazy val whitelistExcluded: String = configuration.get[String]("filters.whitelist.excluded")
   lazy val whitelistIps: String = configuration.get[String]("filters.whitelist.ips")
+
+  lazy val schemeEnds: String = configuration.get[String]("schemeEnds")
 }

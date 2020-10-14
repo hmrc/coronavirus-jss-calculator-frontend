@@ -16,6 +16,7 @@
 
 package generators
 
+import models.ClaimPeriodStart
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
@@ -28,8 +29,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
     Arbitrary {
       for {
         page  <- arbitrary[ClaimPeriodStartPage.type]
-        value <- arbitrary[Int].map(Json.toJson(_))
+        value <- arbitrary[ClaimPeriodStart].map(Json.toJson(_))
       } yield (page, value)
     }
-
 }

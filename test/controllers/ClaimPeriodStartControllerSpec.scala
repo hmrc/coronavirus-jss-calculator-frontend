@@ -16,19 +16,16 @@
 
 package controllers
 
-import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import forms.ClaimPeriodStartFormProvider
-import models.UserAnswers
+import models.{ClaimPeriodStart, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.ClaimPeriodStartPage
 import play.api.inject.bind
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
-import play.api.test.FakeRequest
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.ClaimPeriodStartView
@@ -37,27 +34,12 @@ import scala.concurrent.Future
 
 class ClaimPeriodStartControllerSpec extends SpecBase with MockitoSugar {
 
-  private val formProvider = new ClaimPeriodStartFormProvider()
-  private def form = formProvider()
-
   private def onwardRoute = Call("GET", "/foo")
-
-  private val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
   private lazy val claimPeriodStartRoute = routes.ClaimPeriodStartController.onPageLoad().url
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
-
-  private lazy val getRequest: FakeRequest[AnyContentAsEmpty.type] =
-    fakeRequest(GET, claimPeriodStartRoute)
-
-  private lazy val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-    fakeRequest(POST, claimPeriodStartRoute)
-      .withFormUrlEncodedBody(
-        "startDate.day"   -> validAnswer.getDayOfMonth.toString,
-        "startDate.month" -> validAnswer.getMonthValue.toString,
-        "startDate.year"  -> validAnswer.getYear.toString
-      )
+  private val formProvider = new ClaimPeriodStartFormProvider()
+  private val form = formProvider()
 
   "ClaimPeriodStart Controller" must {
 
@@ -67,33 +49,37 @@ class ClaimPeriodStartControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
 
-        val result = route(application, getRequest).value
+        val request = fakeRequest(GET, claimPeriodStartRoute)
+
+        val result = route(application, request).value
 
         val view = application.injector.instanceOf[ClaimPeriodStartView]
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form)(getRequest, messages(application)).toString
+          view(form)(request, messages(application), appConfig(application)).toString
       }
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(ClaimPeriodStartPage, validAnswer).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(ClaimPeriodStartPage, ClaimPeriodStart.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
 
+        val request = fakeRequest(GET, claimPeriodStartRoute)
+
         val view = application.injector.instanceOf[ClaimPeriodStartView]
 
-        val result = route(application, getRequest).value
+        val result = route(application, request).value
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(validAnswer))(getRequest, messages(application)).toString
+          view(form.fill(ClaimPeriodStart.values.head))(request, messages(application), appConfig(application)).toString
       }
     }
 
@@ -101,7 +87,7 @@ class ClaimPeriodStartControllerSpec extends SpecBase with MockitoSugar {
 
       val mockSessionRepository = mock[SessionRepository]
 
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -113,7 +99,11 @@ class ClaimPeriodStartControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
 
-        val result = route(application, postRequest).value
+        val request =
+          fakeRequest(POST, claimPeriodStartRoute)
+            .withFormUrlEncodedBody(("value", ClaimPeriodStart.values.head.toString))
+
+        val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
@@ -140,7 +130,7 @@ class ClaimPeriodStartControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm)(request, messages(application)).toString
+          view(boundForm)(request, messages(application), appConfig(application)).toString
       }
     }
   }

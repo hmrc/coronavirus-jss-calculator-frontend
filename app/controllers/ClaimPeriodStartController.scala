@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.ClaimPeriodStartFormProvider
 import javax.inject.Inject
@@ -36,11 +37,10 @@ class ClaimPeriodStartController @Inject()(
   navigator: Navigator,
   getSession: GetSessionAction,
   getData: DataRetrievalAction,
-  requireData: DataRequiredAction,
   formProvider: ClaimPeriodStartFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: ClaimPeriodStartView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
     extends FrontendBaseController with I18nSupport {
 
   private def form = formProvider()

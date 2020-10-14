@@ -6,21 +6,20 @@ echo "Applying migration ClaimPeriodStart"
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /claimPeriodStart                  controllers.ClaimPeriodStartController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
-echo "POST       /claimPeriodStart                  controllers.ClaimPeriodStartController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "GET        /claimPeriodStart                        controllers.ClaimPeriodStartController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "POST       /claimPeriodStart                        controllers.ClaimPeriodStartController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
 
-echo "GET        /changeClaimPeriodStart                        controllers.ClaimPeriodStartController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
-echo "POST       /changeClaimPeriodStart                        controllers.ClaimPeriodStartController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "GET        /changeClaimPeriodStart                  controllers.ClaimPeriodStartController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "POST       /changeClaimPeriodStart                  controllers.ClaimPeriodStartController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
-echo "claimPeriodStart.title = ClaimPeriodStart" >> ../conf/messages.en
-echo "claimPeriodStart.heading = ClaimPeriodStart" >> ../conf/messages.en
-echo "claimPeriodStart.checkYourAnswersLabel = ClaimPeriodStart" >> ../conf/messages.en
-echo "claimPeriodStart.error.required.all = Enter the claimPeriodStart" >> ../conf/messages.en
-echo "claimPeriodStart.error.required.two = The claimPeriodStart" must include {0} and {1} >> ../conf/messages.en
-echo "claimPeriodStart.error.required = The claimPeriodStart must include {0}" >> ../conf/messages.en
-echo "claimPeriodStart.error.invalid = Enter a real ClaimPeriodStart" >> ../conf/messages.en
+echo "claimPeriodStart.title = What's your" >> ../conf/messages.en
+echo "claimPeriodStart.heading = What's your" >> ../conf/messages.en
+echo "claimPeriodStart.xxxxx = yyyy" >> ../conf/messages.en
+echo "claimPeriodStart.aaaaa = bbbbbb" >> ../conf/messages.en
+echo "claimPeriodStart.checkYourAnswersLabel = What's your" >> ../conf/messages.en
+echo "claimPeriodStart.error.required = Select claimPeriodStart" >> ../conf/messages.en
 
 echo "Adding to UserAnswersEntryGenerators"
 awk '/  self: Generators =>/ {\
@@ -30,7 +29,7 @@ awk '/  self: Generators =>/ {\
     print "    Arbitrary {";\
     print "      for {";\
     print "        page  <- arbitrary[ClaimPeriodStartPage.type]";\
-    print "        value <- arbitrary[Int].map(Json.toJson(_))";\
+    print "        value <- arbitrary[ClaimPeriodStart].map(Json.toJson(_))";\
     print "      } yield (page, value)";\
     print "    }";\
     next }1' ../test/generators/UserAnswersEntryGenerators.scala > tmp && mv tmp ../test/generators/UserAnswersEntryGenerators.scala
@@ -42,6 +41,16 @@ awk '/trait PageGenerators/ {\
     print "  implicit lazy val arbitraryClaimPeriodStartPage: Arbitrary[ClaimPeriodStartPage.type] =";\
     print "    Arbitrary(ClaimPeriodStartPage)";\
     next }1' ../test/generators/PageGenerators.scala > tmp && mv tmp ../test/generators/PageGenerators.scala
+
+echo "Adding to ModelGenerators"
+awk '/  self: Generators =>/ {\
+    print;\
+    print "";\
+    print "  implicit lazy val arbitraryClaimPeriodStart: Arbitrary[ClaimPeriodStart] =";\
+    print "    Arbitrary {";\
+    print "      Gen.oneOf(ClaimPeriodStart.values)";\
+    print "    }";\
+    next }1' ../test/generators/ModelGenerators.scala > tmp && mv tmp ../test/generators/ModelGenerators.scala
 
 echo "Adding to UserAnswersGenerator"
 awk '/val generators/ {\

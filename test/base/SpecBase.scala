@@ -18,6 +18,7 @@ package base
 
 import com.codahale.metrics.MetricRegistry
 import com.kenshoo.play.metrics.Metrics
+import config.FrontendAppConfig
 import controllers.actions._
 import models._
 import org.scalatest.TryValues
@@ -44,6 +45,8 @@ trait SpecBase extends PlaySpec with TryValues with ScalaFutures with Integratio
   val emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest())
+
+  implicit def appConfig(implicit app: Application): FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
   def fakeRequest(method: String = "", path: String = ""): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(method, path).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]

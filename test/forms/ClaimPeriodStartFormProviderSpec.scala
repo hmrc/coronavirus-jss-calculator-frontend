@@ -16,23 +16,30 @@
 
 package forms
 
-import java.time.{LocalDate, ZoneOffset}
+import forms.behaviours.OptionFieldBehaviours
+import models.ClaimPeriodStart
+import play.api.data.FormError
 
-import forms.behaviours.DateBehaviours
-
-class ClaimPeriodStartFormProviderSpec extends DateBehaviours {
+class ClaimPeriodStartFormProviderSpec extends OptionFieldBehaviours {
 
   val form = new ClaimPeriodStartFormProvider()()
 
-  ".startDate" should {
+  ".value" must {
 
-    val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
+    val fieldName = "value"
+    val requiredKey = "claimPeriodStart.error.required"
+
+    behave like optionsField[ClaimPeriodStart](
+      form,
+      fieldName,
+      validValues = ClaimPeriodStart.values,
+      invalidError = FormError(fieldName, "error.invalid")
     )
 
-    behave like dateField(form, "startDate", validData)
-
-    behave like mandatoryDateField(form, "startDate", "claimPeriodStart.error.required.all")
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

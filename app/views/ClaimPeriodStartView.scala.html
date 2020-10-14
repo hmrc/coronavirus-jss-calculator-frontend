@@ -14,23 +14,28 @@
  * limitations under the License.
  *@
 
+@import controllers.routes._
+@import models.{Mode, ClaimPeriodStart}
+@import config.FrontendAppConfig
+
 @this(
-    govukLayout: templates.GovukLayoutWrapper,
-    errorSummary: components.errorSummary,
-    inputDate: components.inputDate,
-    h1: components.h1,
-    p: components.p,
-    formHelper: FormWithCSRF,
-    button: components.button
+        govukLayout: templates.GovukLayoutWrapper,
+        errorSummary: components.errorSummary,
+        h1: components.h1,
+        p: components.p,
+        formHelper: FormWithCSRF,
+        inputRadio: components.inputRadio,
+        details: components.details,
+        button: components.button
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages)
+@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @govukLayout(pageTitle = Some(title(form, "claimPeriodStart.title"))) {
 
     @formHelper(action = ClaimPeriodStartController.onSubmit(), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors, Some("date-value.day"))
+        @errorSummary(form.errors)
 
         @h1("claimPeriodStart.heading")
 
@@ -38,16 +43,33 @@
 
         @p(Html(Messages("claimPeriodStart.p2")))
 
+        @details(
+        summaryText = Messages("claimPeriodStart.details.title")
+        ) {
+            <p>@Messages("claimPeriodStart.details.p1")</p>
+            <p>@Messages("claimPeriodStart.details.p2")</p>
+            <p>@Messages("claimPeriodStart.details.p3")</p>
+
+            <h2 class="govuk-heading-m">@messages("claimPeriodStart.details.heading1")</h2>
+            <p>@Messages("claimPeriodStart.details.p4")</p>
+            <p>@Messages("claimPeriodStart.details.p5")</p>
+
+            <h2 class="govuk-heading-m">@messages("claimPeriodStart.details.heading2")</h2>
+            <p>@Messages("claimPeriodStart.details.p6")</p>
+        }
+
         @p(Html(Messages("claimPeriodStart.label")))
 
-        @inputDate(
+        @p(Html(Messages("claimPeriodStart.hint")))
+
+        @inputRadio(
             form = form,
-            legendContent = messages("claimPeriodStart.heading"),
-            id = "startDate",
-            hintText = Some("claimPeriodStart.hint"),
-            legendAsPageHeading = false,
-            legendClasses = "govuk-visually-hidden"
+            legend = messages("claimPeriodStart.heading"),
+            legendAsHeading = false,
+            classes = "govuk-visually-hidden",
+            items = ClaimPeriodStart.options(form, appConfig.schemeEnds)
         )
+
         @button("site.saveAndContinue")
     }
 }

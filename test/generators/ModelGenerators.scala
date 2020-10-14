@@ -16,7 +16,15 @@
 
 package generators
 
+import models.ClaimPeriodStart
+import org.scalacheck.{Arbitrary, Gen}
+
 trait ModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryClaimPeriodStart: Arbitrary[ClaimPeriodStart] =
+    Arbitrary {
+      Gen.oneOf(ClaimPeriodStart.values)
+    }
 
 }

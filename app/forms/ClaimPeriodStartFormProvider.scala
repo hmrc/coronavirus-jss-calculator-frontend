@@ -16,21 +16,16 @@
 
 package forms
 
-import java.time.LocalDate
+import javax.inject.Inject
 
 import forms.mappings.Mappings
-import javax.inject.Inject
 import play.api.data.Form
+import models.ClaimPeriodStart
 
 class ClaimPeriodStartFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[LocalDate] =
+  def apply(): Form[ClaimPeriodStart] =
     Form(
-      "startDate" -> localDate(
-        invalidKey = "claimPeriodStart.error.invalid",
-        allRequiredKey = "claimPeriodStart.error.required.all",
-        twoRequiredKey = "claimPeriodStart.error.required.two",
-        requiredKey = "claimPeriodStart.error.required"
-      )
+      "value" -> enumerable[ClaimPeriodStart]("claimPeriodStart.error.required")
     )
 }
