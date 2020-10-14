@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import org.scalacheck.Arbitrary
-import pages._
+import java.time.{LocalDate, ZoneOffset}
 
-trait PageGenerators {
+import forms.behaviours.DateBehaviours
 
-  implicit lazy val arbitraryPayDatePage: Arbitrary[PayDatePage.type] =
-    Arbitrary(PayDatePage)
+class PayDateFormProviderSpec extends DateBehaviours {
 
-  implicit lazy val arbitraryPayFrequencyPage: Arbitrary[PayFrequencyPage.type] =
-    Arbitrary(PayFrequencyPage)
+  val form = new PayDateFormProvider()()
 
-  implicit lazy val arbitraryPayMethodPage: Arbitrary[PayMethodPage.type] =
-    Arbitrary(PayMethodPage)
+  ".value" should {
 
-  implicit lazy val arbitraryClaimPeriodPage: Arbitrary[ClaimPeriodPage.type] =
-    Arbitrary(ClaimPeriodPage)
+    val validData = datesBetween(
+      min = LocalDate.of(2000, 1, 1),
+      max = LocalDate.now(ZoneOffset.UTC)
+    )
+
+    behave like dateField(form, "value", validData)
+
+    behave like mandatoryDateField(form, "value", "payDate.error.required.all")
+  }
 }

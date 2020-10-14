@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages._
+import java.time.LocalDate
 
-trait PageGenerators {
+import play.api.libs.json.JsPath
 
-  implicit lazy val arbitraryPayDatePage: Arbitrary[PayDatePage.type] =
-    Arbitrary(PayDatePage)
+case object PayDatePage extends QuestionPage[LocalDate] {
 
-  implicit lazy val arbitraryPayFrequencyPage: Arbitrary[PayFrequencyPage.type] =
-    Arbitrary(PayFrequencyPage)
+  override def path: JsPath = JsPath \ toString
 
-  implicit lazy val arbitraryPayMethodPage: Arbitrary[PayMethodPage.type] =
-    Arbitrary(PayMethodPage)
-
-  implicit lazy val arbitraryClaimPeriodPage: Arbitrary[ClaimPeriodPage.type] =
-    Arbitrary(ClaimPeriodPage)
+  override def toString: String = "payDate"
 }

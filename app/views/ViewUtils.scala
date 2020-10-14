@@ -46,4 +46,13 @@ object ViewUtils {
   def displayNumber(number: Long): String = numberFormatter.format(number)
 
   implicit val localDateOrdering: Ordering[LocalDate] = Ordering.by(_.toEpochDay)
+
+  def dateToString(date: LocalDate)(implicit messages: Messages): String =
+    s"${date.getDayOfMonth} ${messages(s"month.${date.getMonthValue}")} ${date.getYear}"
+
+  def dateToStringWithoutYear(date: LocalDate)(implicit messages: Messages): String =
+    s"${date.getDayOfMonth} ${messages(s"month.${date.getMonthValue}")}"
+
+  def dateToStringOnlyMonth(date: LocalDate)(implicit messages: Messages): String =
+    messages(s"month.${date.getMonthValue}")
 }

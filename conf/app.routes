@@ -20,3 +20,6 @@ POST       /pay-frequency                        controllers.PayFrequencyControl
 
 GET        /pay-method                        controllers.PayMethodController.onPageLoad()
 POST       /pay-method                        controllers.PayMethodController.onSubmit()
+
+GET        /pay-date                  controllers.PayDateController.onPageLoad()
+POST       /pay-date                  controllers.PayDateController.onSubmit()

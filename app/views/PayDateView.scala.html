@@ -1,0 +1,60 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import java.time.LocalDate
+
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    errorSummary: components.errorSummary,
+    inputDate: components.inputDate,
+    formHelper: FormWithCSRF,
+    h1: components.h1,
+    p: components.p,
+    details: components.details,
+    button: components.button
+)
+
+@(form: Form[_], firstDayOfClaim: LocalDate)(implicit request: Request[_], messages: Messages)
+
+@govukLayout(pageTitle = Some(title(form, "payDate.title"))) {
+
+    @formHelper(action = PayDateController.onSubmit(), 'autoComplete -> "off") {
+
+        @errorSummary(form.errors, Some("date-value.day"))
+
+        @h1(Messages("payDate.heading", dateToString(firstDayOfClaim)))
+
+        @p(Html(Messages("payDate.p1")))
+        @p(Html(Messages("payDate.p2")))
+
+        @details(
+        summaryText = Messages("payDate.details.title", dateToString(firstDayOfClaim))
+        ) {
+            <p>@Messages("payDate.details.p1")</p>
+        }
+
+        @inputDate(
+            form = form,
+            legendContent = "",
+            id = "value",
+            hintText = Some("payDate.hint"),
+            legendAsPageHeading = false,
+            legendClasses = "govuk-label--m"
+        )
+
+        @button("site.saveAndContinue")
+    }
+}

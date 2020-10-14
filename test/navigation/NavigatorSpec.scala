@@ -41,6 +41,10 @@ class NavigatorSpec extends SpecBase {
       "go to PayMethodPage after PayFrequency" in {
         navigator.nextPage(PayFrequencyPage, NormalMode, emptyUserAnswers) mustBe routes.PayMethodController.onPageLoad()
       }
+
+      "go to PayDatePage after PayMethod" in {
+        navigator.nextPage(PayMethodPage, NormalMode, emptyUserAnswers) mustBe routes.PayDateController.onPageLoad()
+      }
     }
   }
 }
