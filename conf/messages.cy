@@ -170,7 +170,6 @@ claimPeriod.Aug2021 = August 2021
 claimPeriod.Sep2021 = September 2021
 claimPeriod.Oct2021 = October 2021
 claimPeriod.Nov2021 = November 2021
-claimPeriod.Dec2021 = December 2021
 claimPeriod.error.required = Select one value
 claimPeriod.error.invalid = Choose a claim period
 

@@ -45,7 +45,6 @@ object ClaimPeriod extends Enumerable.Implicits {
   case object Sep2021 extends WithName("September 2021") with ClaimPeriod
   case object Oct2021 extends WithName("October 2021") with ClaimPeriod
   case object Nov2021 extends WithName("November 2021") with ClaimPeriod
-  case object Dec2021 extends WithName("December 2021") with ClaimPeriod
 
   val values: Seq[ClaimPeriod] = Seq(
     Nov2020,
@@ -60,8 +59,7 @@ object ClaimPeriod extends Enumerable.Implicits {
     Aug2021,
     Sep2021,
     Oct2021,
-    Nov2021,
-    Dec2021
+    Nov2021
   )
 
   def options(form: Form[_], schemeEnds: String, currentMonthYear: YearMonth = YearMonth.now())(
