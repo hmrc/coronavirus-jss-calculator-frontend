@@ -52,7 +52,7 @@ class PayDateController @Inject()(
       case None        => form
       case Some(value) => form.fill(value)
     }
-    
+
     request.userAnswers.get(ClaimPeriodPage) match {
       case Some(claimPeriod) =>
         val firstDayOfClaim = YearMonth.parse(claimPeriod, ClaimPeriod.pattern).atDay(1)
