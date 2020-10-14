@@ -187,3 +187,9 @@ payFrequency.fortnightly = Every 2 weeks
 payFrequency.fourweekly = Every 4 weeks
 payFrequency.monthly = Monthly
 payFrequency.error.required = Select a payment frequency
+
+payMethod.title = How is this employee paid?
+payMethod.heading = How is this employee paid?
+payMethod.regular = Regular
+payMethod.variable = Variable
+payMethod.error.required = Select a pay method

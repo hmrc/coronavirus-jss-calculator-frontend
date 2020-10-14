@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import org.scalacheck.Arbitrary
-import pages._
+import javax.inject.Inject
 
-trait PageGenerators {
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.PayMethod
 
-  implicit lazy val arbitraryPayFrequencyPage: Arbitrary[PayFrequencyPage.type] =
-    Arbitrary(PayFrequencyPage)
+class PayMethodFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryPayMethodPage: Arbitrary[PayMethodPage.type] =
-    Arbitrary(PayMethodPage)
-
-  implicit lazy val arbitraryClaimPeriodPage: Arbitrary[ClaimPeriodPage.type] =
-    Arbitrary(ClaimPeriodPage)
+  def apply(): Form[PayMethod] =
+    Form(
+      "value" -> enumerable[PayMethod]("payMethod.error.required")
+    )
 }

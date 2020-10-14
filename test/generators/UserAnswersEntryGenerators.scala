@@ -16,7 +16,7 @@
 
 package generators
 
-import models.{ClaimPeriod, PayFrequency}
+import models.{ClaimPeriod, PayFrequency, PayMethod}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
@@ -30,6 +30,14 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       for {
         page  <- arbitrary[PayFrequencyPage.type]
         value <- arbitrary[PayFrequency].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryPayMethodUserAnswersEntry: Arbitrary[(PayMethodPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[PayMethodPage.type]
+        value <- arbitrary[PayMethod].map(Json.toJson(_))
       } yield (page, value)
     }
 

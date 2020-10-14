@@ -29,6 +29,9 @@ class Navigator @Inject()() {
     case ClaimPeriodPage =>
       _ =>
         routes.PayFrequencyController.onPageLoad()
+    case PayFrequencyPage =>
+      _ =>
+        routes.PayMethodController.onPageLoad()
     case _ =>
       _ =>
         routes.StartPageController.onPageLoad()

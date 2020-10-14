@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages._
+import models.PayMethod
+import pages.behaviours.PageBehaviours
 
-trait PageGenerators {
+class PayMethodSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryPayFrequencyPage: Arbitrary[PayFrequencyPage.type] =
-    Arbitrary(PayFrequencyPage)
+  "PayMethodPage" must {
 
-  implicit lazy val arbitraryPayMethodPage: Arbitrary[PayMethodPage.type] =
-    Arbitrary(PayMethodPage)
+    beRetrievable[PayMethod](PayMethodPage)
 
-  implicit lazy val arbitraryClaimPeriodPage: Arbitrary[ClaimPeriodPage.type] =
-    Arbitrary(ClaimPeriodPage)
+    beSettable[PayMethod](PayMethodPage)
+
+    beRemovable[PayMethod](PayMethodPage)
+  }
 }
