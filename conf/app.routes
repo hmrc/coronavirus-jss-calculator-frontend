@@ -17,3 +17,6 @@ GET        /start                         controllers.StartPageController.onPage
 
 GET        /pay-frequency                        controllers.PayFrequencyController.onPageLoad()
 POST       /pay-frequency                        controllers.PayFrequencyController.onSubmit()
+
+GET        /pay-method                        controllers.PayMethodController.onPageLoad()
+POST       /pay-method                        controllers.PayMethodController.onSubmit()
