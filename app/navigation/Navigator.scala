@@ -28,7 +28,7 @@ class Navigator @Inject()() {
   private val normalRoutes: Page => UserAnswers => Call = {
     case ClaimPeriodPage =>
       _ =>
-        routes.StartPageController.onPageLoad()
+        routes.PayFrequencyController.onPageLoad()
     case _ =>
       _ =>
         routes.StartPageController.onPageLoad()

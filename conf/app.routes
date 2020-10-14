@@ -14,3 +14,6 @@ GET        /claim-period                  controllers.ClaimPeriodController.onPa
 POST       /claim-period                  controllers.ClaimPeriodController.onSubmit
 
 GET        /start                         controllers.StartPageController.onPageLoad()
+
+GET        /pay-frequency                        controllers.PayFrequencyController.onPageLoad()
+POST       /pay-frequency                        controllers.PayFrequencyController.onSubmit()
