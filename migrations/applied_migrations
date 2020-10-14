@@ -1,35 +1,35 @@
 #!/bin/bash
 
 echo ""
-echo "Applying migration PayDate"
+echo "Applying migration LastPayDate"
 
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /payDate                  controllers.PayDateController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
-echo "POST       /payDate                  controllers.PayDateController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "GET        /LastPayDate                  controllers.LastPayDateController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "POST       /LastPayDate                  controllers.LastPayDateController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
 
-echo "GET        /changePayDate                        controllers.PayDateController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
-echo "POST       /changePayDate                        controllers.PayDateController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "GET        /changeLastPayDate                        controllers.LastPayDateController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "POST       /changeLastPayDate                        controllers.LastPayDateController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
-echo "payDate.title = PayDate" >> ../conf/messages.en
-echo "payDate.heading = PayDate" >> ../conf/messages.en
-echo "payDate.checkYourAnswersLabel = PayDate" >> ../conf/messages.en
-echo "payDate.error.required.all = Enter the payDate" >> ../conf/messages.en
-echo "payDate.error.required.two = The payDate" must include {0} and {1} >> ../conf/messages.en
-echo "payDate.error.required = The payDate must include {0}" >> ../conf/messages.en
-echo "payDate.error.invalid = Enter a real PayDate" >> ../conf/messages.en
+echo "LastPayDate.title = LastPayDate" >> ../conf/messages.en
+echo "LastPayDate.heading = LastPayDate" >> ../conf/messages.en
+echo "LastPayDate.checkYourAnswersLabel = LastPayDate" >> ../conf/messages.en
+echo "LastPayDate.error.required.all = Enter the LastPayDate" >> ../conf/messages.en
+echo "LastPayDate.error.required.two = The LastPayDate" must include {0} and {1} >> ../conf/messages.en
+echo "LastPayDate.error.required = The LastPayDate must include {0}" >> ../conf/messages.en
+echo "LastPayDate.error.invalid = Enter a real LastPayDate" >> ../conf/messages.en
 
 echo "Adding to UserAnswersEntryGenerators"
 awk '/  self: Generators =>/ {\
     print;\
     print "";\
-    print "  implicit lazy val arbitraryPayDateUserAnswersEntry: Arbitrary[(PayDatePage.type, JsValue)] =";\
+    print "  implicit lazy val arbitraryLastPayDateUserAnswersEntry: Arbitrary[(LastPayDatePage.type, JsValue)] =";\
     print "    Arbitrary {";\
     print "      for {";\
-    print "        page  <- arbitrary[PayDatePage.type]";\
+    print "        page  <- arbitrary[LastPayDatePage.type]";\
     print "        value <- arbitrary[Int].map(Json.toJson(_))";\
     print "      } yield (page, value)";\
     print "    }";\
@@ -39,14 +39,14 @@ echo "Adding to PageGenerators"
 awk '/trait PageGenerators/ {\
     print;\
     print "";\
-    print "  implicit lazy val arbitraryPayDatePage: Arbitrary[PayDatePage.type] =";\
-    print "    Arbitrary(PayDatePage)";\
+    print "  implicit lazy val arbitraryLastPayDatePage: Arbitrary[LastPayDatePage.type] =";\
+    print "    Arbitrary(LastPayDatePage)";\
     next }1' ../test/generators/PageGenerators.scala > tmp && mv tmp ../test/generators/PageGenerators.scala
 
 echo "Adding to UserAnswersGenerator"
 awk '/val generators/ {\
     print;\
-    print "    arbitrary[(PayDatePage.type, JsValue)] ::";\
+    print "    arbitrary[(LastPayDatePage.type, JsValue)] ::";\
     next }1' ../test/generators/UserAnswersGenerator.scala > tmp && mv tmp ../test/generators/UserAnswersGenerator.scala
 
-echo "Migration PayDate completed"
+echo "Migration LastPayDate completed"

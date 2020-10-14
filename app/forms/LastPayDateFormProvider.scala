@@ -16,23 +16,21 @@
 
 package forms
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.LocalDate
 
-import forms.behaviours.DateBehaviours
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-class PayDateFormProviderSpec extends DateBehaviours {
+class LastPayDateFormProvider @Inject() extends Mappings {
 
-  val form = new PayDateFormProvider()()
-
-  ".value" should {
-
-    val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
+  def apply(): Form[LocalDate] =
+    Form(
+      "value" -> localDate(
+        invalidKey = "lastPayDate.error.invalid",
+        allRequiredKey = "lastPayDate.error.required.all",
+        twoRequiredKey = "lastPayDate.error.required.two",
+        requiredKey = "lastPayDate.error.required"
+      )
     )
-
-    behave like dateField(form, "value", validData)
-
-    behave like mandatoryDateField(form, "value", "payDate.error.required.all")
-  }
 }

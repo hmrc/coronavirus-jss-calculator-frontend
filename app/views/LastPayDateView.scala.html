@@ -29,28 +29,28 @@
 
 @(form: Form[_], firstDayOfClaim: LocalDate)(implicit request: Request[_], messages: Messages)
 
-@govukLayout(pageTitle = Some(title(form, "payDate.title"))) {
+@govukLayout(pageTitle = Some(title(form, "LastPayDate.title"))) {
 
-    @formHelper(action = PayDateController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = LastPayDateController.onSubmit(), 'autoComplete -> "off") {
 
         @errorSummary(form.errors, Some("date-value.day"))
 
-        @h1(Messages("payDate.heading", dateToString(firstDayOfClaim)))
+        @h1(Messages("LastPayDate.heading", dateToString(firstDayOfClaim)))
 
-        @p(Html(Messages("payDate.p1")))
-        @p(Html(Messages("payDate.p2")))
+        @p(Html(Messages("LastPayDate.p1")))
+        @p(Html(Messages("LastPayDate.p2")))
 
         @details(
-        summaryText = Messages("payDate.details.title", dateToString(firstDayOfClaim))
+        summaryText = Messages("LastPayDate.details.title", dateToString(firstDayOfClaim))
         ) {
-            <p>@Messages("payDate.details.p1")</p>
+            <p>@Messages("LastPayDate.details.p1")</p>
         }
 
         @inputDate(
             form = form,
             legendContent = "",
             id = "value",
-            hintText = Some("payDate.hint"),
+            hintText = Some("LastPayDate.hint"),
             legendAsPageHeading = false,
             legendClasses = "govuk-label--m"
         )

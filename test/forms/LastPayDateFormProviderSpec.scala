@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import java.time.LocalDate
+import java.time.{LocalDate, ZoneOffset}
 
-import org.scalacheck.Arbitrary
-import pages.behaviours.PageBehaviours
+import forms.behaviours.DateBehaviours
 
-class PayDatePageSpec extends PageBehaviours {
+class LastPayDateFormProviderSpec extends DateBehaviours {
 
-  "PayDatePage" must {
+  val form = new LastPayDateFormProvider()()
 
-    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
-      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
-    }
+  ".value" should {
 
-    beRetrievable[LocalDate](PayDatePage)
+    val validData = datesBetween(
+      min = LocalDate.of(2000, 1, 1),
+      max = LocalDate.now(ZoneOffset.UTC)
+    )
 
-    beSettable[LocalDate](PayDatePage)
+    behave like dateField(form, "value", validData)
 
-    beRemovable[LocalDate](PayDatePage)
+    behave like mandatoryDateField(form, "value", "lastPayDate.error.required.all")
   }
 }

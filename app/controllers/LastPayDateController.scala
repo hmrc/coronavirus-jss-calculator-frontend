@@ -19,36 +19,36 @@ package controllers
 import java.time.YearMonth
 
 import controllers.actions._
-import forms.PayDateFormProvider
+import forms.LastPayDateFormProvider
 import javax.inject.Inject
 import models.{ClaimPeriod, NormalMode}
 import navigation.Navigator
-import pages.{ClaimPeriodPage, PayDatePage}
+import pages.{ClaimPeriodPage, LastPayDatePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.PayDateView
+import views.html.LastPayDateView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PayDateController @Inject()(
+class LastPayDateController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
   getSession: GetSessionAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
-  formProvider: PayDateFormProvider,
+  formProvider: LastPayDateFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: PayDateView
+  view: LastPayDateView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private def form = formProvider()
 
   def onPageLoad(): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(PayDatePage) match {
+    val preparedForm = request.userAnswers.get(LastPayDatePage) match {
       case None        => form
       case Some(value) => form.fill(value)
     }
@@ -76,9 +76,9 @@ class PayDateController @Inject()(
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PayDatePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(LastPayDatePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PayDatePage, NormalMode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(LastPayDatePage, NormalMode, updatedAnswers))
       )
   }
 }
