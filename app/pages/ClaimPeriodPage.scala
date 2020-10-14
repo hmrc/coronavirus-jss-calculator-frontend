@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
 import models.ClaimPeriod
-import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary.arbitrary
-import pages._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsPath
 
-trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
-  self: Generators =>
+case object ClaimPeriodPage extends QuestionPage[ClaimPeriod] {
 
-  implicit lazy val arbitraryclaimPeriodUserAnswersEntry: Arbitrary[(ClaimPeriodPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[ClaimPeriodPage.type]
-        value <- arbitrary[ClaimPeriod].map(Json.toJson(_))
-      } yield (page, value)
-    }
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "claimPeriod"
 }

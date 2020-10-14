@@ -10,5 +10,5 @@ GET         /this-service-has-been-reset                                        
 
 GET         /accessibility-statement                                            controllers.AccessibilityStatementController.onPageLoad
 
-GET        /claim-period-start                  controllers.ClaimPeriodStartController.onPageLoad
-POST       /claim-period-start                  controllers.ClaimPeriodStartController.onSubmit
+GET        /claim-period                  controllers.ClaimPeriodController.onPageLoad
+POST       /claim-period                  controllers.ClaimPeriodController.onSubmit

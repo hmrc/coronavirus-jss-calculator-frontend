@@ -57,8 +57,5 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
     "feedback-frontend.url")
   lazy val exitSurveyUrl = s"$exitSurveyBaseUrl/coronavirus-jss-calculator"
 
-  lazy val whitelistEnabled: Boolean = configuration.get[Boolean]("filters.whitelist.enabled")
-  lazy val whitelistDestination: String = configuration.get[String]("filters.whitelist.destination")
-  lazy val whitelistExcluded: String = configuration.get[String]("filters.whitelist.excluded")
-  lazy val whitelistIps: String = configuration.get[String]("filters.whitelist.ips")
+  lazy val schemeEnds: String = configuration.get[String]("schemeEnds")
 }

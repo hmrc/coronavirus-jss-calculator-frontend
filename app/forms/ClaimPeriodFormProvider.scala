@@ -16,23 +16,16 @@
 
 package forms
 
-import java.time.{LocalDate, ZoneOffset}
+import javax.inject.Inject
 
-import forms.behaviours.DateBehaviours
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.ClaimPeriod
 
-class ClaimPeriodStartFormProviderSpec extends DateBehaviours {
+class ClaimPeriodFormProvider @Inject() extends Mappings {
 
-  val form = new ClaimPeriodStartFormProvider()()
-
-  ".startDate" should {
-
-    val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
+  def apply(): Form[ClaimPeriod] =
+    Form(
+      "value" -> enumerable[ClaimPeriod]("claimPeriod.error.required")
     )
-
-    behave like dateField(form, "startDate", validData)
-
-    behave like mandatoryDateField(form, "startDate", "claimPeriodStart.error.required.all")
-  }
 }

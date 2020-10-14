@@ -16,23 +16,17 @@
 
 package pages
 
-import java.time.LocalDate
-
-import org.scalacheck.Arbitrary
+import models.ClaimPeriod
 import pages.behaviours.PageBehaviours
 
-class ClaimPeriodStartPageSpec extends PageBehaviours {
+class ClaimPeriodSpec extends PageBehaviours {
 
-  "ClaimPeriodStartPage" must {
+  "claimPeriodPage" must {
 
-    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
-      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
-    }
+    beRetrievable[ClaimPeriod](ClaimPeriodPage)
 
-    beRetrievable[LocalDate](ClaimPeriodStartPage)
+    beSettable[ClaimPeriod](ClaimPeriodPage)
 
-    beSettable[LocalDate](ClaimPeriodStartPage)
-
-    beRemovable[LocalDate](ClaimPeriodStartPage)
+    beRemovable[ClaimPeriod](ClaimPeriodPage)
   }
 }

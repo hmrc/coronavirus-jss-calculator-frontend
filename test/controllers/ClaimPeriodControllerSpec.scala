@@ -16,50 +16,32 @@
 
 package controllers
 
-import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
-import forms.ClaimPeriodStartFormProvider
-import models.UserAnswers
+import forms.ClaimPeriodFormProvider
+import models.{ClaimPeriod, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ClaimPeriodStartPage
+import pages.ClaimPeriodPage
 import play.api.inject.bind
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
-import play.api.test.FakeRequest
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.ClaimPeriodStartView
+import views.html.ClaimPeriodView
 
 import scala.concurrent.Future
 
-class ClaimPeriodStartControllerSpec extends SpecBase with MockitoSugar {
-
-  private val formProvider = new ClaimPeriodStartFormProvider()
-  private def form = formProvider()
+class ClaimPeriodControllerSpec extends SpecBase with MockitoSugar {
 
   private def onwardRoute = Call("GET", "/foo")
 
-  private val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  private lazy val claimPeriodRoute = routes.ClaimPeriodController.onPageLoad().url
 
-  private lazy val claimPeriodStartRoute = routes.ClaimPeriodStartController.onPageLoad().url
+  private val formProvider = new ClaimPeriodFormProvider()
+  private val form = formProvider()
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
-
-  private lazy val getRequest: FakeRequest[AnyContentAsEmpty.type] =
-    fakeRequest(GET, claimPeriodStartRoute)
-
-  private lazy val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-    fakeRequest(POST, claimPeriodStartRoute)
-      .withFormUrlEncodedBody(
-        "startDate.day"   -> validAnswer.getDayOfMonth.toString,
-        "startDate.month" -> validAnswer.getMonthValue.toString,
-        "startDate.year"  -> validAnswer.getYear.toString
-      )
-
-  "ClaimPeriodStart Controller" must {
+  "claimPeriod Controller" must {
 
     "return OK and the correct view for a GET" in {
 
@@ -67,33 +49,37 @@ class ClaimPeriodStartControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
 
-        val result = route(application, getRequest).value
+        val request = fakeRequest(GET, claimPeriodRoute)
 
-        val view = application.injector.instanceOf[ClaimPeriodStartView]
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[ClaimPeriodView]
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form)(getRequest, messages(application)).toString
+          view(form)(request, messages(application), appConfig(application)).toString
       }
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(ClaimPeriodStartPage, validAnswer).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(ClaimPeriodPage, ClaimPeriod.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
 
-        val view = application.injector.instanceOf[ClaimPeriodStartView]
+        val request = fakeRequest(GET, claimPeriodRoute)
 
-        val result = route(application, getRequest).value
+        val view = application.injector.instanceOf[ClaimPeriodView]
+
+        val result = route(application, request).value
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(validAnswer))(getRequest, messages(application)).toString
+          view(form.fill(ClaimPeriod.values.head))(request, messages(application), appConfig(application)).toString
       }
     }
 
@@ -101,7 +87,7 @@ class ClaimPeriodStartControllerSpec extends SpecBase with MockitoSugar {
 
       val mockSessionRepository = mock[SessionRepository]
 
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -113,7 +99,11 @@ class ClaimPeriodStartControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
 
-        val result = route(application, postRequest).value
+        val request =
+          fakeRequest(POST, claimPeriodRoute)
+            .withFormUrlEncodedBody(("value", ClaimPeriod.values.head.toString))
+
+        val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
@@ -128,19 +118,19 @@ class ClaimPeriodStartControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
 
         val request =
-          fakeRequest(POST, claimPeriodStartRoute)
+          fakeRequest(POST, claimPeriodRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[ClaimPeriodStartView]
+        val view = application.injector.instanceOf[ClaimPeriodView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm)(request, messages(application)).toString
+          view(boundForm)(request, messages(application), appConfig(application)).toString
       }
     }
   }

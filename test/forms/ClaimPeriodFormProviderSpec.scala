@@ -16,21 +16,30 @@
 
 package forms
 
-import java.time.LocalDate
+import forms.behaviours.OptionFieldBehaviours
+import models.ClaimPeriod
+import play.api.data.FormError
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+class ClaimPeriodFormProviderSpec extends OptionFieldBehaviours {
 
-class ClaimPeriodStartFormProvider @Inject() extends Mappings {
+  val form = new ClaimPeriodFormProvider()()
 
-  def apply(): Form[LocalDate] =
-    Form(
-      "startDate" -> localDate(
-        invalidKey = "claimPeriodStart.error.invalid",
-        allRequiredKey = "claimPeriodStart.error.required.all",
-        twoRequiredKey = "claimPeriodStart.error.required.two",
-        requiredKey = "claimPeriodStart.error.required"
-      )
+  ".value" must {
+
+    val fieldName = "value"
+    val requiredKey = "claimPeriod.error.required"
+
+    behave like optionsField[ClaimPeriod](
+      form,
+      fieldName,
+      validValues = ClaimPeriod.values,
+      invalidError = FormError(fieldName, "error.invalid")
     )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }
