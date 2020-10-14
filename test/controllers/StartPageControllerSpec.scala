@@ -17,29 +17,29 @@
 package controllers
 
 import base.SpecBase
-import navigation.{FakeNavigator, Navigator}
-import play.api.inject.bind
-import play.api.mvc.Call
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import views.html.StartPageView
 
-class IndexControllerSpec extends SpecBase {
+class StartPageControllerSpec extends SpecBase {
 
-  "Index Controller" must {
+  "StartPage Controller" must {
 
-    "redirect to the claim start page" in {
+    "return OK and the correct view for a GET" in {
 
-      val navigator = new FakeNavigator(desiredRoute = Call("", ""))
-      val application = applicationBuilder(userAnswers = None).overrides(bind[Navigator].toInstance(navigator)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
 
-        val request = FakeRequest(GET, routes.IndexController.onPageLoad().url)
+        val request = fakeRequest(GET, routes.StartPageController.onPageLoad().url)
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.ClaimPeriodController.onPageLoad().url
+        val view = application.injector.instanceOf[StartPageView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view()(request, messages(application)).toString
       }
     }
   }
