@@ -23,7 +23,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
   private val formProvider = new $className$FormProvider()
   private val form = formProvider()
 
-  private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(NormalMode).url
+  private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad().url
 
   "$className$ Controller" must {
 
@@ -42,7 +42,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, NormalMode)(request, messages(application)).toString
+          view(form)(request, messages(application)).toString
       }
     }
 
@@ -63,7 +63,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill("answer"), NormalMode)(request, messages(application)).toString
+          view(form.fill("answer"))(request, messages(application)).toString
       }
     }
 
@@ -115,7 +115,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, NormalMode)(request, messages(application)).toString
+          view(boundForm)(request, messages(application)).toString
       }
     }
 
