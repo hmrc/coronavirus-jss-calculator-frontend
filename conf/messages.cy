@@ -220,3 +220,13 @@ month.9 = September
 month.10 = October
 month.11 = November
 month.12 = December
+
+payPeriods.title = Are these pay periods correct?
+payPeriods.heading = Are these pay periods correct?
+payPeriods.yes = Yes
+payPeriods.no = No - change details
+payPeriods.p1 = We’ve worked them out based on your answers.
+payPeriods.from.to = From {0} to {1}
+payPeriods.p2 = Together they should cover your claim ({0} to {1}). They may be partly outside it.
+payPeriods.p3 = We’ve assumed the pay periods are regular. The calculator cannot be used for irregular pay periods.
+payPeriods.error.required = Select an option from below

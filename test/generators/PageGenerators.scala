@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryPayPeriodsListPage: Arbitrary[PayPeriodsPage.type] =
+    Arbitrary(PayPeriodsPage)
+
   implicit lazy val arbitraryLastPayDatePage: Arbitrary[LastPayDatePage.type] =
     Arbitrary(LastPayDatePage)
 
