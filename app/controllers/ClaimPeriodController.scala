@@ -18,28 +18,28 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import forms.ClaimPeriodStartFormProvider
+import forms.ClaimPeriodFormProvider
 import javax.inject.Inject
 import models.{NormalMode, UserAnswers}
 import navigation.Navigator
-import pages.ClaimPeriodStartPage
+import pages.ClaimPeriodPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.ClaimPeriodStartView
+import views.html.ClaimPeriodView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ClaimPeriodStartController @Inject()(
+class ClaimPeriodController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
   getSession: GetSessionAction,
   getData: DataRetrievalAction,
-  formProvider: ClaimPeriodStartFormProvider,
+  formProvider: ClaimPeriodFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: ClaimPeriodStartView
+  view: ClaimPeriodView
 )(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
     extends FrontendBaseController with I18nSupport {
 
@@ -48,7 +48,7 @@ class ClaimPeriodStartController @Inject()(
   def onPageLoad: Action[AnyContent] = (getSession andThen getData) { implicit request =>
     val userAnswers = request.userAnswers
       .getOrElse(UserAnswers(request.identifier))
-      .get(ClaimPeriodStartPage)
+      .get(ClaimPeriodPage)
 
     val preparedForm = userAnswers match {
       case Some(date) => form.fill(date)
@@ -65,10 +65,9 @@ class ClaimPeriodStartController @Inject()(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(
-                               request.userAnswers.getOrElse(UserAnswers(request.identifier)).set(ClaimPeriodStartPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ClaimPeriodStartPage, NormalMode, updatedAnswers))
+            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.identifier)).set(ClaimPeriodPage, value))
+            _              <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(ClaimPeriodPage, NormalMode, updatedAnswers))
       )
   }
 }

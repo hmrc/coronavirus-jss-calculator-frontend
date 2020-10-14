@@ -15,7 +15,7 @@
  *@
 
 @import controllers.routes._
-@import models.{Mode, ClaimPeriodStart}
+@import models.{Mode, ClaimPeriod}
 @import config.FrontendAppConfig
 
 @this(
@@ -31,43 +31,43 @@
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@govukLayout(pageTitle = Some(title(form, "claimPeriodStart.title"))) {
+@govukLayout(pageTitle = Some(title(form, "claimPeriod.title"))) {
 
-    @formHelper(action = ClaimPeriodStartController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = ClaimPeriodController.onSubmit(), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
-        @h1("claimPeriodStart.heading")
+        @h1("claimPeriod.heading")
 
-        @p(Html(Messages("claimPeriodStart.p1")))
+        @p(Html(Messages("claimPeriod.p1")))
 
-        @p(Html(Messages("claimPeriodStart.p2")))
+        @p(Html(Messages("claimPeriod.p2")))
 
         @details(
-        summaryText = Messages("claimPeriodStart.details.title")
+        summaryText = Messages("claimPeriod.details.title")
         ) {
-            <p>@Messages("claimPeriodStart.details.p1")</p>
-            <p>@Messages("claimPeriodStart.details.p2")</p>
-            <p>@Messages("claimPeriodStart.details.p3")</p>
+            <p>@Messages("claimPeriod.details.p1")</p>
+            <p>@Messages("claimPeriod.details.p2")</p>
+            <p>@Messages("claimPeriod.details.p3")</p>
 
-            <h2 class="govuk-heading-m">@messages("claimPeriodStart.details.heading1")</h2>
-            <p>@Messages("claimPeriodStart.details.p4")</p>
-            <p>@Messages("claimPeriodStart.details.p5")</p>
+            <h2 class="govuk-heading-m">@messages("claimPeriod.details.heading1")</h2>
+            <p>@Messages("claimPeriod.details.p4")</p>
+            <p>@Messages("claimPeriod.details.p5")</p>
 
-            <h2 class="govuk-heading-m">@messages("claimPeriodStart.details.heading2")</h2>
-            <p>@Messages("claimPeriodStart.details.p6")</p>
+            <h2 class="govuk-heading-m">@messages("claimPeriod.details.heading2")</h2>
+            <p>@Messages("claimPeriod.details.p6")</p>
         }
 
-        @p(Html(Messages("claimPeriodStart.label")))
+        @p(Html(Messages("claimPeriod.label")))
 
-        @p(Html(Messages("claimPeriodStart.hint")))
+        @p(Html(Messages("claimPeriod.hint")))
 
         @inputRadio(
             form = form,
-            legend = messages("claimPeriodStart.heading"),
+            legend = messages("claimPeriod.heading"),
             legendAsHeading = false,
             classes = "govuk-visually-hidden",
-            items = ClaimPeriodStart.options(form, appConfig.schemeEnds)
+            items = ClaimPeriod.options(form, appConfig.schemeEnds)
         )
 
         @button("site.saveAndContinue")

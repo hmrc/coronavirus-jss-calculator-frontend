@@ -26,7 +26,7 @@ import play.api.mvc.Call
 class Navigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => Call = {
-    case ClaimPeriodStartPage =>
+    case ClaimPeriodPage =>
       _ =>
         routes.IndexController.onPageLoad()
     case _ =>

@@ -17,22 +17,22 @@
 package forms
 
 import forms.behaviours.OptionFieldBehaviours
-import models.ClaimPeriodStart
+import models.ClaimPeriod
 import play.api.data.FormError
 
-class ClaimPeriodStartFormProviderSpec extends OptionFieldBehaviours {
+class ClaimPeriodFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new ClaimPeriodStartFormProvider()()
+  val form = new ClaimPeriodFormProvider()()
 
   ".value" must {
 
     val fieldName = "value"
-    val requiredKey = "claimPeriodStart.error.required"
+    val requiredKey = "claimPeriod.error.required"
 
-    behave like optionsField[ClaimPeriodStart](
+    behave like optionsField[ClaimPeriod](
       form,
       fieldName,
-      validValues = ClaimPeriodStart.values,
+      validValues = ClaimPeriod.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

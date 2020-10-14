@@ -17,31 +17,31 @@
 package controllers
 
 import base.SpecBase
-import forms.ClaimPeriodStartFormProvider
-import models.{ClaimPeriodStart, UserAnswers}
+import forms.ClaimPeriodFormProvider
+import models.{ClaimPeriod, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ClaimPeriodStartPage
+import pages.ClaimPeriodPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.ClaimPeriodStartView
+import views.html.ClaimPeriodView
 
 import scala.concurrent.Future
 
-class ClaimPeriodStartControllerSpec extends SpecBase with MockitoSugar {
+class ClaimPeriodControllerSpec extends SpecBase with MockitoSugar {
 
   private def onwardRoute = Call("GET", "/foo")
 
-  private lazy val claimPeriodStartRoute = routes.ClaimPeriodStartController.onPageLoad().url
+  private lazy val claimPeriodRoute = routes.ClaimPeriodController.onPageLoad().url
 
-  private val formProvider = new ClaimPeriodStartFormProvider()
+  private val formProvider = new ClaimPeriodFormProvider()
   private val form = formProvider()
 
-  "ClaimPeriodStart Controller" must {
+  "claimPeriod Controller" must {
 
     "return OK and the correct view for a GET" in {
 
@@ -49,11 +49,11 @@ class ClaimPeriodStartControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
 
-        val request = fakeRequest(GET, claimPeriodStartRoute)
+        val request = fakeRequest(GET, claimPeriodRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[ClaimPeriodStartView]
+        val view = application.injector.instanceOf[ClaimPeriodView]
 
         status(result) mustEqual OK
 
@@ -64,22 +64,22 @@ class ClaimPeriodStartControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(ClaimPeriodStartPage, ClaimPeriodStart.values.head).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(ClaimPeriodPage, ClaimPeriod.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
 
-        val request = fakeRequest(GET, claimPeriodStartRoute)
+        val request = fakeRequest(GET, claimPeriodRoute)
 
-        val view = application.injector.instanceOf[ClaimPeriodStartView]
+        val view = application.injector.instanceOf[ClaimPeriodView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(ClaimPeriodStart.values.head))(request, messages(application), appConfig(application)).toString
+          view(form.fill(ClaimPeriod.values.head))(request, messages(application), appConfig(application)).toString
       }
     }
 
@@ -100,8 +100,8 @@ class ClaimPeriodStartControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
 
         val request =
-          fakeRequest(POST, claimPeriodStartRoute)
-            .withFormUrlEncodedBody(("value", ClaimPeriodStart.values.head.toString))
+          fakeRequest(POST, claimPeriodRoute)
+            .withFormUrlEncodedBody(("value", ClaimPeriod.values.head.toString))
 
         val result = route(application, request).value
 
@@ -118,12 +118,12 @@ class ClaimPeriodStartControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
 
         val request =
-          fakeRequest(POST, claimPeriodStartRoute)
+          fakeRequest(POST, claimPeriodRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[ClaimPeriodStartView]
+        val view = application.injector.instanceOf[ClaimPeriodView]
 
         val result = route(application, request).value
 

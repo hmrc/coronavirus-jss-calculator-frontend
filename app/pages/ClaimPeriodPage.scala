@@ -16,12 +16,12 @@
 
 package pages
 
-import models.ClaimPeriodStart
+import models.ClaimPeriod
 import play.api.libs.json.JsPath
 
-case object ClaimPeriodStartPage extends QuestionPage[ClaimPeriodStart] {
+case object ClaimPeriodPage extends QuestionPage[ClaimPeriod] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "claimPeriodStart"
+  override def toString: String = "claimPeriod"
 }

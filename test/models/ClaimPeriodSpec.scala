@@ -19,7 +19,7 @@ package models
 import java.time.YearMonth
 
 import base.SpecBase
-import forms.ClaimPeriodStartFormProvider
+import forms.ClaimPeriodFormProvider
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.{MustMatchers, OptionValues}
@@ -27,63 +27,63 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
-class ClaimPeriodStartSpec extends SpecBase with MustMatchers with ScalaCheckPropertyChecks with OptionValues {
+class ClaimPeriodSpec extends SpecBase with MustMatchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "ClaimPeriodStart" must {
+  "claimPeriod" must {
 
     "deserialise valid values" in {
 
-      val gen = Gen.oneOf(ClaimPeriodStart.values)
+      val gen = Gen.oneOf(ClaimPeriod.values)
 
-      forAll(gen) { claimPeriodStart =>
-        JsString(claimPeriodStart.toString).validate[ClaimPeriodStart].asOpt.value mustEqual claimPeriodStart
+      forAll(gen) { claimPeriod =>
+        JsString(claimPeriod.toString).validate[ClaimPeriod].asOpt.value mustEqual claimPeriod
       }
     }
 
     "fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!ClaimPeriodStart.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!ClaimPeriod.values.map(_.toString).contains(_))
 
       forAll(gen) { invalidValue =>
-        JsString(invalidValue).validate[ClaimPeriodStart] mustEqual JsError("error.invalid")
+        JsString(invalidValue).validate[ClaimPeriod] mustEqual JsError("error.invalid")
       }
     }
 
     "serialise" in {
 
-      val gen = Gen.oneOf(ClaimPeriodStart.values)
+      val gen = Gen.oneOf(ClaimPeriod.values)
 
-      forAll(gen) { claimPeriodStart =>
-        Json.toJson(claimPeriodStart) mustEqual JsString(claimPeriodStart.toString)
+      forAll(gen) { claimPeriod =>
+        Json.toJson(claimPeriod) mustEqual JsString(claimPeriod.toString)
       }
     }
 
     "show only November 2020 in the UI when form is displayed in October 2020" in {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val form = new ClaimPeriodStartFormProvider()()
+      val form = new ClaimPeriodFormProvider()()
       val schemeEnds = "April 2021"
-      val octoberMonthYear = YearMonth.parse("October 2020", ClaimPeriodStart.pattern)
-      val result = ClaimPeriodStart.options(form, schemeEnds, octoberMonthYear)(messages(application))
+      val octoberMonthYear = YearMonth.parse("October 2020", ClaimPeriod.pattern)
+      val result = ClaimPeriod.options(form, schemeEnds, octoberMonthYear)(messages(application))
       result.size mustEqual 1
       result.head.content mustEqual Text("November 2020")
 
     }
     "show only November 2020 in the UI when form is displayed in November 2020" in {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val form = new ClaimPeriodStartFormProvider()()
+      val form = new ClaimPeriodFormProvider()()
       val schemeEnds = "April 2021"
-      val novemberMonthYear = YearMonth.parse("November 2020", ClaimPeriodStart.pattern)
-      val result = ClaimPeriodStart.options(form, schemeEnds, novemberMonthYear)(messages(application))
+      val novemberMonthYear = YearMonth.parse("November 2020", ClaimPeriod.pattern)
+      val result = ClaimPeriod.options(form, schemeEnds, novemberMonthYear)(messages(application))
       result.size mustEqual 1
       result.head.content mustEqual Text("November 2020")
     }
 
     "show form with expected radio buttons anytime page is displayed in 2020" in {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val form = new ClaimPeriodStartFormProvider()()
+      val form = new ClaimPeriodFormProvider()()
       val schemeEnds = "April 2021"
-      val decemberMonthYear = YearMonth.parse("December 2020", ClaimPeriodStart.pattern)
-      val result = ClaimPeriodStart.options(form, schemeEnds, decemberMonthYear)(messages(application))
+      val decemberMonthYear = YearMonth.parse("December 2020", ClaimPeriod.pattern)
+      val result = ClaimPeriod.options(form, schemeEnds, decemberMonthYear)(messages(application))
       result.size mustEqual 2
       result.head.content mustEqual Text("November 2020")
       result(1).content mustEqual Text("December 2020")
@@ -91,10 +91,10 @@ class ClaimPeriodStartSpec extends SpecBase with MustMatchers with ScalaCheckPro
 
     "show form with expected radio buttons anytime page is displayed in 2021" in {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val form = new ClaimPeriodStartFormProvider()()
+      val form = new ClaimPeriodFormProvider()()
       val schemeEnds = "April 2021"
-      val februaryMonthYear = YearMonth.parse("February 2021", ClaimPeriodStart.pattern)
-      val result = ClaimPeriodStart.options(form, schemeEnds, februaryMonthYear)(messages(application))
+      val februaryMonthYear = YearMonth.parse("February 2021", ClaimPeriod.pattern)
+      val result = ClaimPeriod.options(form, schemeEnds, februaryMonthYear)(messages(application))
       result.size mustEqual 4
       result.head.content mustEqual Text("November 2020")
       result(1).content mustEqual Text("December 2020")
@@ -104,10 +104,10 @@ class ClaimPeriodStartSpec extends SpecBase with MustMatchers with ScalaCheckPro
 
     "do not display any radio buttons if the page is displayed after schemeEnds" in {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val form = new ClaimPeriodStartFormProvider()()
+      val form = new ClaimPeriodFormProvider()()
       val schemeEnds = "April 2021"
-      val mayMonthYear = YearMonth.parse("May 2021", ClaimPeriodStart.pattern)
-      val result = ClaimPeriodStart.options(form, schemeEnds, mayMonthYear)(messages(application))
+      val mayMonthYear = YearMonth.parse("May 2021", ClaimPeriod.pattern)
+      val result = ClaimPeriod.options(form, schemeEnds, mayMonthYear)(messages(application))
       result.size mustEqual 0
     }
   }

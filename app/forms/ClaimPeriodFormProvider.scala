@@ -20,12 +20,12 @@ import javax.inject.Inject
 
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.ClaimPeriodStart
+import models.ClaimPeriod
 
-class ClaimPeriodStartFormProvider @Inject() extends Mappings {
+class ClaimPeriodFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[ClaimPeriodStart] =
+  def apply(): Form[ClaimPeriod] =
     Form(
-      "value" -> enumerable[ClaimPeriodStart]("claimPeriodStart.error.required")
+      "value" -> enumerable[ClaimPeriod]("claimPeriod.error.required")
     )
 }

@@ -16,17 +16,17 @@
 
 package pages
 
-import models.ClaimPeriodStart
+import models.ClaimPeriod
 import pages.behaviours.PageBehaviours
 
-class ClaimPeriodStartSpec extends PageBehaviours {
+class ClaimPeriodSpec extends PageBehaviours {
 
-  "ClaimPeriodStartPage" must {
+  "claimPeriodPage" must {
 
-    beRetrievable[ClaimPeriodStart](ClaimPeriodStartPage)
+    beRetrievable[ClaimPeriod](ClaimPeriodPage)
 
-    beSettable[ClaimPeriodStart](ClaimPeriodStartPage)
+    beSettable[ClaimPeriod](ClaimPeriodPage)
 
-    beRemovable[ClaimPeriodStart](ClaimPeriodStartPage)
+    beRemovable[ClaimPeriod](ClaimPeriodPage)
   }
 }
