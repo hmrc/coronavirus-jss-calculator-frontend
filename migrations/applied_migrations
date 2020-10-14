@@ -1,35 +1,36 @@
 #!/bin/bash
 
 echo ""
-echo "Applying migration PayFrequency"
+echo "Applying migration LastPayDate"
 
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /payFrequency                        controllers.PayFrequencyController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
-echo "POST       /payFrequency                        controllers.PayFrequencyController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "GET        /LastPayDate                  controllers.LastPayDateController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "POST       /LastPayDate                  controllers.LastPayDateController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
 
-echo "GET        /changePayFrequency                  controllers.PayFrequencyController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
-echo "POST       /changePayFrequency                  controllers.PayFrequencyController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "GET        /changeLastPayDate                        controllers.LastPayDateController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "POST       /changeLastPayDate                        controllers.LastPayDateController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
-echo "payFrequency.title = How often do you pay this employee?" >> ../conf/messages.en
-echo "payFrequency.heading = How often do you pay this employee?" >> ../conf/messages.en
-echo "payFrequency.weekly = Weekly" >> ../conf/messages.en
-echo "payFrequency.fortnightly = Every 2 weeks" >> ../conf/messages.en
-echo "payFrequency.checkYourAnswersLabel = How often do you pay this employee?" >> ../conf/messages.en
-echo "payFrequency.error.required = Select payFrequency" >> ../conf/messages.en
+echo "LastPayDate.title = LastPayDate" >> ../conf/messages.en
+echo "LastPayDate.heading = LastPayDate" >> ../conf/messages.en
+echo "LastPayDate.checkYourAnswersLabel = LastPayDate" >> ../conf/messages.en
+echo "LastPayDate.error.required.all = Enter the LastPayDate" >> ../conf/messages.en
+echo "LastPayDate.error.required.two = The LastPayDate" must include {0} and {1} >> ../conf/messages.en
+echo "LastPayDate.error.required = The LastPayDate must include {0}" >> ../conf/messages.en
+echo "LastPayDate.error.invalid = Enter a real LastPayDate" >> ../conf/messages.en
 
 echo "Adding to UserAnswersEntryGenerators"
 awk '/  self: Generators =>/ {\
     print;\
     print "";\
-    print "  implicit lazy val arbitraryPayFrequencyUserAnswersEntry: Arbitrary[(PayFrequencyPage.type, JsValue)] =";\
+    print "  implicit lazy val arbitraryLastPayDateUserAnswersEntry: Arbitrary[(LastPayDatePage.type, JsValue)] =";\
     print "    Arbitrary {";\
     print "      for {";\
-    print "        page  <- arbitrary[PayFrequencyPage.type]";\
-    print "        value <- arbitrary[PayFrequency].map(Json.toJson(_))";\
+    print "        page  <- arbitrary[LastPayDatePage.type]";\
+    print "        value <- arbitrary[Int].map(Json.toJson(_))";\
     print "      } yield (page, value)";\
     print "    }";\
     next }1' ../test/generators/UserAnswersEntryGenerators.scala > tmp && mv tmp ../test/generators/UserAnswersEntryGenerators.scala
@@ -38,24 +39,14 @@ echo "Adding to PageGenerators"
 awk '/trait PageGenerators/ {\
     print;\
     print "";\
-    print "  implicit lazy val arbitraryPayFrequencyPage: Arbitrary[PayFrequencyPage.type] =";\
-    print "    Arbitrary(PayFrequencyPage)";\
+    print "  implicit lazy val arbitraryLastPayDatePage: Arbitrary[LastPayDatePage.type] =";\
+    print "    Arbitrary(LastPayDatePage)";\
     next }1' ../test/generators/PageGenerators.scala > tmp && mv tmp ../test/generators/PageGenerators.scala
-
-echo "Adding to ModelGenerators"
-awk '/  self: Generators =>/ {\
-    print;\
-    print "";\
-    print "  implicit lazy val arbitraryPayFrequency: Arbitrary[PayFrequency] =";\
-    print "    Arbitrary {";\
-    print "      Gen.oneOf(PayFrequency.values)";\
-    print "    }";\
-    next }1' ../test/generators/ModelGenerators.scala > tmp && mv tmp ../test/generators/ModelGenerators.scala
 
 echo "Adding to UserAnswersGenerator"
 awk '/val generators/ {\
     print;\
-    print "    arbitrary[(PayFrequencyPage.type, JsValue)] ::";\
+    print "    arbitrary[(LastPayDatePage.type, JsValue)] ::";\
     next }1' ../test/generators/UserAnswersGenerator.scala > tmp && mv tmp ../test/generators/UserAnswersGenerator.scala
 
-echo "Migration PayFrequency completed"
+echo "Migration LastPayDate completed"

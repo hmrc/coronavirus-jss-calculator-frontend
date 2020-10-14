@@ -194,3 +194,29 @@ payMethod.p1 = This is the basic amount. Exclude extra payments such as overtime
 payMethod.regular = A regular amount each time
 payMethod.variable = A variable amount each time
 payMethod.error.required = Select a pay method
+
+
+lastPayDate.title = What’s the last day this employee was paid for before {0}?
+lastPayDate.heading = What’s the last day this employee was paid for before {0}?
+lastPayDate.p1 = This is the end of the last pay period before the claim started.
+lastPayDate.p2 = We’ll use this date to work out all the pay periods that cover your claim.
+lastPayDate.details.title = What is a pay period?
+lastPayDate.details.p1 = A ‘pay period’ is the period of time that the employee is paid for, such as weekly or monthly. When we ask for the end date of a pay period, it’s the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually gets their pay.
+lastPayDate.hint = For example 01 11 2020
+lastPayDate.error.required.all = Enter the LastPayDate
+lastPayDate.error.required.two = The LastPayDate must include {0} and {1}
+lastPayDate.error.required = The LastPayDate must include {0}
+lastPayDate.error.invalid = Enter a real LastPayDate
+
+month.1 = January
+month.2 = February
+month.3 = March
+month.4 = April
+month.5 = May
+month.6 = June
+month.7 = July
+month.8 = August
+month.9 = September
+month.10 = October
+month.11 = November
+month.12 = December

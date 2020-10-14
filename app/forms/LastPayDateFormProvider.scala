@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import org.scalacheck.Arbitrary
-import pages._
+import java.time.LocalDate
 
-trait PageGenerators {
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-  implicit lazy val arbitraryLastPayDatePage: Arbitrary[LastPayDatePage.type] =
-    Arbitrary(LastPayDatePage)
+class LastPayDateFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryPayFrequencyPage: Arbitrary[PayFrequencyPage.type] =
-    Arbitrary(PayFrequencyPage)
-
-  implicit lazy val arbitraryPayMethodPage: Arbitrary[PayMethodPage.type] =
-    Arbitrary(PayMethodPage)
-
-  implicit lazy val arbitraryClaimPeriodPage: Arbitrary[ClaimPeriodPage.type] =
-    Arbitrary(ClaimPeriodPage)
+  def apply(): Form[LocalDate] =
+    Form(
+      "value" -> localDate(
+        invalidKey = "lastPayDate.error.invalid",
+        allRequiredKey = "lastPayDate.error.required.all",
+        twoRequiredKey = "lastPayDate.error.required.two",
+        requiredKey = "lastPayDate.error.required"
+      )
+    )
 }
