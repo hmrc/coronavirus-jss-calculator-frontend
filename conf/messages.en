@@ -23,6 +23,7 @@ site.incomplete = Incomplete
 site.change = Change
 site.confirmAndSend = Confirm and send
 site.acceptAndSend = Accept and send
+site.startNow = Start now
 
 footer.accessibility   = Accessibility statement
 footer.cookies         = Cookies
@@ -169,6 +170,11 @@ claimPeriod.Aug2021 = August 2021
 claimPeriod.Sep2021 = September 2021
 claimPeriod.Oct2021 = October 2021
 claimPeriod.Nov2021 = November 2021
-claimPeriod.Dec2021 = December 2021
 claimPeriod.error.required = Select one value
-claimPeriod.error.invalid = Enter a real claim period start
+claimPeriod.error.invalid = Choose a claim period
+
+startPage.title = Coronavirus Job Support Scheme Calculator
+startPage.heading = Coronavirus Job Support Scheme Calculator
+startPage.p1 = Use this calculator to work out the figures you’ll need when you complete a claim through the scheme. It also gives a detailed breakdown of calculations for each pay period for your records.
+startPage.p2 = The figures are for one employee, for the claim period you specify. Run the calculator again for any other employees you’re claiming for and add up the results.
+startPage.p3 = From 1 July, employees can be brought back to work for some of their normal hours. The calculator can take this into account.

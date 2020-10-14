@@ -26,7 +26,7 @@
 @hmrcHeader(Header(
     homepageUrl ="https://www.gov.uk",
     serviceName = Some(messages("service.name")),
-    serviceUrl = controllers.routes.IndexController.onPageLoad().url,
+    serviceUrl = controllers.routes.StartPageController.onPageLoad().url,
     containerClasses = "govuk-width-container",
     signOutHref = None,
     language = messages.lang.language match {
