@@ -179,3 +179,11 @@ startPage.heading = Coronavirus Job Support Scheme Calculator
 startPage.p1 = Use this calculator to work out the figures you’ll need when you complete a claim through the scheme. It also gives a detailed breakdown of calculations for each pay period for your records.
 startPage.p2 = The figures are for one employee, for the claim period you specify. Run the calculator again for any other employees you’re claiming for and add up the results.
 startPage.p3 = From 1 July, employees can be brought back to work for some of their normal hours. The calculator can take this into account.
+
+payFrequency.title = How often do you pay this employee?
+payFrequency.heading = How often do you pay this employee?
+payFrequency.weekly = Weekly
+payFrequency.fortnightly = Every 2 weeks
+payFrequency.fourweekly = Every 4 weeks
+payFrequency.monthly = Monthly
+payFrequency.error.required = Select a payment frequency
