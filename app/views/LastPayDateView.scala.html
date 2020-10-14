@@ -35,22 +35,22 @@
 
         @errorSummary(form.errors, Some("date-value.day"))
 
-        @h1(Messages("LastPayDate.heading", dateToString(firstDayOfClaim)))
+        @h1(Messages("lastPayDate.heading", dateToString(firstDayOfClaim)))
 
-        @p(Html(Messages("LastPayDate.p1")))
-        @p(Html(Messages("LastPayDate.p2")))
+        @p(Html(Messages("lastPayDate.p1")))
+        @p(Html(Messages("lastPayDate.p2")))
 
         @details(
-        summaryText = Messages("LastPayDate.details.title", dateToString(firstDayOfClaim))
+        summaryText = Messages("lastPayDate.details.title", dateToString(firstDayOfClaim))
         ) {
-            <p>@Messages("LastPayDate.details.p1")</p>
+            <p>@Messages("lastPayDate.details.p1")</p>
         }
 
         @inputDate(
             form = form,
             legendContent = "",
             id = "value",
-            hintText = Some("LastPayDate.hint"),
+            hintText = Some("lastPayDate.hint"),
             legendAsPageHeading = false,
             legendClasses = "govuk-label--m"
         )
