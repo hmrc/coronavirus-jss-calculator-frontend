@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import models.{ClaimPeriod, PayFrequency}
-import org.scalacheck.{Arbitrary, Gen}
+import models.PayFrequency
+import pages.behaviours.PageBehaviours
 
-trait ModelGenerators {
-  self: Generators =>
+class PayFrequencyPageSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryPayFrequency: Arbitrary[PayFrequency] =
-    Arbitrary {
-      Gen.oneOf(PayFrequency.values)
-    }
+  "PayFrequencyPage" must {
 
-  implicit lazy val arbitraryclaimPeriod: Arbitrary[ClaimPeriod] =
-    Arbitrary {
-      Gen.oneOf(ClaimPeriod.values)
-    }
+    beRetrievable[PayFrequency](PayFrequencyPage)
 
+    beSettable[PayFrequency](PayFrequencyPage)
+
+    beRemovable[PayFrequency](PayFrequencyPage)
+  }
 }
