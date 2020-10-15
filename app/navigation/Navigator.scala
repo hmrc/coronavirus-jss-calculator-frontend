@@ -38,6 +38,9 @@ class Navigator @Inject()() {
     case LastPayDatePage =>
       _ =>
         routes.PayPeriodsController.onPageLoad()
+    case PayPeriodsPage =>
+      userAnswers =>
+        payPeriodsRoute(userAnswers)
     case _ =>
       _ =>
         routes.StartPageController.onPageLoad()
@@ -49,4 +52,10 @@ class Navigator @Inject()() {
     case m => throw new RuntimeException(s"nextPage not yet implemented in $m")
   }
 
+  private def payPeriodsRoute(userAnswers: UserAnswers): Call =
+    userAnswers.get(PayPeriodsPage) match {
+      case Some(PayPeriods.Yes) => routes.StartPageController.onPageLoad()
+      case Some(PayPeriods.No)  => routes.LastPayDateController.onPageLoad()
+      case _                    => routes.LastPayDateController.onPageLoad()
+    }
 }

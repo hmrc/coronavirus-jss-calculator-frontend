@@ -49,6 +49,14 @@ class NavigatorSpec extends SpecBase {
       "go to PayPeriodsPage after LastPayDatePage" in {
         navigator.nextPage(LastPayDatePage, NormalMode, emptyUserAnswers) mustBe routes.PayPeriodsController.onPageLoad()
       }
+
+      "go to correct page after PayPeriodsPage" in {
+        var userAnswers = emptyUserAnswers.set(PayPeriodsPage, PayPeriods.Yes).success.value
+        navigator.nextPage(PayPeriodsPage, NormalMode, userAnswers) mustBe routes.StartPageController.onPageLoad()
+
+        userAnswers = emptyUserAnswers.set(PayPeriodsPage, PayPeriods.No).success.value
+        navigator.nextPage(PayPeriodsPage, NormalMode, userAnswers) mustBe routes.LastPayDateController.onPageLoad()
+      }
     }
   }
 }
