@@ -16,6 +16,8 @@
 
 package generators
 
+import java.time.{Instant, LocalDate, ZoneOffset}
+
 import models.{ClaimPeriod, PayFrequency, PayMethod, PayPeriods}
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -41,5 +43,21 @@ trait ModelGenerators {
     Arbitrary {
       Gen.oneOf(ClaimPeriod.values)
     }
+
+  implicit lazy val arbitraryDates: Arbitrary[LocalDate] = Arbitrary(datesGen)
+
+  val datesGen = for {
+    date <- periodDatesBetween(LocalDate.of(2020, 11, 1), LocalDate.of(2021, 6, 30))
+  } yield date
+
+  def periodDatesBetween(min: LocalDate, max: LocalDate): Gen[LocalDate] = {
+
+    def toMillis(date: LocalDate): Long =
+      date.atStartOfDay.atZone(ZoneOffset.UTC).toInstant.toEpochMilli
+
+    Gen.choose(toMillis(min), toMillis(max)).map { millis =>
+      Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC).toLocalDate
+    }
+  }
 
 }

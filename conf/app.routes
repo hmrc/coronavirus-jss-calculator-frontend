@@ -26,3 +26,6 @@ POST        /last-pay-date                      controllers.LastPayDateControlle
 
 GET         /pay-periods                        controllers.PayPeriodsController.onPageLoad()
 POST        /pay-periods                        controllers.PayPeriodsController.onSubmit()
+
+GET         /select-work-periods                controllers.SelectWorkPeriodsController.onPageLoad()
+POST        /select-work-periods                controllers.SelectWorkPeriodsController.onSubmit()

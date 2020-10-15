@@ -28,6 +28,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 sealed trait ClaimPeriod {
   def key: String = getClass.getSimpleName.dropRight(1)
   def yearMonth: YearMonth = YearMonth.parse(toString, pattern)
+  def supportClaimPeriod: SupportClaimPeriod = SupportClaimPeriod(yearMonth.atDay(1), yearMonth.atEndOfMonth())
 }
 
 object ClaimPeriod extends Enumerable.Implicits {

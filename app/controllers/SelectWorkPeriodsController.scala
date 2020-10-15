@@ -16,45 +16,42 @@
 
 package controllers
 
-import java.time.YearMonth
-
 import controllers.actions._
-import forms.PayPeriodsFormProvider
+import forms.SelectWorkPeriodsFormProvider
 import javax.inject.Inject
 import models.{NormalMode, Period, UserAnswers}
 import navigation.Navigator
-import pages.{ClaimPeriodPage, LastPayDatePage, PayFrequencyPage, PayPeriodsPage}
+import pages.{ClaimPeriodPage, LastPayDatePage, PayFrequencyPage, SelectWorkPeriodsPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.PeriodHelper
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.PayPeriodsView
+import views.html.SelectWorkPeriodsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PayPeriodsController @Inject()(
+class SelectWorkPeriodsController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
   getSession: GetSessionAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
-  formProvider: PayPeriodsFormProvider,
+  formProvider: SelectWorkPeriodsFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: PayPeriodsView
+  view: SelectWorkPeriodsView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with PeriodHelper {
 
   private val form = formProvider()
 
   def onPageLoad(): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(PayPeriodsPage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
+    val preparedForm = request.userAnswers.get(SelectWorkPeriodsPage) match {
+      case None       => form
+      case Some(list) => form.fill(list)
     }
-
-    getView(request.userAnswers, (yearMonth, periods) => Ok(view(preparedForm, periods, yearMonth)))
+    getView(request.userAnswers, periods => Ok(view(preparedForm, periods)))
   }
 
   def onSubmit(): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
@@ -62,23 +59,23 @@ class PayPeriodsController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          Future.successful(getView(request.userAnswers, (yearMonth, periods) => BadRequest(view(formWithErrors, periods, yearMonth))))
+          Future.successful(getView(request.userAnswers, periods => BadRequest(view(formWithErrors, periods))))
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PayPeriodsPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(SelectWorkPeriodsPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PayPeriodsPage, NormalMode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(SelectWorkPeriodsPage, NormalMode, updatedAnswers))
       )
   }
 
-  private def getView(userAnswers: UserAnswers, result: (YearMonth, List[Period]) => Result) = {
+  private def getView(userAnswers: UserAnswers, result: (List[Period]) => Result) = {
     val maybeClaimPeriod = userAnswers.get(ClaimPeriodPage)
     val maybePayFrequency = userAnswers.get(PayFrequencyPage)
     val maybeLastPayDay = userAnswers.get(LastPayDatePage)
 
     (maybeClaimPeriod, maybePayFrequency, maybeLastPayDay) match {
-      case (Some(cp), Some(pf), Some(lpd)) => result(cp.yearMonth, getPayPeriods(lpd, pf, cp.supportClaimPeriod))
+      case (Some(cp), Some(pf), Some(lpd)) => result(getPayPeriods(lpd, pf, cp.supportClaimPeriod))
       case (None, _, _)                    => Redirect(routes.ClaimPeriodController.onPageLoad())
       case (_, None, _)                    => Redirect(routes.PayFrequencyController.onPageLoad())
       case (_, _, None)                    => Redirect(routes.LastPayDateController.onPageLoad())

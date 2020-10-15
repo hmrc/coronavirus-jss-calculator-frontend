@@ -29,7 +29,7 @@
 
 @(form: Form[_], firstDayOfClaim: LocalDate)(implicit request: Request[_], messages: Messages)
 
-@govukLayout(pageTitle = Some(title(form, "LastPayDate.title"))) {
+@govukLayout(pageTitle = Some(title(form, "lastPayDate.title"))) {
 
     @formHelper(action = LastPayDateController.onSubmit(), 'autoComplete -> "off") {
 

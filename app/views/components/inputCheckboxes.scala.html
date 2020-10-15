@@ -21,6 +21,7 @@
         legend: String,
         items: Seq[CheckboxItem],
         legendAsHeading: Boolean = true,
+        legendClasses: String = "govuk-fieldset__legend--xl",
         hint: Option[Html] = None
 )(implicit messages: Messages)
 
@@ -30,7 +31,7 @@
             legend = Some(Legend(
                 content = Text(messages(legend)),
                 isPageHeading = legendAsHeading,
-                classes = "govuk-fieldset__legend--xl"
+                classes = legendClasses
             ))
         )),
         hint = hint.map(hintHtml => Hint(

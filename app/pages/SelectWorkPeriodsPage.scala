@@ -18,16 +18,11 @@ package pages
 
 import java.time.LocalDate
 
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.JsPath
 
-class LastPayDatePageSpec extends PageBehaviours {
+case object SelectWorkPeriodsPage extends QuestionPage[List[LocalDate]] {
 
-  "LastPayDatePage" must {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[LocalDate](LastPayDatePage)
-
-    beSettable[LocalDate](LastPayDatePage)
-
-    beRemovable[LocalDate](LastPayDatePage)
-  }
+  override def toString: String = "workPeriods"
 }

@@ -19,7 +19,7 @@ package models
 import java.time.LocalDateTime
 
 import play.api.libs.json._
-import queries.{Gettable, Settable}
+import queries.{Gettable, Query, Settable}
 
 import scala.util.{Failure, Success, Try}
 
@@ -59,6 +59,25 @@ final case class UserAnswers(
     updatedData.flatMap { d =>
       val updatedAnswers = copy(data = d)
       query.cleanup(None, updatedAnswers)
+    }
+  }
+
+  private def path[T <: Query](page: T, idx: Option[Int]): JsPath = idx.fold(page.path)(idx => page.path \ (idx - 1))
+
+  def getList[A](page: Gettable[A])(implicit rds: Reads[A]): Seq[A] =
+    page.path.read[Seq[A]].reads(data).getOrElse(Seq.empty)
+
+  def setList[A](page: Settable[A], value: Seq[A])(implicit writes: Writes[A]): Try[UserAnswers] = {
+    val updatedData = data.setObject(path(page, None), Json.toJson(value)) match {
+      case JsSuccess(jsValue, _) =>
+        Success(jsValue)
+      case JsError(errors) =>
+        Failure(JsResultException(errors))
+    }
+
+    updatedData.flatMap { d =>
+      val updatedAnswers = copy(data = d)
+      page.cleanup(None, updatedAnswers)
     }
   }
 }
