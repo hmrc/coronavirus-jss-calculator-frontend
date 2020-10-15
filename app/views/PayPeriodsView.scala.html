@@ -1,0 +1,64 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.routes._
+@import models.{Mode, PayPeriods}
+@import views.ViewUtils._
+@import java.time.YearMonth
+
+@this(
+        govukLayout: templates.GovukLayoutWrapper,
+        formHelper: FormWithCSRF,
+        h1: components.h1,
+        p: components.p,
+        errorSummary: components.errorSummary,
+        inputRadio: components.inputRadio,
+        button: components.button
+)
+
+@(form: Form[_], periods: List[Period], claimPeriod: YearMonth)(implicit request: Request[_], messages: Messages)
+
+@govukLayout(pageTitle = Some(title(form, "payPeriods.title"))) {
+
+    @formHelper(action = PayPeriodsController.onSubmit(), 'autoComplete -> "off") {
+
+        @errorSummary(form.errors)
+
+        @h1("payPeriods.heading")
+
+        @p(Html(Messages("payPeriods.p1")))
+
+        <ul class="govuk-list govuk-list--bullet">
+            @periods.map { period =>
+                <li>@messages("payPeriods.from.to", dateToStringWithoutYear(period.start), dateToString(period.end))</li>
+            }
+        </ul>
+
+        @p(Html(Messages("payPeriods.p2", dateToString(claimPeriod.atDay(1)), dateToString(claimPeriod.atEndOfMonth()))))
+
+        @p(Html(Messages("payPeriods.p3")))
+
+        @inputRadio(
+            form = form,
+            legend = messages("payPeriods.heading"),
+            legendAsHeading = false,
+            classes = "govuk-visually-hidden",
+            items = PayPeriods.options(form)
+        )
+
+        @button("site.saveAndContinue")
+    }
+}

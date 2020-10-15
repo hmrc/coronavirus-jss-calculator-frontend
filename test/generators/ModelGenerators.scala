@@ -16,11 +16,16 @@
 
 package generators
 
-import models.{ClaimPeriod, PayFrequency, PayMethod}
+import models.{ClaimPeriod, PayFrequency, PayMethod, PayPeriods}
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryPayPeriods: Arbitrary[PayPeriods] =
+    Arbitrary {
+      Gen.oneOf(PayPeriods.values)
+    }
 
   implicit lazy val arbitraryPayFrequency: Arbitrary[PayFrequency] =
     Arbitrary {
@@ -32,7 +37,7 @@ trait ModelGenerators {
       Gen.oneOf(PayMethod.values)
     }
 
-  implicit lazy val arbitraryclaimPeriod: Arbitrary[ClaimPeriod] =
+  implicit lazy val arbitraryClaimPeriod: Arbitrary[ClaimPeriod] =
     Arbitrary {
       Gen.oneOf(ClaimPeriod.values)
     }

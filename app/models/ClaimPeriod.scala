@@ -19,6 +19,7 @@ package models
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
+import models.ClaimPeriod.pattern
 import play.api.data.Form
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
@@ -26,6 +27,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 sealed trait ClaimPeriod {
   def key: String = getClass.getSimpleName.dropRight(1)
+  def yearMonth: YearMonth = YearMonth.parse(toString, pattern)
 }
 
 object ClaimPeriod extends Enumerable.Implicits {
