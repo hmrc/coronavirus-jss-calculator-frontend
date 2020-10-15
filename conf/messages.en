@@ -271,3 +271,8 @@ actualHours.p1 = Actual hours worked in this period
 actualHours.hint = Enter the actual hours that would be worked outside the scheme in decimal format, such as 124.4
 actualHours.error.nonNumeric = Enter your actual hours using numbers
 actualHours.error.required = Enter your actual hours
+
+confirmation.title = confirmation
+confirmation.heading = confirmation
+
+confirmation.confirmation.p1 = What you can claim for this employee

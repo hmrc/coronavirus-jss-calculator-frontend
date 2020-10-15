@@ -64,6 +64,16 @@ class NavigatorSpec extends SpecBase {
         val userAnswers = emptyUserAnswers.set(SelectWorkPeriodsPage, List(LocalDate.now())).success.value
         navigator.nextPage(SelectWorkPeriodsPage, NormalMode, userAnswers) mustBe routes.RegularPayAmountController.onPageLoad()
       }
+
+      "go to UsualAndActualHoursPage after RegularPayAmountPage" in {
+        val userAnswers = emptyUserAnswers.set(SelectWorkPeriodsPage, List(LocalDate.now())).success.value
+        navigator.nextPage(RegularPayAmountPage, NormalMode, userAnswers) mustBe routes.UsualAndActualHoursController.onPageLoad()
+      }
+
+      "go to Confirmation after UsualAndActualHoursPage" in {
+        val userAnswers = emptyUserAnswers.set(UsualAndActualHoursPage, UsualAndActualHours(10.00, 20.00)).success.value
+        navigator.nextPage(UsualAndActualHoursPage, NormalMode, userAnswers) mustBe routes.ConfirmationController.onPageLoad()
+      }
     }
   }
 }

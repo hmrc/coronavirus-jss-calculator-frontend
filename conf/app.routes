@@ -30,8 +30,10 @@ POST        /pay-periods                        controllers.PayPeriodsController
 GET         /select-work-periods                controllers.SelectWorkPeriodsController.onPageLoad()
 POST        /select-work-periods                controllers.SelectWorkPeriodsController.onSubmit()
 
-GET         /regular-pay-amount                   controllers.RegularPayAmountController.onPageLoad()
-POST        /regular-pay-amount                   controllers.RegularPayAmountController.onSubmit()
+GET         /regular-pay-amount                 controllers.RegularPayAmountController.onPageLoad()
+POST        /regular-pay-amount                 controllers.RegularPayAmountController.onSubmit()
 
-GET        /usual-and-actual-hours                  controllers.UsualAndActualHoursController.onPageLoad()
-POST       /usual-and-actual-hours                  controllers.UsualAndActualHoursController.onSubmit()
+GET         /usual-and-actual-hours             controllers.UsualAndActualHoursController.onPageLoad()
+POST        /usual-and-actual-hours             controllers.UsualAndActualHoursController.onSubmit()
+
+GET         /confirmation                       controllers.ConfirmationController.onPageLoad()
