@@ -20,14 +20,14 @@ import java.time.LocalDate
 
 import pages.behaviours.PageBehaviours
 
-class LastPayDatePageSpec extends PageBehaviours {
+class SelectWorkPeriodsPageSpec extends PageBehaviours {
 
-  "LastPayDatePage" must {
+  "SelectWorkPeriodsPage" must {
 
-    beRetrievable[LocalDate](LastPayDatePage)
+    beRetrievable[List[LocalDate]](SelectWorkPeriodsPage)
 
-    beSettable[LocalDate](LastPayDatePage)
+    beSettable[List[LocalDate]](SelectWorkPeriodsPage)
 
-    beRemovable[LocalDate](LastPayDatePage)
+    beRemovable[List[LocalDate]](SelectWorkPeriodsPage)
   }
 }

@@ -16,6 +16,8 @@
 
 package generators
 
+import java.time.LocalDate
+
 import models.{ClaimPeriod, PayFrequency, PayMethod, PayPeriods}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
@@ -64,4 +66,13 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
         value <- arbitrary[ClaimPeriod].map(Json.toJson(_))
       } yield (page, value)
     }
+
+  implicit lazy val arbitrarySelectWorkPeriodsUserAnswersEntry: Arbitrary[(SelectWorkPeriodsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[SelectWorkPeriodsPage.type]
+        value <- arbitrary[List[LocalDate]].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
 }

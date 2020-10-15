@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
 import java.time.LocalDate
 
-import pages.behaviours.PageBehaviours
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
+import play.api.data.Forms.{list, of}
+import play.api.data.format.Formats.localDateFormat
 
-class LastPayDatePageSpec extends PageBehaviours {
+class SelectWorkPeriodsFormProvider @Inject() extends Mappings {
 
-  "LastPayDatePage" must {
-
-    beRetrievable[LocalDate](LastPayDatePage)
-
-    beSettable[LocalDate](LastPayDatePage)
-
-    beRemovable[LocalDate](LastPayDatePage)
-  }
+  def apply(): Form[List[LocalDate]] =
+    Form(
+      "value" -> list(of(localDateFormat)).verifying("selectWorkPeriods.error.required", _.nonEmpty)
+    )
 }

@@ -41,6 +41,9 @@ class Navigator @Inject()() {
     case PayPeriodsPage =>
       userAnswers =>
         payPeriodsRoute(userAnswers)
+    case SelectWorkPeriodsPage =>
+      _ =>
+        routes.StartPageController.onPageLoad()
     case _ =>
       _ =>
         routes.StartPageController.onPageLoad()
@@ -54,7 +57,7 @@ class Navigator @Inject()() {
 
   private def payPeriodsRoute(userAnswers: UserAnswers): Call =
     userAnswers.get(PayPeriodsPage) match {
-      case Some(PayPeriods.Yes) => routes.StartPageController.onPageLoad()
+      case Some(PayPeriods.Yes) => routes.SelectWorkPeriodsController.onPageLoad()
       case Some(PayPeriods.No)  => routes.LastPayDateController.onPageLoad()
       case _                    => routes.LastPayDateController.onPageLoad()
     }

@@ -230,3 +230,9 @@ payPeriods.from.to = From {0} to {1}
 payPeriods.p2 = Together they should cover your claim ({0} to {1}). They may be partly outside it.
 payPeriods.p3 = We’ve assumed the pay periods are regular. The calculator cannot be used for irregular pay periods.
 payPeriods.error.required = Select an option from below
+
+selectWorkPeriods.title = When did this employee work during the claim period?
+selectWorkPeriods.heading = When did this employee work during the claim period?
+selectWorkPeriods.hint = Select all that apply.
+selectWorkPeriods.from.to = {0} to {1}
+selectWorkPeriods.error.required = Select all that apply

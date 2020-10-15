@@ -16,6 +16,8 @@
 
 package navigation
 
+import java.time.LocalDate
+
 import base.SpecBase
 import controllers.routes
 import models._
@@ -52,10 +54,15 @@ class NavigatorSpec extends SpecBase {
 
       "go to correct page after PayPeriodsPage" in {
         var userAnswers = emptyUserAnswers.set(PayPeriodsPage, PayPeriods.Yes).success.value
-        navigator.nextPage(PayPeriodsPage, NormalMode, userAnswers) mustBe routes.StartPageController.onPageLoad()
+        navigator.nextPage(PayPeriodsPage, NormalMode, userAnswers) mustBe routes.SelectWorkPeriodsController.onPageLoad()
 
         userAnswers = emptyUserAnswers.set(PayPeriodsPage, PayPeriods.No).success.value
         navigator.nextPage(PayPeriodsPage, NormalMode, userAnswers) mustBe routes.LastPayDateController.onPageLoad()
+      }
+
+      "go to correct page after SelectWorkPeriodsPage" in {
+        val userAnswers = emptyUserAnswers.set(SelectWorkPeriodsPage, List(LocalDate.now())).success.value
+        navigator.nextPage(SelectWorkPeriodsPage, NormalMode, userAnswers) mustBe routes.StartPageController.onPageLoad()
       }
     }
   }

@@ -35,4 +35,8 @@ trait PageGenerators {
 
   implicit lazy val arbitraryClaimPeriodPage: Arbitrary[ClaimPeriodPage.type] =
     Arbitrary(ClaimPeriodPage)
+
+  implicit lazy val arbitrarySelectWorkPeriodsPage: Arbitrary[SelectWorkPeriodsPage.type] =
+    Arbitrary(SelectWorkPeriodsPage)
+
 }
