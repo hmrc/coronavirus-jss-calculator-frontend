@@ -38,12 +38,14 @@ trait PeriodHelper {
         computePayPeriods(PayFrequency.paymentFrequencyDays(payFrequency), lastPayDay, supportClaimPeriod)
     }
 
-  private def computePayPeriods(freqDays: Int, lastPayDay: LocalDate, jobSupportClaimPeriod: SupportClaimPeriod): List[Period] = {
-    var sp = lastPayDay
+  private def computePayPeriods(freqDays: Int, lastPayDay: LocalDate, supportClaimPeriod: SupportClaimPeriod): List[Period] = {
+    var periodDate = lastPayDay
     val periods: mutable.ListBuffer[Period] = ListBuffer()
-    while (!sp.plusDays(freqDays - 1).isAfter(jobSupportClaimPeriod.endDate)) {
-      periods += Period(sp, sp.plusDays(freqDays - 1))
-      sp = sp.plusDays(freqDays)
+    while (!periodDate.plusDays(freqDays - 1).isAfter(supportClaimPeriod.endDate)) {
+      val periodEndDate = Period(periodDate, periodDate.plusDays(freqDays - 1))
+      if (!periodEndDate.endDate.isBefore(supportClaimPeriod.startDate))
+        periods += periodEndDate
+      periodDate = periodDate.plusDays(freqDays)
     }
     sortedEndDates(periods.toList)
   }
