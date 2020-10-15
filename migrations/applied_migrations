@@ -1,34 +1,36 @@
 #!/bin/bash
 
 echo ""
-echo "Applying migration RegularPayAmount"
+echo "Applying migration UsualAndActualHours"
 
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /regularPayAmount                        controllers.RegularPayAmountController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
-echo "POST       /regularPayAmount                        controllers.RegularPayAmountController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "GET        /usualAndActualHours                  controllers.UsualAndActualHoursController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "POST       /usualAndActualHours                  controllers.UsualAndActualHoursController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
 
-echo "GET        /changeRegularPayAmount                  controllers.RegularPayAmountController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
-echo "POST       /changeRegularPayAmount                  controllers.RegularPayAmountController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "GET        /changeUsualAndActualHours                        controllers.UsualAndActualHoursController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "POST       /changeUsualAndActualHours                        controllers.UsualAndActualHoursController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
-echo "regularPayAmount.title = regularPayAmount" >> ../conf/messages.en
-echo "regularPayAmount.heading = regularPayAmount" >> ../conf/messages.en
-echo "regularPayAmount.checkYourAnswersLabel = regularPayAmount" >> ../conf/messages.en
-echo "regularPayAmount.error.required = Enter regularPayAmount" >> ../conf/messages.en
-echo "regularPayAmount.error.length = RegularPayAmount must be 100 characters or less" >> ../conf/messages.en
+echo "usualAndActualHours.title = UsualAndActualHours" >> ../conf/messages.en
+echo "usualAndActualHours.heading = UsualAndActualHours" >> ../conf/messages.en
+echo "usualAndActualHours.checkYourAnswersLabel = UsualAndActualHours" >> ../conf/messages.en
+echo "usualAndActualHours.error.nonNumeric = Enter your usualAndActualHours using numbers" >> ../conf/messages.en
+echo "usualAndActualHours.error.required = Enter your usualAndActualHours" >> ../conf/messages.en
+echo "usualAndActualHours.error.wholeNumber = Enter your usualAndActualHours using whole numbers" >> ../conf/messages.en
+echo "usualAndActualHours.error.outOfRange = UsualAndActualHours must be between {0} and {1}" >> ../conf/messages.en
 
 echo "Adding to UserAnswersEntryGenerators"
 awk '/  self: Generators =>/ {\
     print;\
     print "";\
-    print "  implicit lazy val arbitraryRegularPayAmountUserAnswersEntry: Arbitrary[(RegularPayAmountPage.type, JsValue)] =";\
+    print "  implicit lazy val arbitraryUsualAndActualHoursUserAnswersEntry: Arbitrary[(UsualAndActualHoursPage.type, JsValue)] =";\
     print "    Arbitrary {";\
     print "      for {";\
-    print "        page  <- arbitrary[RegularPayAmountPage.type]";\
-    print "        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))";\
+    print "        page  <- arbitrary[UsualAndActualHoursPage.type]";\
+    print "        value <- arbitrary[Int].map(Json.toJson(_))";\
     print "      } yield (page, value)";\
     print "    }";\
     next }1' ../test/generators/UserAnswersEntryGenerators.scala > tmp && mv tmp ../test/generators/UserAnswersEntryGenerators.scala
@@ -37,14 +39,14 @@ echo "Adding to PageGenerators"
 awk '/trait PageGenerators/ {\
     print;\
     print "";\
-    print "  implicit lazy val arbitraryRegularPayAmountPage: Arbitrary[RegularPayAmountPage.type] =";\
-    print "    Arbitrary(RegularPayAmountPage)";\
+    print "  implicit lazy val arbitraryUsualAndActualHoursPage: Arbitrary[UsualAndActualHoursPage.type] =";\
+    print "    Arbitrary(UsualAndActualHoursPage)";\
     next }1' ../test/generators/PageGenerators.scala > tmp && mv tmp ../test/generators/PageGenerators.scala
 
 echo "Adding to UserAnswersGenerator"
 awk '/val generators/ {\
     print;\
-    print "    arbitrary[(RegularPayAmountPage.type, JsValue)] ::";\
+    print "    arbitrary[(UsualAndActualHoursPage.type, JsValue)] ::";\
     next }1' ../test/generators/UserAnswersGenerator.scala > tmp && mv tmp ../test/generators/UserAnswersGenerator.scala
 
-echo "Migration RegularPayAmount completed"
+echo "Migration UsualAndActualHours completed"

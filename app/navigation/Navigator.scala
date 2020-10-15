@@ -44,6 +44,10 @@ class Navigator @Inject()() {
     case SelectWorkPeriodsPage =>
       _ =>
         routes.RegularPayAmountController.onPageLoad()
+
+    case RegularPayAmountPage =>
+      _ =>
+        routes.UsualAndActualHoursController.onPageLoad()
     case _ =>
       _ =>
         routes.StartPageController.onPageLoad()

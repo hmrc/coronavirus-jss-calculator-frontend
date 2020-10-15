@@ -260,3 +260,14 @@ whatToInclude.doNotInclude.l1.l2 = discretionary bonuses
 whatToInclude.doNotInclude.l1.l3 = discretionary commission payments
 whatToInclude.doNotInclude.l2 = non-cash payments
 whatToInclude.doNotInclude.l3 = non-monetary benefits like benefits in kind (such as a company car) and salary sacrifice schemes that reduce taxable pay
+
+usualAndActualHours.title = What were the employee’s usual and actual hours from 23 November to 29 November 2020?
+usualAndActualHours.heading = What were the employee’s usual and actual hours from 23 November to 29 November 2020?
+usualHours.p1 = Usual hours worked in this period
+usualHours.hint = Enter the usual hours that would be worked outside the scheme in decimal format, such as 124.4
+usualHours.error.nonNumeric = Enter your usual hours using numbers
+usualHours.error.required = Enter your usual hours
+actualHours.p1 = Actual hours worked in this period
+actualHours.hint = Enter the actual hours that would be worked outside the scheme in decimal format, such as 124.4
+actualHours.error.nonNumeric = Enter your actual hours using numbers
+actualHours.error.required = Enter your actual hours

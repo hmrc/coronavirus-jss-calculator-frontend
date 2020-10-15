@@ -16,33 +16,32 @@
 
 @this(govukInput: GovukInput)
 
+
 @(form: Form[_],
         id: String,
         name: String,
-        label: Content,
+        label: String,
         isPageHeading: Boolean = false,
         isDecimal: Boolean = true,
         hint: Option[String] = None,
         classes: Option[String] = None,
-        labelClasses: Option[String] = None
+        isSmallHeading: Boolean = false
 )(implicit messages: Messages)
 
-@govukInput(Input(
-    id,
-    name,
-    inputType = "text",
-    classes = classes.fold("")(x => x),
-    label = Label(
-        content = label,
-        isPageHeading = isPageHeading,
-        classes = if(isPageHeading) "govuk-label--xl " + labelClasses.getOrElse("") else labelClasses.getOrElse("")
-    ),
-    hint = hint.map(hintKey => Hint(
-        content = HtmlContent(messages(hintKey))
-    )),
-    value = form(name).value,
-    errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
-    inputmode = Some("numeric"),
-    pattern = Some("[0-9]*")
-))
-
+    @govukInput(Input(
+        id,
+        name,
+        inputType = "text",
+        classes = classes.fold("")(x => x),
+        label = Label(
+            content = Text(messages(label)),
+            isPageHeading = isPageHeading,
+            classes = if (isPageHeading) "govuk-label--xl" else if (isSmallHeading) "govuk-label" else "govuk-visually-hidden"
+        ),
+        hint = hint.map(hintKey => Hint(
+            content = HtmlContent(messages(hintKey))
+        )),
+        value = form(name).value,
+        errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
+        attributes = if(isDecimal) Map("inputmode" -> "decimal") else Map("inputmode" -> "numeric", "pattern" -> "[0-9]*")
+    ))
