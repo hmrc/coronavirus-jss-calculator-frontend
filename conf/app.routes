@@ -1,22 +1,28 @@
 # microservice specific routes
 
-GET         /                                                                   controllers.StartPageController.onPageLoad
+GET         /                                   controllers.StartPageController.onPageLoad
 
-GET         /assets/*file                                                       controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                       controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /language/:lang                                                     controllers.LanguageSwitchController.switchToLanguage(lang: Language)
+GET         /language/:lang                     controllers.LanguageSwitchController.switchToLanguage(lang: Language)
 
-GET         /this-service-has-been-reset                                        controllers.SessionExpiredController.onPageLoad
+GET         /this-service-has-been-reset        controllers.SessionExpiredController.onPageLoad
 
-GET         /accessibility-statement                                            controllers.AccessibilityStatementController.onPageLoad
+GET         /accessibility-statement            controllers.AccessibilityStatementController.onPageLoad
 
-GET        /claim-period                  controllers.ClaimPeriodController.onPageLoad
-POST       /claim-period                  controllers.ClaimPeriodController.onSubmit
+GET         /claim-period                       controllers.ClaimPeriodController.onPageLoad
+POST        /claim-period                       controllers.ClaimPeriodController.onSubmit
 
-GET        /start                         controllers.StartPageController.onPageLoad()
+GET         /start                              controllers.StartPageController.onPageLoad()
 
-GET        /pay-frequency                        controllers.PayFrequencyController.onPageLoad()
-POST       /pay-frequency                        controllers.PayFrequencyController.onSubmit()
+GET         /pay-frequency                      controllers.PayFrequencyController.onPageLoad()
+POST        /pay-frequency                      controllers.PayFrequencyController.onSubmit()
 
-GET        /pay-method                        controllers.PayMethodController.onPageLoad()
-POST       /pay-method                        controllers.PayMethodController.onSubmit()
+GET         /pay-method                         controllers.PayMethodController.onPageLoad()
+POST        /pay-method                         controllers.PayMethodController.onSubmit()
+
+GET         /last-pay-date                      controllers.LastPayDateController.onPageLoad()
+POST        /last-pay-date                      controllers.LastPayDateController.onSubmit()
+
+GET         /pay-periods                        controllers.PayPeriodsController.onPageLoad()
+POST        /pay-periods                        controllers.PayPeriodsController.onSubmit()

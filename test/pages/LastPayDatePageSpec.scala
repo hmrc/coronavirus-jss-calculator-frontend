@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package generators
+package pages
+
+import java.time.LocalDate
 
 import org.scalacheck.Arbitrary
-import pages._
+import pages.behaviours.PageBehaviours
 
-trait PageGenerators {
+class LastPayDatePageSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryPayPeriodsPage: Arbitrary[PayPeriodsPage.type] =
-    Arbitrary(PayPeriodsPage)
+  "LastPayDatePage" must {
 
-  implicit lazy val arbitraryLastPayDatePage: Arbitrary[LastPayDatePage.type] =
-    Arbitrary(LastPayDatePage)
+    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
+      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
+    }
 
-  implicit lazy val arbitraryPayFrequencyPage: Arbitrary[PayFrequencyPage.type] =
-    Arbitrary(PayFrequencyPage)
+    beRetrievable[LocalDate](LastPayDatePage)
 
-  implicit lazy val arbitraryPayMethodPage: Arbitrary[PayMethodPage.type] =
-    Arbitrary(PayMethodPage)
+    beSettable[LocalDate](LastPayDatePage)
 
-  implicit lazy val arbitraryClaimPeriodPage: Arbitrary[ClaimPeriodPage.type] =
-    Arbitrary(ClaimPeriodPage)
+    beRemovable[LocalDate](LastPayDatePage)
+  }
 }

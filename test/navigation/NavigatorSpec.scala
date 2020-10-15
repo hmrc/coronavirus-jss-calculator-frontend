@@ -30,9 +30,32 @@ class NavigatorSpec extends SpecBase {
     "in Normal mode" must {
 
       "go to Index from a page that doesn't exist in the route map" in {
-
         case object UnknownPage extends Page
         navigator.nextPage(UnknownPage, NormalMode, emptyUserAnswers) mustBe routes.StartPageController.onPageLoad()
+      }
+
+      "go to PayFrequencyPage after ClaimPeriod" in {
+        navigator.nextPage(ClaimPeriodPage, NormalMode, emptyUserAnswers) mustBe routes.PayFrequencyController.onPageLoad()
+      }
+
+      "go to PayMethodPage after PayFrequency" in {
+        navigator.nextPage(PayFrequencyPage, NormalMode, emptyUserAnswers) mustBe routes.PayMethodController.onPageLoad()
+      }
+
+      "go to LastPayDatePage after PayMethod" in {
+        navigator.nextPage(PayMethodPage, NormalMode, emptyUserAnswers) mustBe routes.LastPayDateController.onPageLoad()
+      }
+
+      "go to PayPeriodsPage after LastPayDatePage" in {
+        navigator.nextPage(LastPayDatePage, NormalMode, emptyUserAnswers) mustBe routes.PayPeriodsController.onPageLoad()
+      }
+
+      "go to correct page after PayPeriodsPage" in {
+        var userAnswers = emptyUserAnswers.set(PayPeriodsPage, PayPeriods.Yes).success.value
+        navigator.nextPage(PayPeriodsPage, NormalMode, userAnswers) mustBe routes.StartPageController.onPageLoad()
+
+        userAnswers = emptyUserAnswers.set(PayPeriodsPage, PayPeriods.No).success.value
+        navigator.nextPage(PayPeriodsPage, NormalMode, userAnswers) mustBe routes.LastPayDateController.onPageLoad()
       }
     }
   }

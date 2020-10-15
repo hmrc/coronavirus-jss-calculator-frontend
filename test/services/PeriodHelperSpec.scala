@@ -29,7 +29,7 @@ class PeriodHelperSpec extends SpecBase {
     "computing weekly pay periods" must {
 
       "calculate the correct pay periods when last pay day is before the claim period start date and the pay periods " +
-        "does not extend past the claim period end date" in new PeriodHelper {
+        "do not extend past the claim period end date" in new PeriodHelper {
         val payPeriods: List[Period] = getPayPeriods(
           LocalDate.of(2020, 10, 27),
           Weekly,
@@ -61,7 +61,7 @@ class PeriodHelperSpec extends SpecBase {
       }
 
       "calculates the correct pay periods when the last pay day is before the claim period start date" +
-        "and the last pay period that extends into Dec is ignored" in new PeriodHelper {
+        "and the last computed pay period which extends into the next claim period month is ignored" in new PeriodHelper {
         val payPeriods: List[Period] = getPayPeriods(
           LocalDate.of(2020, 10, 26),
           Weekly,
@@ -88,32 +88,6 @@ class PeriodHelperSpec extends SpecBase {
           Period(
             LocalDate.of(2020, 11, 23),
             LocalDate.of(2020, 11, 29)
-          )
-        )
-      }
-
-      "calculates the correct pay periods when the last pay day is before the claim period start date and is the last" in new PeriodHelper {
-        val payPeriods: List[Period] = getPayPeriods(
-          LocalDate.of(2020, 10, 30),
-          Weekly,
-          SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
-        )
-        payPeriods mustBe List(
-          Period(
-            LocalDate.of(2020, 10, 30),
-            LocalDate.of(2020, 11, 5)
-          ),
-          Period(
-            LocalDate.of(2020, 11, 6),
-            LocalDate.of(2020, 11, 12)
-          ),
-          Period(
-            LocalDate.of(2020, 11, 13),
-            LocalDate.of(2020, 11, 19)
-          ),
-          Period(
-            LocalDate.of(2020, 11, 20),
-            LocalDate.of(2020, 11, 26)
           )
         )
       }
