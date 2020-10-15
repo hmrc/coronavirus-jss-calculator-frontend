@@ -43,7 +43,7 @@ class Navigator @Inject()() {
         payPeriodsRoute(userAnswers)
     case SelectWorkPeriodsPage =>
       _ =>
-        routes.StartPageController.onPageLoad()
+        routes.RegularPayAmountController.onPageLoad()
     case _ =>
       _ =>
         routes.StartPageController.onPageLoad()

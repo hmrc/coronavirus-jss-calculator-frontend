@@ -16,10 +16,14 @@
 
 package generators
 
+import models.Amount
 import org.scalacheck.Arbitrary
 import pages._
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryRegularPayAmountPage: Arbitrary[RegularPayAmountPage.type] =
+    Arbitrary(RegularPayAmountPage)
 
   implicit lazy val arbitraryPayPeriodsPage: Arbitrary[PayPeriodsPage.type] =
     Arbitrary(PayPeriodsPage)
@@ -38,5 +42,12 @@ trait PageGenerators {
 
   implicit lazy val arbitrarySelectWorkPeriodsPage: Arbitrary[SelectWorkPeriodsPage.type] =
     Arbitrary(SelectWorkPeriodsPage)
+
+  implicit lazy val arbitraryAmount: Arbitrary[Amount] =
+    Arbitrary {
+      for {
+        value <- Arbitrary.arbitrary[BigDecimal]
+      } yield Amount(value)
+    }
 
 }

@@ -62,7 +62,7 @@ class NavigatorSpec extends SpecBase {
 
       "go to correct page after SelectWorkPeriodsPage" in {
         val userAnswers = emptyUserAnswers.set(SelectWorkPeriodsPage, List(LocalDate.now())).success.value
-        navigator.nextPage(SelectWorkPeriodsPage, NormalMode, userAnswers) mustBe routes.StartPageController.onPageLoad()
+        navigator.nextPage(SelectWorkPeriodsPage, NormalMode, userAnswers) mustBe routes.RegularPayAmountController.onPageLoad()
       }
     }
   }
