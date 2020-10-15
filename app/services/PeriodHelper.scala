@@ -40,12 +40,12 @@ trait PeriodHelper {
 
   def computePayPeriods(freqDays: Int, lastPayDay: LocalDate, jobSupportClaimPeriod: SupportClaimPeriod): List[Period] = {
     var sp = lastPayDay
-    val e: mutable.ListBuffer[Period] = ListBuffer()
+    val periods: mutable.ListBuffer[Period] = ListBuffer()
     while (!sp.plusDays(freqDays - 1).isAfter(jobSupportClaimPeriod.endDate)) {
-      e += Period(sp, sp.plusDays(freqDays - 1))
+      periods += Period(sp, sp.plusDays(freqDays - 1))
       sp = sp.plusDays(freqDays)
     }
-    sortedEndDates(e.toList)
+    sortedEndDates(periods.toList)
   }
 
   private def sortedEndDates(in: List[Period]): List[Period] = in.sortWith((x, y) => x.endDate.isBefore(y.endDate))
