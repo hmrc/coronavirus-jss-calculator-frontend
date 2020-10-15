@@ -54,7 +54,7 @@ class PayPeriodsControllerSpec extends SpecBase with MockitoSugar {
       LastPayDatePage.toString  -> JsString(lastPayDate))
   )
 
-  "PayPeriodsList Controller" must {
+  "PayPeriods Controller" must {
 
     "return OK and the correct view for a GET" in {
 

@@ -24,7 +24,7 @@ import play.api.libs.json.{JsError, JsString, Json}
 
 class PayPeriodsSpec extends WordSpec with MustMatchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "PayPeriodsList" must {
+  "PayPeriods" must {
 
     "deserialise valid values" in {
 
