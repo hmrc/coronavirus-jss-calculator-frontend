@@ -43,7 +43,7 @@
 
         <ul class="govuk-list govuk-list--bullet">
             @periods.map { period =>
-                <li>@messages("payPeriods.from.to", dateToStringWithoutYear(period.start), dateToString(period.end))</li>
+                <li>@messages("payPeriods.from.to", dateToStringWithoutYear(period.startDate), dateToString(period.endDate))</li>
             }
         </ul>
 

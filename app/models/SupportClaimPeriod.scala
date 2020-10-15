@@ -17,18 +17,11 @@
 package models
 
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Json, OFormat}
 
-final case class Period(startDate: LocalDate, endDate: LocalDate)
+case class SupportClaimPeriod(startDate: LocalDate, endDate: LocalDate)
 
-object Period {
-  implicit val defaultFormat: Format[Period] = Json.format
-  implicit class Counter(period: Period) {
-    def countDays: Int =
-      (ChronoUnit.DAYS.between(period.startDate, period.endDate) + 1).toInt
-
-    def countHours: Int = countDays * 24
-  }
+object SupportClaimPeriod {
+  implicit val format: OFormat[SupportClaimPeriod] = Json.format[SupportClaimPeriod]
 }
