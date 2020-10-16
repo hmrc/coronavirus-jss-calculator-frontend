@@ -16,8 +16,6 @@
 
 package controllers
 
-import java.time.YearMonth
-
 import controllers.actions._
 import forms.PayPeriodsFormProvider
 import javax.inject.Inject
@@ -54,7 +52,7 @@ class PayPeriodsController @Inject()(
       case Some(value) => form.fill(value)
     }
 
-    getView(request.userAnswers, (yearMonth, periods) => Ok(view(preparedForm, periods, yearMonth)))
+    getView(request.userAnswers, periods => Ok(view(preparedForm, periods)))
   }
 
   def onSubmit(): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
@@ -62,7 +60,7 @@ class PayPeriodsController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          Future.successful(getView(request.userAnswers, (yearMonth, periods) => BadRequest(view(formWithErrors, periods, yearMonth))))
+          Future.successful(getView(request.userAnswers, periods => BadRequest(view(formWithErrors, periods))))
         },
         value =>
           for {
@@ -72,13 +70,13 @@ class PayPeriodsController @Inject()(
       )
   }
 
-  private def getView(userAnswers: UserAnswers, result: (YearMonth, List[Period]) => Result) = {
+  private def getView(userAnswers: UserAnswers, result: (List[Period]) => Result) = {
     val maybeClaimPeriod = userAnswers.get(ClaimPeriodPage)
     val maybePayFrequency = userAnswers.get(PayFrequencyPage)
     val maybeLastPayDay = userAnswers.get(LastPayDatePage)
 
     (maybeClaimPeriod, maybePayFrequency, maybeLastPayDay) match {
-      case (Some(cp), Some(pf), Some(lpd)) => result(cp.yearMonth, getPayPeriods(lpd, pf, cp.supportClaimPeriod))
+      case (Some(cp), Some(pf), Some(lpd)) => result(getPayPeriods(lpd, pf, cp.supportClaimPeriod))
       case (None, _, _)                    => Redirect(routes.ClaimPeriodController.onPageLoad())
       case (_, None, _)                    => Redirect(routes.PayFrequencyController.onPageLoad())
       case (_, _, None)                    => Redirect(routes.LastPayDateController.onPageLoad())
