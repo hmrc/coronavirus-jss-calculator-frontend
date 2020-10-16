@@ -22,6 +22,7 @@
         confirmation: components.confirmation,
         h1: components.h1,
         h2: components.h2,
+        h3: components.h3,
         p: components.p,
         link: components.link,
         button: components.button,
@@ -30,44 +31,48 @@
 
 @(claimPeriod: Period, version: String)(implicit request: Request[_], messages: Messages)
 
-    @govukLayout(pageTitle = Some(titleNoForm("confirmation.title"))) {
+@govukLayout(pageTitle = Some(titleNoForm("confirmation.title"))) {
 
-        @confirmation {
+    @confirmation {
 
-            <div class="furlough-heading">
-                <p class="govuk-!-font-weight-regular govuk-!-font-size-24 govuk-!-margin-bottom-4 govuk-!-margin-top-0">@messages("confirmation.confirmation.p1")</p>
-                <p class="govuk-panel__title">&pound;10000000.00</p>
-            </div>
-        }
-
-        @p {
-            <span class="govuk-!-font-weight-bold">@messages("confirmation.calculated.on")</span>
-            @dateToString(LocalDate.now())
-            @Html(messages("confirmation.date.version", version))
-        }
-
-        @h2(Html(messages("confirmation.breakdown.h2")), classes = Some("govuk-heading-m"))
-
-        @p(Html(messages("confirmation.breakdown.p")))
-
-        @h2(Html(messages("confirmation.nextSteps.heading")), classes = Some("govuk-heading-m"))
-
-        <ul class="govuk-list govuk-list--number">
-            <li>
-                @messages("confirmation.nextSteps.li.1", dateToStringWithoutYear(claimPeriod.startDate), dateToStringWithoutYear(claimPeriod.endDate))
-                <span class="govuk-!-font-weight-bold">@messages("confirmation.nextSteps.li.1.2")</span>
-            </li>
-            <li>@messages("confirmation.nextSteps.li.2")
-                <ul class="govuk-list--list">
-                    <li>@messages("confirmation.nextSteps.li.2.1")</li>
-                    <li>@messages("confirmation.nextSteps.li.2.2")</li>
-                    <li>@messages("confirmation.nextSteps.li.2.3")</li>
-                </ul>
-            </li>
-            <li>@messages("confirmation.nextSteps.li.3.1") AAAAAAAA)</li>
-            <li>@Html(messages("confirmation.nextSteps.li.4.1", "BBBBB"))</li>
-        </ul>
-
-        @button(messages("confirmation.startAgain"), href = Some(routes.ClaimPeriodController.onPageLoad()), classes = Some("govuk-button"))
-
+        <div class="furlough-heading">
+            <p class="govuk-!-font-weight-regular govuk-!-font-size-24 govuk-!-margin-bottom-4 govuk-!-margin-top-0">@messages("confirmation.confirmation.p1")</p>
+            <p class="govuk-panel__title">&pound;1</p>
+        </div>
     }
+
+    <div class="govuk-inset-text">
+
+        @p(Html(Messages("confirmation.p1")))
+        @p(Html(Messages("confirmation.p2")))
+        @p(Html(Messages("confirmation.p3")))
+    </div>
+
+    @p {
+        <span class="govuk-!-font-weight-bold">@messages("confirmation.calculated.on")</span>
+        @dateToString(LocalDate.now())
+        @Html(messages("confirmation.date.version", version))
+    }
+
+    @p(Html(Messages("confirmation.p4")))
+
+    @h2(Html(messages("confirmation.nextSteps.heading")), classes = Some("govuk-heading-m"))
+
+    <ul class="govuk-list govuk-list--number">
+        <li>@messages("confirmation.nextSteps.l1")</li>
+        <li>@messages("confirmation.nextSteps.l2")</li>
+        <li>@messages("confirmation.nextSteps.l3")</li>
+        <li>@messages("confirmation.nextSteps.l4")</li>
+        <li>@messages("confirmation.nextSteps.l5")</li>
+    </ul>
+
+    @button(messages("confirmation.startAgain"), href = Some(routes.ClaimPeriodController.onPageLoad()), classes = Some("govuk-button"))
+
+    @h3("confirmation.breakdown.header")
+
+    @p(Html(Messages("confirmation.breakdown.p1")))
+
+    @p(Html(Messages("confirmation.breakdown.p1")))
+
+    @p(Html(Messages("confirmation.breakdown.p1")))
+}
