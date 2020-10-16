@@ -40,7 +40,7 @@ object PayFrequency extends Enumerable.Implicits {
     Monthly
   )
 
-  val paymentFrequencyDays: Map[PayFrequency, Int] = Map(
+  val payFrequencyDays: Map[PayFrequency, Int] = Map(
     Weekly      -> 7,
     FortNightly -> 14,
     FourWeekly  -> 28
