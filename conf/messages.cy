@@ -273,3 +273,19 @@ actualHours.p1 = Actual hours worked in this period
 actualHours.hint = Enter the actual hours that would be worked outside the scheme in decimal format, such as 124.4
 actualHours.error.nonNumeric = Enter your actual hours using numbers
 actualHours.error.required = Enter your actual hours
+
+confirmation.title = confirmation
+confirmation.heading = confirmation
+
+confirmation.confirmation.p1 = What you can claim for this employee
+
+endPayDate.title = What’s the end of the next pay period after 30 October 2020?
+endPayDate.heading = What’s the end of the next pay period after 30 October 2020?
+endPayDate.p1 = This is the last day in the pay period, not the date they received their pay.
+endPayDate.details.title = What is a pay period?
+endPayDate.details.p1 = A ‘pay period’ is the period of time that the employee is paid for, such as weekly or monthly. When we ask for the end date of a pay period, it’s the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually gets their pay.
+endPayDate.hint = For example 01 12 2020
+endPayDate.error.required.all = Enter the end pay date
+endPayDate.error.required.two = The end pay date must include {0} and {1}
+endPayDate.error.required = The end pay date must include {0}
+endPayDate.error.invalid = Enter a real end pay date

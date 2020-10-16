@@ -1,15 +1,52 @@
 #!/bin/bash
 
 echo ""
-echo "Applying migration Confirmation"
+echo "Applying migration EndPayDate"
 
 echo "Adding routes to conf/app.routes"
+
 echo "" >> ../conf/app.routes
-echo "GET        /confirmation                       controllers.ConfirmationController.onPageLoad()" >> ../conf/app.routes
+echo "GET        /endPayDate                  controllers.EndPayDateController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "POST       /endPayDate                  controllers.EndPayDateController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
+
+echo "GET        /changeEndPayDate                        controllers.EndPayDateController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "POST       /changeEndPayDate                        controllers.EndPayDateController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
-echo "confirmation.title = confirmation" >> ../conf/messages.en
-echo "confirmation.heading = confirmation" >> ../conf/messages.en
+echo "endPayDate.title = EndPayDate" >> ../conf/messages.en
+echo "endPayDate.heading = EndPayDate" >> ../conf/messages.en
+echo "endPayDate.checkYourAnswersLabel = EndPayDate" >> ../conf/messages.en
+echo "endPayDate.error.required.all = Enter the endPayDate" >> ../conf/messages.en
+echo "endPayDate.error.required.two = The endPayDate" must include {0} and {1} >> ../conf/messages.en
+echo "endPayDate.error.required = The endPayDate must include {0}" >> ../conf/messages.en
+echo "endPayDate.error.invalid = Enter a real EndPayDate" >> ../conf/messages.en
 
-echo "Migration Confirmation completed"
+echo "Adding to UserAnswersEntryGenerators"
+awk '/  self: Generators =>/ {\
+    print;\
+    print "";\
+    print "  implicit lazy val arbitraryEndPayDateUserAnswersEntry: Arbitrary[(EndPayDatePage.type, JsValue)] =";\
+    print "    Arbitrary {";\
+    print "      for {";\
+    print "        page  <- arbitrary[EndPayDatePage.type]";\
+    print "        value <- arbitrary[Int].map(Json.toJson(_))";\
+    print "      } yield (page, value)";\
+    print "    }";\
+    next }1' ../test/generators/UserAnswersEntryGenerators.scala > tmp && mv tmp ../test/generators/UserAnswersEntryGenerators.scala
+
+echo "Adding to PageGenerators"
+awk '/trait PageGenerators/ {\
+    print;\
+    print "";\
+    print "  implicit lazy val arbitraryEndPayDatePage: Arbitrary[EndPayDatePage.type] =";\
+    print "    Arbitrary(EndPayDatePage)";\
+    next }1' ../test/generators/PageGenerators.scala > tmp && mv tmp ../test/generators/PageGenerators.scala
+
+echo "Adding to UserAnswersGenerator"
+awk '/val generators/ {\
+    print;\
+    print "    arbitrary[(EndPayDatePage.type, JsValue)] ::";\
+    next }1' ../test/generators/UserAnswersGenerator.scala > tmp && mv tmp ../test/generators/UserAnswersGenerator.scala
+
+echo "Migration EndPayDate completed"

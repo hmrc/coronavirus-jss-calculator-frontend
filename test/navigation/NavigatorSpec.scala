@@ -20,6 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBase
 import controllers.routes
+import models.PayFrequency.{Monthly, Weekly}
 import models._
 import pages._
 
@@ -40,16 +41,21 @@ class NavigatorSpec extends SpecBase {
         navigator.nextPage(ClaimPeriodPage, NormalMode, emptyUserAnswers) mustBe routes.PayFrequencyController.onPageLoad()
       }
 
-      "go to PayMethodPage after PayFrequency" in {
-        navigator.nextPage(PayFrequencyPage, NormalMode, emptyUserAnswers) mustBe routes.PayMethodController.onPageLoad()
+      "go to LastPayDatePage after PayFrequency" in {
+        navigator.nextPage(PayFrequencyPage, NormalMode, emptyUserAnswers) mustBe routes.LastPayDateController.onPageLoad()
       }
 
       "go to LastPayDatePage after PayMethod" in {
         navigator.nextPage(PayMethodPage, NormalMode, emptyUserAnswers) mustBe routes.LastPayDateController.onPageLoad()
       }
 
-      "go to PayPeriodsPage after LastPayDatePage" in {
-        navigator.nextPage(LastPayDatePage, NormalMode, emptyUserAnswers) mustBe routes.PayPeriodsController.onPageLoad()
+      "go to correct page after LastPayDatePage" in {
+        var userAnswers = emptyUserAnswers.set(LastPayDatePage, LocalDate.now()).success.value
+        userAnswers = userAnswers.set(PayFrequencyPage, Monthly).success.value
+        navigator.nextPage(LastPayDatePage, NormalMode, userAnswers) mustBe routes.EndPayDateController.onPageLoad()
+
+        userAnswers = userAnswers.set(PayFrequencyPage, Weekly).success.value
+        navigator.nextPage(LastPayDatePage, NormalMode, userAnswers) mustBe routes.PayMethodController.onPageLoad()
       }
 
       "go to correct page after PayPeriodsPage" in {
@@ -73,6 +79,11 @@ class NavigatorSpec extends SpecBase {
       "go to Confirmation after UsualAndActualHoursPage" in {
         val userAnswers = emptyUserAnswers.set(UsualAndActualHoursPage, UsualAndActualHours(10.00, 20.00)).success.value
         navigator.nextPage(UsualAndActualHoursPage, NormalMode, userAnswers) mustBe routes.ConfirmationController.onPageLoad()
+      }
+
+      "go to PayMethodPage after EndPayDate" in {
+        val userAnswers = emptyUserAnswers.set(EndPayDatePage, LocalDate.now()).success.value
+        navigator.nextPage(EndPayDatePage, NormalMode, userAnswers) mustBe routes.PayMethodController.onPageLoad()
       }
     }
   }
