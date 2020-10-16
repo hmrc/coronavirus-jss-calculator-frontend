@@ -37,3 +37,6 @@ GET         /usual-and-actual-hours             controllers.UsualAndActualHoursC
 POST        /usual-and-actual-hours             controllers.UsualAndActualHoursController.onSubmit()
 
 GET         /confirmation                       controllers.ConfirmationController.onPageLoad()
+
+GET         /end-pay-date                         controllers.EndPayDateController.onPageLoad()
+POST        /end-pay-date                         controllers.EndPayDateController.onSubmit()
