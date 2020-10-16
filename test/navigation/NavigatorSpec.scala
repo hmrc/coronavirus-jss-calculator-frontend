@@ -46,7 +46,7 @@ class NavigatorSpec extends SpecBase {
       }
 
       "go to LastPayDatePage after PayMethod" in {
-        navigator.nextPage(PayMethodPage, NormalMode, emptyUserAnswers) mustBe routes.LastPayDateController.onPageLoad()
+        navigator.nextPage(PayMethodPage, NormalMode, emptyUserAnswers) mustBe routes.PayPeriodsController.onPageLoad()
       }
 
       "go to correct page after LastPayDatePage" in {

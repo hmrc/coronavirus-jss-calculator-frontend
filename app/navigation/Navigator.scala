@@ -35,7 +35,7 @@ class Navigator @Inject()() {
         routes.LastPayDateController.onPageLoad()
     case PayMethodPage =>
       _ =>
-        routes.LastPayDateController.onPageLoad()
+        routes.PayPeriodsController.onPageLoad()
     case LastPayDatePage =>
       userAnswers =>
         lastPayDateRoute(userAnswers)
