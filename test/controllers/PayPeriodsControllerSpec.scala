@@ -55,7 +55,7 @@ class PayPeriodsControllerSpec extends SpecBase with MockitoSugar {
       PayFrequencyPage.toString -> JsString(payFrequency),
       LastPayDatePage.toString  -> JsString(lastPayDate))
   )
-  val periods = List(Period(LocalDate.of(2020, 10, 30), LocalDate.of(2020, 11, 29)))
+  val periods = List(Period(LocalDate.of(2020, 10, 31), LocalDate.of(2020, 11, 29)))
 
   "PayPeriods Controller" must {
 

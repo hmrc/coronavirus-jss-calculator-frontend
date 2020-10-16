@@ -16,22 +16,15 @@
 
 package models
 
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
+import play.api.libs.json.{Json, OFormat}
 
-import play.api.libs.json.{Format, Json}
-
-final case class Period(
-  startDate: LocalDate,
-  endDate: LocalDate
+case class Grant(
+  period: Period,
+  usualHours: BigDecimal,
+  actualHours: BigDecimal,
+  amount: BigDecimal
 )
 
-object Period {
-  implicit val defaultFormat: Format[Period] = Json.format
-  implicit class Counter(period: Period) {
-    def countDays: Int =
-      (ChronoUnit.DAYS.between(period.startDate, period.endDate) + 1).toInt
-
-    def countHours: Int = countDays * 24
-  }
+object Grant {
+  implicit val format: OFormat[Grant] = Json.format[Grant]
 }
