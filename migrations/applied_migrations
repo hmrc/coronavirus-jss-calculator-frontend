@@ -1,52 +1,15 @@
 #!/bin/bash
 
 echo ""
-echo "Applying migration UsualAndActualHours"
+echo "Applying migration Confirmation"
 
 echo "Adding routes to conf/app.routes"
-
 echo "" >> ../conf/app.routes
-echo "GET        /usualAndActualHours                  controllers.UsualAndActualHoursController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
-echo "POST       /usualAndActualHours                  controllers.UsualAndActualHoursController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
-
-echo "GET        /changeUsualAndActualHours                        controllers.UsualAndActualHoursController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
-echo "POST       /changeUsualAndActualHours                        controllers.UsualAndActualHoursController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "GET        /confirmation                       controllers.ConfirmationController.onPageLoad()" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
-echo "usualAndActualHours.title = UsualAndActualHours" >> ../conf/messages.en
-echo "usualAndActualHours.heading = UsualAndActualHours" >> ../conf/messages.en
-echo "usualAndActualHours.checkYourAnswersLabel = UsualAndActualHours" >> ../conf/messages.en
-echo "usualAndActualHours.error.nonNumeric = Enter your usualAndActualHours using numbers" >> ../conf/messages.en
-echo "usualAndActualHours.error.required = Enter your usualAndActualHours" >> ../conf/messages.en
-echo "usualAndActualHours.error.wholeNumber = Enter your usualAndActualHours using whole numbers" >> ../conf/messages.en
-echo "usualAndActualHours.error.outOfRange = UsualAndActualHours must be between {0} and {1}" >> ../conf/messages.en
+echo "confirmation.title = confirmation" >> ../conf/messages.en
+echo "confirmation.heading = confirmation" >> ../conf/messages.en
 
-echo "Adding to UserAnswersEntryGenerators"
-awk '/  self: Generators =>/ {\
-    print;\
-    print "";\
-    print "  implicit lazy val arbitraryUsualAndActualHoursUserAnswersEntry: Arbitrary[(UsualAndActualHoursPage.type, JsValue)] =";\
-    print "    Arbitrary {";\
-    print "      for {";\
-    print "        page  <- arbitrary[UsualAndActualHoursPage.type]";\
-    print "        value <- arbitrary[Int].map(Json.toJson(_))";\
-    print "      } yield (page, value)";\
-    print "    }";\
-    next }1' ../test/generators/UserAnswersEntryGenerators.scala > tmp && mv tmp ../test/generators/UserAnswersEntryGenerators.scala
-
-echo "Adding to PageGenerators"
-awk '/trait PageGenerators/ {\
-    print;\
-    print "";\
-    print "  implicit lazy val arbitraryUsualAndActualHoursPage: Arbitrary[UsualAndActualHoursPage.type] =";\
-    print "    Arbitrary(UsualAndActualHoursPage)";\
-    next }1' ../test/generators/PageGenerators.scala > tmp && mv tmp ../test/generators/PageGenerators.scala
-
-echo "Adding to UserAnswersGenerator"
-awk '/val generators/ {\
-    print;\
-    print "    arbitrary[(UsualAndActualHoursPage.type, JsValue)] ::";\
-    next }1' ../test/generators/UserAnswersGenerator.scala > tmp && mv tmp ../test/generators/UserAnswersGenerator.scala
-
-echo "Migration UsualAndActualHours completed"
+echo "Migration Confirmation completed"

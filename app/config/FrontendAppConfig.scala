@@ -58,4 +58,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
   lazy val exitSurveyUrl = s"$exitSurveyBaseUrl/coronavirus-jss-calculator"
 
   lazy val schemeEnds: String = configuration.get[String]("schemeEnds")
+
+  lazy val calculatorVersion = configuration.get[String]("calculator.version")
 }
