@@ -14,8 +14,12 @@
  * limitations under the License.
  *@
 
-@this(govukButton: GovukButton)
+@this(govukPanel: GovukPanel)
 
-@(msg: String, href: Option[String] = None, classes: Option[String] = None)(implicit messages: Messages)
+@(content: Html)
 
- @govukButton(Button(content = Text(messages(msg)), href = href, classes = classes.getOrElse("")))
+<div class="govuk-panel govuk-panel--confirmation govuk-!-margin-bottom-8">
+    <div class="govuk-panel__body">
+        @content
+    </div>
+</div>

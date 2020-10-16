@@ -116,4 +116,53 @@ trait Formatters {
       override def unbind(key: String, value: String): Map[String, String] =
         baseFormatter.unbind(key, value)
     }
+
+  private[mappings] def bigDecimalFormatter(
+    requiredKey: String,
+    nonNumericKey: String,
+    args: Seq[String] = Seq.empty): Formatter[BigDecimal] =
+    new Formatter[BigDecimal] {
+      private val baseFormatter = stringFormatter(requiredKey)
+
+      override def bind(key: String, data: Map[String, String]) =
+        baseFormatter
+          .bind(key, data)
+          .right
+          .map(_.replace(",", ""))
+          .map(_.trim)
+          .right
+          .flatMap {
+            case s =>
+              nonFatalCatch
+                .either(BigDecimal(s))
+                .left
+                .map(_ => Seq(FormError(key, nonNumericKey, args)))
+          }
+
+      override def unbind(key: String, value: BigDecimal) =
+        baseFormatter.unbind(key, value.toString)
+    }
+
+  private[mappings] def doubleFormatter(requiredKey: String, nonNumericKey: String, args: Seq[String] = Seq.empty): Formatter[Double] =
+    new Formatter[Double] {
+
+      private val baseFormatter = stringFormatter(requiredKey)
+
+      override def bind(key: String, data: Map[String, String]) =
+        baseFormatter
+          .bind(key, data)
+          .right
+          .map(_.replace(",", ""))
+          .right
+          .flatMap {
+            case s =>
+              nonFatalCatch
+                .either(s.toDouble)
+                .left
+                .map(_ => Seq(FormError(key, nonNumericKey, args)))
+          }
+
+      override def unbind(key: String, value: Double) =
+        baseFormatter.unbind(key, value.toString)
+    }
 }

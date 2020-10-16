@@ -236,3 +236,56 @@ selectWorkPeriods.heading = When did this employee work during the claim period?
 selectWorkPeriods.hint = Select all that apply.
 selectWorkPeriods.from.to = {0} to {1}
 selectWorkPeriods.error.required = Select all that apply
+
+regularPayAmount.title = On 19 July 2020, what was this employee’s most recent pay amount?
+regularPayAmount.heading = On 19 July 2020, what was this employee’s most recent pay amount?
+regularPayAmount.p1 = This is the latest gross payment that was due on or before 19 March, before deductions.
+regularPayAmount.p2 = Do not include discretionary payments, non-cash payments or non-monetary benefits.
+regularPayAmount.info = If this employee started work between 1 and 18 March 2020, enter the amount they’ll get paid from now on.
+regularPayAmount.error.required = Enter regular pay amount
+amount.error.max.2.decimals = The amount cannot have more than two decimal places
+regularPayAmount.error.nonNumeric = Enter the regular pay amount in numbers
+
+whatToInclude.summary = What should be included in this amount?
+whatToInclude.include = Include:
+whatToInclude.include.cylb = gross amount the employee earned in this pay period, even if paid in a different pay period
+whatToInclude.include.l1 = gross amount this employee earned
+whatToInclude.include.l2 = non-discretionary overtime
+whatToInclude.include.l3 = non-discretionary fees
+whatToInclude.include.l4 = non-discretionary commission payments
+whatToInclude.include.l5 = piece rate payments
+whatToInclude.doNotInclude = Do not include:
+whatToInclude.doNotInclude.cylb = payments earned in a different pay period, even if they appear on the payslip for this pay period
+whatToInclude.doNotInclude.l1 = discretionary payments you’re not contractually obliged to pay, including:
+whatToInclude.doNotInclude.l1.l1 = tips
+whatToInclude.doNotInclude.l1.l2 = discretionary bonuses
+whatToInclude.doNotInclude.l1.l3 = discretionary commission payments
+whatToInclude.doNotInclude.l2 = non-cash payments
+whatToInclude.doNotInclude.l3 = non-monetary benefits like benefits in kind (such as a company car) and salary sacrifice schemes that reduce taxable pay
+
+usualAndActualHours.title = What were the employee’s usual and actual hours from 23 November to 29 November 2020?
+usualAndActualHours.heading = What were the employee’s usual and actual hours from 23 November to 29 November 2020?
+usualHours.p1 = Usual hours worked in this period
+usualHours.hint = Enter the usual hours that would be worked outside the scheme in decimal format, such as 124.4
+usualHours.error.nonNumeric = Enter your usual hours using numbers
+usualHours.error.required = Enter your usual hours
+actualHours.p1 = Actual hours worked in this period
+actualHours.hint = Enter the actual hours that would be worked outside the scheme in decimal format, such as 124.4
+actualHours.error.nonNumeric = Enter your actual hours using numbers
+actualHours.error.required = Enter your actual hours
+
+confirmation.title = confirmation
+confirmation.heading = confirmation
+
+confirmation.confirmation.p1 = What you can claim for this employee
+
+endPayDate.title = What’s the end of the next pay period after 30 October 2020?
+endPayDate.heading = What’s the end of the next pay period after 30 October 2020?
+endPayDate.p1 = This is the last day in the pay period, not the date they received their pay.
+endPayDate.details.title = What is a pay period?
+endPayDate.details.p1 = A ‘pay period’ is the period of time that the employee is paid for, such as weekly or monthly. When we ask for the end date of a pay period, it’s the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually gets their pay.
+endPayDate.hint = For example 01 12 2020
+endPayDate.error.required.all = Enter the end pay date
+endPayDate.error.required.two = The end pay date must include {0} and {1}
+endPayDate.error.required = The end pay date must include {0}
+endPayDate.error.invalid = Enter a real end pay date

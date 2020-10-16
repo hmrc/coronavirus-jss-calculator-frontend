@@ -16,86 +16,84 @@
 
 package controllers
 
-import java.time.LocalDate
+import java.time.{LocalDate, ZoneOffset}
 
 import base.SpecBase
-import forms.SelectWorkPeriodsFormProvider
-import models.{ClaimPeriod, PayFrequency, Period, UserAnswers}
+import forms.EndPayDateFormProvider
+import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{ClaimPeriodPage, LastPayDatePage, PayFrequencyPage, SelectWorkPeriodsPage}
+import pages.EndPayDatePage
 import play.api.inject.bind
-import play.api.libs.json.{JsString, Json}
-import play.api.mvc.Call
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.SelectWorkPeriodsView
+import views.html.EndPayDateView
 
 import scala.concurrent.Future
 
-class SelectWorkPeriodsControllerSpec extends SpecBase with MockitoSugar {
+class EndPayDateControllerSpec extends SpecBase with MockitoSugar {
+
+  private val formProvider = new EndPayDateFormProvider()
+  private def form = formProvider()
 
   private def onwardRoute = Call("GET", "/foo")
 
-  private lazy val selectWorkPeriodsRoute = routes.SelectWorkPeriodsController.onPageLoad().url
+  private val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
-  private val formProvider = new SelectWorkPeriodsFormProvider()
-  private val form = formProvider()
+  private lazy val endPayDateRoute = routes.EndPayDateController.onPageLoad().url
 
-  val claimPeriod = ClaimPeriod.Nov2020
-  val payFrequency = PayFrequency.Monthly
-  val lastPayDate = "2020-10-30"
+  override val emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
-  val userAnswers = UserAnswers(
-    userAnswersId,
-    Json.obj(
-      ClaimPeriodPage.toString  -> JsString(claimPeriod),
-      PayFrequencyPage.toString -> JsString(payFrequency),
-      LastPayDatePage.toString  -> JsString(lastPayDate))
-  )
-  val periods = List(Period(LocalDate.of(2020, 10, 31), LocalDate.of(2020, 11, 29)))
+  private lazy val getRequest: FakeRequest[AnyContentAsEmpty.type] =
+    fakeRequest(GET, endPayDateRoute)
 
-  "SelectWorkPeriods Controller" must {
+  private lazy val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
+    fakeRequest(POST, endPayDateRoute)
+      .withFormUrlEncodedBody(
+        "value.day"   -> validAnswer.getDayOfMonth.toString,
+        "value.month" -> validAnswer.getMonthValue.toString,
+        "value.year"  -> validAnswer.getYear.toString
+      )
+
+  "EndPayDate Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
 
-        val request = fakeRequest(GET, selectWorkPeriodsRoute)
+        val result = route(application, getRequest).value
 
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[SelectWorkPeriodsView]
+        val view = application.injector.instanceOf[EndPayDateView]
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, periods)(request, messages(application)).toString
+          view(form)(getRequest, messages(application)).toString
       }
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswersUpdated = userAnswers.set(SelectWorkPeriodsPage, List(LocalDate.of(2020, 11, 29))).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(EndPayDatePage, validAnswer).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersUpdated)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
 
-        val request = fakeRequest(GET, selectWorkPeriodsRoute)
+        val view = application.injector.instanceOf[EndPayDateView]
 
-        val view = application.injector.instanceOf[SelectWorkPeriodsView]
-
-        val result = route(application, request).value
+        val result = route(application, getRequest).value
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(List(LocalDate.of(2020, 11, 29))), periods)(request, messages(application)).toString
+          view(form.fill(validAnswer))(getRequest, messages(application)).toString
       }
     }
 
@@ -115,11 +113,7 @@ class SelectWorkPeriodsControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
 
-        val request =
-          fakeRequest(POST, selectWorkPeriodsRoute)
-            .withFormUrlEncodedBody(("value[0]", LocalDate.now().toString))
-
-        val result = route(application, request).value
+        val result = route(application, postRequest).value
 
         status(result) mustEqual SEE_OTHER
 
@@ -129,24 +123,24 @@ class SelectWorkPeriodsControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
 
         val request =
-          fakeRequest(POST, selectWorkPeriodsRoute)
+          fakeRequest(POST, endPayDateRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[SelectWorkPeriodsView]
+        val view = application.injector.instanceOf[EndPayDateView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, periods)(request, messages(application)).toString
+          view(boundForm)(request, messages(application)).toString
       }
     }
 
@@ -156,9 +150,7 @@ class SelectWorkPeriodsControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
 
-        val request = fakeRequest(GET, selectWorkPeriodsRoute)
-
-        val result = route(application, request).value
+        val result = route(application, getRequest).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
@@ -171,11 +163,7 @@ class SelectWorkPeriodsControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
 
-        val request =
-          fakeRequest(POST, selectWorkPeriodsRoute)
-            .withFormUrlEncodedBody(("value[0]", LocalDate.now().toString))
-
-        val result = route(application, request).value
+        val result = route(application, postRequest).value
 
         status(result) mustEqual SEE_OTHER
 

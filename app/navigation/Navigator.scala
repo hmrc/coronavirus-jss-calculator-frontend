@@ -18,6 +18,7 @@ package navigation
 
 import controllers.routes
 import javax.inject.{Inject, Singleton}
+import models.PayFrequency.Monthly
 import models._
 import pages._
 import play.api.mvc.Call
@@ -31,19 +32,29 @@ class Navigator @Inject()() {
         routes.PayFrequencyController.onPageLoad()
     case PayFrequencyPage =>
       _ =>
-        routes.PayMethodController.onPageLoad()
+        routes.LastPayDateController.onPageLoad()
     case PayMethodPage =>
       _ =>
         routes.LastPayDateController.onPageLoad()
     case LastPayDatePage =>
+      userAnswers =>
+        lastPayDateRoute(userAnswers)
+    case EndPayDatePage =>
       _ =>
-        routes.PayPeriodsController.onPageLoad()
+        routes.PayMethodController.onPageLoad()
     case PayPeriodsPage =>
       userAnswers =>
         payPeriodsRoute(userAnswers)
     case SelectWorkPeriodsPage =>
       _ =>
-        routes.StartPageController.onPageLoad()
+        routes.RegularPayAmountController.onPageLoad()
+
+    case RegularPayAmountPage =>
+      _ =>
+        routes.UsualAndActualHoursController.onPageLoad()
+    case UsualAndActualHoursPage =>
+      _ =>
+        routes.ConfirmationController.onPageLoad()
     case _ =>
       _ =>
         routes.StartPageController.onPageLoad()
@@ -60,5 +71,12 @@ class Navigator @Inject()() {
       case Some(PayPeriods.Yes) => routes.SelectWorkPeriodsController.onPageLoad()
       case Some(PayPeriods.No)  => routes.LastPayDateController.onPageLoad()
       case _                    => routes.LastPayDateController.onPageLoad()
+    }
+
+  private def lastPayDateRoute(userAnswers: UserAnswers): Call =
+    userAnswers.get(PayFrequencyPage) match {
+      case Some(Monthly) => routes.EndPayDateController.onPageLoad()
+      case Some(_)       => routes.PayMethodController.onPageLoad()
+      case _             => routes.LastPayDateController.onPageLoad()
     }
 }

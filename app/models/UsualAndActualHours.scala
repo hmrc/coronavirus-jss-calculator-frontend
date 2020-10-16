@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(govukButton: GovukButton)
+package models
 
-@(msg: String, href: Option[String] = None, classes: Option[String] = None)(implicit messages: Messages)
+import play.api.libs.json.{Json, OFormat}
 
- @govukButton(Button(content = Text(messages(msg)), href = href, classes = classes.getOrElse("")))
+case class UsualAndActualHours(usualHours: Double, actualHours: Double)
+
+object UsualAndActualHours {
+  implicit val format: OFormat[UsualAndActualHours] = Json.format
+}

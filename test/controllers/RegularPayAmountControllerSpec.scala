@@ -16,86 +16,70 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import base.SpecBase
-import forms.SelectWorkPeriodsFormProvider
-import models.{ClaimPeriod, PayFrequency, Period, UserAnswers}
+import forms.RegularPayAmountFormProvider
+import models.{Amount, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{ClaimPeriodPage, LastPayDatePage, PayFrequencyPage, SelectWorkPeriodsPage}
+import pages.RegularPayAmountPage
 import play.api.inject.bind
-import play.api.libs.json.{JsString, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.SelectWorkPeriodsView
+import views.html.RegularPayAmountView
 
 import scala.concurrent.Future
 
-class SelectWorkPeriodsControllerSpec extends SpecBase with MockitoSugar {
+class RegularPayAmountControllerSpec extends SpecBase with MockitoSugar {
 
   private def onwardRoute = Call("GET", "/foo")
 
-  private lazy val selectWorkPeriodsRoute = routes.SelectWorkPeriodsController.onPageLoad().url
-
-  private val formProvider = new SelectWorkPeriodsFormProvider()
+  private val formProvider = new RegularPayAmountFormProvider()
   private val form = formProvider()
 
-  val claimPeriod = ClaimPeriod.Nov2020
-  val payFrequency = PayFrequency.Monthly
-  val lastPayDate = "2020-10-30"
+  private lazy val regularPayAmountRoute = routes.RegularPayAmountController.onPageLoad().url
 
-  val userAnswers = UserAnswers(
-    userAnswersId,
-    Json.obj(
-      ClaimPeriodPage.toString  -> JsString(claimPeriod),
-      PayFrequencyPage.toString -> JsString(payFrequency),
-      LastPayDatePage.toString  -> JsString(lastPayDate))
-  )
-  val periods = List(Period(LocalDate.of(2020, 10, 31), LocalDate.of(2020, 11, 29)))
-
-  "SelectWorkPeriods Controller" must {
+  "RegularPayAmount Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
 
-        val request = fakeRequest(GET, selectWorkPeriodsRoute)
+        val request = fakeRequest(GET, regularPayAmountRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[SelectWorkPeriodsView]
+        val view = application.injector.instanceOf[RegularPayAmountView]
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, periods)(request, messages(application)).toString
+          view(form)(request, messages(application)).toString
       }
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswersUpdated = userAnswers.set(SelectWorkPeriodsPage, List(LocalDate.of(2020, 11, 29))).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(RegularPayAmountPage, Amount(10.99)).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersUpdated)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
 
-        val request = fakeRequest(GET, selectWorkPeriodsRoute)
+        val request = fakeRequest(GET, regularPayAmountRoute)
 
-        val view = application.injector.instanceOf[SelectWorkPeriodsView]
+        val view = application.injector.instanceOf[RegularPayAmountView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(List(LocalDate.of(2020, 11, 29))), periods)(request, messages(application)).toString
+          view(form.fill(Amount(10.99)))(request, messages(application)).toString
       }
     }
 
@@ -116,37 +100,36 @@ class SelectWorkPeriodsControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
 
         val request =
-          fakeRequest(POST, selectWorkPeriodsRoute)
-            .withFormUrlEncodedBody(("value[0]", LocalDate.now().toString))
+          fakeRequest(POST, regularPayAmountRoute)
+            .withFormUrlEncodedBody(("value", "10.20"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual onwardRoute.url
       }
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
 
         val request =
-          fakeRequest(POST, selectWorkPeriodsRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+          fakeRequest(POST, regularPayAmountRoute)
+            .withFormUrlEncodedBody(("value", ""))
 
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+        val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[SelectWorkPeriodsView]
+        val view = application.injector.instanceOf[RegularPayAmountView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, periods)(request, messages(application)).toString
+          view(boundForm)(request, messages(application)).toString
       }
     }
 
@@ -156,11 +139,12 @@ class SelectWorkPeriodsControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
 
-        val request = fakeRequest(GET, selectWorkPeriodsRoute)
+        val request = fakeRequest(GET, regularPayAmountRoute)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
+
         redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
       }
     }
@@ -172,8 +156,8 @@ class SelectWorkPeriodsControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
 
         val request =
-          fakeRequest(POST, selectWorkPeriodsRoute)
-            .withFormUrlEncodedBody(("value[0]", LocalDate.now().toString))
+          fakeRequest(POST, regularPayAmountRoute)
+            .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
 

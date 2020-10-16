@@ -16,10 +16,20 @@
 
 package generators
 
+import models.{Amount, UsualAndActualHours}
 import org.scalacheck.Arbitrary
 import pages._
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryEndPayDatePage: Arbitrary[EndPayDatePage.type] =
+    Arbitrary(EndPayDatePage)
+
+  implicit lazy val arbitraryUsualAndActualHoursPage: Arbitrary[UsualAndActualHoursPage.type] =
+    Arbitrary(UsualAndActualHoursPage)
+
+  implicit lazy val arbitraryRegularPayAmountPage: Arbitrary[RegularPayAmountPage.type] =
+    Arbitrary(RegularPayAmountPage)
 
   implicit lazy val arbitraryPayPeriodsPage: Arbitrary[PayPeriodsPage.type] =
     Arbitrary(PayPeriodsPage)
@@ -38,5 +48,19 @@ trait PageGenerators {
 
   implicit lazy val arbitrarySelectWorkPeriodsPage: Arbitrary[SelectWorkPeriodsPage.type] =
     Arbitrary(SelectWorkPeriodsPage)
+
+  implicit lazy val arbitraryAmount: Arbitrary[Amount] =
+    Arbitrary {
+      for {
+        value <- Arbitrary.arbitrary[BigDecimal]
+      } yield Amount(value)
+    }
+
+  implicit lazy val arbitraryUsualAndActualHours: Arbitrary[UsualAndActualHours] =
+    Arbitrary {
+      for {
+        value <- Arbitrary.arbitrary[Double]
+      } yield UsualAndActualHours(value, value)
+    }
 
 }

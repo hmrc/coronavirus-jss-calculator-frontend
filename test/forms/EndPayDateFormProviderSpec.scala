@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(govukButton: GovukButton)
+package forms
 
-@(msg: String, href: Option[String] = None, classes: Option[String] = None)(implicit messages: Messages)
+import java.time.{LocalDate, ZoneOffset}
 
- @govukButton(Button(content = Text(messages(msg)), href = href, classes = classes.getOrElse("")))
+import forms.behaviours.DateBehaviours
+
+class EndPayDateFormProviderSpec extends DateBehaviours {
+
+  val form = new EndPayDateFormProvider()()
+
+  ".value" should {
+
+    val validData = datesBetween(
+      min = LocalDate.of(2000, 1, 1),
+      max = LocalDate.now(ZoneOffset.UTC)
+    )
+
+    behave like dateField(form, "value", validData)
+
+    behave like mandatoryDateField(form, "value", "endPayDate.error.required.all")
+  }
+}

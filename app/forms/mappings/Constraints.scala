@@ -102,4 +102,13 @@ trait Constraints {
       case _ =>
         Invalid(errorKey)
     }
+
+  protected def maxTwoDecimals(errorKey: Option[String] = None): Constraint[BigDecimal] = Constraint { value =>
+    if (value.scale <= 2) Valid else Invalid(errorKey.getOrElse("amount.error.max.2.decimals"))
+  }
+
+  protected def greaterThan[A](minimum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] = Constraint { value =>
+    import ev._
+    if (value > minimum) Valid else Invalid(errorKey)
+  }
 }

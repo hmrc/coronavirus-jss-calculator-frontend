@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(govukButton: GovukButton)
+package forms
 
-@(msg: String, href: Option[String] = None, classes: Option[String] = None)(implicit messages: Messages)
+import javax.inject.Inject
+import forms.mappings.Mappings
+import models.Amount
+import play.api.data.Form
+import play.api.data.Forms.mapping
 
- @govukButton(Button(content = Text(messages(msg)), href = href, classes = classes.getOrElse("")))
+class RegularPayAmountFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[Amount] = Form(
+    mapping(
+      "value" -> bigDecimal(
+        requiredKey = "regularPayAmount.error.required",
+        nonNumericKey = "regularPayAmount.error.nonNumeric"
+      ).verifying(minimumValue(BigDecimal(0.0), "regularPayAmount.error.negative"))
+        .verifying(maxTwoDecimals())
+    )(Amount.apply)(Amount.unapply)
+  )
+}

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(govukButton: GovukButton)
+package forms
 
-@(msg: String, href: Option[String] = None, classes: Option[String] = None)(implicit messages: Messages)
+import java.time.LocalDate
 
- @govukButton(Button(content = Text(messages(msg)), href = href, classes = classes.getOrElse("")))
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
+
+class EndPayDateFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[LocalDate] =
+    Form(
+      "value" -> localDate(
+        invalidKey = "endPayDate.error.invalid",
+        allRequiredKey = "endPayDate.error.required.all",
+        twoRequiredKey = "endPayDate.error.required.two",
+        requiredKey = "endPayDate.error.required"
+      )
+    )
+}

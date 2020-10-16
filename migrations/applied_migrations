@@ -1,35 +1,36 @@
 #!/bin/bash
 
 echo ""
-echo "Applying migration PayPeriodsList"
+echo "Applying migration EndPayDate"
 
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /payPeriodsList                        controllers.PayPeriodsListController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
-echo "POST       /payPeriodsList                        controllers.PayPeriodsListController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "GET        /endPayDate                  controllers.EndPayDateController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "POST       /endPayDate                  controllers.EndPayDateController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
 
-echo "GET        /changePayPeriodsList                  controllers.PayPeriodsListController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
-echo "POST       /changePayPeriodsList                  controllers.PayPeriodsListController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "GET        /changeEndPayDate                        controllers.EndPayDateController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "POST       /changeEndPayDate                        controllers.EndPayDateController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
-echo "payPeriodsList.title = Are these pay periods correct?" >> ../conf/messages.en
-echo "payPeriodsList.heading = Are these pay periods correct?" >> ../conf/messages.en
-echo "payPeriodsList.yes = yes" >> ../conf/messages.en
-echo "payPeriodsList.no = no" >> ../conf/messages.en
-echo "payPeriodsList.checkYourAnswersLabel = Are these pay periods correct?" >> ../conf/messages.en
-echo "payPeriodsList.error.required = Select payPeriodsList" >> ../conf/messages.en
+echo "endPayDate.title = EndPayDate" >> ../conf/messages.en
+echo "endPayDate.heading = EndPayDate" >> ../conf/messages.en
+echo "endPayDate.checkYourAnswersLabel = EndPayDate" >> ../conf/messages.en
+echo "endPayDate.error.required.all = Enter the endPayDate" >> ../conf/messages.en
+echo "endPayDate.error.required.two = The endPayDate" must include {0} and {1} >> ../conf/messages.en
+echo "endPayDate.error.required = The endPayDate must include {0}" >> ../conf/messages.en
+echo "endPayDate.error.invalid = Enter a real EndPayDate" >> ../conf/messages.en
 
 echo "Adding to UserAnswersEntryGenerators"
 awk '/  self: Generators =>/ {\
     print;\
     print "";\
-    print "  implicit lazy val arbitraryPayPeriodsListUserAnswersEntry: Arbitrary[(PayPeriodsListPage.type, JsValue)] =";\
+    print "  implicit lazy val arbitraryEndPayDateUserAnswersEntry: Arbitrary[(EndPayDatePage.type, JsValue)] =";\
     print "    Arbitrary {";\
     print "      for {";\
-    print "        page  <- arbitrary[PayPeriodsListPage.type]";\
-    print "        value <- arbitrary[PayPeriodsList].map(Json.toJson(_))";\
+    print "        page  <- arbitrary[EndPayDatePage.type]";\
+    print "        value <- arbitrary[Int].map(Json.toJson(_))";\
     print "      } yield (page, value)";\
     print "    }";\
     next }1' ../test/generators/UserAnswersEntryGenerators.scala > tmp && mv tmp ../test/generators/UserAnswersEntryGenerators.scala
@@ -38,24 +39,14 @@ echo "Adding to PageGenerators"
 awk '/trait PageGenerators/ {\
     print;\
     print "";\
-    print "  implicit lazy val arbitraryPayPeriodsListPage: Arbitrary[PayPeriodsListPage.type] =";\
-    print "    Arbitrary(PayPeriodsListPage)";\
+    print "  implicit lazy val arbitraryEndPayDatePage: Arbitrary[EndPayDatePage.type] =";\
+    print "    Arbitrary(EndPayDatePage)";\
     next }1' ../test/generators/PageGenerators.scala > tmp && mv tmp ../test/generators/PageGenerators.scala
-
-echo "Adding to ModelGenerators"
-awk '/  self: Generators =>/ {\
-    print;\
-    print "";\
-    print "  implicit lazy val arbitraryPayPeriodsList: Arbitrary[PayPeriodsList] =";\
-    print "    Arbitrary {";\
-    print "      Gen.oneOf(PayPeriodsList.values)";\
-    print "    }";\
-    next }1' ../test/generators/ModelGenerators.scala > tmp && mv tmp ../test/generators/ModelGenerators.scala
 
 echo "Adding to UserAnswersGenerator"
 awk '/val generators/ {\
     print;\
-    print "    arbitrary[(PayPeriodsListPage.type, JsValue)] ::";\
+    print "    arbitrary[(EndPayDatePage.type, JsValue)] ::";\
     next }1' ../test/generators/UserAnswersGenerator.scala > tmp && mv tmp ../test/generators/UserAnswersGenerator.scala
 
-echo "Migration PayPeriodsList completed"
+echo "Migration EndPayDate completed"

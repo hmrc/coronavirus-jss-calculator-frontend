@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(govukButton: GovukButton)
+package models
 
-@(msg: String, href: Option[String] = None, classes: Option[String] = None)(implicit messages: Messages)
+import play.api.libs.json._
+import utils.ValueClassFormat
 
- @govukButton(Button(content = Text(messages(msg)), href = href, classes = classes.getOrElse("")))
+case class Amount(value: BigDecimal)
+
+object Amount {
+  implicit val format: Format[Amount] = ValueClassFormat.format(value => Amount.apply(BigDecimal(value)))(_.value)
+
+  implicit class Defaulted(maybeAmount: Option[Amount]) {
+    def defaulted: Amount = maybeAmount.fold(Amount(0.0))(v => v)
+  }
+
+  implicit class FromDouble(value: Double) {
+    def toAmount: Amount = Amount(value)
+  }
+
+  implicit class FromBigDecimal(value: BigDecimal) {
+    def toAmount: Amount = Amount(value)
+  }
+}
