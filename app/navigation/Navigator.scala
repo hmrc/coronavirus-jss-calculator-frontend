@@ -19,7 +19,7 @@ package navigation
 import controllers.routes
 import javax.inject.{Inject, Singleton}
 import models.PayFrequency.Monthly
-import models._
+import models.{UserAnswers, _}
 import pages._
 import play.api.mvc.Call
 
@@ -51,19 +51,20 @@ class Navigator @Inject()() {
 
     case RegularPayAmountPage =>
       _ =>
-        routes.UsualAndActualHoursController.onPageLoad()
-    case UsualAndActualHoursPage =>
-      _ =>
-        routes.ConfirmationController.onPageLoad()
+        routes.UsualAndActualHoursController.onPageLoad(1)
     case _ =>
       _ =>
         routes.StartPageController.onPageLoad()
   }
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
-    case NormalMode =>
-      normalRoutes(page)(userAnswers)
-    case m => throw new RuntimeException(s"nextPage not yet implemented in $m")
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, idx: Option[Int] = None): Call =
+    idx.fold(normalRoutes(page)(userAnswers))(idx => idxRoutes(page)(idx, userAnswers))
+
+  private val idxRoutes: Page => (Int, UserAnswers) => Call = {
+    case UsualAndActualHoursPage => selectUsualAndActualHoursPageRoutes
+    case _ =>
+      (_, _) =>
+        routes.StartPageController.onPageLoad()
   }
 
   private def payPeriodsRoute(userAnswers: UserAnswers): Call =
@@ -79,4 +80,12 @@ class Navigator @Inject()() {
       case Some(_)       => routes.PayMethodController.onPageLoad()
       case _             => routes.LastPayDateController.onPageLoad()
     }
+
+  private def selectUsualAndActualHoursPageRoutes: (Int, UserAnswers) => Call = { (previousIdx, userAnswers) =>
+    userAnswers.get(SelectWorkPeriodsPage) match {
+      case Some(workPeriods) if workPeriods.isDefinedAt(previousIdx) => routes.UsualAndActualHoursController.onPageLoad(previousIdx + 1)
+      case Some(_)                                                   => routes.ConfirmationController.onPageLoad()
+      case _                                                         => routes.SelectWorkPeriodsController.onPageLoad()
+    }
+  }
 }

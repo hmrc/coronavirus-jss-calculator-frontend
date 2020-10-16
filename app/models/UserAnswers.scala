@@ -29,8 +29,10 @@ final case class UserAnswers(
   lastUpdated: LocalDateTime = LocalDateTime.now
 ) {
 
-  def get[A](query: Gettable[A])(implicit rds: Reads[A]): Option[A] =
-    Reads.optionNoError(Reads.at(query.path)).reads(data).getOrElse(None)
+  private def path[T <: Query](page: T, idx: Option[Int]): JsPath = idx.fold(page.path)(idx => page.path \ (idx - 1))
+
+  def get[A](query: Gettable[A], idx: Option[Int] = None)(implicit rds: Reads[A]): Option[A] =
+    Reads.optionNoError(Reads.at(path(query, idx))).reads(data).getOrElse(None)
 
   def set[A](query: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
@@ -62,17 +64,33 @@ final case class UserAnswers(
     }
   }
 
-  private def path[T <: Query](page: T, idx: Option[Int]): JsPath = idx.fold(page.path)(idx => page.path \ (idx - 1))
+  def set[A](page: Settable[A], value: A, idx: Option[Int] = None)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
-  def getList[A](page: Gettable[A])(implicit rds: Reads[A]): Seq[A] =
-    page.path.read[Seq[A]].reads(data).getOrElse(Seq.empty)
-
-  def setList[A](page: Settable[A], value: Seq[A])(implicit writes: Writes[A]): Try[UserAnswers] = {
-    val updatedData = data.setObject(path(page, None), Json.toJson(value)) match {
+    val updatedData = data.setObject(path(page, idx), Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
       case JsError(errors) =>
         Failure(JsResultException(errors))
+    }
+
+    updatedData.flatMap { d =>
+      val updatedAnswers = copy(data = d)
+      page.cleanup(Some(value), updatedAnswers)
+    }
+  }
+
+  def remove[A](page: Settable[A], idx: Option[Int] = None): Try[UserAnswers] = {
+
+    val result = idx match {
+      case Some(_) => data.setObject(path(page, idx), JsNull)
+      case None    => data.removeObject(path(page, None))
+    }
+
+    val updatedData = result match {
+      case JsSuccess(jsValue, _) =>
+        Success(jsValue)
+      case JsError(_) =>
+        Success(data)
     }
 
     updatedData.flatMap { d =>

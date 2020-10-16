@@ -33,8 +33,8 @@ POST        /select-work-periods                controllers.SelectWorkPeriodsCon
 GET         /regular-pay-amount                 controllers.RegularPayAmountController.onPageLoad()
 POST        /regular-pay-amount                 controllers.RegularPayAmountController.onSubmit()
 
-GET         /usual-and-actual-hours             controllers.UsualAndActualHoursController.onPageLoad()
-POST        /usual-and-actual-hours             controllers.UsualAndActualHoursController.onSubmit()
+GET         /usual-and-actual-hours/:idx             controllers.UsualAndActualHoursController.onPageLoad(idx: Int)
+POST        /usual-and-actual-hours/:idx             controllers.UsualAndActualHoursController.onSubmit(idx: Int)
 
 GET         /confirmation                       controllers.ConfirmationController.onPageLoad()
 
