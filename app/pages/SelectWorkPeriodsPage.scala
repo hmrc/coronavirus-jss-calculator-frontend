@@ -16,12 +16,23 @@
 
 package pages
 
-import models.Period
+import models.{Period, UserAnswers}
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object SelectWorkPeriodsPage extends QuestionPage[List[Period]] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "workPeriods"
+
+  override def cleanup(value: Option[List[Period]], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(_) =>
+        userAnswers
+          .setList(UsualAndActualHoursPage, Seq.empty)
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
 }
