@@ -32,6 +32,8 @@ class NavigatorSpec extends SpecBase {
 
     "in Normal mode" must {
 
+      val periods = List(Period(LocalDate.now().minusDays(10), LocalDate.now()))
+
       "go to Index from a page that doesn't exist in the route map" in {
         case object UnknownPage extends Page
         navigator.nextPage(UnknownPage, NormalMode, emptyUserAnswers) mustBe routes.StartPageController.onPageLoad()
@@ -67,18 +69,18 @@ class NavigatorSpec extends SpecBase {
       }
 
       "go to correct page after SelectWorkPeriodsPage" in {
-        val userAnswers = emptyUserAnswers.set(SelectWorkPeriodsPage, List(LocalDate.now())).success.value
+        val userAnswers = emptyUserAnswers.set(SelectWorkPeriodsPage, periods).success.value
         navigator.nextPage(SelectWorkPeriodsPage, NormalMode, userAnswers) mustBe routes.RegularPayAmountController.onPageLoad()
       }
 
       "go to UsualAndActualHoursPage after RegularPayAmountPage" in {
-        val userAnswers = emptyUserAnswers.set(SelectWorkPeriodsPage, List(LocalDate.now())).success.value
+        val userAnswers = emptyUserAnswers.set(SelectWorkPeriodsPage, periods).success.value
         navigator.nextPage(RegularPayAmountPage, NormalMode, userAnswers) mustBe routes.UsualAndActualHoursController.onPageLoad(1)
       }
 
       "go to Confirmation after UsualAndActualHoursPage" in {
         val userAnswers = emptyUserAnswers
-          .set(SelectWorkPeriodsPage, List(LocalDate.now()))
+          .set(SelectWorkPeriodsPage, periods)
           .success
           .value
           .set(UsualAndActualHoursPage, UsualAndActualHours(10.00, 20.00), Some(1))

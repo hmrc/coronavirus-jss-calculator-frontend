@@ -16,18 +16,17 @@
 
 package pages
 
-import java.time.LocalDate
-
+import models.Period
 import pages.behaviours.PageBehaviours
 
 class SelectWorkPeriodsPageSpec extends PageBehaviours {
 
   "SelectWorkPeriodsPage" must {
 
-    beRetrievable[List[LocalDate]](SelectWorkPeriodsPage)
+    beRetrievable[List[Period]](SelectWorkPeriodsPage)
 
-    beSettable[List[LocalDate]](SelectWorkPeriodsPage)
+    beSettable[List[Period]](SelectWorkPeriodsPage)
 
-    beRemovable[List[LocalDate]](SelectWorkPeriodsPage)
+    beRemovable[List[Period]](SelectWorkPeriodsPage)
   }
 }

@@ -83,9 +83,10 @@ class Navigator @Inject()() {
 
   private def selectUsualAndActualHoursPageRoutes: (Int, UserAnswers) => Call = { (previousIdx, userAnswers) =>
     userAnswers.get(SelectWorkPeriodsPage) match {
-      case Some(workPeriods) if workPeriods.isDefinedAt(previousIdx) => routes.UsualAndActualHoursController.onPageLoad(previousIdx + 1)
-      case Some(_)                                                   => routes.ConfirmationController.onPageLoad()
-      case _                                                         => routes.SelectWorkPeriodsController.onPageLoad()
+      case Some(workPeriods) if workPeriods.isDefinedAt(previousIdx) =>
+        routes.UsualAndActualHoursController.onPageLoad(previousIdx + 1)
+      case Some(_) => routes.ConfirmationController.onPageLoad()
+      case _       => routes.SelectWorkPeriodsController.onPageLoad()
     }
   }
 }

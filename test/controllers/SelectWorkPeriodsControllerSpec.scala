@@ -80,7 +80,7 @@ class SelectWorkPeriodsControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswersUpdated = userAnswers.set(SelectWorkPeriodsPage, List(LocalDate.of(2020, 11, 29))).success.value
+      val userAnswersUpdated = userAnswers.set(SelectWorkPeriodsPage, periods).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswersUpdated)).build()
 
@@ -95,7 +95,7 @@ class SelectWorkPeriodsControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(List(LocalDate.of(2020, 11, 29))), periods)(request, messages(application)).toString
+          view(form.fill(periods), periods)(request, messages(application)).toString
       }
     }
 
@@ -106,7 +106,7 @@ class SelectWorkPeriodsControllerSpec extends SpecBase with MockitoSugar {
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
@@ -117,7 +117,7 @@ class SelectWorkPeriodsControllerSpec extends SpecBase with MockitoSugar {
 
         val request =
           fakeRequest(POST, selectWorkPeriodsRoute)
-            .withFormUrlEncodedBody(("value[0]", LocalDate.now().toString))
+            .withFormUrlEncodedBody(("value[0]", LocalDate.now().toString + "_" + LocalDate.now().plusDays(1).toString))
 
         val result = route(application, request).value
 

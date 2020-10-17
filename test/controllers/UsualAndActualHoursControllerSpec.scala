@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBase
 import forms.UsualAndActualHoursFormProvider
-import models.{UserAnswers, UsualAndActualHours}
+import models.{Period, UserAnswers, UsualAndActualHours}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -51,7 +51,9 @@ class UsualAndActualHoursControllerSpec extends SpecBase with MockitoSugar {
     FakeRequest(method, usualAndActualHoursRoute(idx)).withCSRFToken
       .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
-  val userAnswers = emptyUserAnswers.set(SelectWorkPeriodsPage, List(LocalDate.now(), LocalDate.now().plusDays(10))).success.value
+  val periods = List(Period(LocalDate.of(2020, 10, 31), LocalDate.of(2020, 11, 29)))
+
+  val userAnswers = emptyUserAnswers.set(SelectWorkPeriodsPage, periods).success.value
 
   "UsualAndActualHours Controller" must {
 

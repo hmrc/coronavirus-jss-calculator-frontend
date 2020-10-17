@@ -16,8 +16,6 @@
 
 package forms
 
-import java.time.LocalDate
-
 import forms.behaviours.CheckboxFieldBehaviours
 import generators.Generators
 import org.scalacheck.Gen
@@ -34,18 +32,15 @@ class SelectWorkPeriodsFormProviderSpec extends CheckboxFieldBehaviours with Gen
     val requiredKey = "selectWorkPeriods.error.required"
 
     "bind valid values" in {
-      val dateGen = datesBetween(
-        LocalDate.of(2020, 3, 1),
-        LocalDate.of(2020, 6, 30)
-      )
 
       val listGen = for {
         length <- Gen.chooseNum(1, 10)
-        list   <- Gen.listOfN(length, dateGen)
+        list   <- Gen.listOfN(length, periodGen)
       } yield list
 
       forAll(listGen) { list =>
-        val data = list.zipWithIndex.map(item => s"$fieldName[${item._2}]" -> item._1.toString).toMap
+        val data =
+          list.zipWithIndex.map(item => s"$fieldName[${item._2}]" -> s"${item._1.startDate.toString}_${item._1.endDate.toString}").toMap
         form.bind(data).get shouldEqual list
       }
 
@@ -55,7 +50,7 @@ class SelectWorkPeriodsFormProviderSpec extends CheckboxFieldBehaviours with Gen
       val data = Map(
         s"$fieldName[0]" -> "invalid value"
       )
-      form.bind(data).errors should contain(FormError(s"$fieldName[0]", "error.date"))
+      form.bind(data).errors should contain(FormError(s"$fieldName[0]", "Text 'invalid value' could not be parsed at index 0"))
     }
 
     "fail to bind when no answers are selected" in {

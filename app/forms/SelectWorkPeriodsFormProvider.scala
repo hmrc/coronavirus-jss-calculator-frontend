@@ -16,18 +16,16 @@
 
 package forms
 
-import java.time.LocalDate
-
 import forms.mappings.Mappings
 import javax.inject.Inject
+import models.Period
 import play.api.data.Form
 import play.api.data.Forms.{list, of}
-import play.api.data.format.Formats.localDateFormat
 
 class SelectWorkPeriodsFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[List[LocalDate]] =
+  def apply(): Form[List[Period]] =
     Form(
-      "value" -> list(of(localDateFormat)).verifying("selectWorkPeriods.error.required", _.nonEmpty)
+      "value" -> list(of(Period.formatter)).verifying("selectWorkPeriods.error.required", _.nonEmpty)
     )
 }

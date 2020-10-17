@@ -18,7 +18,7 @@ package generators
 
 import java.time.{Instant, LocalDate, ZoneOffset}
 
-import models.{ClaimPeriod, PayFrequency, PayMethod, PayPeriods}
+import models.{ClaimPeriod, PayFrequency, PayMethod, PayPeriods, Period}
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
@@ -60,4 +60,15 @@ trait ModelGenerators {
     }
   }
 
+  val periodGen: Gen[Period] =
+    for {
+      date <- datesGen
+    } yield {
+      Period(date, date.plusDays(10))
+    }
+
+  implicit lazy val arbitraryPeriod: Arbitrary[Period] =
+    Arbitrary {
+      periodGen
+    }
 }
