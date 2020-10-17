@@ -21,14 +21,14 @@ import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, Month}
 
 import models.PayFrequency.{FortNightly, FourWeekly, Monthly, Weekly}
-import models.{Grant, GrantForPeriod, PayFrequency, Period, SupportClaimPeriod}
+import models.{Grant, GrantForPeriod, PayFrequency, PeriodWithHours, SupportClaimPeriod}
 
 import scala.math.BigDecimal.{RoundingMode, double2bigDecimal}
 
 trait RegularPayGrantCalculator {
 
   def calculateRegularPayGrant(
-    periods: List[Period],
+    periods: List[PeriodWithHours],
     referencePay: BigDecimal,
     supportClaimPeriod: SupportClaimPeriod,
     payFrequency: PayFrequency): Grant = {
@@ -57,7 +57,7 @@ trait RegularPayGrantCalculator {
 
   def calculateGrantForPartialPeriod(
     referencePay: BigDecimal,
-    period: Period,
+    period: PeriodWithHours,
     supportClaimPeriod: SupportClaimPeriod,
     daysInFrequency: Int): Double = {
     val daysInPartialPeriod = calculateEligibleDaysForClaim(period.endDate, supportClaimPeriod, daysInFrequency) + 1
@@ -71,7 +71,7 @@ trait RegularPayGrantCalculator {
     grant.doubleValue()
   }
 
-  def calculateGrantForFullPeriod(referencePay: BigDecimal, period: Period, payFrequency: PayFrequency): Double = {
+  def calculateGrantForFullPeriod(referencePay: BigDecimal, period: PeriodWithHours, payFrequency: PayFrequency): Double = {
     val referencePayCap = RegularPayGrantCalculator.fullPeriodPayCaps.getOrElse(payFrequency, 0.0)
     val adjustedReferencePay = referencePay.doubleValue()
     val actualReferencePay = scala.math.min(adjustedReferencePay, referencePayCap)
@@ -83,7 +83,7 @@ trait RegularPayGrantCalculator {
   def calculateEligibleDaysForClaim(periodEndDate: LocalDate, supportClaimPeriod: SupportClaimPeriod, payFrequencyDays: Int): Long =
     scala.math.min(ChronoUnit.DAYS.between(supportClaimPeriod.startDate, periodEndDate), payFrequencyDays)
 
-  def isPartialPeriod(period: Period, supportClaimPeriod: SupportClaimPeriod): Boolean =
+  def isPartialPeriod(period: PeriodWithHours, supportClaimPeriod: SupportClaimPeriod): Boolean =
     if (period.startDate.isBefore(supportClaimPeriod.startDate)) true else false
 
 }

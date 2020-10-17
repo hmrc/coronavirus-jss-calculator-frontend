@@ -29,7 +29,7 @@
         button: components.button
 )
 
-@(form: Form[_], periods: List[Period], claimPeriod: YearMonth)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], periods: List[Period])(implicit request: Request[_], messages: Messages)
 
 @govukLayout(pageTitle = Some(title(form, "payPeriods.title"))) {
 
@@ -47,7 +47,7 @@
             }
         </ul>
 
-        @p(Html(Messages("payPeriods.p2", dateToString(claimPeriod.atDay(1)), dateToString(claimPeriod.atEndOfMonth()))))
+        @p(Html(Messages("payPeriods.p2")))
 
         @p(Html(Messages("payPeriods.p3")))
 

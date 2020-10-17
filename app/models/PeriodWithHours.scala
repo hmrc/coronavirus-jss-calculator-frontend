@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    main_template: templates.GovukLayoutWrapper,
-    h1: components.h1,
-    button: components.button
+package models
+
+import java.time.LocalDate
+
+import play.api.libs.json.Json
+
+case class PeriodWithHours(
+  startDate: LocalDate,
+  endDate: LocalDate,
+  usualHours: Double,
+  actualHours: Double
 )
 
-@()(implicit request: Request[_], messages: Messages)
-
-@main_template(Some(titleNoForm("session_expired.title")), timeout = false) {
-
-    @h1(messages("session_expired.heading"))
-
-    <p class="govuk-body">@messages("session_expired.guidance")</p>
-
- @button("session_expired.restart", href = Some(routes.ClaimPeriodController.onPageLoad().url))
+object PeriodWithHours {
+  implicit val format = Json.format[PeriodWithHours]
 }

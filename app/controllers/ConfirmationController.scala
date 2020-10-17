@@ -16,12 +16,10 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import config.FrontendAppConfig
 import controllers.actions._
 import javax.inject.Inject
-import models.Period
+import models.Grant
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -38,6 +36,6 @@ class ConfirmationController @Inject()(
 ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
-    Ok(view(Period(LocalDate.now(), LocalDate.now().plusDays(30), 0, 0), appConfig.calculatorVersion))
+    Ok(view(Grant(List.empty, true, 200.34), appConfig.calculatorVersion))
   }
 }

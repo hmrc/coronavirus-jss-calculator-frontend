@@ -30,9 +30,9 @@ trait PeriodHelper {
     payFrequency match {
       case PayFrequency.Monthly =>
         if (lastPayDay.isEqual(lastPayDay.`with`(lastDayOfMonth()))) {
-          List(Period(lastPayDay.plusDays(1), supportClaimPeriod.endDate, 0, 0))
+          List(Period(lastPayDay.plusDays(1), supportClaimPeriod.endDate))
         } else {
-          List(Period(lastPayDay.plusDays(1), lastPayDay.plusMonths(1).minusDays(1), 0, 0))
+          List(Period(lastPayDay.plusDays(1), lastPayDay.plusMonths(1).minusDays(1)))
         }
       case _ =>
         computePayPeriods(PayFrequency.payFrequencyDays(payFrequency), lastPayDay, supportClaimPeriod)
@@ -42,9 +42,10 @@ trait PeriodHelper {
     var periodStartDate = lastPayDay.plusDays(1)
     val periods: mutable.ListBuffer[Period] = ListBuffer()
     while (!periodStartDate.plusDays(payFrequencyDays - 1).isAfter(supportClaimPeriod.endDate)) {
-      val periodEndDate = Period(periodStartDate, periodStartDate.plusDays(payFrequencyDays - 1), 0, 0)
-      if (!periodEndDate.endDate.isBefore(supportClaimPeriod.startDate))
+      val periodEndDate = Period(periodStartDate, periodStartDate.plusDays(payFrequencyDays - 1))
+      if (!periodEndDate.endDate.isBefore(supportClaimPeriod.startDate)) {
         periods += periodEndDate
+      }
       periodStartDate = periodStartDate.plusDays(payFrequencyDays)
     }
     sortedEndDates(periods.toList)

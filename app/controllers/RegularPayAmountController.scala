@@ -21,7 +21,7 @@ import forms.RegularPayAmountFormProvider
 import javax.inject.Inject
 import models.NormalMode
 import navigation.Navigator
-import pages.RegularPayAmountPage
+import pages.{LastPayDatePage, RegularPayAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -51,14 +51,23 @@ class RegularPayAmountController @Inject()(
       case Some(value) => form.fill(value)
     }
 
-    Ok(view(preparedForm))
+    request.userAnswers.get(LastPayDatePage) match {
+      case Some(date) => Ok(view(preparedForm, date))
+      case None       => Redirect(routes.LastPayDateController.onPageLoad())
+    }
   }
 
   def onSubmit(): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
+        formWithErrors => {
+          val result = request.userAnswers.get(LastPayDatePage) match {
+            case Some(date) => BadRequest(view(formWithErrors, date))
+            case None       => Redirect(routes.LastPayDateController.onPageLoad())
+          }
+          Future.successful(result)
+        },
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(RegularPayAmountPage, value))

@@ -55,7 +55,7 @@ class PayPeriodsControllerSpec extends SpecBase with MockitoSugar {
       PayFrequencyPage.toString -> JsString(payFrequency),
       LastPayDatePage.toString  -> JsString(lastPayDate))
   )
-  val periods = List(Period(LocalDate.of(2020, 10, 31), LocalDate.of(2020, 11, 29), 0, 0))
+  val periods = List(Period(LocalDate.of(2020, 10, 31), LocalDate.of(2020, 11, 29)))
 
   "PayPeriods Controller" must {
 
@@ -74,7 +74,7 @@ class PayPeriodsControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, periods, claimPeriod.yearMonth)(request, messages(application)).toString
+          view(form, periods)(request, messages(application)).toString
       }
     }
 
@@ -95,7 +95,7 @@ class PayPeriodsControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(PayPeriods.values.head), periods, claimPeriod.yearMonth)(request, messages(application)).toString
+          view(form.fill(PayPeriods.values.head), periods)(request, messages(application)).toString
       }
     }
 
@@ -146,7 +146,7 @@ class PayPeriodsControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, periods, claimPeriod.yearMonth)(request, messages(application)).toString
+          view(boundForm, periods)(request, messages(application)).toString
       }
     }
 

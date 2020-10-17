@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import java.time.LocalDate
+
 @this(
         govukLayout: templates.GovukLayoutWrapper,
         errorSummary: components.errorSummary,
@@ -25,15 +27,15 @@
         details: components.details,
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], lastPayDate: LocalDate)(implicit request: Request[_], messages: Messages)
 
-    @govukLayout(pageTitle = Some(title(form, "endPayDate.title"))) {
+    @govukLayout(pageTitle = Some(title(form, "endPayDate.title", titleMessageArgs = Seq(dateToString(lastPayDate))))) {
 
         @formHelper(action = EndPayDateController.onSubmit(), 'autoComplete -> "off") {
 
             @errorSummary(form.errors, Some("date-value.day"))
 
-            @h1(Messages("endPayDate.heading"))
+            @h1(Messages("endPayDate.heading", dateToString(lastPayDate)))
 
             @p(Html(Messages("endPayDate.p1")))
 

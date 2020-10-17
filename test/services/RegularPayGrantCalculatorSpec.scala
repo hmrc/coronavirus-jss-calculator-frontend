@@ -19,7 +19,7 @@ package services
 import java.time.LocalDate
 
 import base.SpecBase
-import models.{PayFrequency, Period, SupportClaimPeriod}
+import models.{PayFrequency, PeriodWithHours, SupportClaimPeriod}
 
 class RegularPayGrantCalculatorSpec extends SpecBase {
 
@@ -29,32 +29,32 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
 
       "correctly compute the grant for default scenario" in new RegularPayGrantCalculator {
 
-        val periods = List(
-          Period(
+        val PeriodWithHourss = List(
+          PeriodWithHours(
             LocalDate.of(2020, 10, 26),
             LocalDate.of(2020, 11, 1),
             5.7,
             2
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 2),
             LocalDate.of(2020, 11, 8),
             40,
             25
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 9),
             LocalDate.of(2020, 11, 15),
             40,
             22
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 16),
             LocalDate.of(2020, 11, 22),
             40,
             10
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 23),
             LocalDate.of(2020, 11, 29),
             40,
@@ -62,43 +62,43 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           )
         )
 
-        val calculatedGrantForEachPeriod = calculateRegularPayGrant(
-          periods,
+        val calculatedGrantForEachPeriodWithHours = calculateRegularPayGrant(
+          PeriodWithHourss,
           350,
           SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30)),
           PayFrequency.Weekly
         )
-        calculatedGrantForEachPeriod.totalGrant mustEqual 267.49
+        calculatedGrantForEachPeriodWithHours.totalGrant mustEqual 267.49
       }
 
-      "correctly compute the grant for partial period at the beginning of the month - STWA agreed for all pay periods" in new RegularPayGrantCalculator {
+      "correctly compute the grant for partial PeriodWithHours at the beginning of the month - STWA agreed for all pay PeriodWithHourss" in new RegularPayGrantCalculator {
 
-        val periods = List(
-          Period(
+        val PeriodWithHourss = List(
+          PeriodWithHours(
             LocalDate.of(2020, 10, 27),
             LocalDate.of(2020, 11, 2),
             15,
             7.5
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 3),
             LocalDate.of(2020, 11, 9),
             37.5,
             15
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 10),
             LocalDate.of(2020, 11, 16),
             37.5,
             15
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 17),
             LocalDate.of(2020, 11, 23),
             37.5,
             15
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 24),
             LocalDate.of(2020, 11, 20),
             37.5,
@@ -106,44 +106,44 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           )
         )
 
-        val calculatedGrantForEachPeriod = calculateRegularPayGrant(
-          periods,
+        val calculatedGrantForEachPeriodWithHours = calculateRegularPayGrant(
+          PeriodWithHourss,
           300,
           SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30)),
           PayFrequency.Weekly
         )
-        calculatedGrantForEachPeriod.totalGrant mustEqual 254.29
+        calculatedGrantForEachPeriodWithHours.totalGrant mustEqual 254.29
       }
 
-      "correctly compute the grant for Partial period at the beginning of the month - STWA agreed for all pay periods - " +
-        "Last pay period cuts across to December" in new RegularPayGrantCalculator {
+      "correctly compute the grant for Partial PeriodWithHours at the beginning of the month - STWA agreed for all pay PeriodWithHourss - " +
+        "Last pay PeriodWithHours cuts across to December" in new RegularPayGrantCalculator {
 
-        val periods = List(
-          Period(
+        val PeriodWithHourss = List(
+          PeriodWithHours(
             LocalDate.of(2020, 10, 26),
             LocalDate.of(2020, 11, 1),
             5.7,
             2
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 2),
             LocalDate.of(2020, 11, 8),
             40,
             25
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 9),
             LocalDate.of(2020, 11, 15),
             40,
             22
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 16),
             LocalDate.of(2020, 11, 22),
             40,
             10
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 23),
             LocalDate.of(2020, 11, 29),
             40,
@@ -151,38 +151,38 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           )
         )
 
-        val calculatedGrantForEachPeriod = calculateRegularPayGrant(
-          periods,
+        val calculatedGrantForEachPeriodWithHours = calculateRegularPayGrant(
+          PeriodWithHourss,
           350,
           SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30)),
           PayFrequency.Weekly
         )
 
-        calculatedGrantForEachPeriod.totalGrant mustEqual 267.49
+        calculatedGrantForEachPeriodWithHours.totalGrant mustEqual 267.49
       }
 
       "correctly compute the grant for Ref pay capped" in new RegularPayGrantCalculator {
 
-        val periods = List(
-          Period(
+        val PeriodWithHourss = List(
+          PeriodWithHours(
             LocalDate.of(2020, 10, 30),
             LocalDate.of(2020, 11, 5),
             15,
             7.5
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 6),
             LocalDate.of(2020, 11, 12),
             37.5,
             15
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 13),
             LocalDate.of(2020, 11, 19),
             37.5,
             15
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 20),
             LocalDate.of(2020, 11, 26),
             37.5,
@@ -190,43 +190,43 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           )
         )
 
-        val calculatedGrantForEachPeriod = calculateRegularPayGrant(
-          periods,
+        val calculatedGrantForEachPeriodWithHours = calculateRegularPayGrant(
+          PeriodWithHourss,
           750,
           SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30)),
           PayFrequency.Weekly
         )
-        calculatedGrantForEachPeriod.totalGrant mustEqual 519.50
+        calculatedGrantForEachPeriodWithHours.totalGrant mustEqual 519.50
       }
 
       "correctly compute the grant for eligibility not met. Less than 33% " in new RegularPayGrantCalculator {
 
-        val periods = List(
-          Period(
+        val PeriodWithHourss = List(
+          PeriodWithHours(
             LocalDate.of(2020, 10, 27),
             LocalDate.of(2020, 11, 2),
             15,
             0
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 3),
             LocalDate.of(2020, 11, 9),
             37.5,
             7.5
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 10),
             LocalDate.of(2020, 11, 16),
             37.5,
             7.5
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 17),
             LocalDate.of(2020, 11, 23),
             37.5,
             7.5
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 24),
             LocalDate.of(2020, 11, 30),
             37.5,
@@ -234,19 +234,19 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           )
         )
 
-        val calculatedGrantForEachPeriod = calculateRegularPayGrant(
-          periods,
+        val calculatedGrantForEachPeriodWithHours = calculateRegularPayGrant(
+          PeriodWithHourss,
           250,
           SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30)),
           PayFrequency.Weekly
         )
-        calculatedGrantForEachPeriod.totalGrant mustEqual 290.49
+        calculatedGrantForEachPeriodWithHours.totalGrant mustEqual 290.49
       }
 
-      "correctly compute the grant for select only one pay period within the claim period" in new RegularPayGrantCalculator {
+      "correctly compute the grant for select only one pay PeriodWithHours within the claim PeriodWithHours" in new RegularPayGrantCalculator {
 
-        val periods = List(
-          Period(
+        val PeriodWithHourss = List(
+          PeriodWithHours(
             LocalDate.of(2020, 10, 1),
             LocalDate.of(2020, 11, 7),
             37.5,
@@ -254,31 +254,31 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           )
         )
 
-        val calculatedGrantForEachPeriod = calculateRegularPayGrant(
-          periods,
+        val calculatedGrantForEachPeriodWithHours = calculateRegularPayGrant(
+          PeriodWithHourss,
           350,
           SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30)),
           PayFrequency.Weekly
         )
-        calculatedGrantForEachPeriod.totalGrant mustEqual 70
+        calculatedGrantForEachPeriodWithHours.totalGrant mustEqual 70
       }
 
-      "correctly compute the grant for November claim - Select three of the pay periods for the calculation" in new RegularPayGrantCalculator {
+      "correctly compute the grant for November claim - Select three of the pay PeriodWithHourss for the calculation" in new RegularPayGrantCalculator {
 
-        val periods = List(
-          Period(
+        val PeriodWithHourss = List(
+          PeriodWithHours(
             LocalDate.of(2020, 10, 1),
             LocalDate.of(2020, 11, 7),
             40,
             14
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 8),
             LocalDate.of(2020, 11, 14),
             40,
             14
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 22),
             LocalDate.of(2020, 11, 28),
             40,
@@ -286,25 +286,25 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           )
         )
 
-        val calculatedGrantForEachPeriod = calculateRegularPayGrant(
-          periods,
+        val calculatedGrantForEachPeriodWithHours = calculateRegularPayGrant(
+          PeriodWithHourss,
           400,
           SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30)),
           PayFrequency.Weekly
         )
-        calculatedGrantForEachPeriod.totalGrant mustEqual 260.01
+        calculatedGrantForEachPeriodWithHours.totalGrant mustEqual 260.01
       }
 
-      "correctly compute the grant for November claim - Staggered STWA covering 2 pay periods" in new RegularPayGrantCalculator {
+      "correctly compute the grant for November claim - Staggered STWA covering 2 pay PeriodWithHourss" in new RegularPayGrantCalculator {
 
-        val periods = List(
-          Period(
+        val PeriodWithHourss = List(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 1),
             LocalDate.of(2020, 11, 7),
             50,
             30
           ),
-          Period(
+          PeriodWithHours(
             LocalDate.of(2020, 11, 22),
             LocalDate.of(2020, 11, 28),
             50,
@@ -312,13 +312,13 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           )
         )
 
-        val calculatedGrantForEachPeriod = calculateRegularPayGrant(
-          periods,
+        val calculatedGrantForEachPeriodWithHours = calculateRegularPayGrant(
+          PeriodWithHourss,
           670,
           SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30)),
           PayFrequency.Weekly
         )
-        calculatedGrantForEachPeriod.totalGrant mustEqual 178.66
+        calculatedGrantForEachPeriodWithHours.totalGrant mustEqual 178.66
       }
     }
   }
