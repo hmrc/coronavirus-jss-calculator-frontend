@@ -141,6 +141,7 @@ error.summary.title = There is a problem
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
 session_expired.guidance = The details you have given have been deleted because you did not continue the service for 15 minutes.
+session_expired.restart = Start another calculation
 
 claimPeriod.title = What’s the start date of this claim?
 claimPeriod.heading = What’s the start date of this claim?
@@ -225,10 +226,10 @@ lastPayDate.p2 = We’ll use this date to work out all the pay periods that cove
 lastPayDate.details.title = What is a pay period?
 lastPayDate.details.p1 = A ‘pay period’ is the period of time that the employee is paid for, such as weekly or monthly. When we ask for the end date of a pay period, it’s the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually gets their pay.
 lastPayDate.hint = For example 01 11 2020
-lastPayDate.error.required.all = Enter the LastPayDate
-lastPayDate.error.required.two = The LastPayDate must include {0} and {1}
-lastPayDate.error.required = The LastPayDate must include {0}
-lastPayDate.error.invalid = Enter a real LastPayDate
+lastPayDate.error.required.all = Enter the correct date to apply for the Job Support scheme
+lastPayDate.error.required.two = Enter the correct date to apply for the Job Support scheme
+lastPayDate.error.required = Enter the correct date to apply for the Job Support scheme
+lastPayDate.error.invalid = Enter the correct date to apply for the Job Support scheme
 
 month.1 = January
 month.2 = February
@@ -259,9 +260,9 @@ selectWorkPeriods.hint = Select all that apply.
 selectWorkPeriods.from.to = {0} to {1}
 selectWorkPeriods.error.required = Select all that apply
 
-regularPayAmount.title = On 19 July 2020, what was this employee’s most recent pay amount?
-regularPayAmount.heading = On 19 July 2020, what was this employee’s most recent pay amount?
-regularPayAmount.p1 = This is the latest gross payment that was due on or before 19 March, before deductions.
+regularPayAmount.title = On {0}, what was this employee’s most recent pay amount?
+regularPayAmount.heading = On {0}, what was this employee’s most recent pay amount?
+regularPayAmount.p1 = This is the latest gross payment that was due on or before {0}, before deductions.
 regularPayAmount.p2 = Do not include discretionary payments, non-cash payments or non-monetary benefits.
 regularPayAmount.info = If this employee started work between 1 and 18 March 2020, enter the amount they’ll get paid from now on.
 regularPayAmount.error.required = Enter regular pay amount
@@ -285,8 +286,8 @@ whatToInclude.doNotInclude.l1.l3 = discretionary commission payments
 whatToInclude.doNotInclude.l2 = non-cash payments
 whatToInclude.doNotInclude.l3 = non-monetary benefits like benefits in kind (such as a company car) and salary sacrifice schemes that reduce taxable pay
 
-usualAndActualHours.title = What were the employee’s usual and actual hours from 23 November to 29 November 2020?
-usualAndActualHours.heading = What were the employee’s usual and actual hours from 23 November to 29 November 2020?
+usualAndActualHours.title = What were the employee’s usual and actual hours from {0} to {1}?
+usualAndActualHours.heading = What were the employee’s usual and actual hours from {0} to {1}?
 usualHours.p1 = Usual hours worked in this period
 usualHours.hint = Enter the usual hours that would be worked outside the scheme in decimal format, such as 124.4
 usualHours.error.nonNumeric = Enter your usual hours using numbers
@@ -318,8 +319,8 @@ confirmation.breakdown.p1 = You told us this employee is paid a regular amount e
 confirmation.breakdown.p2 = You can claim a maximum amount. If this affects your claim, we’ve adjusted the calculations. Work out the maximum wage amount you can claim (opens in new tab).
 confirmation.breakdown.p3 = Calculations are rounded to the nearest penny unless otherwise stated.
 
-endPayDate.title = What’s the end of the next pay period after 30 October 2020?
-endPayDate.heading = What’s the end of the next pay period after 30 October 2020?
+endPayDate.title = What’s the end of the next pay period after {0}?
+endPayDate.heading = What’s the end of the next pay period after {0}?
 endPayDate.p1 = This is the last day in the pay period, not the date they received their pay.
 endPayDate.details.title = What is a pay period?
 endPayDate.details.p1 = A ‘pay period’ is the period of time that the employee is paid for, such as weekly or monthly. When we ask for the end date of a pay period, it’s the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually gets their pay.
