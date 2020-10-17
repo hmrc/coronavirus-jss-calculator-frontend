@@ -16,6 +16,8 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import base.SpecBase
 import forms.UsualAndActualHoursFormProvider
 import models.{UserAnswers, UsualAndActualHours}
@@ -23,9 +25,11 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.UsualAndActualHoursPage
+import pages.{SelectWorkPeriodsPage, UsualAndActualHoursPage}
 import play.api.inject.bind
-import play.api.mvc.Call
+import play.api.mvc.{AnyContentAsEmpty, Call}
+import play.api.test.CSRFTokenHelper._
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.UsualAndActualHoursView
@@ -41,17 +45,23 @@ class UsualAndActualHoursControllerSpec extends SpecBase with MockitoSugar {
 
   private val validAnswer = UsualAndActualHours(10.00, 20.00)
 
-  private lazy val usualAndActualHoursRoute = routes.UsualAndActualHoursController.onPageLoad().url
+  private def usualAndActualHoursRoute(idx: Int) = routes.UsualAndActualHoursController.onPageLoad(idx).url
+
+  def getRequest(method: String, idx: Int) =
+    FakeRequest(method, usualAndActualHoursRoute(idx)).withCSRFToken
+      .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
+
+  val userAnswers = emptyUserAnswers.set(SelectWorkPeriodsPage, List(LocalDate.now(), LocalDate.now().plusDays(10))).success.value
 
   "UsualAndActualHours Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
 
-        val request = fakeRequest(GET, usualAndActualHoursRoute)
+        val request = getRequest(GET, 1)
 
         val result = route(application, request).value
 
@@ -60,19 +70,19 @@ class UsualAndActualHoursControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form)(request, messages(application)).toString
+          view(form, 1)(request, messages(application)).toString
       }
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(UsualAndActualHoursPage, validAnswer).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(UsualAndActualHoursPage, validAnswer, Some(1)).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
 
-        val request = fakeRequest(GET, usualAndActualHoursRoute)
+        val request = getRequest("GET", 1)
 
         val view = application.injector.instanceOf[UsualAndActualHoursView]
 
@@ -81,7 +91,7 @@ class UsualAndActualHoursControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(validAnswer))(request, messages(application)).toString
+          view(form.fill(validAnswer), 1)(request, messages(application)).toString
       }
     }
 
@@ -102,7 +112,7 @@ class UsualAndActualHoursControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
 
         val request =
-          fakeRequest(POST, usualAndActualHoursRoute)
+          fakeRequest(POST, usualAndActualHoursRoute(1))
             .withFormUrlEncodedBody("usualHours" -> validAnswer.usualHours.toString, "actualHours" -> validAnswer.actualHours.toString)
 
         val result = route(application, request).value
@@ -120,7 +130,7 @@ class UsualAndActualHoursControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
 
         val request =
-          fakeRequest(POST, usualAndActualHoursRoute)
+          fakeRequest(POST, usualAndActualHoursRoute(1))
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -132,7 +142,7 @@ class UsualAndActualHoursControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm)(request, messages(application)).toString
+          view(boundForm, 1)(request, messages(application)).toString
       }
     }
 
@@ -142,7 +152,7 @@ class UsualAndActualHoursControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
 
-        val request = fakeRequest(GET, usualAndActualHoursRoute)
+        val request = fakeRequest(GET, usualAndActualHoursRoute(1))
 
         val result = route(application, request).value
 
@@ -157,7 +167,7 @@ class UsualAndActualHoursControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          fakeRequest(POST, usualAndActualHoursRoute)
+          fakeRequest(POST, usualAndActualHoursRoute(1))
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value

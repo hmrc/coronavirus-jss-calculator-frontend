@@ -23,11 +23,11 @@
         button: components.button
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], idx: Int)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(pageTitle = Some(title(form, "usualAndActualHours.title"))) {
 
-    @formHelper(action = UsualAndActualHoursController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = UsualAndActualHoursController.onSubmit(idx), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 

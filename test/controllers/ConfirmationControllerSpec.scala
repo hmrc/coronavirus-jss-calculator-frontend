@@ -42,7 +42,7 @@ class ConfirmationControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(Period(LocalDate.now(), LocalDate.now().plusDays(30)), "1.0")(request, messages(application)).toString
+          view(Period(LocalDate.now(), LocalDate.now().plusDays(30), 0, 0), "1.0")(request, messages(application)).toString
       }
     }
   }

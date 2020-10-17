@@ -45,25 +45,25 @@ class UsualAndActualHoursController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(UsualAndActualHoursPage) match {
+  def onPageLoad(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
+    val preparedForm = request.userAnswers.get(UsualAndActualHoursPage, Some(idx)) match {
       case None        => form
       case Some(value) => form.fill(value)
     }
 
-    Ok(view(preparedForm))
+    Ok(view(preparedForm, idx))
   }
 
-  def onSubmit(): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
+  def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UsualAndActualHoursPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(UsualAndActualHoursPage, value, Some(idx)))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(UsualAndActualHoursPage, NormalMode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(UsualAndActualHoursPage, NormalMode, updatedAnswers, Some(idx)))
       )
   }
 }

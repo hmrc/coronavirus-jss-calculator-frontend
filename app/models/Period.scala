@@ -23,7 +23,9 @@ import play.api.libs.json.{Format, Json}
 
 final case class Period(
   startDate: LocalDate,
-  endDate: LocalDate
+  endDate: LocalDate,
+  usualHours: Double,
+  actualHours: Double //TODO: check if validation in place to not divide by zero
 )
 
 object Period {

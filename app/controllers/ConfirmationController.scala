@@ -38,6 +38,6 @@ class ConfirmationController @Inject()(
 ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
-    Ok(view(Period(LocalDate.now(), LocalDate.now().plusDays(30)), appConfig.calculatorVersion))
+    Ok(view(Period(LocalDate.now(), LocalDate.now().plusDays(30), 0, 0), appConfig.calculatorVersion))
   }
 }

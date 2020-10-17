@@ -18,11 +18,19 @@ package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Grant(
+final case class GrantForPeriod(
   period: Period,
-  usualHours: BigDecimal,
-  actualHours: BigDecimal,
   amount: BigDecimal
+)
+
+object GrantForPeriod {
+  implicit val format: OFormat[GrantForPeriod] = Json.format[GrantForPeriod]
+}
+
+final case class Grant(
+  grantForPeriods: List[GrantForPeriod],
+  eligible: Boolean,
+  totalGrant: BigDecimal
 )
 
 object Grant {
