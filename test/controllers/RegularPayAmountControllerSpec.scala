@@ -16,14 +16,16 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import base.SpecBase
 import forms.RegularPayAmountFormProvider
-import models.{Amount, UserAnswers}
+import models.Amount
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.RegularPayAmountPage
+import pages.{LastPayDatePage, RegularPayAmountPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.Helpers._
@@ -41,30 +43,13 @@ class RegularPayAmountControllerSpec extends SpecBase with MockitoSugar {
 
   private lazy val regularPayAmountRoute = routes.RegularPayAmountController.onPageLoad().url
 
+  val lastPayDate = LocalDate.of(2020, 10, 30)
+
+  val userAnswers = emptyUserAnswers.set(LastPayDatePage, lastPayDate).success.value
+
   "RegularPayAmount Controller" must {
 
     "return OK and the correct view for a GET" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      running(application) {
-
-        val request = fakeRequest(GET, regularPayAmountRoute)
-
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[RegularPayAmountView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form)(request, messages(application)).toString
-      }
-    }
-
-    "populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers(userAnswersId).set(RegularPayAmountPage, Amount(10.99)).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -72,6 +57,27 @@ class RegularPayAmountControllerSpec extends SpecBase with MockitoSugar {
 
         val request = fakeRequest(GET, regularPayAmountRoute)
 
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[RegularPayAmountView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form, lastPayDate)(request, messages(application)).toString
+      }
+    }
+
+    "populate the view correctly on a GET when the question has previously been answered" in {
+
+      val userAnswersUpdated = userAnswers.set(RegularPayAmountPage, Amount(10.99)).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswersUpdated)).build()
+
+      running(application) {
+
+        val request = fakeRequest(GET, regularPayAmountRoute)
+
         val view = application.injector.instanceOf[RegularPayAmountView]
 
         val result = route(application, request).value
@@ -79,7 +85,7 @@ class RegularPayAmountControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(Amount(10.99)))(request, messages(application)).toString
+          view(form.fill(Amount(10.99)), lastPayDate)(request, messages(application)).toString
       }
     }
 
@@ -112,7 +118,7 @@ class RegularPayAmountControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
 
@@ -129,7 +135,7 @@ class RegularPayAmountControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm)(request, messages(application)).toString
+          view(boundForm, lastPayDate)(request, messages(application)).toString
       }
     }
 
