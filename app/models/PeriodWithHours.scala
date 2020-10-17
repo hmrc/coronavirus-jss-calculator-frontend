@@ -16,23 +16,17 @@
 
 package models
 
-import play.api.libs.json.{Json, OFormat}
+import java.time.LocalDate
 
-final case class GrantForPeriod(
-  period: PeriodWithHours,
-  amount: BigDecimal
+import play.api.libs.json.Json
+
+case class PeriodWithHours(
+  startDate: LocalDate,
+  endDate: LocalDate,
+  usualHours: Double,
+  actualHours: Double
 )
 
-object GrantForPeriod {
-  implicit val format: OFormat[GrantForPeriod] = Json.format[GrantForPeriod]
-}
-
-final case class Grant(
-  grantForPeriods: List[GrantForPeriod],
-  eligible: Boolean,
-  totalGrant: BigDecimal
-)
-
-object Grant {
-  implicit val format: OFormat[Grant] = Json.format[Grant]
+object PeriodWithHours {
+  implicit val format = Json.format[PeriodWithHours]
 }

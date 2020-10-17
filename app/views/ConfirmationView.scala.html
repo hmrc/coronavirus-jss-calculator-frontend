@@ -29,7 +29,7 @@
         appConfig: FrontendAppConfig
 )
 
-@(claimPeriod: Period, version: String)(implicit request: Request[_], messages: Messages)
+@(grant: Grant, version: String)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(pageTitle = Some(titleNoForm("confirmation.title"))) {
 

@@ -76,4 +76,7 @@ object Period {
       checked = form.data.values.contains(selectedWorkPeriod)
     )
   }
+
+  def toPeriodWithHours(period: Period, usualAndActualHours: UsualAndActualHours): PeriodWithHours =
+    PeriodWithHours(period.startDate, period.endDate, usualAndActualHours.usualHours, usualAndActualHours.actualHours)
 }
