@@ -14,38 +14,34 @@
  * limitations under the License.
  *@
 
-@import controllers.routes.SelectWorkPeriodsController
-@import models.{Mode, SelectWorkPeriods}
-@import java.time.LocalDate
-
 @this(
-    govukLayout: templates.GovukLayoutWrapper,
-    formHelper: FormWithCSRF,
-    errorSummary: components.errorSummary,
-    button: components.button,
-    h1: components.h1,
-    checkboxes: components.inputCheckboxes
+        govukLayout: templates.GovukLayoutWrapper,
+        formHelper: FormWithCSRF,
+        errorSummary: components.errorSummary,
+        button: components.button,
+        h1: components.h1,
+        checkboxes: components.inputCheckboxes
 )
 
-@(form: Form[List[LocalDate]], periods: List[Period])(implicit request: Request[_], messages: Messages)
+@(form: Form[List[Period]], periods: List[Period])(implicit request: Request[_], messages: Messages)
 
-@govukLayout(pageTitle = Some(title(form, "selectWorkPeriods.title"))) {
+    @govukLayout(pageTitle = Some(title(form, "selectWorkPeriods.title"))) {
 
-    @formHelper(action = SelectWorkPeriodsController.onSubmit()) {
+        @formHelper(action = SelectWorkPeriodsController.onSubmit()) {
 
-        @errorSummary(form.errors)
+            @errorSummary(form.errors)
 
-        @h1(messages("selectWorkPeriods.heading"))
+            @h1(messages("selectWorkPeriods.heading"))
 
-        @checkboxes(
-            form = form,
-            legend = messages("selectWorkPeriods.heading"),
-            legendAsHeading = false,
-            legendClasses = "govuk-visually-hidden",
-            items = SelectWorkPeriods.options(form, periods),
-            hint = Some(Html(messages("selectWorkPeriods.hint")))
-        )
+            @checkboxes(
+                form = form,
+                legend = messages("selectWorkPeriods.heading"),
+                legendAsHeading = false,
+                legendClasses = "govuk-visually-hidden",
+                items = Period.options(form, periods),
+                hint = Some(Html(messages("selectWorkPeriods.hint")))
+            )
 
-        @button("site.saveAndContinue")
+            @button("site.saveAndContinue")
+        }
     }
-}

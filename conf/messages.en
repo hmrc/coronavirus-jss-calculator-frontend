@@ -225,10 +225,10 @@ lastPayDate.p2 = We’ll use this date to work out all the pay periods that cove
 lastPayDate.details.title = What is a pay period?
 lastPayDate.details.p1 = A ‘pay period’ is the period of time that the employee is paid for, such as weekly or monthly. When we ask for the end date of a pay period, it’s the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually gets their pay.
 lastPayDate.hint = For example 01 11 2020
-lastPayDate.error.required.all = Enter the LastPayDate
-lastPayDate.error.required.two = The LastPayDate must include {0} and {1}
-lastPayDate.error.required = The LastPayDate must include {0}
-lastPayDate.error.invalid = Enter a real LastPayDate
+lastPayDate.error.required.all = Enter the correct date to apply for the Job Support scheme
+lastPayDate.error.required.two = Enter the correct date to apply for the Job Support scheme
+lastPayDate.error.required = Enter the correct date to apply for the Job Support scheme
+lastPayDate.error.invalid = Enter the correct date to apply for the Job Support scheme
 
 month.1 = January
 month.2 = February
