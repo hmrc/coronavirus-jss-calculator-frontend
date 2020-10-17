@@ -43,8 +43,9 @@ trait PeriodHelper {
     val periods: mutable.ListBuffer[Period] = ListBuffer()
     while (!periodStartDate.plusDays(payFrequencyDays - 1).isAfter(supportClaimPeriod.endDate)) {
       val periodEndDate = Period(periodStartDate, periodStartDate.plusDays(payFrequencyDays - 1))
-      if (!periodEndDate.endDate.isBefore(supportClaimPeriod.startDate))
+      if (!periodEndDate.endDate.isBefore(supportClaimPeriod.startDate)) {
         periods += periodEndDate
+      }
       periodStartDate = periodStartDate.plusDays(payFrequencyDays)
     }
     sortedEndDates(periods.toList)

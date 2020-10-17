@@ -20,8 +20,9 @@ import controllers.actions._
 import forms.UsualAndActualHoursFormProvider
 import javax.inject.Inject
 import models.NormalMode
+import models.requests.DataRequest
 import navigation.Navigator
-import pages.UsualAndActualHoursPage
+import pages.{SelectWorkPeriodsPage, UsualAndActualHoursPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -51,14 +52,14 @@ class UsualAndActualHoursController @Inject()(
       case Some(value) => form.fill(value)
     }
 
-    Ok(view(preparedForm, idx))
+    Ok(view(preparedForm, idx, getWorkPeriodAtIdx(idx - 1, request)))
   }
 
   def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, getWorkPeriodAtIdx(idx - 1, request)))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(UsualAndActualHoursPage, value, Some(idx)))
@@ -66,4 +67,10 @@ class UsualAndActualHoursController @Inject()(
           } yield Redirect(navigator.nextPage(UsualAndActualHoursPage, NormalMode, updatedAnswers, Some(idx)))
       )
   }
+
+  private def getWorkPeriodAtIdx(idx: Int, request: DataRequest[_]) =
+    request.userAnswers.get(SelectWorkPeriodsPage).flatMap(_.lift(idx)) match {
+      case Some(period) => period
+      case None         => throw new RuntimeException(s"expected WorkPeriod ar index: $idx, but it doesn't exist")
+    }
 }

@@ -25,7 +25,7 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.EndPayDatePage
+import pages.{EndPayDatePage, LastPayDatePage}
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
@@ -59,33 +59,37 @@ class EndPayDateControllerSpec extends SpecBase with MockitoSugar {
         "value.year"  -> validAnswer.getYear.toString
       )
 
+  val lastPayDate = LocalDate.of(2020, 10, 30)
+
+  val userAnswers = emptyUserAnswers.set(LastPayDatePage, lastPayDate).success.value
+
   "EndPayDate Controller" must {
 
     "return OK and the correct view for a GET" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      running(application) {
-
-        val result = route(application, getRequest).value
-
-        val view = application.injector.instanceOf[EndPayDateView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form)(getRequest, messages(application)).toString
-      }
-    }
-
-    "populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers(userAnswersId).set(EndPayDatePage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
 
+        val result = route(application, getRequest).value
+
+        val view = application.injector.instanceOf[EndPayDateView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form, lastPayDate)(getRequest, messages(application)).toString
+      }
+    }
+
+    "populate the view correctly on a GET when the question has previously been answered" in {
+
+      val userAnswersUpdated = userAnswers.set(EndPayDatePage, validAnswer).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswersUpdated)).build()
+
+      running(application) {
+
         val view = application.injector.instanceOf[EndPayDateView]
 
         val result = route(application, getRequest).value
@@ -93,7 +97,7 @@ class EndPayDateControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(validAnswer))(getRequest, messages(application)).toString
+          view(form.fill(validAnswer), lastPayDate)(getRequest, messages(application)).toString
       }
     }
 
@@ -123,7 +127,7 @@ class EndPayDateControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
 
@@ -140,7 +144,7 @@ class EndPayDateControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm)(request, messages(application)).toString
+          view(boundForm, lastPayDate)(request, messages(application)).toString
       }
     }
 
