@@ -16,8 +16,12 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import base.SpecBase
-import models.Grant
+import models.PayFrequency.Weekly
+import models.{Amount, ClaimPeriod, Grant, GrantForPeriod, Period, PeriodWithHours, UsualAndActualHours}
+import pages._
 import play.api.test.Helpers._
 import views.html.ConfirmationView
 
@@ -25,9 +29,39 @@ class ConfirmationControllerSpec extends SpecBase {
 
   "Confirmation Controller" must {
 
+    val start = LocalDate.of(2020, 10, 20)
+    val end = LocalDate.of(2020, 11, 20)
+    val usualHours = 10.00
+    val actualHours = 5.00
+    val regularPay = 1234.00
+
+    val periods = List(Period(start, end))
+
+    val userAnswers = emptyUserAnswers
+      .set(ClaimPeriodPage, ClaimPeriod.Nov2020)
+      .success
+      .value
+      .set(SelectWorkPeriodsPage, periods)
+      .success
+      .value
+      .set(PayFrequencyPage, Weekly)
+      .success
+      .value
+      .set(RegularPayAmountPage, Amount(regularPay))
+      .success
+      .value
+      .setList(UsualAndActualHoursPage, List(UsualAndActualHours(usualHours, actualHours)))
+      .success
+      .value
+
+    val periodWithHours = PeriodWithHours(start, end, usualHours, actualHours)
+    val grantForPeriod = GrantForPeriod(periodWithHours, 138.89)
+
+    val grant = Grant(List(grantForPeriod), true, 138.89)
+
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
 
@@ -40,7 +74,7 @@ class ConfirmationControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(Grant(List.empty, true, 200.34), "1.0")(request, messages(application)).toString
+          view(grant, regularPay, "1.0")(request, messages(application)).toString
       }
     }
   }

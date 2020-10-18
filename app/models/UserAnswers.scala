@@ -112,6 +112,9 @@ final case class UserAnswers(
       page.cleanup(None, updatedAnswers)
     }
   }
+
+  def getList[A](page: Gettable[A])(implicit rds: Reads[A]): Seq[A] =
+    page.path.read[Seq[A]].reads(data).getOrElse(Seq.empty)
 }
 
 object UserAnswers {
