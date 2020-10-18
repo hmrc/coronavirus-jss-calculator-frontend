@@ -32,11 +32,14 @@
 @(grant: Grant, regularPay: BigDecimal, version: String)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(pageTitle = Some(titleNoForm("confirmation.title"))) {
-    @confirmation {
 
+    @if(!grant.eligible) {
+        @p(Html(messages("confirmation.confirmation.p1.noteligible")))
+    }
+    @confirmation {
+        @h1(Html(messages("confirmation.confirmation.p1")), classes = Some(""))
         <div class="furlough-heading">
-            <p class="govuk-!-font-weight-regular govuk-!-font-size-24 govuk-!-margin-bottom-4 govuk-!-margin-top-0">@messages("confirmation.confirmation.p1")</p>
-            <p class="govuk-panel__title">&pound; @grant.totalGrant.formatted("%.2f")</p>
+            <p class="govuk-panel__title">&pound;@grant.totalGrant.formatted("%.2f")</p>
         </div>
     }
 
