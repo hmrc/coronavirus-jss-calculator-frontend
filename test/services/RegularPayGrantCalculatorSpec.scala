@@ -25,6 +25,50 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
 
   "Regular Pay Calculator" when {
 
+    "computing the grant for monthly frequencies" should {
+
+      "full period" in new RegularPayGrantCalculator {
+
+        val PeriodWithHourss = List(
+          PeriodWithHours(
+            LocalDate.of(2020, 11, 1),
+            LocalDate.of(2020, 11, 30),
+            161,
+            67.5
+          )
+        )
+
+        val calculatedGrantForEachPeriodWithHours = calculateRegularPayGrant(
+          PeriodWithHourss,
+          2250,
+          SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30)),
+          PayFrequency.Monthly
+        )
+        calculatedGrantForEachPeriodWithHours.totalGrant mustEqual 435.56
+      }
+
+      "partial period" in new RegularPayGrantCalculator {
+
+        val PeriodWithHourss = List(
+          PeriodWithHours(
+            LocalDate.of(2020, 10, 15),
+            LocalDate.of(2020, 11, 14),
+            120,
+            45
+          )
+        )
+
+        val calculatedGrantForEachPeriodWithHours = calculateRegularPayGrant(
+          PeriodWithHourss,
+          3100,
+          SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30)),
+          PayFrequency.Monthly
+        )
+        calculatedGrantForEachPeriodWithHours.totalGrant mustEqual 291.67
+      }
+
+    }
+
     "computing the grant for weekly frequencies" should {
 
       "correctly compute the grant for default scenario" in new RegularPayGrantCalculator {

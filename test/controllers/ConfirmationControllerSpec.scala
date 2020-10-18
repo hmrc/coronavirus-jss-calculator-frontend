@@ -16,14 +16,13 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import base.SpecBase
 import models.PayFrequency.Weekly
 import models.{Amount, ClaimPeriod, Grant, GrantForPeriod, Period, PeriodWithHours, UsualAndActualHours}
 import pages._
 import play.api.test.Helpers._
 import views.html.ConfirmationView
+import java.time.LocalDate
 
 class ConfirmationControllerSpec extends SpecBase {
 
