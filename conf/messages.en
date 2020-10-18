@@ -314,6 +314,7 @@ confirmation.nextSteps.l4 = Add up all the results to calculate the total amount
 confirmation.nextSteps.l5 = Make a claim using the Job Retention Scheme online claim service (opens in a new window or tab).
 confirmation.startAgain = Start another calculation
 
+confirmation.confirmation.p1.noteligible = This employee is not eligible for a claim
 confirmation.breakdown.header = Breakdown of calculations
 confirmation.breakdown.p1 = You told us this employee is paid a regular amount each time. We’ve calculated their daily earnings and multiplied by the number of furlough days and furlough hours in each pay period. The furlough grant is 77% of this.
 confirmation.breakdown.p2 = You can claim a maximum amount. If this affects your claim, we’ve adjusted the calculations. Work out the maximum wage amount you can claim (opens in new tab).
