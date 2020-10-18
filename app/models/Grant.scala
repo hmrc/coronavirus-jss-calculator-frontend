@@ -20,7 +20,12 @@ import play.api.libs.json.{Json, OFormat}
 
 final case class GrantForPeriod(
   period: PeriodWithHours,
-  amount: BigDecimal
+  amount: BigDecimal,
+  daysInPeriod: Int,
+  referencePayCap: Double,
+  adjustedReferencePay: Double,
+  actualReferencePay: Double,
+  isPartialPayPeriod: Boolean,
 )
 
 object GrantForPeriod {

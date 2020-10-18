@@ -33,13 +33,11 @@ trait RegularPayGrantCalculator {
     supportClaimPeriod: SupportClaimPeriod,
     payFrequency: PayFrequency): Grant = {
     val grantForPeriods: List[GrantForPeriod] = periods.map { period =>
-      val grant =
-        if (isPartialPeriod(period, supportClaimPeriod))
-          calculateGrantForPartialPeriod(referencePay, period, supportClaimPeriod, payFrequency)
-        else {
-          calculateGrantForFullPeriod(referencePay, period, payFrequency)
-        }
-      GrantForPeriod(period, grant)
+      if (isPartialPeriod(period, supportClaimPeriod))
+        calculateGrantForPartialPeriod(referencePay, period, supportClaimPeriod, payFrequency)
+      else {
+        calculateGrantForFullPeriod(referencePay, period, supportClaimPeriod, payFrequency)
+      }
     }
     Grant(grantForPeriods, isEligibleForGrant(grantForPeriods), grantForPeriods.foldLeft(0.0)((acc, d) => acc + d.amount.doubleValue()))
   }
@@ -59,7 +57,7 @@ trait RegularPayGrantCalculator {
     referencePay: BigDecimal,
     period: PeriodWithHours,
     supportClaimPeriod: SupportClaimPeriod,
-    payFrequency: PayFrequency): Double = {
+    payFrequency: PayFrequency): GrantForPeriod = {
     val daysInFrequency = payFrequency match {
       case PayFrequency.Weekly      => PayFrequency.payFrequencyDays(Weekly)
       case PayFrequency.FortNightly => PayFrequency.payFrequencyDays(FortNightly)
@@ -73,17 +71,27 @@ trait RegularPayGrantCalculator {
     val actualReferencePay = scala.math.min(adjustedReferencePay, referencePayCap)
     val grant: BigDecimal =
       ((actualReferencePay * ((period.usualHours - period.actualHours) / period.usualHours)) / 3.0).setScale(2, RoundingMode.HALF_UP)
-
-    grant.doubleValue()
+    GrantForPeriod(period, grant.doubleValue(), daysInPartialPeriod.toInt, referencePayCap, adjustedReferencePay, actualReferencePay, true)
   }
 
-  def calculateGrantForFullPeriod(referencePay: BigDecimal, period: PeriodWithHours, payFrequency: PayFrequency): Double = {
+  def calculateGrantForFullPeriod(
+    referencePay: BigDecimal,
+    period: PeriodWithHours,
+    supportClaimPeriod: SupportClaimPeriod,
+    payFrequency: PayFrequency): GrantForPeriod = {
+    val daysInFrequency = payFrequency match {
+      case PayFrequency.Weekly      => PayFrequency.payFrequencyDays(Weekly)
+      case PayFrequency.FortNightly => PayFrequency.payFrequencyDays(FortNightly)
+      case PayFrequency.FourWeekly  => PayFrequency.payFrequencyDays(FourWeekly)
+      case PayFrequency.Monthly     => calculateFrequencyDaysForMonthlyFrequency(period)
+    }
+    val daysInPartialPeriod = calculateEligibleDaysForClaim(period.endDate, supportClaimPeriod, daysInFrequency) + 1
     val referencePayCap = RegularPayGrantCalculator.fullPeriodPayCaps.getOrElse(payFrequency, 0.0)
     val adjustedReferencePay = referencePay.doubleValue()
     val actualReferencePay = scala.math.min(adjustedReferencePay, referencePayCap)
     val grant: BigDecimal =
       ((actualReferencePay * ((period.usualHours - period.actualHours) / period.usualHours)) / 3.0).setScale(2, RoundingMode.HALF_UP)
-    grant.doubleValue()
+    GrantForPeriod(period, grant.doubleValue(), daysInPartialPeriod.toInt, referencePayCap, adjustedReferencePay, actualReferencePay, false)
   }
 
   def calculateEligibleDaysForClaim(periodEndDate: LocalDate, supportClaimPeriod: SupportClaimPeriod, payFrequencyDays: Int): Long =
