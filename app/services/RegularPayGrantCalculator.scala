@@ -27,6 +27,7 @@ import scala.math.BigDecimal.{RoundingMode, double2bigDecimal}
 
 trait RegularPayGrantCalculator {
 
+  //TODO: augment return type with breakdown + flag for partial or not
   def calculateRegularPayGrant(
     periods: List[PeriodWithHours],
     referencePay: BigDecimal,
@@ -35,7 +36,7 @@ trait RegularPayGrantCalculator {
     val grantForPeriods: List[GrantForPeriod] = periods.map { period =>
       val grant =
         if (isPartialPeriod(period, supportClaimPeriod))
-          calculateGrantForPartialPeriod(referencePay, period, supportClaimPeriod, PayFrequency.payFrequencyDays(payFrequency))
+          calculateGrantForPartialPeriod(referencePay, period, supportClaimPeriod, payFrequency)
         else {
           calculateGrantForFullPeriod(referencePay, period, payFrequency)
         }
@@ -59,7 +60,13 @@ trait RegularPayGrantCalculator {
     referencePay: BigDecimal,
     period: PeriodWithHours,
     supportClaimPeriod: SupportClaimPeriod,
-    daysInFrequency: Int): Double = {
+    payFrequency: PayFrequency): Double = {
+    val daysInFrequency = payFrequency match {
+      case PayFrequency.Weekly      => PayFrequency.payFrequencyDays(Weekly)
+      case PayFrequency.FortNightly => PayFrequency.payFrequencyDays(FortNightly)
+      case PayFrequency.FourWeekly  => PayFrequency.payFrequencyDays(FourWeekly)
+      case PayFrequency.Monthly     => calculateFrequencyDaysForMonthlyFrequency(period)
+    }
     val daysInPartialPeriod = calculateEligibleDaysForClaim(period.endDate, supportClaimPeriod, daysInFrequency) + 1
     val claimMonth = supportClaimPeriod.startDate.getMonth
     val referencePayCap = daysInPartialPeriod * RegularPayGrantCalculator.partialPeriodPayCaps.getOrElse(claimMonth, 0.0)
@@ -85,6 +92,9 @@ trait RegularPayGrantCalculator {
 
   def isPartialPeriod(period: PeriodWithHours, supportClaimPeriod: SupportClaimPeriod): Boolean =
     if (period.startDate.isBefore(supportClaimPeriod.startDate)) true else false
+
+  def calculateFrequencyDaysForMonthlyFrequency(periodWithHours: PeriodWithHours): Int =
+    ChronoUnit.DAYS.between(periodWithHours.startDate, periodWithHours.endDate).toInt + 1
 
 }
 
