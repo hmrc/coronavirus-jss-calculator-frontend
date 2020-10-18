@@ -25,7 +25,7 @@ final case class GrantForPeriod(
   daysInFrequency: Int,
   referencePayCap: Double,
   adjustedReferencePay: Double,
-  actualReferencePay: BigDecimal,
+  referencePay: BigDecimal,
   isPartialPayPeriod: Boolean,
 )
 
