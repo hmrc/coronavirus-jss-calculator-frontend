@@ -8,3 +8,43 @@ $hmrc-assets-path: "/coronavirus-job-support-scheme-calculator/assets/lib/hmrc-f
 @import "language-selection";
 
 @import "shame";
+
+.govuk-panel {
+  padding: 30px 30px 15px;
+}
+.govuk-panel--confirmation {
+  h1 {
+    font-weight: bold;
+    font-size: 27px ;
+    font-size: 1.6875rem ;
+    line-height: 1.11111 ;
+    margin-top: 0
+  }
+}
+.govuk-panel__title {
+  font-size: 19px;
+  line-height: 1.09;
+}
+
+.furlough-heading {
+  clear: both;
+  display: table;
+  margin-top: 0.275em;
+  padding-top: 8px;
+  table-layout: fixed;
+  width: 100%;
+}
+.furlough-heading .govuk-panel__title {
+  display: table-header-group;
+  font-size: 48px;
+  font-size: 3rem;
+  line-height: 1.04167;
+}
+.furlough-heading p {
+  color: white;
+  font-size: 24px;
+  font-size: 1.5rem;
+  line-height: 1.25;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
