@@ -73,7 +73,16 @@ trait RegularPayGrantCalculator {
     val actualReferencePay = scala.math.min(adjustedReferencePay, referencePayCap)
     val grant: BigDecimal =
       ((actualReferencePay * ((period.usualHours - period.actualHours) / period.usualHours)) / 3.0).setScale(2, RoundingMode.HALF_UP)
-    GrantForPeriod(period, grant.doubleValue(), daysInPartialPeriod.toInt, daysInFrequency, payCap, actualReferencePay, referencePay, true)
+    GrantForPeriod(
+      period,
+      grant.doubleValue(),
+      daysInPartialPeriod.toInt,
+      daysInFrequency,
+      payCap,
+      actualReferencePay,
+      referencePay,
+      payFrequency,
+      true)
   }
 
   def calculateGrantForFullPeriod(
@@ -101,6 +110,7 @@ trait RegularPayGrantCalculator {
       referencePayCap,
       actualReferencePay,
       referencePay,
+      payFrequency,
       false)
   }
 

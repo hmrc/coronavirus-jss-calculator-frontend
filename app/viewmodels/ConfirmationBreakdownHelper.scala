@@ -18,6 +18,7 @@ package viewmodels
 
 import com.google.inject.{Inject, Singleton}
 import models.GrantForPeriod
+import models.PayFrequency.Monthly
 import play.api.i18n.Messages
 import views.ViewUtils._
 
@@ -29,7 +30,10 @@ class ConfirmationBreakdownHelper @Inject()() {
       if (grantForPeriod.isPartialPayPeriod) "confirmation.breakdown.h3.partial" else "confirmation.breakdown.h3",
       dateToStringWithoutYear(grantForPeriod.period.startDate),
       dateToString(grantForPeriod.period.endDate),
-      if (grantForPeriod.isPartialPayPeriod) grantForPeriod.daysInPeriod else grantForPeriod.daysInFrequency.-(1)
+      if (grantForPeriod.payFrequency == Monthly) {
+        grantForPeriod.daysInFrequency
+      } else if (grantForPeriod.isPartialPayPeriod) grantForPeriod.daysInPeriod
+      else grantForPeriod.daysInFrequency.-(1)
     )
 
   def totalPayForTheDaysWorked(grantForPeriod: GrantForPeriod)(implicit messages: Messages): String =
