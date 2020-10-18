@@ -22,9 +22,10 @@ final case class GrantForPeriod(
   period: PeriodWithHours,
   amount: BigDecimal,
   daysInPeriod: Int,
+  daysInFrequency: Int,
   referencePayCap: Double,
   adjustedReferencePay: Double,
-  actualReferencePay: Double,
+  actualReferencePay: BigDecimal,
   isPartialPayPeriod: Boolean,
 )
 
