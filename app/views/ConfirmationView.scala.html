@@ -16,6 +16,7 @@
 
 @import java.time.LocalDate
 @import config.FrontendAppConfig
+@import viewmodels.ConfirmationBreakdownHelper
 
 @this(
         govukLayout: templates.GovukLayoutWrapper,
@@ -26,7 +27,8 @@
         p: components.p,
         link: components.link,
         button: components.button,
-        appConfig: FrontendAppConfig
+        appConfig: FrontendAppConfig,
+        breakdownHelper: ConfirmationBreakdownHelper
 )
 
 @(grant: Grant, regularPay: BigDecimal, version: String)(implicit request: Request[_], messages: Messages)
@@ -77,4 +79,15 @@
     @p(Html(Messages("confirmation.breakdown.p2")))
 
     @p(Html(Messages("confirmation.breakdown.p3")))
+
+    @for(gfp <- grant.grantForPeriods) {
+        @h3(breakdownHelper.breakdownH3(gfp))
+        @p(Html(Messages("confirmation.breakdown.h3.p1")))
+        @p(Html(breakdownHelper.totalPayForTheDaysWorked(gfp)))
+        @p(Html(Messages(breakdownHelper.referencePayCapForTheDaysWorked(gfp))))
+        @p(Html(Messages("confirmation.breakdown.h3.p1.l3", gfp.adjustedReferencePay)))
+        @p(Html(Messages(breakdownHelper.hoursNotWorked(gfp))))
+        @p(Html(Messages(breakdownHelper.cappedGrant(gfp))))
+        @p(Html(Messages(breakdownHelper.eligibility(gfp))))
+    }
 }

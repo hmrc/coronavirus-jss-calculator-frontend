@@ -22,6 +22,7 @@ import java.time.{LocalDate, Month}
 
 import models.PayFrequency.{FortNightly, FourWeekly, Monthly, Weekly}
 import models.{Grant, GrantForPeriod, PayFrequency, PeriodWithHours, SupportClaimPeriod}
+import services.RegularPayGrantCalculator.partialPeriodPayCaps
 
 import scala.math.BigDecimal.{RoundingMode, double2bigDecimal}
 
@@ -66,12 +67,13 @@ trait RegularPayGrantCalculator {
     }
     val daysInPartialPeriod = calculateEligibleDaysForClaim(period.endDate, supportClaimPeriod, daysInFrequency) + 1
     val claimMonth = supportClaimPeriod.startDate.getMonth
-    val referencePayCap = daysInPartialPeriod * RegularPayGrantCalculator.partialPeriodPayCaps.getOrElse(claimMonth, 0.0)
+    val payCap = partialPeriodPayCaps.getOrElse(claimMonth, 0.0)
+    val referencePayCap = daysInPartialPeriod * payCap
     val adjustedReferencePay = referencePay.doubleValue() * (daysInPartialPeriod.toDouble / daysInFrequency.toDouble)
     val actualReferencePay = scala.math.min(adjustedReferencePay, referencePayCap)
     val grant: BigDecimal =
       ((actualReferencePay * ((period.usualHours - period.actualHours) / period.usualHours)) / 3.0).setScale(2, RoundingMode.HALF_UP)
-    GrantForPeriod(period, grant.doubleValue(), daysInPartialPeriod.toInt, referencePayCap, adjustedReferencePay, actualReferencePay, true)
+    GrantForPeriod(period, grant.doubleValue(), daysInPartialPeriod.toInt, daysInFrequency, payCap, actualReferencePay, referencePay, true)
   }
 
   def calculateGrantForFullPeriod(
@@ -91,7 +93,15 @@ trait RegularPayGrantCalculator {
     val actualReferencePay = scala.math.min(adjustedReferencePay, referencePayCap)
     val grant: BigDecimal =
       ((actualReferencePay * ((period.usualHours - period.actualHours) / period.usualHours)) / 3.0).setScale(2, RoundingMode.HALF_UP)
-    GrantForPeriod(period, grant.doubleValue(), daysInPartialPeriod.toInt, referencePayCap, adjustedReferencePay, actualReferencePay, false)
+    GrantForPeriod(
+      period,
+      grant.doubleValue(),
+      daysInPartialPeriod.toInt,
+      daysInPartialPeriod.toInt,
+      referencePayCap,
+      actualReferencePay,
+      referencePay,
+      false)
   }
 
   def calculateEligibleDaysForClaim(periodEndDate: LocalDate, supportClaimPeriod: SupportClaimPeriod, payFrequencyDays: Int): Long =

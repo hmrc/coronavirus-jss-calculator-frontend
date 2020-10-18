@@ -54,7 +54,7 @@ class ConfirmationControllerSpec extends SpecBase {
       .value
 
     val periodWithHours = PeriodWithHours(start, end, usualHours, actualHours)
-    val grantForPeriod = GrantForPeriod(periodWithHours, 138.89, 10, 200.00, 120.22, 23.22, false)
+    val grantForPeriod = GrantForPeriod(periodWithHours, 138.89, 10, 10, 200.00, 120.22, 23.22, false)
 
     val grant = Grant(List(grantForPeriod), true, 138.89)
 

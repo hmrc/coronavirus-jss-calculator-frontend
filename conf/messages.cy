@@ -300,8 +300,8 @@ actualHours.error.required = Enter your actual hours
 confirmation.title = confirmation
 confirmation.heading = confirmation
 confirmation.confirmation.p1 = What you can claim for this employee
-confirmation.p1 = You must pay this employee £871.12
-confirmation.p2 = This adds up to 77% of their usual wage (£1777.14).
+confirmation.p1 = You must pay this employee {0}
+confirmation.p2 = This adds up to 77% of their usual wage ({0}).
 confirmation.p3 = To be eligible for the grant you must pay employees at least 77% of their wages for the time they are furloughed. You can choose to pay more than this but do not have to.
 confirmation.calculated.on = Calculated on:
 confirmation.date.version = (Calculator Version v{0})
@@ -314,10 +314,23 @@ confirmation.nextSteps.l4 = Add up all the results to calculate the total amount
 confirmation.nextSteps.l5 = Make a claim using the Job Retention Scheme online claim service (opens in a new window or tab).
 confirmation.startAgain = Start another calculation
 
+confirmation.confirmation.p1.noteligible = This employee is not eligible for a claim
 confirmation.breakdown.header = Breakdown of calculations
+confirmation.confirmation.p1.noteligible = This employee is not eligible for a claim
 confirmation.breakdown.p1 = You told us this employee is paid a regular amount each time. We’ve calculated their daily earnings and multiplied by the number of furlough days and furlough hours in each pay period. The furlough grant is 77% of this.
 confirmation.breakdown.p2 = You can claim a maximum amount. If this affects your claim, we’ve adjusted the calculations. Work out the maximum wage amount you can claim (opens in new tab).
 confirmation.breakdown.p3 = Calculations are rounded to the nearest penny unless otherwise stated.
+confirmation.breakdown.h3.partial = For pay period {0} to {1} (partial {2} days)
+confirmation.breakdown.h3 = For pay period {0} to {1} ( {2} days)
+confirmation.breakdown.h3.p1 = Calculate pay based on days worked
+confirmation.breakdown.h3.p1.l1.partial = 1. Calculate total pay for the days worked = {0} * {1} / {2} = {3}
+confirmation.breakdown.h3.p1.l1 = 1. Total pay for the days worked = {0}
+confirmation.breakdown.h3.p1.l2.partial = 2. Calculate reference pay Cap = {0} * {1} = {2}
+confirmation.breakdown.h3.p1.l2 = 2. Reference pay Cap = {0}
+confirmation.breakdown.h3.p1.l3 = 3. Minimum of the above two = {0}
+confirmation.breakdown.h3.p1.l4 = 4. Hours not worked = {0} - {1} = {2}
+confirmation.breakdown.h3.p1.grant = 5. Capped Grant = {0}* {1} / {2} = {3}
+confirmation.breakdown.h3.p1.grant.eligible = 6. Grant eligible = {0} / {1} = {2}
 
 endPayDate.title = What’s the end of the next pay period after {0}?
 endPayDate.heading = What’s the end of the next pay period after {0}?
