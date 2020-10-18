@@ -32,7 +32,7 @@ trait PeriodHelper {
         if (lastPayDay.isEqual(lastPayDay.`with`(lastDayOfMonth()))) {
           List(Period(lastPayDay.plusDays(1), supportClaimPeriod.endDate))
         } else {
-          List(Period(lastPayDay.plusDays(1), lastPayDay.plusMonths(1).minusDays(1)))
+          List(Period(lastPayDay.plusDays(1), lastPayDay.plusMonths(1)))
         }
       case _ =>
         computePayPeriods(PayFrequency.payFrequencyDays(payFrequency), lastPayDay, supportClaimPeriod)

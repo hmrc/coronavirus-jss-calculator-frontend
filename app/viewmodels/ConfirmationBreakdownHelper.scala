@@ -36,15 +36,15 @@ class ConfirmationBreakdownHelper @Inject()() {
     if (grantForPeriod.isPartialPayPeriod) {
       messages(
         "confirmation.breakdown.h3.p1.l1.partial",
-        grantForPeriod.actualReferencePay,
+        grantForPeriod.referencePay,
         grantForPeriod.daysInPeriod,
         grantForPeriod.daysInFrequency,
-        grantForPeriod.actualReferencePay * grantForPeriod.daysInPeriod / grantForPeriod.daysInFrequency
+        grantForPeriod.referencePay * grantForPeriod.daysInPeriod / grantForPeriod.daysInFrequency
       )
     } else {
       messages(
         "confirmation.breakdown.h3.p1.l1",
-        grantForPeriod.actualReferencePay,
+        grantForPeriod.referencePay,
       )
     }
 
