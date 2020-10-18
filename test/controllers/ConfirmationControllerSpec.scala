@@ -16,22 +16,23 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import base.SpecBase
-import models.PayFrequency.Weekly
+import models.PayFrequency.Monthly
 import models.{Amount, ClaimPeriod, Grant, GrantForPeriod, Period, PeriodWithHours, UsualAndActualHours}
 import pages._
 import play.api.test.Helpers._
 import views.html.ConfirmationView
-import java.time.LocalDate
 
 class ConfirmationControllerSpec extends SpecBase {
 
   "Confirmation Controller" must {
 
-    val start = LocalDate.of(2020, 10, 20)
-    val end = LocalDate.of(2020, 11, 20)
-    val usualHours = 10.00
-    val actualHours = 5.00
+    val start = LocalDate.of(2020, 10, 26)
+    val end = LocalDate.of(2020, 11, 24)
+    val usualHours = 20.00
+    val actualHours = 10.00
     val regularPay = 1234.00
 
     val periods = List(Period(start, end))
@@ -43,7 +44,7 @@ class ConfirmationControllerSpec extends SpecBase {
       .set(SelectWorkPeriodsPage, periods)
       .success
       .value
-      .set(PayFrequencyPage, Weekly)
+      .set(PayFrequencyPage, Monthly)
       .success
       .value
       .set(RegularPayAmountPage, Amount(regularPay))
@@ -54,9 +55,9 @@ class ConfirmationControllerSpec extends SpecBase {
       .value
 
     val periodWithHours = PeriodWithHours(start, end, usualHours, actualHours)
-    val grantForPeriod = GrantForPeriod(periodWithHours, 138.89, 10, 10, 200.00, 120.22, 23.22, false)
+    val grantForPeriod = GrantForPeriod(periodWithHours, 164.53, 24, 30, 104.167, 987.2, BigDecimal(1234.00), true)
 
-    val grant = Grant(List(grantForPeriod), true, 138.89)
+    val grant = Grant(List(grantForPeriod), true, 164.53)
 
     "return OK and the correct view for a GET" in {
 
