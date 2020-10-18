@@ -19,9 +19,12 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import javax.inject.Inject
-import models.Grant
+import models.{Period, PeriodWithHours, UsualAndActualHours}
+import pages._
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.RegularPayGrantCalculator
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ConfirmationView
 
@@ -33,9 +36,27 @@ class ConfirmationController @Inject()(
   val controllerComponents: MessagesControllerComponents,
   view: ConfirmationView,
   appConfig: FrontendAppConfig
-) extends FrontendBaseController with I18nSupport {
+) extends FrontendBaseController with I18nSupport with RegularPayGrantCalculator {
 
   def onPageLoad: Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
-    Ok(view(Grant(List.empty, true, 200.34), appConfig.calculatorVersion))
+    val workPeriods = request.userAnswers.get(SelectWorkPeriodsPage)
+    val usualAndActualHours = request.userAnswers.getList(UsualAndActualHoursPage)
+    val regularPay = request.userAnswers.get(RegularPayAmountPage)
+    val payFrequency = request.userAnswers.get(PayFrequencyPage)
+    val supportClaimPeriod = request.userAnswers.get(ClaimPeriodPage)
+
+    (workPeriods, usualAndActualHours, regularPay, payFrequency, supportClaimPeriod) match {
+      case (Some(wps), hours, Some(rp), Some(pf), Some(cp)) =>
+        val grant = calculateRegularPayGrant(periodsWithHours(wps, hours), rp.value, cp.supportClaimPeriod, pf)
+        Ok(view(grant, rp.value, appConfig.calculatorVersion))
+      case _ =>
+        Logger.warn("expected data is missing from userAnswers, redirecting user to start page")
+        Redirect(routes.ClaimPeriodController.onPageLoad())
+    }
   }
+
+  private def periodsWithHours(periods: List[Period], hours: Seq[UsualAndActualHours]) =
+    periods.zip(hours).map { x =>
+      PeriodWithHours(x._1.startDate, x._1.endDate, x._2.usualHours, x._2.actualHours)
+    }
 }

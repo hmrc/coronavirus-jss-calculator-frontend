@@ -27,7 +27,6 @@ import scala.math.BigDecimal.{RoundingMode, double2bigDecimal}
 
 trait RegularPayGrantCalculator {
 
-  //TODO: augment return type with breakdown + flag for partial or not
   def calculateRegularPayGrant(
     periods: List[PeriodWithHours],
     referencePay: BigDecimal,
@@ -95,7 +94,6 @@ trait RegularPayGrantCalculator {
 
   def calculateFrequencyDaysForMonthlyFrequency(periodWithHours: PeriodWithHours): Int =
     ChronoUnit.DAYS.between(periodWithHours.startDate, periodWithHours.endDate).toInt + 1
-
 }
 
 object RegularPayGrantCalculator {

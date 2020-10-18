@@ -29,22 +29,21 @@
         appConfig: FrontendAppConfig
 )
 
-@(grant: Grant, version: String)(implicit request: Request[_], messages: Messages)
+@(grant: Grant, regularPay: BigDecimal, version: String)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(pageTitle = Some(titleNoForm("confirmation.title"))) {
-
     @confirmation {
 
         <div class="furlough-heading">
             <p class="govuk-!-font-weight-regular govuk-!-font-size-24 govuk-!-margin-bottom-4 govuk-!-margin-top-0">@messages("confirmation.confirmation.p1")</p>
-            <p class="govuk-panel__title">&pound;1</p>
+            <p class="govuk-panel__title">&pound; @grant.totalGrant.formatted("%.2f")</p>
         </div>
     }
 
     <div class="govuk-inset-text">
 
-        @p(Html(Messages("confirmation.p1")))
-        @p(Html(Messages("confirmation.p2")))
+        @p(Html(Messages("confirmation.p1", grant.totalGrant.formatted("%.2f"))))
+        @p(Html(Messages("confirmation.p2", regularPay.formatted("%.2f"))))
         @p(Html(Messages("confirmation.p3")))
     </div>
 
@@ -72,7 +71,7 @@
 
     @p(Html(Messages("confirmation.breakdown.p1")))
 
-    @p(Html(Messages("confirmation.breakdown.p1")))
+    @p(Html(Messages("confirmation.breakdown.p2")))
 
-    @p(Html(Messages("confirmation.breakdown.p1")))
+    @p(Html(Messages("confirmation.breakdown.p3")))
 }
