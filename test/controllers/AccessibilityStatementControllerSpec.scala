@@ -40,7 +40,7 @@ class AccessibilityStatementControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view("http://localhost:9250/contact/problem_reports_nonjs?service=dd-claim")(request, messages(application)).toString
+          view("http://localhost:9250/contact/problem_reports_nonjs?service=CJSSC")(request, messages(application)).toString
       }
     }
   }

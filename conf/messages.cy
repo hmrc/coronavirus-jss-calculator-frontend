@@ -342,3 +342,5 @@ endPayDate.error.required.all = Enter the end pay date
 endPayDate.error.required.two = The end pay date must include {0} and {1}
 endPayDate.error.required = The end pay date must include {0}
 endPayDate.error.invalid = Enter a real end pay date
+
+confirmation.feedbackSurvey.label = Beth yw’ch barn am y gwasanaeth hwn?
