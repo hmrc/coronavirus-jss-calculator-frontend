@@ -42,3 +42,5 @@ GET         /confirmation                       controllers.ConfirmationControll
 
 GET         /end-pay-date                       controllers.EndPayDateController.onPageLoad()
 POST        /end-pay-date                       controllers.EndPayDateController.onSubmit()
+
+GET         /coming-soon                        controllers.ComingSoonController.onPageLoad()
