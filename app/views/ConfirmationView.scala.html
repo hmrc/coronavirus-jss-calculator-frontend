@@ -90,4 +90,6 @@
         @p(Html(Messages(breakdownHelper.cappedGrant(gfp))))
         @p(Html(Messages(breakdownHelper.eligibility(gfp))))
     }
+
+    @p(Html(link(routes.FeedbackSurveyController.startSurvey(), "confirmation.feedbackSurvey.label", true)))
 }

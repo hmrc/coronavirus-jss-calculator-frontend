@@ -27,13 +27,13 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
   lazy val host: String = configuration.get[String]("host")
 
   private lazy val contactHost = configuration.get[String]("contact-frontend.host")
-  private val contactFormServiceIdentifier = "dd-claim"
+  private val serviceIdentifier = "CJSSC"
 
-  lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$serviceIdentifier"
+  lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$serviceIdentifier"
 
   def feedbackUrl(implicit request: RequestHeader): String =
-    s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
+    s"$contactHost/contact/beta-feedback?service=$serviceIdentifier&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
 
   lazy val timeout: Int = configuration.get[Int]("timeout.timeout")
   lazy val countdown: Int = configuration.get[Int]("timeout.countdown")
@@ -55,7 +55,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
 
   private lazy val exitSurveyBaseUrl = configuration.get[String]("feedback-frontend.host") + configuration.get[String](
     "feedback-frontend.url")
-  lazy val exitSurveyUrl = s"$exitSurveyBaseUrl/coronavirus-jss-calculator"
+  lazy val exitSurveyUrl = s"$exitSurveyBaseUrl/$serviceIdentifier"
 
   lazy val schemeEnds: String = configuration.get[String]("schemeEnds")
 

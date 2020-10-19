@@ -10,6 +10,8 @@ GET         /this-service-has-been-reset        controllers.SessionExpiredContro
 
 GET         /accessibility-statement            controllers.AccessibilityStatementController.onPageLoad
 
+GET         /start-survey                       controllers.FeedbackSurveyController.startSurvey()
+
 GET         /claim-period                       controllers.ClaimPeriodController.onPageLoad
 POST        /claim-period                       controllers.ClaimPeriodController.onSubmit
 
@@ -33,10 +35,10 @@ POST        /select-work-periods                controllers.SelectWorkPeriodsCon
 GET         /regular-pay-amount                 controllers.RegularPayAmountController.onPageLoad()
 POST        /regular-pay-amount                 controllers.RegularPayAmountController.onSubmit()
 
-GET         /usual-and-actual-hours/:idx             controllers.UsualAndActualHoursController.onPageLoad(idx: Int)
-POST        /usual-and-actual-hours/:idx             controllers.UsualAndActualHoursController.onSubmit(idx: Int)
+GET         /usual-and-actual-hours/:idx        controllers.UsualAndActualHoursController.onPageLoad(idx: Int)
+POST        /usual-and-actual-hours/:idx        controllers.UsualAndActualHoursController.onSubmit(idx: Int)
 
 GET         /confirmation                       controllers.ConfirmationController.onPageLoad()
 
-GET         /end-pay-date                         controllers.EndPayDateController.onPageLoad()
-POST        /end-pay-date                         controllers.EndPayDateController.onSubmit()
+GET         /end-pay-date                       controllers.EndPayDateController.onPageLoad()
+POST        /end-pay-date                       controllers.EndPayDateController.onSubmit()
