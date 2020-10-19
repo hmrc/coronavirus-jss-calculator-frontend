@@ -16,32 +16,29 @@
 
 package controllers
 
-import base.SpecBase
+import base.SpecBaseControllerSpecs
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.AccessibilityStatementView
 
-class AccessibilityStatementControllerSpec extends SpecBase {
+class AccessibilityStatementControllerSpec extends SpecBaseControllerSpecs {
+
+  val view = app.injector.instanceOf[AccessibilityStatementView]
+
+  val controller = new AccessibilityStatementController(component, view, frontendAppConfig)
 
   "Accessibility Statement Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val request = FakeRequest(GET, routes.AccessibilityStatementController.onPageLoad().url)
 
-      running(application) {
+      val result = controller.onPageLoad()(request)
 
-        val request = FakeRequest(GET, routes.AccessibilityStatementController.onPageLoad().url)
+      status(result) mustEqual OK
 
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[AccessibilityStatementView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view("http://localhost:9250/contact/problem_reports_nonjs?service=CJSSC")(request, messages(application)).toString
-      }
+      contentAsString(result) mustEqual
+        view("http://localhost:9250/contact/problem_reports_nonjs?service=CJSSC")(request, messages).toString
     }
   }
 }

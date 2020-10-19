@@ -16,32 +16,31 @@
 
 package controllers
 
-import base.SpecBase
+import base.SpecBaseControllerSpecs
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.SessionExpiredView
 
-class SessionExpiredControllerSpec extends SpecBase {
+class SessionExpiredControllerSpec extends SpecBaseControllerSpecs {
+  val view = app.injector.instanceOf[SessionExpiredView]
+
+  def controller() = new SessionExpiredController(
+    component,
+    view
+  )
 
   "SessionExpired Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val request = FakeRequest(GET, routes.SessionExpiredController.onPageLoad().url)
 
-      running(application) {
+      val result = controller().onPageLoad()(request)
 
-        val request = FakeRequest(GET, routes.SessionExpiredController.onPageLoad().url)
+      status(result) mustEqual OK
 
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[SessionExpiredView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view()(request, messages(application)).toString
-      }
+      contentAsString(result) mustEqual
+        view()(request, messages).toString
     }
   }
 }

@@ -16,123 +16,91 @@
 
 package controllers
 
-import base.SpecBase
+import base.SpecBaseControllerSpecs
 import forms.ClaimPeriodFormProvider
 import models.{ClaimPeriod, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
 import pages.ClaimPeriodPage
-import play.api.inject.bind
-import play.api.mvc.Call
+import play.api.mvc.AnyContentAsEmpty
+import play.api.test.CSRFTokenHelper._
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import views.html.ClaimPeriodView
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class ClaimPeriodControllerSpec extends SpecBase with MockitoSugar {
+class ClaimPeriodControllerSpec extends SpecBaseControllerSpecs {
 
-  private def onwardRoute = Call("GET", "/foo")
+  val view = app.injector.instanceOf[ClaimPeriodView]
 
   private lazy val claimPeriodRoute = routes.ClaimPeriodController.onPageLoad().url
 
   private val formProvider = new ClaimPeriodFormProvider()
   private val form = formProvider()
 
+  def controller(stubbedAnswer: UserAnswers = emptyUserAnswers) =
+    new ClaimPeriodController(
+      messagesApi,
+      mockSessionRepository,
+      navigator,
+      getSessionAction,
+      stubDataRetrieval(Some(stubbedAnswer)),
+      formProvider,
+      component,
+      view)
+
+  def getRequest(method: String) =
+    FakeRequest(method, claimPeriodRoute).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
+
   "claimPeriod Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val controller1 = controller(emptyUserAnswers)
+      val request = getRequest(GET)
 
-      running(application) {
+      val result = controller1.onPageLoad()(request)
 
-        val request = fakeRequest(GET, claimPeriodRoute)
+      status(result) mustEqual OK
 
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[ClaimPeriodView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form)(request, messages(application), appConfig(application)).toString
-      }
+      contentAsString(result) mustEqual
+        view(form)(request, messages, frontendAppConfig).toString
     }
+  }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
+  "populate the view correctly on a GET when the question has previously been answered" in {
+    val userAnswers = emptyUserAnswers.set(ClaimPeriodPage, ClaimPeriod.values.head).success.value
+    val controller1 = controller(userAnswers)
+    val request = getRequest(GET)
 
-      val userAnswers = UserAnswers(userAnswersId).set(ClaimPeriodPage, ClaimPeriod.values.head).success.value
+    val result = controller1.onPageLoad()(request)
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+    status(result) mustEqual OK
 
-      running(application) {
+    contentAsString(result) mustEqual
+      view(form.fill(ClaimPeriod.values.head))(request, messages, frontendAppConfig).toString
+  }
 
-        val request = fakeRequest(GET, claimPeriodRoute)
+  "redirect to the next page when valid data is submitted" in {
 
-        val view = application.injector.instanceOf[ClaimPeriodView]
+    val userAnswers = emptyUserAnswers.set(ClaimPeriodPage, ClaimPeriod.values.head).success.value
+    val controller1 = controller(userAnswers)
+    val request = getRequest(POST).withFormUrlEncodedBody(("value", ClaimPeriod.values.head.toString))
+    val result = controller1.onSubmit()(request)
 
-        val result = route(application, request).value
+    status(result) mustEqual SEE_OTHER
 
-        status(result) mustEqual OK
+    redirectLocation(result).value mustEqual routes.PayFrequencyController.onPageLoad().url
+  }
 
-        contentAsString(result) mustEqual
-          view(form.fill(ClaimPeriod.values.head))(request, messages(application), appConfig(application)).toString
-      }
-    }
+  "return a Bad Request and errors when invalid data is submitted" in {
+    val userAnswers = emptyUserAnswers.set(ClaimPeriodPage, ClaimPeriod.values.head).success.value
+    val controller1 = controller(userAnswers)
+    val request = getRequest(POST).withFormUrlEncodedBody(("value", "invalid value"))
+    val result = controller1.onSubmit()(request)
+    val boundForm = form.bind(Map("value" -> "invalid value"))
+    status(result) mustEqual BAD_REQUEST
 
-    "redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
-
-      running(application) {
-
-        val request =
-          fakeRequest(POST, claimPeriodRoute)
-            .withFormUrlEncodedBody(("value", ClaimPeriod.values.head.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual onwardRoute.url
-      }
-    }
-
-    "return a Bad Request and errors when invalid data is submitted" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      running(application) {
-
-        val request =
-          fakeRequest(POST, claimPeriodRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
-
-        val boundForm = form.bind(Map("value" -> "invalid value"))
-
-        val view = application.injector.instanceOf[ClaimPeriodView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-
-        contentAsString(result) mustEqual
-          view(boundForm)(request, messages(application), appConfig(application)).toString
-      }
-    }
+    contentAsString(result) mustEqual
+      view(boundForm)(request, messages, frontendAppConfig).toString
   }
 }

@@ -18,42 +18,38 @@ package controllers
 
 import java.time.{LocalDate, ZoneOffset}
 
-import base.SpecBase
+import base.SpecBaseControllerSpecs
 import forms.LastPayDateFormProvider
 import models.UserAnswers
-import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
 import pages.{ClaimPeriodPage, LastPayDatePage}
-import play.api.inject.bind
 import play.api.libs.json.{JsString, Json}
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import views.html.LastPayDateView
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class LastPayDateControllerSpec extends SpecBase with MockitoSugar {
+class LastPayDateControllerSpec extends SpecBaseControllerSpecs {
+
+  val view = app.injector.instanceOf[LastPayDateView]
 
   private val formProvider = new LastPayDateFormProvider()
-  private def form = formProvider()
 
-  private def onwardRoute = Call("GET", "/foo")
+  private def form = formProvider()
 
   private val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
-  private lazy val lastPayDateRoute = routes.LastPayDateController.onPageLoad().url
+  private lazy val lastPayDateRouteGet = routes.LastPayDateController.onPageLoad().url
+  private lazy val lastPayDateRoutePost = routes.LastPayDateController.onSubmit().url
 
   override val emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
   private lazy val getRequest: FakeRequest[AnyContentAsEmpty.type] =
-    fakeRequest(GET, lastPayDateRoute)
+    fakeRequest(GET, lastPayDateRouteGet)
 
   private lazy val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-    fakeRequest(POST, lastPayDateRoute)
+    fakeRequest(POST, lastPayDateRoutePost)
       .withFormUrlEncodedBody(
         "value.day"   -> validAnswer.getDayOfMonth.toString,
         "value.month" -> validAnswer.getMonthValue.toString,
@@ -64,23 +60,30 @@ class LastPayDateControllerSpec extends SpecBase with MockitoSugar {
 
   val userAnswers = UserAnswers(userAnswersId, Json.obj(ClaimPeriodPage.toString -> JsString("November 2020")))
 
+  def controller(userAnswers: Option[UserAnswers]) = new LastPayDateController(
+    messagesApi,
+    mockSessionRepository,
+    navigator,
+    getSessionAction,
+    stubDataRetrieval(userAnswers),
+    dataRequired,
+    formProvider,
+    component,
+    view
+  )
+
   "LastPayDate Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val fakeRequest = getRequest
 
-      running(application) {
+      val result = controller(Some(userAnswers)).onPageLoad()(fakeRequest)
 
-        val result = route(application, getRequest).value
+      status(result) mustEqual OK
 
-        val view = application.injector.instanceOf[LastPayDateView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form, claimPeriod)(getRequest, messages(application)).toString
-      }
+      contentAsString(result) mustEqual
+        view(form, claimPeriod)(getRequest, messages).toString
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -88,93 +91,63 @@ class LastPayDateControllerSpec extends SpecBase with MockitoSugar {
       val userAnswers =
         UserAnswers(userAnswersId, Json.obj(LastPayDatePage.toString -> validAnswer, ClaimPeriodPage.toString -> JsString("November 2020")))
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val fakeRequest = getRequest
 
-      running(application) {
+      val result = controller(Some(userAnswers)).onPageLoad()(fakeRequest)
 
-        val view = application.injector.instanceOf[LastPayDateView]
+      status(result) mustEqual OK
 
-        val result = route(application, getRequest).value
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form.fill(validAnswer), claimPeriod)(getRequest, messages(application)).toString
-      }
+      contentAsString(result) mustEqual
+        view(form.fill(validAnswer), claimPeriod)(getRequest, messages).toString
     }
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+      val fakeRequest = postRequest
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      val result = controller(Some(userAnswers)).onSubmit()(fakeRequest)
 
-      val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+      status(result) mustEqual SEE_OTHER
 
-      running(application) {
-
-        val result = route(application, postRequest).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual onwardRoute.url
-      }
+      redirectLocation(result).value mustEqual routes.LastPayDateController.onPageLoad().url
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request =
+        fakeRequest(POST, lastPayDateRoutePost)
+          .withFormUrlEncodedBody(("value", "invalid value"))
 
-      running(application) {
+      val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val request =
-          fakeRequest(POST, lastPayDateRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+      val result = controller(Some(userAnswers)).onSubmit()(request)
 
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+      status(result) mustEqual BAD_REQUEST
 
-        val view = application.injector.instanceOf[LastPayDateView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-
-        contentAsString(result) mustEqual
-          view(boundForm, claimPeriod)(request, messages(application)).toString
-      }
+      contentAsString(result) mustEqual
+        view(boundForm, claimPeriod)(request, messages).toString
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val fakeRequest = getRequest
 
-      running(application) {
+      val result = controller(None).onPageLoad()(fakeRequest)
 
-        val result = route(application, getRequest).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-      }
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val fakeRequest = postRequest
 
-      running(application) {
+      val result = controller(None).onSubmit()(fakeRequest)
 
-        val result = route(application, postRequest).value
+      status(result) mustEqual SEE_OTHER
 
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-      }
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
+
   }
 }
