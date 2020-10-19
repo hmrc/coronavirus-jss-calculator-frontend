@@ -345,3 +345,8 @@ endPayDate.error.invalid = Enter a real end pay date
 
 
 confirmation.feedbackSurvey.label = What do you think of this service?
+
+comingSoon.title = We are unable to do this calculation at the moment
+comingSoon.heading = We are unable to do this calculation at the moment
+comingSoon.p = This will be available in a future version.
+comingSoon.start.another = Start another calculation

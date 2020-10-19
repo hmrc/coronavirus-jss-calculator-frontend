@@ -19,6 +19,7 @@ package navigation
 import controllers.routes
 import javax.inject.{Inject, Singleton}
 import models.PayFrequency.Monthly
+import models.PayMethod.{Regular, Variable}
 import models.{UserAnswers, _}
 import pages._
 import play.api.mvc.Call
@@ -34,8 +35,8 @@ class Navigator @Inject()() {
       _ =>
         routes.LastPayDateController.onPageLoad()
     case PayMethodPage =>
-      _ =>
-        routes.PayPeriodsController.onPageLoad()
+      userAnswers =>
+        payMethodRoutes(userAnswers)
     case LastPayDatePage =>
       userAnswers =>
         lastPayDateRoute(userAnswers)
@@ -89,4 +90,11 @@ class Navigator @Inject()() {
       case _       => routes.SelectWorkPeriodsController.onPageLoad()
     }
   }
+
+  private def payMethodRoutes(userAnswers: UserAnswers): Call =
+    userAnswers.get(PayMethodPage) match {
+      case Some(Regular)  => routes.PayPeriodsController.onPageLoad()
+      case Some(Variable) => routes.ComingSoonController.onPageLoad()
+      case _              => routes.PayMethodController.onPageLoad()
+    }
 }

@@ -21,6 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import controllers.routes
 import models.PayFrequency.{Monthly, Weekly}
+import models.PayMethod.{Regular, Variable}
 import models._
 import pages._
 
@@ -47,8 +48,12 @@ class NavigatorSpec extends SpecBase {
         navigator.nextPage(PayFrequencyPage, NormalMode, emptyUserAnswers) mustBe routes.LastPayDateController.onPageLoad()
       }
 
-      "go to LastPayDatePage after PayMethod" in {
-        navigator.nextPage(PayMethodPage, NormalMode, emptyUserAnswers) mustBe routes.PayPeriodsController.onPageLoad()
+      "go to correct page after PayMethod" in {
+        var userAnswers = emptyUserAnswers.set(PayMethodPage, Regular).success.value
+        navigator.nextPage(PayMethodPage, NormalMode, userAnswers) mustBe routes.PayPeriodsController.onPageLoad()
+
+        userAnswers = emptyUserAnswers.set(PayMethodPage, Variable).success.value
+        navigator.nextPage(PayMethodPage, NormalMode, userAnswers) mustBe routes.ComingSoonController.onPageLoad()
       }
 
       "go to correct page after LastPayDatePage" in {
