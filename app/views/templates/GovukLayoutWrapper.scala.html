@@ -19,56 +19,64 @@
 @import views.html.templates.GovukFullWidthLayout
 
 @this(
-    govukLayout: GovukLayout,
-    govukFullWidthLayout: GovukFullWidthLayout,
-    govukPhaseBanner: GovukPhaseBanner,
-    govukBackLink: GovukBackLink,
-    siteHeader: components.siteHeader,
-    phaseBanner: components.phaseBanner,
-    languageSelection: components.languageSelection,
-    link: components.link,
-    appConfig: config.FrontendAppConfig,
-    footerLinks: FooterLinks,
-    hmrcReportTechnicalIssue: hmrcReportTechnicalIssue,
-    timeoutDialog: HmrcTimeoutDialog
+        govukLayout: GovukLayout,
+        govukFullWidthLayout: GovukFullWidthLayout,
+        govukPhaseBanner: GovukPhaseBanner,
+        govukBackLink: GovukBackLink,
+        siteHeader: components.siteHeader,
+        phaseBanner: components.phaseBanner,
+        languageSelection: components.languageSelection,
+        link: components.link,
+        appConfig: config.FrontendAppConfig,
+        footerLinks: FooterLinks,
+        hmrcReportTechnicalIssue: hmrcReportTechnicalIssue,
+        timeoutDialog: HmrcTimeoutDialog
 )
 
 @(pageTitle: Option[String] = None, timeout: Boolean = true, js: Option[Html] = None, backLink: Boolean = true, fullWidth: Boolean = false)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-@head = {
-    <script src='@controllers.routes.Assets.versioned("javascripts/gtm.js")'></script>
-    <!--[if lte IE 8]><link href='@controllers.routes.Assets.versioned("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
-    <!--[if gt IE 8]><!--><link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="all" rel="stylesheet" type="text/css" /><!--<![endif]-->
+    @head = {
+        <script src='@controllers.routes.Assets.versioned("javascripts/gtm.js")'></script>
+            <!--[if lte IE 8]><link href='
+    @controllers.routes.Assets.versioned("stylesheets/application-ie-8.css")
+        ' rel="stylesheet" type="text/css" /><![endif]-->
+            <!--[if gt IE 8]><!-->
+        <link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="all" rel="stylesheet" type="text/css" />
+            <!--<![endif]-->
     @if(timeout) {
         @timeoutDialog(
-                TimeoutDialog(
-                    timeout = Some(appConfig.timeout),
-                    countdown = Some(appConfig.countdown),
-                    keepAliveUrl = Some("#"),
-                    keepAliveButtonText = Some(messages("timeout.keepAlive")),
-                    signOutUrl = None, // TODO: Check whether this should be None, or e.g. redirect to home
-                    signOutButtonText = Some(messages("timeout.signOut")),
-                    title = Some(messages("timeout.title")),
-                    message = Some(messages("timeout.message"))
-                )
+            TimeoutDialog(
+                timeout = Some(appConfig.timeout),
+                countdown = Some(appConfig.countdown),
+                keepAliveUrl = Some("#"),
+                keepAliveButtonText = Some(messages("timeout.keepAlive")),
+                signOutUrl = None, // TODO: Check whether this should be None, or e.g. redirect to home
+                signOutButtonText = Some(messages("timeout.signOut")),
+                title = Some(messages("timeout.title")),
+                message = Some(messages("timeout.message"))
             )
-        }
-}
+        )
+    }
+    }
 
-@scripts = {
-    <script src='@controllers.routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
-    <script src='@controllers.routes.Assets.versioned("javascripts/application.min.js")'></script>
-    <script src='@controllers.routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
-    <script>window.GOVUKFrontend.initAll();</script>
-<script>window.HMRCFrontend.initAll();</script>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NDJKHWK" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+    @scripts = {
+        <script src='@controllers.routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
+        <script src='@controllers.routes.Assets.versioned("javascripts/application.min.js")'></script>
+        <script src='@controllers.routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
+        <script>window.GOVUKFrontend.initAll();</script>
+        <script>window.HMRCFrontend.initAll();</script>
+            <!-- Google Tag Manager (noscript) -->
+        @appConfig.gtmContainer.map { containerId =>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=@containerId" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+            <!-- End Google Tag Manager (noscript) -->
+        }
+            <!-- End Google Tag Manager (noscript) -->
 
     @js.map(x => x)
-}
+    }
 
-@beforeContentBlock = {
+    @beforeContentBlock = {
 
     @phaseBanner("beta")
 
@@ -79,36 +87,36 @@
     @if(appConfig.languageTranslationEnabled) {
         @languageSelection()
     }
-}
+    }
 
-@content = {
+    @content = {
     @contentBlock
 
-    <div class="govuk-!-margin-top-8">
+        <div class="govuk-!-margin-top-8">
         @hmrcReportTechnicalIssue(
             uk.gov.hmrc.hmrcfrontend.views.html.components.ReportTechnicalIssue(appConfig.appName, Some(messages.lang.language))
         )
-    </div>
-}
+        </div>
+    }
 
-@if(fullWidth) {
-    @govukFullWidthLayout(
-        pageTitle = pageTitle,
-        headBlock = Some(head),
-        beforeContentBlock = Some(beforeContentBlock),
-        bodyEndBlock = None,
-        scriptsBlock = Some(scripts),
-        headerBlock = Some(siteHeader()),
-        footerItems = footerLinks.items
-    )(content)
-} else {
-    @govukLayout(
-        pageTitle = pageTitle,
-        headBlock = Some(head),
-        beforeContentBlock = Some(beforeContentBlock),
-        bodyEndBlock = None,
-        scriptsBlock = Some(scripts),
-        headerBlock = Some(siteHeader()),
-        footerItems = footerLinks.items
-    )(content)
-}
+    @if(fullWidth) {
+        @govukFullWidthLayout(
+            pageTitle = pageTitle,
+            headBlock = Some(head),
+            beforeContentBlock = Some(beforeContentBlock),
+            bodyEndBlock = None,
+            scriptsBlock = Some(scripts),
+            headerBlock = Some(siteHeader()),
+            footerItems = footerLinks.items
+        )(content)
+    } else {
+        @govukLayout(
+            pageTitle = pageTitle,
+            headBlock = Some(head),
+            beforeContentBlock = Some(beforeContentBlock),
+            bodyEndBlock = None,
+            scriptsBlock = Some(scripts),
+            headerBlock = Some(siteHeader()),
+            footerItems = footerLinks.items
+        )(content)
+    }
