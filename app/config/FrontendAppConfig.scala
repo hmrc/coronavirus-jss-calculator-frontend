@@ -29,7 +29,12 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
   private lazy val contactHost = configuration.get[String]("contact-frontend.host")
   private val serviceIdentifier = "CJSSC"
 
-  lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$serviceIdentifier"
+  val gtmContainer = configuration.get[String]("gtm.container") match {
+    case "main"         => Some("GTM-NDJKHWK")
+    case "transitional" => Some("GTM-TSFTCWZ")
+    case _              => None
+  }
+
   lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$serviceIdentifier"
 
   def feedbackUrl(implicit request: RequestHeader): String =
@@ -38,18 +43,12 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
   lazy val timeout: Int = configuration.get[Int]("timeout.timeout")
   lazy val countdown: Int = configuration.get[Int]("timeout.countdown")
 
-  lazy val govukHome: String = configuration.get[String]("urls.govUkHome")
-  lazy val contactByPhone: String = configuration.get[String]("urls.contactByPhone")
-
   lazy val languageTranslationEnabled: Boolean = configuration.get[Boolean]("features.welsh-translation")
-
-  lazy val origin: String = configuration.get[String]("origin")
 
   lazy val cookies: String = host + configuration.get[String]("urls.footer.cookies")
   lazy val privacy: String = host + configuration.get[String]("urls.footer.privacy")
   lazy val termsConditions: String = host + configuration.get[String]("urls.footer.termsConditions")
   lazy val govukHelp: String = configuration.get[String]("urls.footer.govukHelp")
-  lazy val daysTillAbleToClaim: Int = configuration.get[Int]("daysTillAbleToClaim")
 
   lazy val appName: String = configuration.get[String]("appName")
 
@@ -59,5 +58,5 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
 
   lazy val schemeEnds: String = configuration.get[String]("schemeEnds")
 
-  lazy val calculatorVersion = configuration.get[String]("calculator.version")
+  lazy val calculatorVersion: String = configuration.get[String]("calculator.version")
 }
