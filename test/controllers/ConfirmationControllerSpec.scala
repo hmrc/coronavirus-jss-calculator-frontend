@@ -64,7 +64,7 @@ class ConfirmationControllerSpec extends SpecBaseControllerSpecs {
     val periodWithHours = PeriodWithHours(start, end, usualHours, actualHours)
     val grantForPeriod = GrantForPeriod(periodWithHours, 164.53, 24, 30, 104.167, 987.2, BigDecimal(1234.00), Monthly, true)
 
-    val grant = Grant(List(grantForPeriod), true, 164.53)
+    val grant = Grant(List(grantForPeriod), BigDecimal(1234.00), true, 164.53)
 
     "return OK and the correct view for a GET" in {
 
@@ -85,7 +85,7 @@ class ConfirmationControllerSpec extends SpecBaseControllerSpecs {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(grant, regularPay, "1.0")(fakeRequest, messages).toString
+        view(grant, "1.0")(fakeRequest, messages).toString
     }
   }
 }

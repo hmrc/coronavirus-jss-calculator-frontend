@@ -40,7 +40,11 @@ trait RegularPayGrantCalculator {
         calculateGrantForFullPeriod(referencePay, period, supportClaimPeriod, payFrequency)
       }
     }
-    Grant(grantForPeriods, isEligibleForGrant(grantForPeriods), grantForPeriods.foldLeft(0.0)((acc, d) => acc + d.amount.doubleValue()))
+    Grant(
+      grantForPeriods,
+      referencePay,
+      isEligibleForGrant(grantForPeriods),
+      grantForPeriods.foldLeft(0.0)((acc, d) => acc + d.amount.doubleValue()))
   }
 
   def isEligibleForGrant(grantPeriods: List[GrantForPeriod]): Boolean = {

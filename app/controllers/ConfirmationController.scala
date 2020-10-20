@@ -48,7 +48,7 @@ class ConfirmationController @Inject()(
     (workPeriods, usualAndActualHours, regularPay, payFrequency, supportClaimPeriod) match {
       case (Some(wps), hours, Some(rp), Some(pf), Some(cp)) =>
         val grant = calculateRegularPayGrant(periodsWithHours(wps, hours), rp.value, cp.supportClaimPeriod, pf)
-        Ok(view(grant, rp.value, appConfig.calculatorVersion))
+        Ok(view(grant, appConfig.calculatorVersion))
       case _ =>
         Logger.warn("expected data is missing from userAnswers, redirecting user to start page")
         Redirect(routes.ClaimPeriodController.onPageLoad())
