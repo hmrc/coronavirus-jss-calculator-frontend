@@ -46,12 +46,21 @@ class SelectWorkPeriodsController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
     val preparedForm = request.userAnswers.get(SelectWorkPeriodsPage) match {
       case None       => form
       case Some(list) => form.fill(list)
     }
-    getView(request.userAnswers, periods => Ok(view(preparedForm, periods)))
+    getView(
+      request.userAnswers,
+      periods => {
+        if (periods.length == 1) {
+          saveAndRedirect(request.userAnswers, periods)
+        } else {
+          Future.successful(Ok(view(preparedForm, periods)))
+        }
+      }
+    )
   }
 
   def onSubmit(): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
@@ -59,26 +68,28 @@ class SelectWorkPeriodsController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          Future.successful(getView(request.userAnswers, periods => BadRequest(view(formWithErrors, periods))))
+          getView(request.userAnswers, periods => Future.successful(BadRequest(view(formWithErrors, periods))))
         },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(SelectWorkPeriodsPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(SelectWorkPeriodsPage, NormalMode, updatedAnswers))
+        value => saveAndRedirect(request.userAnswers, value)
       )
   }
 
-  private def getView(userAnswers: UserAnswers, result: (List[Period]) => Result) = {
+  private def getView(userAnswers: UserAnswers, result: (List[Period]) => Future[Result]): Future[Result] = {
     val maybeClaimPeriod = userAnswers.get(ClaimPeriodPage)
     val maybePayFrequency = userAnswers.get(PayFrequencyPage)
     val maybeLastPayDay = userAnswers.get(LastPayDatePage)
 
     (maybeClaimPeriod, maybePayFrequency, maybeLastPayDay) match {
       case (Some(cp), Some(pf), Some(lpd)) => result(getPayPeriods(lpd, pf, cp.supportClaimPeriod))
-      case (None, _, _)                    => Redirect(routes.ClaimPeriodController.onPageLoad())
-      case (_, None, _)                    => Redirect(routes.PayFrequencyController.onPageLoad())
-      case (_, _, None)                    => Redirect(routes.LastPayDateController.onPageLoad())
+      case (None, _, _)                    => Future.successful(Redirect(routes.ClaimPeriodController.onPageLoad()))
+      case (_, None, _)                    => Future.successful(Redirect(routes.PayFrequencyController.onPageLoad()))
+      case (_, _, None)                    => Future.successful(Redirect(routes.LastPayDateController.onPageLoad()))
     }
   }
+
+  private def saveAndRedirect(userAnswers: UserAnswers, periods: List[Period]) =
+    for {
+      updatedAnswers <- Future.fromTry(userAnswers.set(SelectWorkPeriodsPage, periods))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(navigator.nextPage(SelectWorkPeriodsPage, NormalMode, updatedAnswers))
 }
