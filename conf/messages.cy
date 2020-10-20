@@ -1,6 +1,6 @@
 # Site-wide Messages
 # ----------------------------------------------------------
-service.name = Coronavirus Job Support Scheme calculator
+service.name = Coronavirus Job Support Scheme Calculator
 
 site.back = Back
 site.delete = Delete
@@ -143,9 +143,9 @@ session_expired.heading = For your security, this service has been reset
 session_expired.guidance = The details you have given have been deleted because you did not continue the service for 15 minutes.
 session_expired.restart = Start another calculation
 
-claimPeriod.title = What’s the start date of this claim?
-claimPeriod.heading = What’s the start date of this claim?
-claimPeriod.p1 = From 1 November, claims must start and end in the same calendar month.
+claimPeriod.title = Which month will you claim for?
+claimPeriod.heading = Which month will you claim for?
+claimPeriod.p1 = From 1 November, claims must start and end in the same calendar month. The claim must include all pay periods that end within either of your specific month of November or December.
 claimPeriod.p2 = Make sure the claim periods do not overlap.
 claimPeriod.details.title = What is a claim period?
 claimPeriod.details.p1 = The claim period is when one or more of your employees are furloughed under the Job Retention Scheme for a given period.
@@ -227,7 +227,7 @@ lastPayDate.heading = What’s the last day this employee was paid for before {0
 lastPayDate.p1 = This is the end of the last pay period before the claim started.
 lastPayDate.p2 = We’ll use this date to work out all the pay periods that cover your claim.
 lastPayDate.details.title = What is a pay period?
-lastPayDate.details.p1 = A ‘pay period’ is the period of time that the employee is paid for, such as weekly or monthly. When we ask for the end date of a pay period, it’s the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually gets their pay.
+lastPayDate.details.p1 = A ‘pay period’ is the period when the employee is paid for, such as weekly or monthly. The end date of a pay period is the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually receives their pay.
 lastPayDate.hint = For example 01 11 2020
 lastPayDate.error.required.all = Enter the correct date to apply for the Job Support scheme
 lastPayDate.error.required.two = Enter the correct date to apply for the Job Support scheme
@@ -254,7 +254,7 @@ payPeriods.no = No - change details
 payPeriods.p1 = We’ve worked them out based on your answers.
 payPeriods.from.to = From {0} to {1}
 payPeriods.p2 = Together, they should cover your claim, though may be partly outside it.
-payPeriods.p3 = We’ve assumed the pay periods are regular. The calculator cannot be used for irregular pay periods.
+payPeriods.p3 = We’ve assumed for regular pay periods. The calculator cannot be used for irregular pay periods.
 payPeriods.error.required = Select an option from below
 
 selectWorkPeriods.title = When did this employee work during the claim period?
@@ -263,9 +263,9 @@ selectWorkPeriods.hint = Select all that apply.
 selectWorkPeriods.from.to = {0} to {1}
 selectWorkPeriods.error.required = Select all that apply
 
-regularPayAmount.title = On {0}, what was this employee’s most recent pay amount?
-regularPayAmount.heading = On {0}, what was this employee’s most recent pay amount?
-regularPayAmount.p1 = This is the latest gross payment that was due on or before {0}, before deductions.
+regularPayAmount.title = Enter the highest recent pay amount before 19 March or 23 September 2020
+regularPayAmount.heading = Enter the highest recent pay amount before 19 March or 23 September 2020
+regularPayAmount.p1 = This is the latest gross payment due on or before 19 March before deductions.
 regularPayAmount.p2 = Do not include discretionary payments, non-cash payments or non-monetary benefits.
 regularPayAmount.info = If this employee started work between 1 and 18 March 2020, enter the amount they’ll get paid from now on.
 regularPayAmount.error.required = Enter regular pay amount
@@ -339,11 +339,17 @@ endPayDate.title = What’s the end of the next pay period after {0}?
 endPayDate.heading = What’s the end of the next pay period after {0}?
 endPayDate.p1 = This is the last day in the pay period, not the date they received their pay.
 endPayDate.details.title = What is a pay period?
-endPayDate.details.p1 = A ‘pay period’ is the period of time that the employee is paid for, such as weekly or monthly. When we ask for the end date of a pay period, it’s the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually gets their pay.
+endPayDate.details.p1 = A ‘pay period’ is the period when the employee is paid for, such as weekly or monthly. The end date of a pay period is the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually receives their pay.
 endPayDate.hint = For example 01 12 2020
-endPayDate.error.required.all = Enter the end pay date
-endPayDate.error.required.two = The end pay date must include {0} and {1}
-endPayDate.error.required = The end pay date must include {0}
-endPayDate.error.invalid = Enter a real end pay date
+endPayDate.error.required.all = Enter the correct date to apply for the Job Support scheme
+endPayDate.error.required.two = Enter the correct date to apply for the Job Support scheme
+endPayDate.error.required = Enter the correct date to apply for the Job Support scheme
+endPayDate.error.invalid = Enter the correct date to apply for the Job Support scheme
 
-confirmation.feedbackSurvey.label = Beth yw’ch barn am y gwasanaeth hwn?
+
+confirmation.feedbackSurvey.label = What do you think of this service?
+
+comingSoon.title = We are unable to do this calculation at the moment
+comingSoon.heading = We are unable to do this calculation at the moment
+comingSoon.p = This will be available in a future version.
+comingSoon.start.another = Start another calculation

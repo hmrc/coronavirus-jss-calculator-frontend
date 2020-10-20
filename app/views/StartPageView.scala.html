@@ -23,7 +23,7 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@govukLayout(pageTitle = Some(titleNoForm("startPage.title")), backLink = false) {
+@govukLayout(pageTitle = Some(titleNoForm("startPage.title")), backLink = false, timeout = false) {
 
     @h1("startPage.heading")
 

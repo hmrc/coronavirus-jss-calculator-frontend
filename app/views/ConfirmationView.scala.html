@@ -35,11 +35,6 @@
 
 @(grant: Grant, calculatorVersion: String)(implicit request: Request[_], messages: Messages)
 
-    @now = @{
-        val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-        LocalDate.now().format(formatter).toString
-    }
-
 @govukLayout(pageTitle = Some(titleNoForm("confirmation.title"))) {
 
     @if(!grant.isEligible) {
