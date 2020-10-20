@@ -143,9 +143,9 @@ session_expired.heading = For your security, this service has been reset
 session_expired.guidance = The details you have given have been deleted because you did not continue the service for 15 minutes.
 session_expired.restart = Start another calculation
 
-claimPeriod.title = What’s the start date of this claim?
-claimPeriod.heading = What’s the start date of this claim?
-claimPeriod.p1 = From 1 November, claims must start and end in the same calendar month.
+claimPeriod.title = Which month will you claim for?
+claimPeriod.heading = Which month will you claim for?
+claimPeriod.p1 = From 1 November, claims must start and end in the same calendar month. The claim must include all pay periods that end within either of your specific month of November or December.
 claimPeriod.p2 = Make sure the claim periods do not overlap.
 claimPeriod.details.title = What is a claim period?
 claimPeriod.details.p1 = The claim period is when one or more of your employees are furloughed under the Job Retention Scheme for a given period.
