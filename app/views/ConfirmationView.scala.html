@@ -17,6 +17,8 @@
 @import java.time.LocalDate
 @import config.FrontendAppConfig
 @import viewmodels.ConfirmationBreakdownHelper
+@import java.time.LocalDate
+@import java.time.format.DateTimeFormatter
 
 @this(
         govukLayout: templates.GovukLayoutWrapper,
@@ -31,13 +33,19 @@
         breakdownHelper: ConfirmationBreakdownHelper
 )
 
-@(grant: Grant, regularPay: BigDecimal, version: String)(implicit request: Request[_], messages: Messages)
+@(grant: Grant, calculatorVersion: String)(implicit request: Request[_], messages: Messages)
+
+    @now = @{
+        val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+        LocalDate.now().format(formatter).toString
+    }
 
 @govukLayout(pageTitle = Some(titleNoForm("confirmation.title"))) {
 
-    @if(!grant.eligible) {
+    @if(!grant.isEligible) {
         @p(Html(messages("confirmation.confirmation.p1.noteligible")))
     }
+
     @confirmation {
         @h1(Html(messages("confirmation.confirmation.p1")), classes = Some(""))
         <div class="furlough-heading">
@@ -46,16 +54,14 @@
     }
 
     <div class="govuk-inset-text">
-
         @p(Html(Messages("confirmation.p1", grant.totalGrant.formatted("%.2f"))))
-        @p(Html(Messages("confirmation.p2", regularPay.formatted("%.2f"))))
-        @p(Html(Messages("confirmation.p3")))
+        @p(Html(Messages("confirmation.p2", grant.referencePay.formatted("%.2f"))))
     </div>
 
     @p {
         <span class="govuk-!-font-weight-bold">@messages("confirmation.calculated.on")</span>
         @dateToString(LocalDate.now())
-        @Html(messages("confirmation.date.version", version))
+        @Html(messages("confirmation.date.version", calculatorVersion))
     }
 
     @p(Html(Messages("confirmation.p4")))
@@ -63,26 +69,23 @@
     @h2(Html(messages("confirmation.nextSteps.heading")), classes = Some("govuk-heading-m"))
 
     <ul class="govuk-list govuk-list--number">
-        <li>@messages("confirmation.nextSteps.l1")</li>
+        <li>@Html(Messages("confirmation.nextSteps.l1", <a href="" class="govuk-link">Print or save a copy of this page</a>))</li>
         <li>@messages("confirmation.nextSteps.l2")</li>
         <li>@messages("confirmation.nextSteps.l3")</li>
         <li>@messages("confirmation.nextSteps.l4")</li>
-        <li>@messages("confirmation.nextSteps.l5")</li>
+        <li>@Html(Messages("confirmation.nextSteps.l5", <a href="" class="govuk-link">Job Support Scheme online claim service (opens in a new window or tab)</a>))</li>
     </ul>
 
     @button(messages("confirmation.startAgain"), href = Some(routes.ClaimPeriodController.onPageLoad()), classes = Some("govuk-button"))
 
-    @h3("confirmation.breakdown.header")
+    @h2("confirmation.breakdown.header")
 
     @p(Html(Messages("confirmation.breakdown.p1")))
 
-    @p(Html(Messages("confirmation.breakdown.p2")))
-
-    @p(Html(Messages("confirmation.breakdown.p3")))
-
     @for(gfp <- grant.grantForPeriods) {
-        @h3(breakdownHelper.breakdownH3(gfp))
-        @p(Html(Messages("confirmation.breakdown.h3.p1")))
+        @h2(breakdownHelper.breakdownH3(gfp))
+        @h3(Html(Messages("confirmation.breakdown.h3.p1")))
+
         @p(Html(breakdownHelper.totalPayForTheDaysWorked(gfp)))
         @p(Html(Messages(breakdownHelper.referencePayCapForTheDaysWorked(gfp))))
         @p(Html(Messages("confirmation.breakdown.h3.p1.l3", gfp.adjustedReferencePay)))
@@ -91,5 +94,9 @@
         @p(Html(Messages(breakdownHelper.eligibility(gfp))))
     }
 
+    @p(Html(Messages("confirmation.p5")))
+
+    @p(Html(link(routes.FeedbackSurveyController.startSurvey(), "confirmation.print.label", true)))
+    @p(Html(link(routes.FeedbackSurveyController.startSurvey(), "confirmation.webchat.label", true)))
     @p(Html(link(routes.FeedbackSurveyController.startSurvey(), "confirmation.feedbackSurvey.label", true)))
 }

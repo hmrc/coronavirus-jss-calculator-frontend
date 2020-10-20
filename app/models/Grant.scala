@@ -36,7 +36,8 @@ object GrantForPeriod {
 
 final case class Grant(
   grantForPeriods: List[GrantForPeriod],
-  eligible: Boolean,
+  referencePay: BigDecimal,
+  isEligible: Boolean,
   totalGrant: BigDecimal
 )
 
