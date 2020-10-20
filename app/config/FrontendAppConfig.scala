@@ -29,7 +29,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
   private lazy val contactHost = configuration.get[String]("contact-frontend.host")
   private val serviceIdentifier = "CJSSC"
 
-  val gtmContainer = configuration.get[String]("gtm.container.id")
+  val gtmContainerId = configuration.get[String]("gtm.container.id")
 
   lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$serviceIdentifier"
 

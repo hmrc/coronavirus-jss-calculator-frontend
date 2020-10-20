@@ -66,11 +66,9 @@
         <script>window.GOVUKFrontend.initAll();</script>
         <script>window.HMRCFrontend.initAll();</script>
             <!-- Google Tag Manager (noscript) -->
-        @appConfig.gtmContainer.map { containerId =>
         <!-- Google Tag Manager (noscript) -->
-        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=@containerId" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=@{appConfig.gtmContainerId}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <!-- End Google Tag Manager (noscript) -->
-        }
             <!-- End Google Tag Manager (noscript) -->
 
     @js.map(x => x)
