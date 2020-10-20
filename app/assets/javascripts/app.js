@@ -19,6 +19,15 @@ $(document).ready(function() {
         window.history.back();
     });
 
+     $('#print-link').on('click', function(e){
+            e.preventDefault();
+            $(".govuk-details").prop('open', true)
+            $(".govuk-details__summary").prop('aria-expanded', true)
+            $(".govuk-details__text").prop('aria-hidden', false)
+            $(".govuk-details__text").prop('style', true)
+            javascript:window.print();
+      });
+
 });
 
 function numberInputs() {
