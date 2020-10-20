@@ -333,15 +333,6 @@ confirmation.breakdown.reference-pay.p1.l3 =  Multiply by {0} hours worked.
 confirmation.breakdown.reference-pay.p2 = Pay for hours worked = {0}
 
 confirmation.breakdown.p3 = Then:
-confirmation.breakdown.reference-pay.p1 = Take the reference pay for the pay period:
-confirmation.breakdown.reference-pay.p1.l1 = Start with: {0}
-confirmation.breakdown.reference-pay.p1.l2 = Divide by the {0} usual hours worked.
-confirmation.breakdown.reference-pay.p1.l3 =  Multiply by {0} hours worked.
-confirmation.breakdown.reference-pay.p2 = Pay for hours worked = {0}
-
-
-
-
 confirmation.breakdown.h3.p1.l1.partial = 1. Calculate total pay for the days worked = {0} * {1} / {2} = {3}
 confirmation.breakdown.h3.p1.l1 = 1. Total pay for the days worked = {0}
 confirmation.breakdown.h3.p1.l2.partial = 2. Calculate reference pay Cap = {0} * {1} = {2}
