@@ -263,8 +263,8 @@ selectWorkPeriods.hint = Select all that apply.
 selectWorkPeriods.from.to = {0} to {1}
 selectWorkPeriods.error.required = Select all that apply
 
-regularPayAmount.title = On 23 September 2020, what was this employee’s most recent pay amount?
-regularPayAmount.heading = On 23 September 2020, what was this employee’s most recent pay amount?
+regularPayAmount.title = Enter the highest recent pay amount before 19 March or 23 September 2020
+regularPayAmount.heading = Enter the highest recent pay amount before 19 March or 23 September 2020
 regularPayAmount.p1 = This is the latest gross payment due on or before 19 March before deductions.
 regularPayAmount.p2 = Do not include discretionary payments, non-cash payments or non-monetary benefits.
 regularPayAmount.info = If this employee started work between 1 and 18 March 2020, enter the amount they’ll get paid from now on.
