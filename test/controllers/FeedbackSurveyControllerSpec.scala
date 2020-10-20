@@ -16,32 +16,33 @@
 
 package controllers
 
-import base.SpecBase
-import org.scalatestplus.mockito.MockitoSugar
+import base.SpecBaseControllerSpecs
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, status, _}
 
-class FeedbackSurveyControllerSpec extends SpecBase with MockitoSugar {
+class FeedbackSurveyControllerSpec extends SpecBaseControllerSpecs {
 
   lazy val surveyRoute = routes.FeedbackSurveyController.startSurvey().url
 
   private lazy val getRequest: FakeRequest[AnyContentAsEmpty.type] =
     fakeRequest(GET, surveyRoute)
 
+  def controller() = new FeedbackSurveyController(
+    getSessionAction,
+    component
+  )
+
   "FeedbackSurveyController" must {
 
     "redirect users to /feedback service" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request = getRequest
 
-      running(application) {
+      val result = controller().startSurvey()(request)
 
-        val result = route(application, getRequest).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual "http://localhost:9514/feedback/CJSSC"
-      }
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual "http://localhost:9514/feedback/CJSSC"
     }
   }
 }

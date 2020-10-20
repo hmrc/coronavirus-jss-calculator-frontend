@@ -18,38 +18,45 @@ package controllers
 
 import java.time.LocalDate
 
-import base.SpecBase
+import base.SpecBaseControllerSpecs
 import forms.UsualAndActualHoursFormProvider
-import models.{Period, UsualAndActualHours}
-import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import models.{Period, UserAnswers, UsualAndActualHours}
 import pages.{SelectWorkPeriodsPage, UsualAndActualHoursPage}
-import play.api.inject.bind
-import play.api.mvc.{AnyContentAsEmpty, Call}
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.CSRFTokenHelper._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import views.html.UsualAndActualHoursView
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class UsualAndActualHoursControllerSpec extends SpecBase with MockitoSugar {
+class UsualAndActualHoursControllerSpec extends SpecBaseControllerSpecs {
+
+  val view = app.injector.instanceOf[UsualAndActualHoursView]
 
   private val formProvider = new UsualAndActualHoursFormProvider()
   private val form = formProvider()
 
-  private def onwardRoute = Call("GET", "/foo")
-
   private val validAnswer = UsualAndActualHours(10.00, 20.00)
 
-  private def usualAndActualHoursRoute(idx: Int) = routes.UsualAndActualHoursController.onPageLoad(idx).url
+  private def usualAndActualHoursRouteGet(idx: Int) = routes.UsualAndActualHoursController.onPageLoad(idx).url
+  private def usualAndActualHoursRoutePost(idx: Int) = routes.UsualAndActualHoursController.onSubmit(idx).url
 
   def getRequest(method: String, idx: Int) =
-    FakeRequest(method, usualAndActualHoursRoute(idx)).withCSRFToken
+    FakeRequest(method, usualAndActualHoursRouteGet(idx)).withCSRFToken
       .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
+
+  def controller(userAnswers: Option[UserAnswers]) = new UsualAndActualHoursController(
+    messagesApi,
+    mockSessionRepository,
+    navigator,
+    getSessionAction,
+    stubDataRetrieval(userAnswers),
+    dataRequired,
+    formProvider,
+    component,
+    view
+  )
 
   val periods = List(Period(LocalDate.of(2020, 10, 31), LocalDate.of(2020, 11, 29)))
 
@@ -59,125 +66,79 @@ class UsualAndActualHoursControllerSpec extends SpecBase with MockitoSugar {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request = fakeRequest(GET, usualAndActualHoursRouteGet(1))
 
-      running(application) {
+      val result = controller(Some(userAnswers)).onPageLoad(1)(request)
 
-        val request = getRequest(GET, 1)
+      status(result) mustEqual OK
 
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[UsualAndActualHoursView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form, 1, periods.head)(request, messages(application)).toString
-      }
+      contentAsString(result) mustEqual
+        view(form, 1, periods.head)(request, messages).toString
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswersUpdated = userAnswers.set(UsualAndActualHoursPage, validAnswer, Some(1)).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersUpdated)).build()
+      val request = fakeRequest(GET, usualAndActualHoursRouteGet(1))
 
-      running(application) {
+      val result = controller(Some(userAnswersUpdated)).onPageLoad(1)(request)
 
-        val request = getRequest("GET", 1)
+      status(result) mustEqual OK
 
-        val view = application.injector.instanceOf[UsualAndActualHoursView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form.fill(validAnswer), 1, periods.head)(request, messages(application)).toString
-      }
+      contentAsString(result) mustEqual
+        view(form.fill(validAnswer), 1, periods.head)(request, messages).toString
     }
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+      val request =
+        fakeRequest(POST, usualAndActualHoursRoutePost(1))
+          .withFormUrlEncodedBody("usualHours" -> validAnswer.usualHours.toString, "actualHours" -> validAnswer.actualHours.toString)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      val result = controller(Some(userAnswers)).onSubmit(1)(request)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+      status(result) mustEqual SEE_OTHER
 
-      running(application) {
-
-        val request =
-          fakeRequest(POST, usualAndActualHoursRoute(1))
-            .withFormUrlEncodedBody("usualHours" -> validAnswer.usualHours.toString, "actualHours" -> validAnswer.actualHours.toString)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual onwardRoute.url
-      }
+      redirectLocation(result).value mustEqual routes.ConfirmationController.onPageLoad().url
     }
+  }
 
-    "return a Bad Request and errors when invalid data is submitted" in {
+  "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+    val request =
+      fakeRequest(POST, usualAndActualHoursRoutePost(1))
+        .withFormUrlEncodedBody(("value", "invalid value"))
 
-      running(application) {
+    val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val request =
-          fakeRequest(POST, usualAndActualHoursRoute(1))
-            .withFormUrlEncodedBody(("value", "invalid value"))
+    val result = controller(Some(userAnswers)).onSubmit(1)(request)
 
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+    status(result) mustEqual BAD_REQUEST
 
-        val view = application.injector.instanceOf[UsualAndActualHoursView]
+    contentAsString(result) mustEqual
+      view(boundForm, 1, periods.head)(request, messages).toString
+  }
 
-        val result = route(application, request).value
+  "redirect to Session Expired for a GET if no existing data is found" in {
 
-        status(result) mustEqual BAD_REQUEST
+    val request = fakeRequest(GET, usualAndActualHoursRouteGet(1))
 
-        contentAsString(result) mustEqual
-          view(boundForm, 1, periods.head)(request, messages(application)).toString
-      }
-    }
+    val result = controller(None).onPageLoad(1)(request)
 
-    "redirect to Session Expired for a GET if no existing data is found" in {
+    status(result) mustEqual SEE_OTHER
+    redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+  }
 
-      val application = applicationBuilder(userAnswers = None).build()
+  "redirect to Session Expired for a POST if no existing data is found" in {
+    val request =
+      fakeRequest(POST, usualAndActualHoursRoutePost(1))
+        .withFormUrlEncodedBody(("value", validAnswer.toString))
 
-      running(application) {
+    val result = controller(None).onSubmit(1)(request)
 
-        val request = fakeRequest(GET, usualAndActualHoursRoute(1))
+    status(result) mustEqual SEE_OTHER
 
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-      }
-    }
-
-    "redirect to Session Expired for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          fakeRequest(POST, usualAndActualHoursRoute(1))
-            .withFormUrlEncodedBody(("value", validAnswer.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-      }
-    }
+    redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
   }
 }

@@ -16,31 +16,32 @@
 
 package controllers
 
-import base.SpecBase
+import base.SpecBaseControllerSpecs
 import play.api.test.Helpers._
 import views.html.StartPageView
 
-class StartPageControllerSpec extends SpecBase {
+class StartPageControllerSpec extends SpecBaseControllerSpecs {
+
+  val view = app.injector.instanceOf[StartPageView]
+
+  def controller() = new StartPageController(
+    messagesApi,
+    component,
+    view
+  )
 
   "StartPage Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request = fakeRequest(GET, routes.StartPageController.onPageLoad().url)
 
-      running(application) {
+      val result = controller().onPageLoad()(request)
 
-        val request = fakeRequest(GET, routes.StartPageController.onPageLoad().url)
+      status(result) mustEqual OK
 
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[StartPageView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view()(request, messages(application)).toString
-      }
+      contentAsString(result) mustEqual
+        view()(request, messages).toString
     }
   }
 }
