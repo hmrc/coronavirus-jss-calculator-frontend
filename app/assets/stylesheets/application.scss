@@ -26,7 +26,7 @@ $hmrc-assets-path: "/coronavirus-job-support-scheme-calculator/assets/lib/hmrc-f
   line-height: 1.09;
 }
 
-.furlough-heading {
+.grant-heading {
   clear: both;
   display: table;
   margin-top: 0.275em;
@@ -34,13 +34,13 @@ $hmrc-assets-path: "/coronavirus-job-support-scheme-calculator/assets/lib/hmrc-f
   table-layout: fixed;
   width: 100%;
 }
-.furlough-heading .govuk-panel__title {
+.grant-heading .govuk-panel__title {
   display: table-header-group;
   font-size: 48px;
   font-size: 3rem;
   line-height: 1.04167;
 }
-.furlough-heading p {
+.grant-heading p {
   color: white;
   font-size: 24px;
   font-size: 1.5rem;
@@ -67,7 +67,7 @@ $hmrc-assets-path: "/coronavirus-job-support-scheme-calculator/assets/lib/hmrc-f
     font-size: 19px;
     line-height: 1.09;
   }
-  .furlough-heading {
+  .grant-heading {
     clear: both;
     display: block;
     margin-top: 0.275em;
@@ -75,7 +75,7 @@ $hmrc-assets-path: "/coronavirus-job-support-scheme-calculator/assets/lib/hmrc-f
     table-layout: fixed;
     width: 100%;
   }
-  .furlough-heading p {
+  .grant-heading p {
     color: black;
     font-size: 19px;
     font-size: 1.1875rem ;
@@ -83,7 +83,7 @@ $hmrc-assets-path: "/coronavirus-job-support-scheme-calculator/assets/lib/hmrc-f
     margin:0;
     padding: 0 0 0.5em 0;
   }
-  .furlough-heading .govuk-panel__title {
+  .grant-heading .govuk-panel__title {
     position: relative;
     font-size: 24px ;
     font-size: 1.5rem ;
