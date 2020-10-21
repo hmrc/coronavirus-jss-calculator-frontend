@@ -18,7 +18,7 @@ package generators
 
 import java.time.LocalDate
 
-import models.{ClaimPeriod, PayFrequency, PayMethod, PayPeriods, TemporaryWorkingAgreement, UsualAndActualHours}
+import models.{BusinessClosed, ClaimPeriod, PayFrequency, PayMethod, PayPeriods, TemporaryWorkingAgreement, UsualAndActualHours}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
@@ -26,6 +26,14 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryBusinessClosedUserAnswersEntry: Arbitrary[(BusinessClosedPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[BusinessClosedPage.type]
+        value <- arbitrary[BusinessClosed].map(Json.toJson(_))
+      } yield (page, value)
+    }
 
   implicit lazy val arbitraryTemporaryWorkingAgreementUserAnswersEntry: Arbitrary[(TemporaryWorkingAgreementPage.type, JsValue)] =
     Arbitrary {

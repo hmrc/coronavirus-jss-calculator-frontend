@@ -55,6 +55,9 @@ class Navigator @Inject()() {
         routes.TemporaryWorkingAgreementController.onPageLoad()
     case TemporaryWorkingAgreementPage =>
       _ =>
+        routes.BusinessClosedController.onPageLoad()
+    case BusinessClosedPage =>
+      _ =>
         routes.UsualAndActualHoursController.onPageLoad(1)
     case _ =>
       _ =>
