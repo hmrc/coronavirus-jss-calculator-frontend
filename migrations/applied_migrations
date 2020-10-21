@@ -1,15 +1,61 @@
 #!/bin/bash
 
 echo ""
-echo "Applying migration ComingSoon"
+echo "Applying migration TemporaryWorkingAgreement"
 
 echo "Adding routes to conf/app.routes"
+
 echo "" >> ../conf/app.routes
-echo "GET        /comingSoon                       controllers.ComingSoonController.onPageLoad()" >> ../conf/app.routes
+echo "GET        /temporaryWorkingAgreement                        controllers.TemporaryWorkingAgreementController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "POST       /temporaryWorkingAgreement                        controllers.TemporaryWorkingAgreementController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
+
+echo "GET        /changeTemporaryWorkingAgreement                  controllers.TemporaryWorkingAgreementController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "POST       /changeTemporaryWorkingAgreement                  controllers.TemporaryWorkingAgreementController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
-echo "comingSoon.title = comingSoon" >> ../conf/messages.en
-echo "comingSoon.heading = comingSoon" >> ../conf/messages.en
+echo "temporaryWorkingAgreement.title = Did the employee have a temporary working agreement during this claim?" >> ../conf/messages.en
+echo "temporaryWorkingAgreement.heading = Did the employee have a temporary working agreement during this claim?" >> ../conf/messages.en
+echo "temporaryWorkingAgreement.yes = yes" >> ../conf/messages.en
+echo "temporaryWorkingAgreement.nO = no" >> ../conf/messages.en
+echo "temporaryWorkingAgreement.checkYourAnswersLabel = Did the employee have a temporary working agreement during this claim?" >> ../conf/messages.en
+echo "temporaryWorkingAgreement.error.required = Select temporaryWorkingAgreement" >> ../conf/messages.en
 
-echo "Migration ComingSoon completed"
+echo "Adding to UserAnswersEntryGenerators"
+awk '/  self: Generators =>/ {\
+    print;\
+    print "";\
+    print "  implicit lazy val arbitraryTemporaryWorkingAgreementUserAnswersEntry: Arbitrary[(TemporaryWorkingAgreementPage.type, JsValue)] =";\
+    print "    Arbitrary {";\
+    print "      for {";\
+    print "        page  <- arbitrary[TemporaryWorkingAgreementPage.type]";\
+    print "        value <- arbitrary[TemporaryWorkingAgreement].map(Json.toJson(_))";\
+    print "      } yield (page, value)";\
+    print "    }";\
+    next }1' ../test/generators/UserAnswersEntryGenerators.scala > tmp && mv tmp ../test/generators/UserAnswersEntryGenerators.scala
+
+echo "Adding to PageGenerators"
+awk '/trait PageGenerators/ {\
+    print;\
+    print "";\
+    print "  implicit lazy val arbitraryTemporaryWorkingAgreementPage: Arbitrary[TemporaryWorkingAgreementPage.type] =";\
+    print "    Arbitrary(TemporaryWorkingAgreementPage)";\
+    next }1' ../test/generators/PageGenerators.scala > tmp && mv tmp ../test/generators/PageGenerators.scala
+
+echo "Adding to ModelGenerators"
+awk '/  self: Generators =>/ {\
+    print;\
+    print "";\
+    print "  implicit lazy val arbitraryTemporaryWorkingAgreement: Arbitrary[TemporaryWorkingAgreement] =";\
+    print "    Arbitrary {";\
+    print "      Gen.oneOf(TemporaryWorkingAgreement.values)";\
+    print "    }";\
+    next }1' ../test/generators/ModelGenerators.scala > tmp && mv tmp ../test/generators/ModelGenerators.scala
+
+echo "Adding to UserAnswersGenerator"
+awk '/val generators/ {\
+    print;\
+    print "    arbitrary[(TemporaryWorkingAgreementPage.type, JsValue)] ::";\
+    next }1' ../test/generators/UserAnswersGenerator.scala > tmp && mv tmp ../test/generators/UserAnswersGenerator.scala
+
+echo "Migration TemporaryWorkingAgreement completed"

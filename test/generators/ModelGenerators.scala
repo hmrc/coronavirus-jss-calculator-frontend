@@ -18,11 +18,16 @@ package generators
 
 import java.time.{Instant, LocalDate, ZoneOffset}
 
-import models.{ClaimPeriod, PayFrequency, PayMethod, PayPeriods, Period}
+import models.{ClaimPeriod, PayFrequency, PayMethod, PayPeriods, Period, TemporaryWorkingAgreement}
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryTemporaryWorkingAgreement: Arbitrary[TemporaryWorkingAgreement] =
+    Arbitrary {
+      Gen.oneOf(TemporaryWorkingAgreement.values)
+    }
 
   implicit lazy val arbitraryPayPeriods: Arbitrary[PayPeriods] =
     Arbitrary {

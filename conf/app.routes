@@ -44,3 +44,6 @@ GET         /end-pay-date                       controllers.EndPayDateController
 POST        /end-pay-date                       controllers.EndPayDateController.onSubmit()
 
 GET         /coming-soon                        controllers.ComingSoonController.onPageLoad()
+
+GET         /temporary-working-agreement        controllers.TemporaryWorkingAgreementController.onPageLoad()
+POST        /temporary-working-agreement        controllers.TemporaryWorkingAgreementController.onSubmit()
