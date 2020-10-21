@@ -47,3 +47,6 @@ GET         /coming-soon                        controllers.ComingSoonController
 
 GET         /temporary-working-agreement        controllers.TemporaryWorkingAgreementController.onPageLoad()
 POST        /temporary-working-agreement        controllers.TemporaryWorkingAgreementController.onSubmit()
+
+GET         /business-closed                    controllers.BusinessClosedController.onPageLoad()
+POST        /business-closed                    controllers.BusinessClosedController.onSubmit()

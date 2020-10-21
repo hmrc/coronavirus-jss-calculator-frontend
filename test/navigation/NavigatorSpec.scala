@@ -83,9 +83,14 @@ class NavigatorSpec extends SpecBase {
         navigator.nextPage(RegularPayAmountPage, NormalMode, userAnswers) mustBe routes.TemporaryWorkingAgreementController.onPageLoad()
       }
 
-      "go to UsualAndActualHoursPage after TemporaryWorkingAgreementPage" in {
+      "go to BusinessClosedPage after TemporaryWorkingAgreementPage" in {
         val userAnswers = emptyUserAnswers.set(TemporaryWorkingAgreementPage, TemporaryWorkingAgreement.Yes).success.value
-        navigator.nextPage(TemporaryWorkingAgreementPage, NormalMode, userAnswers) mustBe routes.UsualAndActualHoursController.onPageLoad(1)
+        navigator.nextPage(TemporaryWorkingAgreementPage, NormalMode, userAnswers) mustBe routes.BusinessClosedController.onPageLoad()
+      }
+
+      "go to UsualAndActualHoursPage after BusinessClosedPage" in {
+        val userAnswers = emptyUserAnswers.set(BusinessClosedPage, BusinessClosed.Yes).success.value
+        navigator.nextPage(BusinessClosedPage, NormalMode, userAnswers) mustBe routes.UsualAndActualHoursController.onPageLoad(1)
       }
 
       "go to Confirmation after UsualAndActualHoursPage" in {

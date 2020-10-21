@@ -376,3 +376,10 @@ temporaryWorkingAgreement.p1 = Each temporary working agreement must cover a min
 temporaryWorkingAgreement.yes = Yes
 temporaryWorkingAgreement.no = No
 temporaryWorkingAgreement.error.required = Select Yes if the employee have a temporary working agreement during this claim
+
+businessClosed.title = Was your business closed and unable to trade during this claim?
+businessClosed.heading = Was your business closed and unable to trade during this claim?
+businessClosed.p1 = The period is known as the closed period. It covers businesses as a result of restrictions set by one of the four UK governments that legally require them to close their premises. Each closed period must cover a minimum period of seven days.
+businessClosed.yes = Yes
+businessClosed.no = No
+businessClosed.error.required = Select yes if your business closed and unable to trade during this claim
