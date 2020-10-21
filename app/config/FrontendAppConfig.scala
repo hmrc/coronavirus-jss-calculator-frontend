@@ -52,6 +52,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
     "feedback-frontend.url")
   lazy val exitSurveyUrl = s"$exitSurveyBaseUrl/$serviceIdentifier"
 
+  lazy val webchatHelpUrl: String = "#"
+
   lazy val schemeEnds: String = configuration.get[String]("schemeEnds")
 
   lazy val calculatorVersion: String = configuration.get[String]("calculator.version")
