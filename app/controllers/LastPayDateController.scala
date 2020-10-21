@@ -16,7 +16,7 @@
 
 package controllers
 
-import java.time.YearMonth
+import java.time.{LocalDate, YearMonth}
 
 import controllers.actions._
 import forms.LastPayDateFormProvider
@@ -24,7 +24,7 @@ import javax.inject.Inject
 import models.{ClaimPeriod, NormalMode}
 import navigation.Navigator
 import pages.{ClaimPeriodPage, LastPayDatePage}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -45,40 +45,40 @@ class LastPayDateController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  private def form = formProvider()
+  private def form(firstDayOfClaim: LocalDate)(implicit messages: Messages) = formProvider(firstDayOfClaim)
 
   def onPageLoad(): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(LastPayDatePage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
-    }
-
     request.userAnswers.get(ClaimPeriodPage) match {
       case Some(claimPeriod) =>
         val firstDayOfClaim = YearMonth.parse(claimPeriod, ClaimPeriod.pattern).atDay(1)
+
+        val preparedForm = request.userAnswers.get(LastPayDatePage) match {
+          case None        => form(firstDayOfClaim)
+          case Some(value) => form(firstDayOfClaim).fill(value)
+        }
+
         Ok(view(preparedForm, firstDayOfClaim))
+
       case None => Redirect(routes.ClaimPeriodController.onPageLoad())
     }
   }
 
   def onSubmit(): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => {
-          request.userAnswers.get(ClaimPeriodPage) match {
-            case Some(claimPeriod) =>
-              val firstDayOfClaim = YearMonth.parse(claimPeriod, ClaimPeriod.pattern).atDay(1)
-              Future.successful(BadRequest(view(formWithErrors, firstDayOfClaim)))
-            case None => Future.successful(Redirect(routes.ClaimPeriodController.onPageLoad()))
-          }
+    request.userAnswers.get(ClaimPeriodPage) match {
+      case Some(claimPeriod) =>
+        val firstDayOfClaim = YearMonth.parse(claimPeriod, ClaimPeriod.pattern).atDay(1)
+        form(firstDayOfClaim)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, firstDayOfClaim))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(LastPayDatePage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(LastPayDatePage, NormalMode, updatedAnswers))
+          )
 
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(LastPayDatePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(LastPayDatePage, NormalMode, updatedAnswers))
-      )
+      case None => Future.successful(Redirect(routes.ClaimPeriodController.onPageLoad()))
+    }
   }
 }

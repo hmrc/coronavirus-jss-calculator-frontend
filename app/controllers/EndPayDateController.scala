@@ -16,13 +16,15 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import controllers.actions._
 import forms.EndPayDateFormProvider
 import javax.inject.Inject
 import models.NormalMode
 import navigation.Navigator
 import pages.{EndPayDatePage, LastPayDatePage}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -43,36 +45,36 @@ class EndPayDateController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  private def form = formProvider()
+  private def form(lastPayDate: LocalDate)(implicit messages: Messages) = formProvider(lastPayDate)
 
   def onPageLoad(): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(EndPayDatePage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
-    }
-
     request.userAnswers.get(LastPayDatePage) match {
-      case Some(date) => Ok(view(preparedForm, date))
-      case None       => Redirect(routes.LastPayDateController.onPageLoad())
+      case Some(date) =>
+        val preparedForm = request.userAnswers.get(EndPayDatePage) match {
+          case None        => form(date)
+          case Some(value) => form(date).fill(value)
+        }
+        Ok(view(preparedForm, date))
+
+      case None => Redirect(routes.LastPayDateController.onPageLoad())
     }
   }
 
   def onSubmit(): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => {
-          val result = request.userAnswers.get(LastPayDatePage) match {
-            case Some(date) => BadRequest(view(formWithErrors, date))
-            case None       => Redirect(routes.LastPayDateController.onPageLoad())
-          }
-          Future.successful(result)
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(EndPayDatePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(EndPayDatePage, NormalMode, updatedAnswers))
-      )
+    request.userAnswers.get(LastPayDatePage) match {
+      case Some(date) =>
+        form(date)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, date))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(EndPayDatePage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(EndPayDatePage, NormalMode, updatedAnswers))
+          )
+      case None => Future.successful(Redirect(routes.LastPayDateController.onPageLoad()))
+    }
+
   }
 }

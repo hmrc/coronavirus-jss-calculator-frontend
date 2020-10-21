@@ -16,7 +16,7 @@
 
 package controllers
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.LocalDate
 
 import base.SpecBaseControllerSpecs
 import forms.EndPayDateFormProvider
@@ -34,9 +34,7 @@ class EndPayDateControllerSpec extends SpecBaseControllerSpecs {
   val view = app.injector.instanceOf[EndPayDateView]
 
   private val formProvider = new EndPayDateFormProvider()
-  private def form = formProvider()
-
-  private val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  private def form = formProvider
 
   private lazy val endPayDateRouteGet = routes.EndPayDateController.onPageLoad().url
   private lazy val endPayDateRoutePost = routes.EndPayDateController.onSubmit().url
@@ -46,6 +44,10 @@ class EndPayDateControllerSpec extends SpecBaseControllerSpecs {
   private lazy val getRequest: FakeRequest[AnyContentAsEmpty.type] =
     fakeRequest(GET, endPayDateRouteGet)
 
+  val lastPayDate = LocalDate.of(2020, 10, 30)
+
+  private val validAnswer = lastPayDate.plusDays(10)
+
   private lazy val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
     fakeRequest(POST, endPayDateRoutePost)
       .withFormUrlEncodedBody(
@@ -53,8 +55,6 @@ class EndPayDateControllerSpec extends SpecBaseControllerSpecs {
         "value.month" -> validAnswer.getMonthValue.toString,
         "value.year"  -> validAnswer.getYear.toString
       )
-
-  val lastPayDate = LocalDate.of(2020, 10, 30)
 
   val userAnswers = emptyUserAnswers.set(LastPayDatePage, lastPayDate).success.value
 
@@ -81,7 +81,7 @@ class EndPayDateControllerSpec extends SpecBaseControllerSpecs {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lastPayDate)(getRequest, messages).toString
+        view(form(lastPayDate), lastPayDate)(getRequest, messages).toString
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -95,7 +95,7 @@ class EndPayDateControllerSpec extends SpecBaseControllerSpecs {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), lastPayDate)(getRequest, messages).toString
+        view(form(lastPayDate).fill(validAnswer), lastPayDate)(getRequest, messages).toString
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -115,7 +115,7 @@ class EndPayDateControllerSpec extends SpecBaseControllerSpecs {
         fakeRequest(POST, endPayDateRoutePost)
           .withFormUrlEncodedBody(("value", "invalid value"))
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val boundForm = form(lastPayDate).bind(Map("value" -> "invalid value"))
 
       val result = controller(Some(userAnswers)).onSubmit()(request)
 

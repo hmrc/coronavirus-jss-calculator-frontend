@@ -233,6 +233,7 @@ lastPayDate.error.required.all = Enter the correct date to apply for the Job Sup
 lastPayDate.error.required.two = Enter the correct date to apply for the Job Support scheme
 lastPayDate.error.required = Enter the correct date to apply for the Job Support scheme
 lastPayDate.error.invalid = Enter the correct date to apply for the Job Support scheme
+lastPayDate.error.invalid.must.be.before = The last pay date must be before {0}
 
 month.1 = January
 month.2 = February
@@ -255,13 +256,13 @@ payPeriods.p1 = We’ve calculated them based on your answers:
 payPeriods.from.to = From {0} to {1}
 payPeriods.p2 = Together, they should cover your claim, though may be partly outside it.
 payPeriods.p3 = We’ve assumed for regular pay periods. The calculator cannot be used for irregular pay periods.
-payPeriods.error.required = Select an option from below
+payPeriods.error.required = Select yes if the pay periods are correct
 
 selectWorkPeriods.title = When did this employee work during the claim period?
 selectWorkPeriods.heading = When did this employee work during the claim period?
 selectWorkPeriods.hint = Select all that apply.
 selectWorkPeriods.from.to = {0} to {1}
-selectWorkPeriods.error.required = Select all that apply
+selectWorkPeriods.error.required = Select all the periods that employee has worked during the claim.
 
 regularPayAmount.title = Enter the highest recent pay amount before 19 March or 23 September 2020
 regularPayAmount.heading = Enter the highest recent pay amount before 19 March or 23 September 2020
@@ -271,6 +272,7 @@ regularPayAmount.info = If this employee started work between 1 and 18 March 202
 regularPayAmount.error.required = Enter regular pay amount
 amount.error.max.2.decimals = The amount cannot have more than two decimal places
 regularPayAmount.error.nonNumeric = Enter the regular pay amount in numbers
+regularPayAmount.error.negative = Enter a valid amount
 
 whatToInclude.summary = What should be included in this amount?
 whatToInclude.include = Include:
@@ -299,6 +301,8 @@ actualHours.p1 = Actual hours worked in this period
 actualHours.hint = Enter the actual hours that would be worked outside the scheme in decimal format, such as 124.4
 actualHours.error.nonNumeric = Enter your actual hours using numbers
 actualHours.error.required = Enter your actual hours
+usualHours.error.min = Usual hours can not be negative
+actualHours.error.min = Actual hours can not be negative
 
 confirmation.title = confirmation
 confirmation.heading = confirmation
@@ -354,6 +358,7 @@ endPayDate.error.required.all = Enter the correct date to apply for the Job Supp
 endPayDate.error.required.two = Enter the correct date to apply for the Job Support scheme
 endPayDate.error.required = Enter the correct date to apply for the Job Support scheme
 endPayDate.error.invalid = Enter the correct date to apply for the Job Support scheme
+endPayDate.error.invalid.must.be.after = The end pay date must be after {0}
 
 
 confirmation.print.label = Print or save a copy of this page

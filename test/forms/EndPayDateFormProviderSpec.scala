@@ -18,21 +18,45 @@ package forms
 
 import java.time.{LocalDate, ZoneOffset}
 
+import base.SpecBaseControllerSpecs
 import forms.behaviours.DateBehaviours
+import play.api.data.FormError
 
-class EndPayDateFormProviderSpec extends DateBehaviours {
+class EndPayDateFormProviderSpec extends SpecBaseControllerSpecs {
 
-  val form = new EndPayDateFormProvider()()
+  val dateBehaviours = new DateBehaviours()
+  import dateBehaviours._
+
+  def form(lastPayDate: LocalDate) = new EndPayDateFormProvider()(lastPayDate)
+
+  val lastPayDate = LocalDate.of(2020, 10, 31)
 
   ".value" should {
 
-    val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
-    )
+    "bind valid values" in {
 
-    behave like dateField(form, "value", validData)
+      val validData = datesBetween(
+        min = LocalDate.of(2000, 11, 1),
+        max = LocalDate.now(ZoneOffset.UTC)
+      )
 
-    behave like mandatoryDateField(form, "value", "endPayDate.error.required.all")
+      behave like dateField(form(lastPayDate), "value", validData)
+    }
+
+    "not bind any dates earlier than LastPayDate" in {
+      val inputDate = lastPayDate.minusDays(1)
+      val data = Map(
+        s"$value.day"   -> inputDate.getDayOfMonth.toString,
+        s"$value.month" -> inputDate.getMonthValue.toString,
+        s"$value.year"  -> inputDate.getYear.toString
+      )
+
+      val result = form(lastPayDate).bind(data)
+      result.errors shouldBe List(FormError("value", List("endPayDate.error.invalid.must.be.after"), Array("31 October 2020")))
+    }
+
+    "fail to bind when no answers are selected" in {
+      behave like mandatoryDateField(form(lastPayDate), "value", "endPayDate.error.required.all")
+    }
   }
 }
