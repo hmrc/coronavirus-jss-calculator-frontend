@@ -52,6 +52,9 @@ class Navigator @Inject()() {
 
     case RegularPayAmountPage =>
       _ =>
+        routes.TemporaryWorkingAgreementController.onPageLoad()
+    case TemporaryWorkingAgreementPage =>
+      _ =>
         routes.UsualAndActualHoursController.onPageLoad(1)
     case _ =>
       _ =>

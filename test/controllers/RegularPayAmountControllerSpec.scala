@@ -90,7 +90,7 @@ class RegularPayAmountControllerSpec extends SpecBaseControllerSpecs {
       val result = controller(Some(userAnswers)).onSubmit()(request)
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.UsualAndActualHoursController.onPageLoad(1).url
+      redirectLocation(result).value mustEqual routes.TemporaryWorkingAgreementController.onPageLoad().url
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
