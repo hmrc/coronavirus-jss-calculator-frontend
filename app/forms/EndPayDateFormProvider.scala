@@ -21,16 +21,18 @@ import java.time.LocalDate
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
+import play.api.i18n.Messages
+import views.ViewUtils
 
 class EndPayDateFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[LocalDate] =
+  def apply(lastPayDate: LocalDate)(implicit messages: Messages): Form[LocalDate] =
     Form(
       "value" -> localDate(
         invalidKey = "endPayDate.error.invalid",
         allRequiredKey = "endPayDate.error.required.all",
         twoRequiredKey = "endPayDate.error.required.two",
         requiredKey = "endPayDate.error.required"
-      )
+      ).verifying(minDate(lastPayDate, "endPayDate.error.invalid.must.be.after", ViewUtils.dateToString(lastPayDate)))
     )
 }

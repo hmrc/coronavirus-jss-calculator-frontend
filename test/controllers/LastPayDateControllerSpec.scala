@@ -36,7 +36,7 @@ class LastPayDateControllerSpec extends SpecBaseControllerSpecs {
 
   private val formProvider = new LastPayDateFormProvider()
 
-  private def form = formProvider()
+  private def form = formProvider
 
   private val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
@@ -59,6 +59,7 @@ class LastPayDateControllerSpec extends SpecBaseControllerSpecs {
   val claimPeriod = LocalDate.of(2020, 11, 1)
 
   val userAnswers = UserAnswers(userAnswersId, Json.obj(ClaimPeriodPage.toString -> JsString("November 2020")))
+  val firstDateOfClaim = LocalDate.of(2020, 11, 1)
 
   def controller(userAnswers: Option[UserAnswers]) = new LastPayDateController(
     messagesApi,
@@ -83,7 +84,7 @@ class LastPayDateControllerSpec extends SpecBaseControllerSpecs {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, claimPeriod)(getRequest, messages).toString
+        view(form(firstDateOfClaim), claimPeriod)(getRequest, messages).toString
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -98,7 +99,7 @@ class LastPayDateControllerSpec extends SpecBaseControllerSpecs {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), claimPeriod)(getRequest, messages).toString
+        view(form(firstDateOfClaim).fill(validAnswer), claimPeriod)(getRequest, messages).toString
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -118,7 +119,7 @@ class LastPayDateControllerSpec extends SpecBaseControllerSpecs {
         fakeRequest(POST, lastPayDateRoutePost)
           .withFormUrlEncodedBody(("value", "invalid value"))
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val boundForm = form(firstDateOfClaim).bind(Map("value" -> "invalid value"))
 
       val result = controller(Some(userAnswers)).onSubmit()(request)
 
