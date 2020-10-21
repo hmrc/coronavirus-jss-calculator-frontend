@@ -91,7 +91,7 @@
 
     @p(Html(Messages("confirmation.p5")))
 
-    @p(Html(link(routes.FeedbackSurveyController.startSurvey(), "confirmation.print.label", true)))
-    @p(Html(link(routes.FeedbackSurveyController.startSurvey(), "confirmation.webchat.label", true)))
+    @p(Html(link(appConfig.printUrl, "confirmation.print.label", true)))
+    @p(Html(link(appConfig.webchatHelpUrl, "confirmation.webchat.label", true)))
     @p(Html(link(routes.FeedbackSurveyController.startSurvey(), "confirmation.feedbackSurvey.label", true)))
 }
