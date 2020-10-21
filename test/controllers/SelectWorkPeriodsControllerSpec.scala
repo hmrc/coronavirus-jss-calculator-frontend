@@ -20,6 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBaseControllerSpecs
 import forms.SelectWorkPeriodsFormProvider
+import models.PayFrequency.Monthly
 import models.{ClaimPeriod, PayFrequency, Period, UserAnswers}
 import pages.{ClaimPeriodPage, LastPayDatePage, PayFrequencyPage, SelectWorkPeriodsPage}
 import play.api.libs.json.{JsString, Json}
@@ -39,8 +40,8 @@ class SelectWorkPeriodsControllerSpec extends SpecBaseControllerSpecs {
   private val form = formProvider()
 
   val claimPeriod = ClaimPeriod.Nov2020
-  val payFrequency = PayFrequency.Monthly
-  val lastPayDate = "2020-10-30"
+  val payFrequency = PayFrequency.FortNightly
+  val lastPayDate = "2020-10-31"
 
   val userAnswers = UserAnswers(
     userAnswersId,
@@ -49,7 +50,11 @@ class SelectWorkPeriodsControllerSpec extends SpecBaseControllerSpecs {
       PayFrequencyPage.toString -> JsString(payFrequency),
       LastPayDatePage.toString  -> JsString(lastPayDate))
   )
-  val periods = List(Period(LocalDate.of(2020, 10, 31), LocalDate.of(2020, 11, 30)))
+
+  val period1 = Period(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 14))
+  val period2 = Period(LocalDate.of(2020, 11, 15), LocalDate.of(2020, 11, 28))
+
+  val periods = List(period1, period2)
 
   def controller(userAnswers: Option[UserAnswers]) = new SelectWorkPeriodsController(
     messagesApi,
@@ -89,6 +94,17 @@ class SelectWorkPeriodsControllerSpec extends SpecBaseControllerSpecs {
 
       contentAsString(result) mustEqual
         view(form.fill(periods), periods)(request, messages).toString
+    }
+
+    "redirect to /regular-pay-amount when only one period exist for a GET" in {
+
+      val request = fakeRequest(GET, selectWorkPeriodsRouteGet)
+
+      val result = controller(Some(userAnswers.set(PayFrequencyPage, Monthly).success.value)).onPageLoad()(request)
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.RegularPayAmountController.onPageLoad().url
     }
 
     "redirect to the next page when valid data is submitted" in {
