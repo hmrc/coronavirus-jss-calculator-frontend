@@ -53,7 +53,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
   lazy val exitSurveyUrl = s"$exitSurveyBaseUrl/$serviceIdentifier"
 
   lazy val webchatHelpUrl: String =
-    "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/get-help-with-the-coronavirus-job-retention-scheme"
+    "<WEBCHAT URL GOES HERE>"
 
   lazy val printUrl: String =
     "javascript:window.print();"
