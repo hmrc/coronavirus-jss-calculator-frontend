@@ -22,7 +22,7 @@ import javax.inject.Inject
 import models.NormalMode
 import models.requests.DataRequest
 import navigation.Navigator
-import pages.{SelectWorkPeriodsPage, UsualAndActualHoursPage}
+import pages.{ClaimPeriodPage, SelectWorkPeriodsPage, UsualAndActualHoursPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -52,14 +52,19 @@ class UsualAndActualHoursController @Inject()(
       case Some(value) => form.fill(value)
     }
 
-    Ok(view(preparedForm, idx, getWorkPeriodAtIdx(idx - 1, request)))
+    val (startDateToShow, endDateToShow) = getStartAndEndDatesToShow(idx - 1, request)
+
+    Ok(view(preparedForm, idx, startDateToShow, endDateToShow))
   }
 
   def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, getWorkPeriodAtIdx(idx - 1, request)))),
+        formWithErrors => {
+          val (startDateToShow, endDateToShow) = getStartAndEndDatesToShow(idx - 1, request)
+          Future.successful(BadRequest(view(formWithErrors, idx, startDateToShow, endDateToShow)))
+        },
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(UsualAndActualHoursPage, value, Some(idx)))
@@ -68,9 +73,23 @@ class UsualAndActualHoursController @Inject()(
       )
   }
 
-  private def getWorkPeriodAtIdx(idx: Int, request: DataRequest[_]) =
-    request.userAnswers.get(SelectWorkPeriodsPage).flatMap(_.lift(idx)) match {
+  private def getStartAndEndDatesToShow(idx: Int, request: DataRequest[_]) = {
+
+    val workPeriod = request.userAnswers.get(SelectWorkPeriodsPage).flatMap(_.lift(idx)) match {
       case Some(period) => period
-      case None         => throw new RuntimeException(s"expected WorkPeriod ar index: $idx, but it doesn't exist")
+      case None         => throw new RuntimeException(s"expected WorkPeriod at index: $idx, but it doesn't exist")
     }
+
+    val supportClaimPeriod = request.userAnswers.get(ClaimPeriodPage) match {
+      case Some(cp) => cp.supportClaimPeriod
+      case None     => throw new RuntimeException(s"expected ClaimPeriod at index: $idx, but it doesn't exist")
+    }
+
+    val startDateToShow =
+      if (workPeriod.startDate.isBefore(supportClaimPeriod.startDate)) supportClaimPeriod.startDate else workPeriod.startDate
+
+    val endDateToShow = workPeriod.endDate
+
+    (startDateToShow, endDateToShow)
+  }
 }

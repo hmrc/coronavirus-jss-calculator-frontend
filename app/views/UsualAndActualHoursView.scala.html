@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import java.time.LocalDate
+
 @this(
         govukLayout: templates.GovukLayoutWrapper,
         formHelper: FormWithCSRF,
@@ -23,15 +25,15 @@
         button: components.button
 )
 
-@(form: Form[_], idx: Int, workPeriod: Period)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], idx: Int, startDate: LocalDate, endDate: LocalDate)(implicit request: Request[_], messages: Messages)
 
-@govukLayout(pageTitle = Some(title(form, "usualAndActualHours.title", titleMessageArgs = Seq(dateToStringWithoutYear(workPeriod.startDate), dateToString(workPeriod.endDate))))) {
+@govukLayout(pageTitle = Some(title(form, "usualAndActualHours.title", titleMessageArgs = Seq(dateToStringWithoutYear(startDate), dateToString(endDate))))) {
 
     @formHelper(action = UsualAndActualHoursController.onSubmit(idx), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
-        @h1(messages("usualAndActualHours.heading", dateToStringWithoutYear(workPeriod.startDate), dateToString(workPeriod.endDate)))
+        @h1(messages("usualAndActualHours.heading", dateToStringWithoutYear(startDate), dateToString(endDate)))
 
         @inputNumber(
             form,

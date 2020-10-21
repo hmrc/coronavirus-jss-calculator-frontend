@@ -20,8 +20,8 @@ import java.time.LocalDate
 
 import base.SpecBaseControllerSpecs
 import forms.UsualAndActualHoursFormProvider
-import models.{Period, UserAnswers, UsualAndActualHours}
-import pages.{SelectWorkPeriodsPage, UsualAndActualHoursPage}
+import models.{ClaimPeriod, Period, UserAnswers, UsualAndActualHours}
+import pages.{ClaimPeriodPage, SelectWorkPeriodsPage, UsualAndActualHoursPage}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.CSRFTokenHelper._
 import play.api.test.FakeRequest
@@ -58,9 +58,20 @@ class UsualAndActualHoursControllerSpec extends SpecBaseControllerSpecs {
     view
   )
 
-  val periods = List(Period(LocalDate.of(2020, 10, 31), LocalDate.of(2020, 11, 29)))
+  val startDate = LocalDate.of(2020, 10, 31)
+  val endDate = LocalDate.of(2020, 11, 29)
 
-  val userAnswers = emptyUserAnswers.set(SelectWorkPeriodsPage, periods).success.value
+  val periods = List(Period(startDate, endDate))
+
+  val startDateToShow = ClaimPeriod.Nov2020.supportClaimPeriod.startDate
+
+  val userAnswers = emptyUserAnswers
+    .set(SelectWorkPeriodsPage, periods)
+    .success
+    .value
+    .set(ClaimPeriodPage, ClaimPeriod.Nov2020)
+    .success
+    .value
 
   "UsualAndActualHours Controller" must {
 
@@ -73,7 +84,7 @@ class UsualAndActualHoursControllerSpec extends SpecBaseControllerSpecs {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, 1, periods.head)(request, messages).toString
+        view(form, 1, startDateToShow, endDate)(request, messages).toString
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -87,7 +98,7 @@ class UsualAndActualHoursControllerSpec extends SpecBaseControllerSpecs {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), 1, periods.head)(request, messages).toString
+        view(form.fill(validAnswer), 1, startDateToShow, endDate)(request, messages).toString
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -117,7 +128,7 @@ class UsualAndActualHoursControllerSpec extends SpecBaseControllerSpecs {
     status(result) mustEqual BAD_REQUEST
 
     contentAsString(result) mustEqual
-      view(boundForm, 1, periods.head)(request, messages).toString
+      view(boundForm, 1, startDateToShow, endDate)(request, messages).toString
   }
 
   "redirect to Session Expired for a GET if no existing data is found" in {
