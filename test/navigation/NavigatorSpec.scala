@@ -89,9 +89,33 @@ class NavigatorSpec extends SpecBase {
           .onPageLoad(1)
       }
 
-      "go to BusinessClosedPeriodsPage after BusinessClosedPage" in {
+      "go to BusinessClosedPeriodsPage after BusinessClosedPage if user says yes" in {
         val userAnswers = emptyUserAnswers.set(BusinessClosedPage, BusinessClosed.Yes).success.value
         navigator.nextPage(BusinessClosedPage, NormalMode, userAnswers) mustBe routes.BusinessClosedPeriodsController.onPageLoad(1)
+      }
+
+      "go to UsualAndActualHoursPage after BusinessClosedPage if user says no and SWTA is yes" in {
+        val userAnswers = emptyUserAnswers
+          .set(BusinessClosedPage, BusinessClosed.No)
+          .success
+          .value
+          .set(TemporaryWorkingAgreementPage, TemporaryWorkingAgreement.Yes)
+          .success
+          .value
+        navigator.nextPage(BusinessClosedPage, NormalMode, userAnswers) mustBe routes.UsualAndActualHoursController.onPageLoad(1)
+      }
+
+      "go to /you-are not-eligible page after BusinessClosedPage if user says no  and also STWA is also a no" in {
+        val userAnswers = emptyUserAnswers
+          .set(BusinessClosedPage, BusinessClosed.No)
+          .success
+          .value
+          .set(TemporaryWorkingAgreementPage, TemporaryWorkingAgreement.No)
+          .success
+          .value
+        assertThrows[NotImplementedError] {
+          navigator.nextPage(BusinessClosedPage, NormalMode, userAnswers).url
+        }
       }
 
       "go to Confirmation after UsualAndActualHoursPage" in {
