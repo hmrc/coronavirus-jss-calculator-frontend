@@ -53,3 +53,6 @@ POST        /business-closed                            controllers.BusinessClos
 
 GET         /short-term-working-agreement-period        controllers.ShortTermWorkingAgreementPeriodController.onPageLoad(idx: Int)
 POST        /short-term-working-agreement-period        controllers.ShortTermWorkingAgreementPeriodController.onSubmit(idx: Int)
+
+GET         /business-closed-periods                    controllers.BusinessClosedPeriodsController.onPageLoad(idx: Int)
+POST        /business-closed-periods                    controllers.BusinessClosedPeriodsController.onSubmit(idx: Int)

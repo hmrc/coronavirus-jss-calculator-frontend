@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package models
+package pages
 
-import java.time.LocalDate
+import models.BusinessClosedPeriods
+import play.api.libs.json.JsPath
 
-import play.api.libs.json.{Format, Json}
+case object BusinessClosedPeriodsPage extends QuestionPage[BusinessClosedPeriods] {
 
-case class ShortTermWorkingAgreementPeriod(startDate: LocalDate, endDate: LocalDate, addMore: AddMore)
+  override def path: JsPath = JsPath \ toString
 
-object ShortTermWorkingAgreementPeriod {
-  implicit val format: Format[ShortTermWorkingAgreementPeriod] = Json.format
+  override def toString: String = "businessClosedPeriods"
 }

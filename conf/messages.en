@@ -397,6 +397,20 @@ shortTermWorkingAgreementPeriod.error.required = Enter valid dates
 shortTermWorkingAgreementPeriod.error.invalid = Enter valid dates
 
 shortTermWorkingAgreementPeriod.addMore.heading = Do you want to add more dates ?
-shortTermWorkingAgreementPeriod.addmore.error.required = Selecy yes if you want to add more dates
+shortTermWorkingAgreementPeriod.addmore.error.required = Select yes if you want to add more dates
 addMore.yes = Yes
 addMore.no = No
+businessClosedPeriods.title = Enter the periods when your business was closed
+businessClosedPeriods.heading = Enter the periods when your business was closed
+businessClosedPeriods.p1 = The period is know as the closed period. It covers businesses due to restrictions set by one of the four UK governments that legally require them to close their premises. Each closed period must cover a minimum period of seven days. Include one or more period.
+businessClosedPeriods.startDate.label = Start date
+businessClosedPeriods.endDate.label = End date
+businessClosedPeriods.startDate.hint = For example, 1 3 2020.
+businessClosedPeriods.endDate.hint = For example, 7 3 2020.
+businessClosedPeriods.error.required.all = Enter valid dates
+businessClosedPeriods.error.required.two = Enter valid dates
+businessClosedPeriods.error.required = Enter valid dates
+businessClosedPeriods.error.invalid = Enter valid dates
+
+businessClosedPeriods.addMore.heading = Do you want to add more dates ?
+businessClosedPeriods.addmore.error.required = Select yes if you want to add more dates
