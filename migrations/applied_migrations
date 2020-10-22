@@ -1,35 +1,36 @@
 #!/bin/bash
 
 echo ""
-echo "Applying migration BusinessClosed"
+echo "Applying migration ShortTermWorkingAgreementPeriod"
 
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /businessClosed                        controllers.BusinessClosedController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
-echo "POST       /businessClosed                        controllers.BusinessClosedController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "GET        /shortTermWorkingAgreementPeriod                  controllers.ShortTermWorkingAgreementPeriodController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "POST       /shortTermWorkingAgreementPeriod                  controllers.ShortTermWorkingAgreementPeriodController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
 
-echo "GET        /changeBusinessClosed                  controllers.BusinessClosedController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
-echo "POST       /changeBusinessClosed                  controllers.BusinessClosedController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "GET        /changeShortTermWorkingAgreementPeriod                        controllers.ShortTermWorkingAgreementPeriodController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "POST       /changeShortTermWorkingAgreementPeriod                        controllers.ShortTermWorkingAgreementPeriodController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
-echo "businessClosed.title = Was your business closed and unable to trade during this claim?" >> ../conf/messages.en
-echo "businessClosed.heading = Was your business closed and unable to trade during this claim?" >> ../conf/messages.en
-echo "businessClosed.yes = yes" >> ../conf/messages.en
-echo "businessClosed.no = no" >> ../conf/messages.en
-echo "businessClosed.checkYourAnswersLabel = Was your business closed and unable to trade during this claim?" >> ../conf/messages.en
-echo "businessClosed.error.required = Select businessClosed" >> ../conf/messages.en
+echo "shortTermWorkingAgreementPeriod.title = ShortTermWorkingAgreementPeriod" >> ../conf/messages.en
+echo "shortTermWorkingAgreementPeriod.heading = ShortTermWorkingAgreementPeriod" >> ../conf/messages.en
+echo "shortTermWorkingAgreementPeriod.checkYourAnswersLabel = ShortTermWorkingAgreementPeriod" >> ../conf/messages.en
+echo "shortTermWorkingAgreementPeriod.error.required.all = Enter the shortTermWorkingAgreementPeriod" >> ../conf/messages.en
+echo "shortTermWorkingAgreementPeriod.error.required.two = The shortTermWorkingAgreementPeriod" must include {0} and {1} >> ../conf/messages.en
+echo "shortTermWorkingAgreementPeriod.error.required = The shortTermWorkingAgreementPeriod must include {0}" >> ../conf/messages.en
+echo "shortTermWorkingAgreementPeriod.error.invalid = Enter a real ShortTermWorkingAgreementPeriod" >> ../conf/messages.en
 
 echo "Adding to UserAnswersEntryGenerators"
 awk '/  self: Generators =>/ {\
     print;\
     print "";\
-    print "  implicit lazy val arbitraryBusinessClosedUserAnswersEntry: Arbitrary[(BusinessClosedPage.type, JsValue)] =";\
+    print "  implicit lazy val arbitraryShortTermWorkingAgreementPeriodUserAnswersEntry: Arbitrary[(ShortTermWorkingAgreementPeriodPage.type, JsValue)] =";\
     print "    Arbitrary {";\
     print "      for {";\
-    print "        page  <- arbitrary[BusinessClosedPage.type]";\
-    print "        value <- arbitrary[BusinessClosed].map(Json.toJson(_))";\
+    print "        page  <- arbitrary[ShortTermWorkingAgreementPeriodPage.type]";\
+    print "        value <- arbitrary[Int].map(Json.toJson(_))";\
     print "      } yield (page, value)";\
     print "    }";\
     next }1' ../test/generators/UserAnswersEntryGenerators.scala > tmp && mv tmp ../test/generators/UserAnswersEntryGenerators.scala
@@ -38,24 +39,14 @@ echo "Adding to PageGenerators"
 awk '/trait PageGenerators/ {\
     print;\
     print "";\
-    print "  implicit lazy val arbitraryBusinessClosedPage: Arbitrary[BusinessClosedPage.type] =";\
-    print "    Arbitrary(BusinessClosedPage)";\
+    print "  implicit lazy val arbitraryShortTermWorkingAgreementPeriodPage: Arbitrary[ShortTermWorkingAgreementPeriodPage.type] =";\
+    print "    Arbitrary(ShortTermWorkingAgreementPeriodPage)";\
     next }1' ../test/generators/PageGenerators.scala > tmp && mv tmp ../test/generators/PageGenerators.scala
-
-echo "Adding to ModelGenerators"
-awk '/  self: Generators =>/ {\
-    print;\
-    print "";\
-    print "  implicit lazy val arbitraryBusinessClosed: Arbitrary[BusinessClosed] =";\
-    print "    Arbitrary {";\
-    print "      Gen.oneOf(BusinessClosed.values)";\
-    print "    }";\
-    next }1' ../test/generators/ModelGenerators.scala > tmp && mv tmp ../test/generators/ModelGenerators.scala
 
 echo "Adding to UserAnswersGenerator"
 awk '/val generators/ {\
     print;\
-    print "    arbitrary[(BusinessClosedPage.type, JsValue)] ::";\
+    print "    arbitrary[(ShortTermWorkingAgreementPeriodPage.type, JsValue)] ::";\
     next }1' ../test/generators/UserAnswersGenerator.scala > tmp && mv tmp ../test/generators/UserAnswersGenerator.scala
 
-echo "Migration BusinessClosed completed"
+echo "Migration ShortTermWorkingAgreementPeriod completed"

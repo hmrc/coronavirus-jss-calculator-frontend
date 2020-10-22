@@ -18,7 +18,7 @@ package generators
 
 import java.time.{Instant, LocalDate, ZoneOffset}
 
-import models.{BusinessClosed, ClaimPeriod, PayFrequency, PayMethod, PayPeriods, Period, TemporaryWorkingAgreement}
+import models.{AddMore, BusinessClosed, ClaimPeriod, PayFrequency, PayMethod, PayPeriods, Period, ShortTermWorkingAgreementPeriod, TemporaryWorkingAgreement}
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
@@ -27,6 +27,24 @@ trait ModelGenerators {
   implicit lazy val arbitraryBusinessClosed: Arbitrary[BusinessClosed] =
     Arbitrary {
       Gen.oneOf(BusinessClosed.values)
+    }
+
+  implicit lazy val arbitraryAddMore: Arbitrary[AddMore] =
+    Arbitrary {
+      Gen.oneOf(AddMore.values)
+    }
+
+  implicit lazy val genTemporaryWorkingAgreementPeriod: Gen[ShortTermWorkingAgreementPeriod] =
+    for {
+      period  <- periodGen
+      addMore <- Gen.oneOf(AddMore.values)
+    } yield {
+      ShortTermWorkingAgreementPeriod(period.startDate, period.endDate, addMore)
+    }
+
+  implicit lazy val arbitraryShortTermWorkingAgreementPeriod: Arbitrary[ShortTermWorkingAgreementPeriod] =
+    Arbitrary {
+      genTemporaryWorkingAgreementPeriod
     }
 
   implicit lazy val arbitraryTemporaryWorkingAgreement: Arbitrary[TemporaryWorkingAgreement] =
