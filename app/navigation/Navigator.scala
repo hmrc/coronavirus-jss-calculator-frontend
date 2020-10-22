@@ -18,6 +18,7 @@ package navigation
 
 import controllers.routes
 import javax.inject.{Inject, Singleton}
+import models.BusinessClosed._
 import models.PayFrequency.Monthly
 import models.PayMethod.{Regular, Variable}
 import models.{UserAnswers, _}
@@ -54,8 +55,8 @@ class Navigator @Inject()() {
       _ =>
         routes.TemporaryWorkingAgreementController.onPageLoad()
     case TemporaryWorkingAgreementPage =>
-      _ =>
-        routes.BusinessClosedController.onPageLoad()
+      userAnswers =>
+        temporaryWorkingAgreementRoutes(userAnswers)
     case BusinessClosedPage =>
       _ =>
         routes.UsualAndActualHoursController.onPageLoad(1)
@@ -102,5 +103,12 @@ class Navigator @Inject()() {
       case Some(Regular)  => routes.PayPeriodsController.onPageLoad()
       case Some(Variable) => routes.ComingSoonController.onPageLoad()
       case _              => routes.PayMethodController.onPageLoad()
+    }
+
+  private def temporaryWorkingAgreementRoutes(userAnswers: UserAnswers): Call =
+    userAnswers.get(TemporaryWorkingAgreementPage) match {
+      case Some(TemporaryWorkingAgreement.Yes) => routes.ShortTermWorkingAgreementPeriodController.onPageLoad(1)
+      case Some(TemporaryWorkingAgreement.No)  => routes.BusinessClosedController.onPageLoad()
+      case _                                   => routes.TemporaryWorkingAgreementController.onPageLoad()
     }
 }

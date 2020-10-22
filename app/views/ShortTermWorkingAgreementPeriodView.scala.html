@@ -1,0 +1,75 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@this(
+        govukLayout: templates.GovukLayoutWrapper,
+        errorSummary: components.errorSummary,
+        inputDate: components.inputDate,
+        formHelper: FormWithCSRF,
+        button: components.button,
+        h1: components.h1,
+        p: components.p,
+        h3: components.h3,
+        inputRadio: components.inputRadio
+)
+
+@(form: Form[_], idx: Int)(implicit request: Request[_], messages: Messages)
+
+@govukLayout(pageTitle = Some(title(form, "shortTermWorkingAgreementPeriod.title"))) {
+
+    @formHelper(action = ShortTermWorkingAgreementPeriodController.onSubmit(idx), 'autoComplete -> "off") {
+
+        @errorSummary(form.errors, Some("date-value.day"))
+
+        @h1(messages("shortTermWorkingAgreementPeriod.heading"))
+
+        @p(Html(Messages("shortTermWorkingAgreementPeriod.heading")))
+
+        @p(Html(Messages("shortTermWorkingAgreementPeriod.startDate.label")))
+
+        @inputDate(
+            form = form,
+            legendContent = "",
+            id = "startDate",
+            hintText = Some("shortTermWorkingAgreementPeriod.startDate.hint"),
+            legendAsPageHeading = false,
+            legendClasses = "govuk-label--m"
+        )
+
+        @p(Html(Messages("shortTermWorkingAgreementPeriod.endDate.label")))
+
+        @inputDate(
+            form = form,
+            legendContent = "",
+            id = "endDate",
+            hintText = Some("shortTermWorkingAgreementPeriod.endDate.hint"),
+            legendAsPageHeading = false,
+            legendClasses = "govuk-label--m"
+        )
+
+        @h3(Html(Messages("shortTermWorkingAgreementPeriod.addMore.heading")))
+
+        @inputRadio(
+            form = form,
+            legend = messages("shortTermWorkingAgreementPeriod.addMore.heading"),
+            legendAsHeading = false,
+            classes = "govuk-visually-hidden",
+            items = AddMore.options(form)
+        )
+
+        @button("site.continue")
+    }
+}
