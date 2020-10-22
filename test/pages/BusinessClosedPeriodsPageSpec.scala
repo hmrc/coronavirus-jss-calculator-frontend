@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package models
+package pages
 
-import java.time.LocalDate
+import models.BusinessClosedPeriods
+import pages.behaviours.PageBehaviours
 
-import play.api.libs.json.{Format, Json}
+class BusinessClosedPeriodsPageSpec extends PageBehaviours {
 
-case class ShortTermWorkingAgreementPeriod(startDate: LocalDate, endDate: LocalDate, addMore: AddMore)
+  "BusinessClosedPeriodsPage" must {
 
-object ShortTermWorkingAgreementPeriod {
-  implicit val format: Format[ShortTermWorkingAgreementPeriod] = Json.format
+    beRetrievable[BusinessClosedPeriods](BusinessClosedPeriodsPage)
+
+    beSettable[BusinessClosedPeriods](BusinessClosedPeriodsPage)
+
+    beRemovable[BusinessClosedPeriods](BusinessClosedPeriodsPage)
+  }
 }

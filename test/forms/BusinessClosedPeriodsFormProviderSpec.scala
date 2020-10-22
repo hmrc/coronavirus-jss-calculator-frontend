@@ -19,11 +19,11 @@ package forms
 import java.time.LocalDate
 
 import forms.behaviours.DateBehaviours
-import models.{AddMore, ShortTermWorkingAgreementPeriod}
+import models.{AddMore, BusinessClosedPeriods}
 
-class ShortTermWorkingAgreementPeriodFormProviderSpec extends DateBehaviours {
+class BusinessClosedPeriodsFormProviderSpec extends DateBehaviours {
 
-  val form = new ShortTermWorkingAgreementPeriodFormProvider()()
+  val form = new BusinessClosedPeriodsFormProvider()()
 
   "form" should {
 
@@ -40,7 +40,7 @@ class ShortTermWorkingAgreementPeriodFormProviderSpec extends DateBehaviours {
         "value"           -> "yes"
       )
 
-      form.bind(data).get shouldEqual ShortTermWorkingAgreementPeriod(startDate, endDate, AddMore.Yes)
+      form.bind(data).get shouldEqual BusinessClosedPeriods(startDate, endDate, AddMore.Yes)
     }
   }
 }

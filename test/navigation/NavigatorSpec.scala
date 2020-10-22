@@ -89,9 +89,9 @@ class NavigatorSpec extends SpecBase {
           .onPageLoad(1)
       }
 
-      "go to UsualAndActualHoursPage after BusinessClosedPage" in {
+      "go to BusinessClosedPeriodsPage after BusinessClosedPage" in {
         val userAnswers = emptyUserAnswers.set(BusinessClosedPage, BusinessClosed.Yes).success.value
-        navigator.nextPage(BusinessClosedPage, NormalMode, userAnswers) mustBe routes.UsualAndActualHoursController.onPageLoad(1)
+        navigator.nextPage(BusinessClosedPage, NormalMode, userAnswers) mustBe routes.BusinessClosedPeriodsController.onPageLoad(1)
       }
 
       "go to Confirmation after UsualAndActualHoursPage" in {

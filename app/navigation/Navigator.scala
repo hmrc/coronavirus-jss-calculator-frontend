@@ -58,8 +58,8 @@ class Navigator @Inject()() {
       userAnswers =>
         temporaryWorkingAgreementRoutes(userAnswers)
     case BusinessClosedPage =>
-      _ =>
-        routes.UsualAndActualHoursController.onPageLoad(1)
+      userAnswers =>
+        businessClosedRoutes(userAnswers)
     case _ =>
       _ =>
         routes.StartPageController.onPageLoad()
@@ -111,4 +111,12 @@ class Navigator @Inject()() {
       case Some(TemporaryWorkingAgreement.No)  => routes.BusinessClosedController.onPageLoad()
       case _                                   => routes.TemporaryWorkingAgreementController.onPageLoad()
     }
+
+  private def businessClosedRoutes(userAnswers: UserAnswers): Call =
+    userAnswers.get(BusinessClosedPage) match {
+      case Some(BusinessClosed.Yes) => routes.BusinessClosedPeriodsController.onPageLoad(1)
+      case Some(BusinessClosed.No)  => routes.UsualAndActualHoursController.onPageLoad(1)
+      case _                        => routes.BusinessClosedController.onPageLoad()
+    }
+
 }
