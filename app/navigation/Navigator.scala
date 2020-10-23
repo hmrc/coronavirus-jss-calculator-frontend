@@ -119,7 +119,7 @@ class Navigator @Inject()() {
     (userAnswers.get(BusinessClosedPage), userAnswers.get(TemporaryWorkingAgreementPage)) match {
       case (Some(BusinessClosed.Yes), _)                                  => routes.BusinessClosedPeriodsController.onPageLoad(1)
       case (Some(BusinessClosed.No), Some(TemporaryWorkingAgreement.Yes)) => routes.UsualAndActualHoursController.onPageLoad(1)
-      case (Some(BusinessClosed.No), Some(TemporaryWorkingAgreement.No))  => ???
+      case (Some(BusinessClosed.No), Some(TemporaryWorkingAgreement.No))  => routes.YouAreNotEligibleController.onPageLoad()
       case _                                                              => routes.BusinessClosedController.onPageLoad()
     }
 }

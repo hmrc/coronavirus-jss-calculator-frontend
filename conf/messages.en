@@ -423,3 +423,6 @@ checkYourSTWAPeriods.endDate.row = End date: {0}
 checkYourSTWAPeriods.row.change.label = Change
 checkYourSTWAPeriods.row.remove.label = Remove
 checkYourSTWAPeriods.add-another-period = Add another period
+
+youAreNotEligible.title = You are not eligible to make a claim
+youAreNotEligible.heading = You are not eligible to make a claim
