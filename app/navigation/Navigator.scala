@@ -70,6 +70,9 @@ class Navigator @Inject()() {
 
   private val idxRoutes: Page => (Int, UserAnswers) => Call = {
     case UsualAndActualHoursPage => selectUsualAndActualHoursPageRoutes
+    case ShortTermWorkingAgreementPeriodPage =>
+      (_, _) =>
+        routes.CheckYourSTWAPeriodsController.onPageLoad()
     case _ =>
       (_, _) =>
         routes.StartPageController.onPageLoad()
@@ -119,5 +122,4 @@ class Navigator @Inject()() {
       case (Some(BusinessClosed.No), Some(TemporaryWorkingAgreement.No))  => ???
       case _                                                              => routes.BusinessClosedController.onPageLoad()
     }
-
 }

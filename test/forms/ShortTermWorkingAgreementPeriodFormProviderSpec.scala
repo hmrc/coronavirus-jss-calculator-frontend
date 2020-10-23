@@ -19,7 +19,7 @@ package forms
 import java.time.LocalDate
 
 import forms.behaviours.DateBehaviours
-import models.{AddMore, ShortTermWorkingAgreementPeriod}
+import models.ShortTermWorkingAgreementPeriod
 
 class ShortTermWorkingAgreementPeriodFormProviderSpec extends DateBehaviours {
 
@@ -40,7 +40,7 @@ class ShortTermWorkingAgreementPeriodFormProviderSpec extends DateBehaviours {
         "value"           -> "yes"
       )
 
-      form.bind(data).get shouldEqual ShortTermWorkingAgreementPeriod(startDate, endDate, AddMore.Yes)
+      form.bind(data).get shouldEqual ShortTermWorkingAgreementPeriod(startDate, endDate)
     }
   }
 }

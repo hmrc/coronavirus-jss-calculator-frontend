@@ -1,0 +1,70 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@this(
+        govukLayout: templates.GovukLayoutWrapper,
+        formHelper: FormWithCSRF,
+        errorSummary: components.errorSummary,
+        inputRadio: components.inputRadio,
+        button: components.button,
+        h1: components.h1,
+        h3: components.h3,
+        link: components.link
+)
+
+@(swtaPeriods: Seq[ShortTermWorkingAgreementPeriod])(implicit request: Request[_], messages: Messages)
+
+    @checkAnswerBlock(id: String, stwaWithIndex: (ShortTermWorkingAgreementPeriod, Int)) = {
+        <dl class="app-check-your-answers app-check-your-answers--long margin-top-30 margin-bottom-20">
+            <div class="app-check-your-answers__contents">
+                <dd class="app-check-your-answers__answer" id="@stwaWithIndex._2">
+                    @messages("checkYourSTWAPeriods.startDate.row", dateToString(stwaWithIndex._1.startDate)) <br>
+                    @messages("checkYourSTWAPeriods.endDate.row", dateToString(stwaWithIndex._1.endDate)) <br>
+                </dd>
+                <dd class="app-check-your-answers__change">
+                    <a href="@routes.ShortTermWorkingAgreementPeriodController.onPageLoad(stwaWithIndex._2 + 1)">
+                    @messages("checkYourSTWAPeriods.row.change.label")
+                    </a>
+                </dd>
+                <dd class="app-check-your-answers__change">
+                    <a href="@routes.ShortTermWorkingAgreementPeriodController.remove(stwaWithIndex._2)">
+                    @messages("checkYourSTWAPeriods.row.remove.label")
+                    </a>
+                </dd>
+            </div>
+        </dl>
+    }
+
+    @govukLayout(pageTitle = Some(messages("checkYourSTWAPeriods.title"))) {
+
+
+        @h1("checkYourSTWAPeriods.heading")
+
+        @for(stwaWithIndex <- swtaPeriods.zipWithIndex) {
+
+            @checkAnswerBlock("stwa", stwaWithIndex)
+        }
+
+        <dl class="app-check-your-answers app-check-your-answers--long margin-top-30 margin-bottom-20">
+            <div class="app-check-your-answers__contents">
+                <dd class="app-check-your-answers__change">
+                @link(routes.ShortTermWorkingAgreementPeriodController.onPageLoad(swtaPeriods.length + 1).url, "checkYourSTWAPeriods.add-another-period")
+                </dd>
+            </div>
+        </dl>
+
+        @button("site.confirmAndContinue", Some(routes.BusinessClosedController.onPageLoad().url))
+    }

@@ -9,6 +9,7 @@ site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
 site.continue = Continue
+site.confirmAndContinue = Confirm and continue
 site.tryAgain = Try again
 site.startAgain = Start again
 site.confirm = Confirm
@@ -414,3 +415,11 @@ businessClosedPeriods.error.invalid = Enter valid dates
 
 businessClosedPeriods.addMore.heading = Do you want to add more dates ?
 businessClosedPeriods.addmore.error.required = Select yes if you want to add more dates
+
+checkYourSTWAPeriods.title = Check your answers
+checkYourSTWAPeriods.heading = Check your answers
+checkYourSTWAPeriods.startDate.row = Start date: {0}
+checkYourSTWAPeriods.endDate.row = End date: {0}
+checkYourSTWAPeriods.row.change.label = Change
+checkYourSTWAPeriods.row.remove.label = Remove
+checkYourSTWAPeriods.add-another-period = Add another period

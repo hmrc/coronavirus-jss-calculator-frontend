@@ -20,7 +20,7 @@ import java.time.{LocalDate, ZoneOffset}
 
 import base.SpecBaseControllerSpecs
 import forms.ShortTermWorkingAgreementPeriodFormProvider
-import models.{AddMore, ShortTermWorkingAgreementPeriod, UserAnswers}
+import models.{ShortTermWorkingAgreementPeriod, UserAnswers}
 import pages.ShortTermWorkingAgreementPeriodPage
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
@@ -51,8 +51,7 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
         "startDate.year"  -> validAnswer.getYear.toString,
         "endDate.day"     -> validAnswer.getDayOfMonth.toString,
         "endDate.month"   -> validAnswer.getMonthValue.toString,
-        "endDate.year"    -> validAnswer.getYear.toString,
-        "value"           -> "yes"
+        "endDate.year"    -> validAnswer.getYear.toString
       )
 
   def controller(userAnswers: Option[UserAnswers]) = new ShortTermWorkingAgreementPeriodController(
@@ -67,7 +66,7 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
     view
   )
 
-  val stwa = ShortTermWorkingAgreementPeriod(validAnswer, validAnswer.plusDays(10), AddMore.Yes)
+  val stwa = ShortTermWorkingAgreementPeriod(validAnswer, validAnswer.plusDays(10))
 
   "ShortTermWorkingAgreementPeriod Controller" must {
 
@@ -98,34 +97,13 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
       view(form.fill(stwa), 1)(request, messages).toString
   }
 
-  "redirect to add more dates when valid data is submitted and radio answer is yes" in {
+  "redirect to check-your-answers when valid data is submitted" in {
 
     val result = controller(Some(emptyUserAnswers)).onSubmit(1)(postRequest)
 
     status(result) mustEqual SEE_OTHER
 
-    redirectLocation(result).value mustEqual routes.ShortTermWorkingAgreementPeriodController.onPageLoad(2).url
-  }
-
-  "redirect to business closed page when valid data is submitted and radio answer is no" in {
-
-    val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-      fakeRequest(POST, shortTermWorkingAgreementPeriodRoutePost)
-        .withFormUrlEncodedBody(
-          "startDate.day"   -> validAnswer.getDayOfMonth.toString,
-          "startDate.month" -> validAnswer.getMonthValue.toString,
-          "startDate.year"  -> validAnswer.getYear.toString,
-          "endDate.day"     -> validAnswer.getDayOfMonth.toString,
-          "endDate.month"   -> validAnswer.getMonthValue.toString,
-          "endDate.year"    -> validAnswer.getYear.toString,
-          "value"           -> "no"
-        )
-
-    val result = controller(Some(emptyUserAnswers)).onSubmit(1)(postRequest)
-
-    status(result) mustEqual SEE_OTHER
-
-    redirectLocation(result).value mustEqual routes.BusinessClosedController.onPageLoad().url
+    redirectLocation(result).value mustEqual routes.CheckYourSTWAPeriodsController.onPageLoad().url
   }
 
   "return a Bad Request and errors when invalid data is submitted" in {
