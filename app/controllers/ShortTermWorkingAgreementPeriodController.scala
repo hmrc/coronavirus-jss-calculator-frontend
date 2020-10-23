@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.ShortTermWorkingAgreementPeriodFormProvider
 import javax.inject.Inject
-import models.AddMore
+import models.NormalMode
 import navigation.Navigator
 import pages.ShortTermWorkingAgreementPeriodPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -60,26 +60,22 @@ class ShortTermWorkingAgreementPeriodController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
         value => {
-          val updatedAnswers = request.userAnswers.set(ShortTermWorkingAgreementPeriodPage, value, Some(idx))
-
-          value.addMore match {
-            case AddMore.Yes =>
-              for {
-                updated <- Future.fromTry(updatedAnswers)
-                _       <- sessionRepository.set(updated)
-              } yield Redirect(routes.ShortTermWorkingAgreementPeriodController.onPageLoad(idx + 1))
-
-            case AddMore.No =>
-              val answersWithListToKeep = updatedAnswers.flatMap { answers =>
-                val listToKeep = answers.getList(ShortTermWorkingAgreementPeriodPage).slice(0, idx)
-                answers.setList(ShortTermWorkingAgreementPeriodPage, listToKeep)
-              }
-              for {
-                updated <- Future.fromTry(answersWithListToKeep)
-                _       <- sessionRepository.set(updated)
-              } yield Redirect(routes.BusinessClosedController.onPageLoad())
-          }
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ShortTermWorkingAgreementPeriodPage, value, Some(idx)))
+            _              <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(ShortTermWorkingAgreementPeriodPage, NormalMode, updatedAnswers, Some(idx)))
         }
       )
+  }
+
+  def remove(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
+    val existingPeriods = request.userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
+    val remainingPeriods = existingPeriods.zipWithIndex.filterNot(p => p._2 == idx).map(_._1)
+
+    for {
+      updatedAnswers <- Future.fromTry(request.userAnswers.setList(ShortTermWorkingAgreementPeriodPage, remainingPeriods))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(navigator.nextPage(ShortTermWorkingAgreementPeriodPage, NormalMode, updatedAnswers, Some(idx)))
+
   }
 }

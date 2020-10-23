@@ -60,16 +60,6 @@
             legendClasses = "govuk-label--m"
         )
 
-        @h3(Html(Messages("shortTermWorkingAgreementPeriod.addMore.heading")))
-
-        @inputRadio(
-            form = form,
-            legend = messages("shortTermWorkingAgreementPeriod.addMore.heading"),
-            legendAsHeading = false,
-            classes = "govuk-visually-hidden",
-            items = AddMore.options(form)
-        )
-
         @button("site.continue")
     }
 }

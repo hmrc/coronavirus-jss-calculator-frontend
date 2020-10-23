@@ -18,7 +18,7 @@ package forms
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.{AddMore, ShortTermWorkingAgreementPeriod}
+import models.ShortTermWorkingAgreementPeriod
 import play.api.data.Form
 import play.api.data.Forms._
 
@@ -38,8 +38,7 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
           allRequiredKey = "shortTermWorkingAgreementPeriod.error.required.all",
           twoRequiredKey = "shortTermWorkingAgreementPeriod.error.required.two",
           requiredKey = "shortTermWorkingAgreementPeriod.error.required"
-        ),
-        "value" -> enumerable[AddMore]("shortTermWorkingAgreementPeriod.error.required")
+        )
       )(ShortTermWorkingAgreementPeriod.apply)(ShortTermWorkingAgreementPeriod.unapply)
     )
 }
