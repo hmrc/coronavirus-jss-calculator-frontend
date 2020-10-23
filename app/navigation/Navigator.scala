@@ -73,6 +73,9 @@ class Navigator @Inject()() {
     case ShortTermWorkingAgreementPeriodPage =>
       (_, _) =>
         routes.CheckYourSTWAPeriodsController.onPageLoad()
+    case BusinessClosedPeriodsPage =>
+      (_, _) =>
+        routes.CheckYourBusinessClosedPeriodsController.onPageLoad()
     case _ =>
       (_, _) =>
         routes.StartPageController.onPageLoad()

@@ -18,7 +18,7 @@ package forms
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.{AddMore, BusinessClosedPeriods}
+import models.BusinessClosedPeriods
 import play.api.data.Form
 import play.api.data.Forms.mapping
 
@@ -38,8 +38,7 @@ class BusinessClosedPeriodsFormProvider @Inject() extends Mappings {
           allRequiredKey = "businessClosedPeriods.error.required.all",
           twoRequiredKey = "businessClosedPeriods.error.required.two",
           requiredKey = "businessClosedPeriods.error.required"
-        ),
-        "value" -> enumerable[AddMore]("businessClosedPeriods.error.required")
+        )
       )(BusinessClosedPeriods.apply)(BusinessClosedPeriods.unapply)
     )
 }

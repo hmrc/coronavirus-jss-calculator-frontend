@@ -20,7 +20,7 @@ import java.time.{LocalDate, ZoneOffset}
 
 import base.SpecBaseControllerSpecs
 import forms.BusinessClosedPeriodsFormProvider
-import models.{AddMore, BusinessClosedPeriods, UserAnswers}
+import models.{BusinessClosedPeriods, UserAnswers}
 import pages.BusinessClosedPeriodsPage
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
@@ -51,8 +51,7 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
         "startDate.year"  -> validAnswer.getYear.toString,
         "endDate.day"     -> validAnswer.getDayOfMonth.toString,
         "endDate.month"   -> validAnswer.getMonthValue.toString,
-        "endDate.year"    -> validAnswer.getYear.toString,
-        "value"           -> "yes"
+        "endDate.year"    -> validAnswer.getYear.toString
       )
 
   def controller(userAnswers: Option[UserAnswers]) = new BusinessClosedPeriodsController(
@@ -67,7 +66,7 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
     view
   )
 
-  val bcPeriods = BusinessClosedPeriods(validAnswer, validAnswer.plusDays(1), AddMore.Yes)
+  val bcPeriods = BusinessClosedPeriods(validAnswer, validAnswer.plusDays(1))
 
   "BusinessClosedPeriods Controller" must {
 
@@ -104,7 +103,7 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
 
     status(result) mustEqual SEE_OTHER
 
-    redirectLocation(result).value mustEqual routes.BusinessClosedPeriodsController.onPageLoad(2).url
+    redirectLocation(result).value mustEqual routes.CheckYourBusinessClosedPeriodsController.onPageLoad().url
   }
 
   "redirect to usual and actual hours page when valid data is submitted and radio answer is no" in {
@@ -117,15 +116,14 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
           "startDate.year"  -> validAnswer.getYear.toString,
           "endDate.day"     -> validAnswer.getDayOfMonth.toString,
           "endDate.month"   -> validAnswer.getMonthValue.toString,
-          "endDate.year"    -> validAnswer.getYear.toString,
-          "value"           -> "no"
+          "endDate.year"    -> validAnswer.getYear.toString
         )
 
     val result = controller(Some(emptyUserAnswers)).onSubmit(1)(postRequest)
 
     status(result) mustEqual SEE_OTHER
 
-    redirectLocation(result).value mustEqual routes.UsualAndActualHoursController.onPageLoad(1).url
+    redirectLocation(result).value mustEqual routes.CheckYourBusinessClosedPeriodsController.onPageLoad().url
   }
 
   "return a Bad Request and errors when invalid data is submitted" in {
