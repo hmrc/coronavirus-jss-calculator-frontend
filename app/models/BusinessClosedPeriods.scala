@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import play.api.libs.json.{Format, Json}
 
-case class BusinessClosedPeriods(startDate: LocalDate, endDate: LocalDate, addMore: AddMore)
+case class BusinessClosedPeriods(startDate: LocalDate, endDate: LocalDate)
 
 object BusinessClosedPeriods extends Enumerable.Implicits {
   implicit val format: Format[BusinessClosedPeriods] = Json.format

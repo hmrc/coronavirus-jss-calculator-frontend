@@ -101,6 +101,13 @@ class NavigatorSpec extends SpecBase {
         navigator.nextPage(BusinessClosedPage, NormalMode, userAnswers) mustBe routes.BusinessClosedPeriodsController.onPageLoad(1)
       }
 
+      "go to CheckYourBusinessClosedPeriodsController after BusinessClosedPeriodsPage" in {
+        val userAnswers = emptyUserAnswers.setList(BusinessClosedPeriodsPage, List.empty).success.value
+        navigator
+          .nextPage(BusinessClosedPeriodsPage, NormalMode, userAnswers, Some(1)) mustBe routes.CheckYourBusinessClosedPeriodsController
+          .onPageLoad()
+      }
+
       "go to UsualAndActualHoursPage after BusinessClosedPage if user says no and SWTA is yes" in {
         val userAnswers = emptyUserAnswers
           .set(BusinessClosedPage, BusinessClosed.No)

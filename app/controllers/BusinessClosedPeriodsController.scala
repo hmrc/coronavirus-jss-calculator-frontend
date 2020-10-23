@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.BusinessClosedPeriodsFormProvider
 import javax.inject.Inject
-import models.AddMore
+import models.NormalMode
 import navigation.Navigator
 import pages.BusinessClosedPeriodsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -59,27 +59,22 @@ class BusinessClosedPeriodsController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
-        value => {
-          val updatedAnswers = request.userAnswers.set(BusinessClosedPeriodsPage, value, Some(idx))
-
-          value.addMore match {
-            case AddMore.Yes =>
-              for {
-                updated <- Future.fromTry(updatedAnswers)
-                _       <- sessionRepository.set(updated)
-              } yield Redirect(routes.BusinessClosedPeriodsController.onPageLoad(idx + 1))
-
-            case AddMore.No =>
-              val answersWithListToKeep = updatedAnswers.flatMap { answers =>
-                val listToKeep = answers.getList(BusinessClosedPeriodsPage).slice(0, idx)
-                answers.setList(BusinessClosedPeriodsPage, listToKeep)
-              }
-              for {
-                updated <- Future.fromTry(answersWithListToKeep)
-                _       <- sessionRepository.set(updated)
-              } yield Redirect(routes.UsualAndActualHoursController.onPageLoad(1))
-          }
-        }
+        value =>
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessClosedPeriodsPage, value, Some(idx)))
+            _              <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(BusinessClosedPeriodsPage, NormalMode, updatedAnswers, Some(idx)))
       )
+  }
+
+  def remove(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
+    val existingPeriods = request.userAnswers.getList(BusinessClosedPeriodsPage)
+    val remainingPeriods = existingPeriods.zipWithIndex.filterNot(p => p._2 == idx).map(_._1)
+
+    for {
+      updatedAnswers <- Future.fromTry(request.userAnswers.setList(BusinessClosedPeriodsPage, remainingPeriods))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(navigator.nextPage(BusinessClosedPeriodsPage, NormalMode, updatedAnswers, Some(idx)))
+
   }
 }

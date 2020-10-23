@@ -19,7 +19,7 @@ package forms
 import java.time.LocalDate
 
 import forms.behaviours.DateBehaviours
-import models.{AddMore, BusinessClosedPeriods}
+import models.BusinessClosedPeriods
 
 class BusinessClosedPeriodsFormProviderSpec extends DateBehaviours {
 
@@ -36,11 +36,10 @@ class BusinessClosedPeriodsFormProviderSpec extends DateBehaviours {
         "startDate.year"  -> startDate.getYear.toString,
         "endDate.day"     -> endDate.getDayOfMonth.toString,
         "endDate.month"   -> endDate.getMonthValue.toString,
-        "endDate.year"    -> endDate.getYear.toString,
-        "value"           -> "yes"
+        "endDate.year"    -> endDate.getYear.toString
       )
 
-      form.bind(data).get shouldEqual BusinessClosedPeriods(startDate, endDate, AddMore.Yes)
+      form.bind(data).get shouldEqual BusinessClosedPeriods(startDate, endDate)
     }
   }
 }
