@@ -1,61 +1,15 @@
 #!/bin/bash
 
 echo ""
-echo "Applying migration CheckYourSTWAPeriods"
+echo "Applying migration YouAreNotEligible"
 
 echo "Adding routes to conf/app.routes"
-
 echo "" >> ../conf/app.routes
-echo "GET        /checkYourSTWAPeriods                        controllers.CheckYourSTWAPeriodsController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
-echo "POST       /checkYourSTWAPeriods                        controllers.CheckYourSTWAPeriodsController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
-
-echo "GET        /changeCheckYourSTWAPeriods                  controllers.CheckYourSTWAPeriodsController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
-echo "POST       /changeCheckYourSTWAPeriods                  controllers.CheckYourSTWAPeriodsController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "GET        /youAreNotEligible                       controllers.YouAreNotEligibleController.onPageLoad()" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
-echo "checkYourSTWAPeriods.title = Check your short term working agreement periods" >> ../conf/messages.en
-echo "checkYourSTWAPeriods.heading = Check your short term working agreement periods" >> ../conf/messages.en
-echo "checkYourSTWAPeriods.yes = Yes" >> ../conf/messages.en
-echo "checkYourSTWAPeriods.no = No" >> ../conf/messages.en
-echo "checkYourSTWAPeriods.checkYourAnswersLabel = Check your short term working agreement periods" >> ../conf/messages.en
-echo "checkYourSTWAPeriods.error.required = Select checkYourSTWAPeriods" >> ../conf/messages.en
+echo "youAreNotEligible.title = youAreNotEligible" >> ../conf/messages.en
+echo "youAreNotEligible.heading = youAreNotEligible" >> ../conf/messages.en
 
-echo "Adding to UserAnswersEntryGenerators"
-awk '/  self: Generators =>/ {\
-    print;\
-    print "";\
-    print "  implicit lazy val arbitraryCheckYourSTWAPeriodsUserAnswersEntry: Arbitrary[(CheckYourSTWAPeriodsPage.type, JsValue)] =";\
-    print "    Arbitrary {";\
-    print "      for {";\
-    print "        page  <- arbitrary[CheckYourSTWAPeriodsPage.type]";\
-    print "        value <- arbitrary[CheckYourSTWAPeriods].map(Json.toJson(_))";\
-    print "      } yield (page, value)";\
-    print "    }";\
-    next }1' ../test/generators/UserAnswersEntryGenerators.scala > tmp && mv tmp ../test/generators/UserAnswersEntryGenerators.scala
-
-echo "Adding to PageGenerators"
-awk '/trait PageGenerators/ {\
-    print;\
-    print "";\
-    print "  implicit lazy val arbitraryCheckYourSTWAPeriodsPage: Arbitrary[CheckYourSTWAPeriodsPage.type] =";\
-    print "    Arbitrary(CheckYourSTWAPeriodsPage)";\
-    next }1' ../test/generators/PageGenerators.scala > tmp && mv tmp ../test/generators/PageGenerators.scala
-
-echo "Adding to ModelGenerators"
-awk '/  self: Generators =>/ {\
-    print;\
-    print "";\
-    print "  implicit lazy val arbitraryCheckYourSTWAPeriods: Arbitrary[CheckYourSTWAPeriods] =";\
-    print "    Arbitrary {";\
-    print "      Gen.oneOf(CheckYourSTWAPeriods.values)";\
-    print "    }";\
-    next }1' ../test/generators/ModelGenerators.scala > tmp && mv tmp ../test/generators/ModelGenerators.scala
-
-echo "Adding to UserAnswersGenerator"
-awk '/val generators/ {\
-    print;\
-    print "    arbitrary[(CheckYourSTWAPeriodsPage.type, JsValue)] ::";\
-    next }1' ../test/generators/UserAnswersGenerator.scala > tmp && mv tmp ../test/generators/UserAnswersGenerator.scala
-
-echo "Migration CheckYourSTWAPeriods completed"
+echo "Migration YouAreNotEligible completed"

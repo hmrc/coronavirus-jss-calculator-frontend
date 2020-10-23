@@ -120,9 +120,7 @@ class NavigatorSpec extends SpecBase {
           .set(TemporaryWorkingAgreementPage, TemporaryWorkingAgreement.No)
           .success
           .value
-        assertThrows[NotImplementedError] {
-          navigator.nextPage(BusinessClosedPage, NormalMode, userAnswers).url
-        }
+        navigator.nextPage(BusinessClosedPage, NormalMode, userAnswers) mustBe routes.YouAreNotEligibleController.onPageLoad()
       }
 
       "go to Confirmation after UsualAndActualHoursPage" in {
