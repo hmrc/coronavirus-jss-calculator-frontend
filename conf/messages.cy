@@ -308,28 +308,38 @@ actualHours.error.min = Actual hours can not be negative
 confirmation.title = confirmation
 confirmation.heading = confirmation
 confirmation.confirmation.p1 = What you can claim for this employee
-confirmation.p1 = You must pay this employee <span class="govuk-!-font-weight-bold">£{0}</span>
-confirmation.p2 = This adds up to 80% of their usual wage (£{0}). To be eligible for the Job Support Scheme (JSS) grant, you must pay employee this amount for the pay periods when they worked reduced hours.
-confirmation.p3 = Calculated on: {0} (Calculator Version v{1})
-confirmation.p4 = The results of the calculation rely on the accuracy of the information you entered, for which you are responsible. You cannot claim for more money than you are going to pay out under the scheme.
-confirmation.calculated.on = Calculated on:
-confirmation.date.version = (Calculator Version v{0})
+confirmation.jss.open.label = For JSS Open
+confirmation.jss.open.p1 = Amount to pay employee for hours not worked: [{0}]
+confirmation.jss.open.p2 = Amount to claim from the government for hours not worked: [{0}]
+confirmation.jss.open.p3 = This is made up of a 85% employer contribution and a 61.67% government contribution. Employees must also be paid their full contracted rate for any hours they worked.
+confirmation.jss.closed.label = For JSS Closed
+confirmation.jss.closed.p1 = Amount to pay employee for time the business was closed: [{0}]
+confirmation.jss.closed.p2 = Amount to claim from the government for time the business was closed: [{0}]
+confirmation.jss.closed.p3 = The government contributes two thirds of their normal pay. The employee must be paid at least [{0}] for their non-working hours.
+confirmation.calculated.on = Calculated on: {0}
+confirmation.calculated.p1 = The results of the calculation rely on the accuracy of the information you entered, for which you are responsible. Before you claim you must have paid the government grant and any employer contribution to the employee in full, in addition to any pay they were due for the time worked.
 confirmation.nextSteps.heading = Next steps
-confirmation.nextSteps.l1 = {0} of this page for your records.
+confirmation.nextSteps.l1 = {0} for your records.
+confirmation.nextSteps.l1.print.or.save = Print or save a copy of this page
 confirmation.nextSteps.l2 = Make a note of these results.
-confirmation.nextSteps.l3 = Use the calculator again to claim for other employees working reduced hours during this claim period and note the results.
+confirmation.nextSteps.l3 = Use the calculator again for other employees with a temporary working agreement during this claim period, and note the results.
 confirmation.nextSteps.l4 = Add up all the results to calculate the total amount you can claim.
-confirmation.nextSteps.l5 = Make a claim using the {0}.
+confirmation.nextSteps.l5 = Read {0}.
+confirmation.nextSteps.l5.guidance = guidance on how to claim
+confirmation.nextSteps.l6 = Make a claim using the {0}
+confirmation.nextSteps.l6.jss.claim.service = Job Support Scheme online claim service (opens in a new window or tab)
 confirmation.startAgain = Start another calculation
 
 confirmation.confirmation.p1.noteligible = This employee is not eligible for a claim
 confirmation.breakdown.header = Breakdown of calculations
 confirmation.confirmation.p1.noteligible = This employee is not eligible for a claim
 
-confirmation.breakdown.p1 = You have told us the reduced hours worked by this employee was 40% of the hours the employee would usually work in the claim period. The Job Support Scheme (JSS) grant that you can claim for this employee is one third of the usual hours not worked by the employee.
+confirmation.breakdown.p1 = You told us this employee gets paid a [{0}] amount each time. There is a maximum amount you can claim. If this affects your claim, we’ve adjusted the calculations.
+confirmation.breakdown.p2 = Before making a claim you must check the employee has worked at least the {0}
+confirmation.breakdown.p2.guidance = minimum amount of their usual hours required under JSS Open.
 confirmation.breakdown.h3.partial = For pay period {0} to {1} (partial {2} days)
 confirmation.breakdown.h3 = For pay period {0} to {1} ( {2} days)
-confirmation.breakdown.h3.p1 = Calculate total pay on hours worked plus hours not worked.
+confirmation.breakdown.h3.p1 = To calculate the overall amount you must pay the employee for their non-working hours:
 
 confirmation.breakdown.reference-pay.p1 = Take the reference pay for the pay period:
 confirmation.breakdown.reference-pay.p1.l1 = Start with: {0}
@@ -423,6 +433,14 @@ checkYourSTWAPeriods.endDate.row = End date: {0}
 checkYourSTWAPeriods.row.change.label = Change
 checkYourSTWAPeriods.row.remove.label = Remove
 checkYourSTWAPeriods.add-another-period = Add another period
+
+checkYourBusinessClosedPeriods.title = Check your answers
+checkYourBusinessClosedPeriods.heading = Check your answers
+checkYourBusinessClosedPeriods.startDate.row = Start date: {0}
+checkYourBusinessClosedPeriods.endDate.row = End date: {0}
+checkYourBusinessClosedPeriods.row.change.label = Change
+checkYourBusinessClosedPeriods.row.remove.label = Remove
+checkYourBusinessClosedPeriods.add-another-period = Add another period
 
 youAreNotEligible.title = You are not eligible to make a claim
 youAreNotEligible.heading = You are not eligible to make a claim
