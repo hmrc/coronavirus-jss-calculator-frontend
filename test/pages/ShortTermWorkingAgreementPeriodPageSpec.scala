@@ -16,17 +16,17 @@
 
 package pages
 
-import models.ShortTermWorkingAgreementPeriod
+import models.TemporaryWorkingAgreementWithDates
 import pages.behaviours.PageBehaviours
 
 class ShortTermWorkingAgreementPeriodPageSpec extends PageBehaviours {
 
   "ShortTermWorkingAgreementPeriodPage" must {
 
-    beRetrievable[ShortTermWorkingAgreementPeriod](ShortTermWorkingAgreementPeriodPage)
+    beRetrievable[TemporaryWorkingAgreementWithDates](ShortTermWorkingAgreementPeriodPage)
 
-    beSettable[ShortTermWorkingAgreementPeriod](ShortTermWorkingAgreementPeriodPage)
+    beSettable[TemporaryWorkingAgreementWithDates](ShortTermWorkingAgreementPeriodPage)
 
-    beRemovable[ShortTermWorkingAgreementPeriod](ShortTermWorkingAgreementPeriodPage)
+    beRemovable[TemporaryWorkingAgreementWithDates](ShortTermWorkingAgreementPeriodPage)
   }
 }

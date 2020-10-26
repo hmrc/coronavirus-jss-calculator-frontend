@@ -16,12 +16,12 @@
 
 package pages
 
-import models.ShortTermWorkingAgreementPeriod
+import models.TemporaryWorkingAgreementWithDates
 import play.api.libs.json.JsPath
 
-case object ShortTermWorkingAgreementPeriodPage extends QuestionPage[ShortTermWorkingAgreementPeriod] {
+case object ShortTermWorkingAgreementPeriodPage extends QuestionPage[TemporaryWorkingAgreementWithDates] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "shortTermWorkingAgreementPeriods"
+  override def toString: String = "temporaryWorkingAgreementWithDates"
 }

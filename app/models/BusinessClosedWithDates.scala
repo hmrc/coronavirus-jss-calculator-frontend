@@ -18,4 +18,10 @@ package models
 
 import java.time.LocalDate
 
+import play.api.libs.json.{Format, Json}
+
 case class BusinessClosedWithDates(startDate: LocalDate, endDate: LocalDate)
+
+object BusinessClosedWithDates {
+  implicit val format: Format[BusinessClosedWithDates] = Json.format
+}

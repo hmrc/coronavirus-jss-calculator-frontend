@@ -16,17 +16,17 @@
 
 package pages
 
-import models.BusinessClosedPeriods
+import models.BusinessClosedWithDates
 import pages.behaviours.PageBehaviours
 
 class BusinessClosedPeriodsPageSpec extends PageBehaviours {
 
   "BusinessClosedPeriodsPage" must {
 
-    beRetrievable[BusinessClosedPeriods](BusinessClosedPeriodsPage)
+    beRetrievable[BusinessClosedWithDates](BusinessClosedPeriodsPage)
 
-    beSettable[BusinessClosedPeriods](BusinessClosedPeriodsPage)
+    beSettable[BusinessClosedWithDates](BusinessClosedPeriodsPage)
 
-    beRemovable[BusinessClosedPeriods](BusinessClosedPeriodsPage)
+    beRemovable[BusinessClosedWithDates](BusinessClosedPeriodsPage)
   }
 }

@@ -18,13 +18,13 @@ package forms
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.ShortTermWorkingAgreementPeriod
+import models.TemporaryWorkingAgreementWithDates
 import play.api.data.Form
 import play.api.data.Forms._
 
 class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[ShortTermWorkingAgreementPeriod] =
+  def apply(): Form[TemporaryWorkingAgreementWithDates] =
     Form(
       mapping(
         "startDate" -> localDate(
@@ -39,6 +39,6 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
           twoRequiredKey = "shortTermWorkingAgreementPeriod.error.required.two",
           requiredKey = "shortTermWorkingAgreementPeriod.error.required"
         )
-      )(ShortTermWorkingAgreementPeriod.apply)(ShortTermWorkingAgreementPeriod.unapply)
+      )(TemporaryWorkingAgreementWithDates.apply)(TemporaryWorkingAgreementWithDates.unapply)
     )
 }

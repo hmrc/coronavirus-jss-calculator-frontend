@@ -25,9 +25,9 @@
         link: components.link
 )
 
-@(businessClosedPeriods: Seq[BusinessClosedPeriods])(implicit request: Request[_], messages: Messages)
+@(businessClosedPeriods: Seq[BusinessClosedWithDates])(implicit request: Request[_], messages: Messages)
 
-@checkAnswerBlock(bcpWithIndex: (BusinessClosedPeriods, Int)) = {
+@checkAnswerBlock(bcpWithIndex: (BusinessClosedWithDates, Int)) = {
     <dl class="app-check-your-answers app-check-your-answers--long margin-top-30 margin-bottom-20">
         <div class="app-check-your-answers__contents">
             <dd class="app-check-your-answers__answer" id="@bcpWithIndex._2">

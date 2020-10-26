@@ -18,4 +18,10 @@ package models
 
 import java.time.LocalDate
 
+import play.api.libs.json.{Format, Json}
+
 case class TemporaryWorkingAgreementWithDates(startDate: LocalDate, endDate: LocalDate)
+
+object TemporaryWorkingAgreementWithDates {
+  implicit val format: Format[TemporaryWorkingAgreementWithDates] = Json.format
+}

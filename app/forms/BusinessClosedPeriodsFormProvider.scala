@@ -18,13 +18,13 @@ package forms
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.BusinessClosedPeriods
+import models.BusinessClosedWithDates
 import play.api.data.Form
 import play.api.data.Forms.mapping
 
 class BusinessClosedPeriodsFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[BusinessClosedPeriods] =
+  def apply(): Form[BusinessClosedWithDates] =
     Form(
       mapping(
         "startDate" -> localDate(
@@ -39,6 +39,6 @@ class BusinessClosedPeriodsFormProvider @Inject() extends Mappings {
           twoRequiredKey = "businessClosedPeriods.error.required.two",
           requiredKey = "businessClosedPeriods.error.required"
         )
-      )(BusinessClosedPeriods.apply)(BusinessClosedPeriods.unapply)
+      )(BusinessClosedWithDates.apply)(BusinessClosedWithDates.unapply)
     )
 }

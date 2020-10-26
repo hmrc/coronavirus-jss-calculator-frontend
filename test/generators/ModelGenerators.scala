@@ -29,22 +29,22 @@ trait ModelGenerators {
       Gen.oneOf(BusinessClosed.values)
     }
 
-  implicit lazy val genTemporaryWorkingAgreementPeriod: Gen[ShortTermWorkingAgreementPeriod] =
+  implicit lazy val genTemporaryWorkingAgreementPeriod: Gen[TemporaryWorkingAgreementWithDates] =
     for {
       period <- periodGen
-    } yield ShortTermWorkingAgreementPeriod(period.startDate, period.endDate)
+    } yield TemporaryWorkingAgreementWithDates(period.startDate, period.endDate)
 
-  implicit lazy val genBusinessClosedPeriods: Gen[BusinessClosedPeriods] =
+  implicit lazy val genBusinessClosedPeriods: Gen[BusinessClosedWithDates] =
     for {
       period <- periodGen
-    } yield BusinessClosedPeriods(period.startDate, period.endDate)
+    } yield BusinessClosedWithDates(period.startDate, period.endDate)
 
-  implicit lazy val arbitraryShortTermWorkingAgreementPeriod: Arbitrary[ShortTermWorkingAgreementPeriod] =
+  implicit lazy val arbitraryShortTermWorkingAgreementPeriod: Arbitrary[TemporaryWorkingAgreementWithDates] =
     Arbitrary {
       genTemporaryWorkingAgreementPeriod
     }
 
-  implicit lazy val arbitraryBusinessClosedPeriods: Arbitrary[BusinessClosedPeriods] =
+  implicit lazy val arbitraryBusinessClosedPeriods: Arbitrary[BusinessClosedWithDates] =
     Arbitrary {
       genBusinessClosedPeriods
     }
