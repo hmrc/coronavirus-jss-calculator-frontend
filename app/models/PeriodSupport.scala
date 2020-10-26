@@ -18,6 +18,8 @@ package models
 
 import java.time.LocalDate
 
+import play.api.libs.json.{Format, Json}
+
 final case class PeriodSupport(
   startDate: LocalDate,
   endDate: LocalDate,
@@ -30,6 +32,9 @@ final case class PeriodSupport(
   //TODO: draft implementation of the calculator - needs refactoring and re-design
  */
 object PeriodSupport {
+
+  implicit val format: Format[PeriodSupport] = Json.format
+
   implicit class PeriodSupportOps(private val periodSupports: List[PeriodSupport]) {
     def totalEmployeeSalary: Double =
       periodSupports.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.salary)

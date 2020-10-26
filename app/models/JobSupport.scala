@@ -16,6 +16,8 @@
 
 package models
 
+import play.api.libs.json.{Format, Json}
+
 final case class JobSupportOpen(
   twaDays: Int,
   usualHours: Double,
@@ -25,7 +27,8 @@ final case class JobSupportOpen(
 )
 
 object JobSupportOpen {
-  val noSupport = JobSupportOpen(0, 0, 0, 0, 0)
+  implicit val format: Format[JobSupportOpen] = Json.format
+  val noSupport                               = JobSupportOpen(0, 0, 0, 0, 0)
 }
 
 final case class JobSupportClosed(
@@ -34,7 +37,8 @@ final case class JobSupportClosed(
 )
 
 object JobSupportClosed {
-  val noSupport = JobSupportClosed(0, 0)
+  implicit val format: Format[JobSupportClosed] = Json.format
+  val noSupport                                 = JobSupportClosed(0, 0)
 }
 
 final case class JobSupport(
