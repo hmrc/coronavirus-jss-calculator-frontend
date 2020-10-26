@@ -26,7 +26,11 @@ import scala.collection.mutable.ListBuffer
 
 trait PeriodHelper {
 
-  def getPayPeriods(lastPayDay: LocalDate, payFrequency: PayFrequency, supportClaimPeriod: SupportClaimPeriod): List[Period] =
+  def getPayPeriods(
+    lastPayDay: LocalDate,
+    payFrequency: PayFrequency,
+    supportClaimPeriod: SupportClaimPeriod
+  ): List[Period] =
     payFrequency match {
       case PayFrequency.Monthly =>
         if (lastPayDay.isEqual(lastPayDay.`with`(lastDayOfMonth()))) {
@@ -34,12 +38,16 @@ trait PeriodHelper {
         } else {
           List(Period(lastPayDay.plusDays(1), lastPayDay.plusMonths(1)))
         }
-      case _ =>
+      case _                    =>
         computePayPeriods(PayFrequency.payFrequencyDays(payFrequency), lastPayDay, supportClaimPeriod)
     }
 
-  private def computePayPeriods(payFrequencyDays: Int, lastPayDay: LocalDate, supportClaimPeriod: SupportClaimPeriod): List[Period] = {
-    var periodStartDate = lastPayDay.plusDays(1)
+  private def computePayPeriods(
+    payFrequencyDays: Int,
+    lastPayDay: LocalDate,
+    supportClaimPeriod: SupportClaimPeriod
+  ): List[Period] = {
+    var periodStartDate                     = lastPayDay.plusDays(1)
     val periods: mutable.ListBuffer[Period] = ListBuffer()
     while (!periodStartDate.plusDays(payFrequencyDays - 1).isAfter(supportClaimPeriod.endDate)) {
       val periodEndDate = Period(periodStartDate, periodStartDate.plusDays(payFrequencyDays - 1))

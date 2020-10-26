@@ -39,7 +39,7 @@ class BusinessClosedControllerSpec extends SpecBase with MockitoSugar {
   private lazy val businessClosedRoute = routes.BusinessClosedController.onPageLoad().url
 
   private val formProvider = new BusinessClosedFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
   "BusinessClosed Controller" must {
 

@@ -41,11 +41,11 @@ object Enumerable {
               JsSuccess(s)
             }
             .getOrElse(JsError("error.invalid"))
-        case _ =>
+        case _             =>
           JsError("error.invalid")
       }
 
-    implicit def writes[A: Enumerable]: Writes[A] =
+    implicit def writes[A : Enumerable]: Writes[A] =
       Writes(value => JsString(value.toString))
   }
 }

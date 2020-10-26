@@ -67,7 +67,7 @@ trait Constraints {
     Constraint {
       case str if str.matches(regex) =>
         Valid
-      case _ =>
+      case _                         =>
         Invalid(errorKey, regex)
     }
 
@@ -75,7 +75,7 @@ trait Constraints {
     Constraint {
       case str if str.length <= maximum =>
         Valid
-      case _ =>
+      case _                            =>
         Invalid(errorKey, maximum)
     }
 
@@ -83,7 +83,7 @@ trait Constraints {
     Constraint {
       case date if date.isAfter(maximum) =>
         Invalid(errorKey, args: _*)
-      case _ =>
+      case _                             =>
         Valid
     }
 
@@ -91,7 +91,7 @@ trait Constraints {
     Constraint {
       case date if date.isBefore(minimum) =>
         Invalid(errorKey, args: _*)
-      case _ =>
+      case _                              =>
         Valid
     }
 
@@ -99,7 +99,7 @@ trait Constraints {
     Constraint {
       case set if set.nonEmpty =>
         Valid
-      case _ =>
+      case _                   =>
         Invalid(errorKey)
     }
 
@@ -107,8 +107,9 @@ trait Constraints {
     if (value.scale <= 2) Valid else Invalid(errorKey.getOrElse("amount.error.max.2.decimals"))
   }
 
-  protected def greaterThan[A](minimum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] = Constraint { value =>
-    import ev._
-    if (value > minimum) Valid else Invalid(errorKey)
+  protected def greaterThan[A](minimum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] = Constraint {
+    value =>
+      import ev._
+      if (value > minimum) Valid else Invalid(errorKey)
   }
 }

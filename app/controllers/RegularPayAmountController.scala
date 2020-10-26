@@ -30,7 +30,7 @@ import views.html.RegularPayAmountView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RegularPayAmountController @Inject()(
+class RegularPayAmountController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
@@ -41,7 +41,8 @@ class RegularPayAmountController @Inject()(
   val controllerComponents: MessagesControllerComponents,
   view: RegularPayAmountView
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport {
+    extends FrontendBaseController
+    with I18nSupport {
 
   private val form = formProvider()
 

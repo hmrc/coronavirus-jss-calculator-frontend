@@ -30,7 +30,7 @@ import reactivemongo.play.json.collection.JSONCollection
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DefaultSessionRepository @Inject()(
+class DefaultSessionRepository @Inject() (
   mongo: ReactiveMongoApi,
   config: Configuration
 )(implicit ec: ExecutionContext)
@@ -59,7 +59,7 @@ class DefaultSessionRepository @Inject()(
   override def get(id: String): Future[Option[UserAnswers]] =
     collection.flatMap(_.find(Json.obj("_id" -> id), None).one[UserAnswers])
 
-  override def clear(id: String): Future[Boolean] =
+  override def clear(id: String): Future[Boolean]           =
     collection.flatMap(_.delete.one(Json.obj("_id" -> id)).map(_.ok))
 
   override def set(userAnswers: UserAnswers): Future[Boolean] = {

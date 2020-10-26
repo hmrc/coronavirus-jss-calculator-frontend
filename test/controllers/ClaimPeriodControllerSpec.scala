@@ -35,7 +35,7 @@ class ClaimPeriodControllerSpec extends SpecBaseControllerSpecs {
   private lazy val claimPeriodRoute = routes.ClaimPeriodController.onPageLoad().url
 
   private val formProvider = new ClaimPeriodFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
   def controller(stubbedAnswer: UserAnswers = emptyUserAnswers) =
     new ClaimPeriodController(
@@ -46,7 +46,8 @@ class ClaimPeriodControllerSpec extends SpecBaseControllerSpecs {
       stubDataRetrieval(Some(stubbedAnswer)),
       formProvider,
       component,
-      view)
+      view
+    )
 
   def getRequest(method: String) =
     FakeRequest(method, claimPeriodRoute).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
@@ -56,7 +57,7 @@ class ClaimPeriodControllerSpec extends SpecBaseControllerSpecs {
     "return OK and the correct view for a GET" in {
 
       val controller1 = controller(emptyUserAnswers)
-      val request = getRequest(GET)
+      val request     = getRequest(GET)
 
       val result = controller1.onPageLoad()(request)
 
@@ -70,7 +71,7 @@ class ClaimPeriodControllerSpec extends SpecBaseControllerSpecs {
   "populate the view correctly on a GET when the question has previously been answered" in {
     val userAnswers = emptyUserAnswers.set(ClaimPeriodPage, ClaimPeriod.values.head).success.value
     val controller1 = controller(userAnswers)
-    val request = getRequest(GET)
+    val request     = getRequest(GET)
 
     val result = controller1.onPageLoad()(request)
 
@@ -84,8 +85,8 @@ class ClaimPeriodControllerSpec extends SpecBaseControllerSpecs {
 
     val userAnswers = emptyUserAnswers.set(ClaimPeriodPage, ClaimPeriod.values.head).success.value
     val controller1 = controller(userAnswers)
-    val request = getRequest(POST).withFormUrlEncodedBody(("value", ClaimPeriod.values.head.toString))
-    val result = controller1.onSubmit()(request)
+    val request     = getRequest(POST).withFormUrlEncodedBody(("value", ClaimPeriod.values.head.toString))
+    val result      = controller1.onSubmit()(request)
 
     status(result) mustEqual SEE_OTHER
 
@@ -95,9 +96,9 @@ class ClaimPeriodControllerSpec extends SpecBaseControllerSpecs {
   "return a Bad Request and errors when invalid data is submitted" in {
     val userAnswers = emptyUserAnswers.set(ClaimPeriodPage, ClaimPeriod.values.head).success.value
     val controller1 = controller(userAnswers)
-    val request = getRequest(POST).withFormUrlEncodedBody(("value", "invalid value"))
-    val result = controller1.onSubmit()(request)
-    val boundForm = form.bind(Map("value" -> "invalid value"))
+    val request     = getRequest(POST).withFormUrlEncodedBody(("value", "invalid value"))
+    val result      = controller1.onSubmit()(request)
+    val boundForm   = form.bind(Map("value" -> "invalid value"))
     status(result) mustEqual BAD_REQUEST
 
     contentAsString(result) mustEqual

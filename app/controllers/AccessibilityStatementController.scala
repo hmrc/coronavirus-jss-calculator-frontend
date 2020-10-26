@@ -23,11 +23,12 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.AccessibilityStatementView
 
-class AccessibilityStatementController @Inject()(
+class AccessibilityStatementController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AccessibilityStatementView,
   config: FrontendAppConfig
-) extends FrontendBaseController with I18nSupport {
+) extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action { implicit request =>
     Ok(view(config.reportAProblemNonJSUrl))

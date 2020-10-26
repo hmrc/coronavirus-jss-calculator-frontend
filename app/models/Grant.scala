@@ -16,29 +16,57 @@
 
 package models
 
+import julienrf.json.derived
+import models.PeriodGrant.OpenPeriodGrant
 import play.api.libs.json.{Json, OFormat}
 
-final case class GrantForPeriod(
-  period: PeriodWithHours,
-  amount: BigDecimal,
-  daysInPeriod: Int,
-  daysInFrequency: Int,
-  referencePayCap: Double,
-  adjustedReferencePay: Double,
-  referencePay: BigDecimal,
-  payFrequency: PayFrequency,
-  isPartialPayPeriod: Boolean,
-)
+sealed trait PeriodGrant
 
-object GrantForPeriod {
-  implicit val format: OFormat[GrantForPeriod] = Json.format[GrantForPeriod]
+object PeriodGrant {
+  final case class OpenPeriodGrant(
+    period: PeriodWithHours,
+    grant: BigDecimal, //TODO: change to Double
+    employerContribution: Double,
+    daysInPeriod: Int,
+    daysInFrequency: Int,
+    referencePayCap: BigDecimal,
+    adjustedReferencePay: Double,
+    payFrequency: PayFrequency,
+    isPartialPayPeriod: Boolean,
+    hoursNotWorked: Int
+  ) extends PeriodGrant
+
+  object OpenPeriodGrant {
+    implicit val format: OFormat[OpenPeriodGrant] = Json.format[OpenPeriodGrant]
+  }
+
+  final case class ClosedPeriodGrant(
+    period: PeriodWithHours,
+    amount: BigDecimal, //TODO: change to Double
+    employerContribution: Double,
+    daysInPeriod: Int,
+    daysInFrequency: Int,
+    referencePayCap: BigDecimal,
+    adjustedReferencePay: Double,
+    payFrequency: PayFrequency,
+    isPartialPayPeriod: Boolean,
+    hoursNotWorked: Int
+  ) extends PeriodGrant
+
+  object ClosedPeriodGrant {
+    implicit val format: OFormat[ClosedPeriodGrant] = Json.format[ClosedPeriodGrant]
+  }
+
+  implicit val format: OFormat[PeriodGrant] = derived.oformat[PeriodGrant]()
 }
 
 final case class Grant(
-  grantForPeriods: List[GrantForPeriod],
+  grantForPeriods: List[OpenPeriodGrant],
   referencePay: BigDecimal,
   isEligible: Boolean,
-  totalGrant: BigDecimal
+  totalGrant: Double
+//  ,
+//  totalEmployerContribution: Double
 )
 
 object Grant {

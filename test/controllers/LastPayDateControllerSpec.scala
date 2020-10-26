@@ -40,7 +40,7 @@ class LastPayDateControllerSpec extends SpecBaseControllerSpecs {
 
   private val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
-  private lazy val lastPayDateRouteGet = routes.LastPayDateController.onPageLoad().url
+  private lazy val lastPayDateRouteGet  = routes.LastPayDateController.onPageLoad().url
   private lazy val lastPayDateRoutePost = routes.LastPayDateController.onSubmit().url
 
   override val emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
@@ -58,7 +58,7 @@ class LastPayDateControllerSpec extends SpecBaseControllerSpecs {
 
   val claimPeriod = LocalDate.of(2020, 11, 1)
 
-  val userAnswers = UserAnswers(userAnswersId, Json.obj(ClaimPeriodPage.toString -> JsString("November 2020")))
+  val userAnswers      = UserAnswers(userAnswersId, Json.obj(ClaimPeriodPage.toString -> JsString("November 2020")))
   val firstDateOfClaim = LocalDate.of(2020, 11, 1)
 
   def controller(userAnswers: Option[UserAnswers]) = new LastPayDateController(
@@ -90,7 +90,10 @@ class LastPayDateControllerSpec extends SpecBaseControllerSpecs {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers =
-        UserAnswers(userAnswersId, Json.obj(LastPayDatePage.toString -> validAnswer, ClaimPeriodPage.toString -> JsString("November 2020")))
+        UserAnswers(
+          userAnswersId,
+          Json.obj(LastPayDatePage.toString -> validAnswer, ClaimPeriodPage.toString -> JsString("November 2020"))
+        )
 
       val fakeRequest = getRequest
 

@@ -26,9 +26,11 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait GetSessionAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
+trait GetSessionAction
+    extends ActionBuilder[IdentifierRequest, AnyContent]
+    with ActionFunction[Request, IdentifierRequest]
 
-class GetSessionActionImpl @Inject()(
+class GetSessionActionImpl @Inject() (
   val parser: BodyParsers.Default
 )(implicit val executionContext: ExecutionContext)
     extends GetSessionAction {
@@ -41,7 +43,7 @@ class GetSessionActionImpl @Inject()(
     hc.sessionId match {
       case Some(session) =>
         block(IdentifierRequest(request, session.value))
-      case None =>
+      case None          =>
         Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
     }
   }

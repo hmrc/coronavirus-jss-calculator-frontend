@@ -26,7 +26,7 @@ class PayPeriodsFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" must {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "payPeriods.error.required"
 
     behave like optionsField[PayPeriods](

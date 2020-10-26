@@ -28,7 +28,7 @@ class SelectWorkPeriodsFormProviderSpec extends CheckboxFieldBehaviours with Gen
 
   ".value" must {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "selectWorkPeriods.error.required"
 
     "bind valid values" in {
@@ -40,7 +40,9 @@ class SelectWorkPeriodsFormProviderSpec extends CheckboxFieldBehaviours with Gen
 
       forAll(listGen) { list =>
         val data =
-          list.zipWithIndex.map(item => s"$fieldName[${item._2}]" -> s"${item._1.startDate.toString}_${item._1.endDate.toString}").toMap
+          list.zipWithIndex
+            .map(item => s"$fieldName[${item._2}]" -> s"${item._1.startDate.toString}_${item._1.endDate.toString}")
+            .toMap
         form.bind(data).get shouldEqual list
       }
 
@@ -50,7 +52,9 @@ class SelectWorkPeriodsFormProviderSpec extends CheckboxFieldBehaviours with Gen
       val data = Map(
         s"$fieldName[0]" -> "invalid value"
       )
-      form.bind(data).errors should contain(FormError(s"$fieldName[0]", "Text 'invalid value' could not be parsed at index 0"))
+      form.bind(data).errors should contain(
+        FormError(s"$fieldName[0]", "Text 'invalid value' could not be parsed at index 0")
+      )
     }
 
     "fail to bind when no answers are selected" in {

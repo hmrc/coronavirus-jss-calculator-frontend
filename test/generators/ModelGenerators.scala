@@ -73,9 +73,7 @@ trait ModelGenerators {
   val periodGen: Gen[Period] =
     for {
       date <- datesGen
-    } yield {
-      Period(date, date.plusDays(10))
-    }
+    } yield Period(date, date.plusDays(10))
 
   implicit lazy val arbitraryPeriod: Arbitrary[Period] =
     Arbitrary {

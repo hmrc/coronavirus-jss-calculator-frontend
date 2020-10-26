@@ -28,10 +28,11 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ClaimPeriodView
+import models.ClaimPeriod.writes
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ClaimPeriodController @Inject()(
+class ClaimPeriodController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
@@ -41,7 +42,8 @@ class ClaimPeriodController @Inject()(
   val controllerComponents: MessagesControllerComponents,
   view: ClaimPeriodView
 )(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
-    extends FrontendBaseController with I18nSupport {
+    extends FrontendBaseController
+    with I18nSupport {
 
   private def form = formProvider()
 

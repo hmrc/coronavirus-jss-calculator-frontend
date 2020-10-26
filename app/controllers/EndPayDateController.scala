@@ -32,7 +32,7 @@ import views.html.EndPayDateView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EndPayDateController @Inject()(
+class EndPayDateController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
@@ -43,7 +43,8 @@ class EndPayDateController @Inject()(
   val controllerComponents: MessagesControllerComponents,
   view: EndPayDateView
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport {
+    extends FrontendBaseController
+    with I18nSupport {
 
   private def form(lastPayDate: LocalDate)(implicit messages: Messages) = formProvider(lastPayDate)
 
@@ -73,7 +74,7 @@ class EndPayDateController @Inject()(
                 _              <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(EndPayDatePage, NormalMode, updatedAnswers))
           )
-      case None => Future.successful(Redirect(routes.LastPayDateController.onPageLoad()))
+      case None       => Future.successful(Redirect(routes.LastPayDateController.onPageLoad()))
     }
 
   }

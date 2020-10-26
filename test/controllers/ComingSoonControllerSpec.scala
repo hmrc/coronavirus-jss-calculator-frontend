@@ -42,7 +42,8 @@ class ComingSoonControllerSpec extends SpecBaseControllerSpecs {
         view
       )
 
-      val fakeRequest = FakeRequest("GET", comingSoonRoute).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
+      val fakeRequest =
+        FakeRequest("GET", comingSoonRoute).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
       val result = controller.onPageLoad()(fakeRequest)
 

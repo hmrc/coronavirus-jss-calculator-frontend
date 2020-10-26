@@ -49,7 +49,7 @@ object Period {
       stringFormat.bind(key, data).right.flatMap { wp =>
         Try {
           val startDate = LocalDate.parse(wp.split("_")(0))
-          val endDate = LocalDate.parse(wp.split("_")(1))
+          val endDate   = LocalDate.parse(wp.split("_")(1))
           Period(startDate, endDate)
         } match {
           case Success(period) => Right(period)
@@ -63,19 +63,26 @@ object Period {
     }
   }
 
-  def options(form: Form[_], periods: List[Period])(implicit messages: Messages): Seq[CheckboxItem] = periods.zipWithIndex.map { value =>
-    val periodStart = value._1.startDate
-    val periodEnd = value._1.endDate
-    val selectedWorkPeriod = periodStart.toString + "_" + periodEnd.toString
+  def options(form: Form[_], periods: List[Period])(implicit messages: Messages): Seq[CheckboxItem] =
+    periods.zipWithIndex.map { value =>
+      val periodStart        = value._1.startDate
+      val periodEnd          = value._1.endDate
+      val selectedWorkPeriod = periodStart.toString + "_" + periodEnd.toString
 
-    CheckboxItem(
-      name = Some(s"value[${value._2}]"),
-      id = Some(s"select-work-periods_${value._2.toString}"),
-      value = selectedWorkPeriod,
-      content = Text(messages("selectWorkPeriods.from.to", dateToStringWithoutYear(value._1.startDate), dateToString(value._1.endDate))),
-      checked = form.data.values.contains(selectedWorkPeriod)
-    )
-  }
+      CheckboxItem(
+        name = Some(s"value[${value._2}]"),
+        id = Some(s"select-work-periods_${value._2.toString}"),
+        value = selectedWorkPeriod,
+        content = Text(
+          messages(
+            "selectWorkPeriods.from.to",
+            dateToStringWithoutYear(value._1.startDate),
+            dateToString(value._1.endDate)
+          )
+        ),
+        checked = form.data.values.contains(selectedWorkPeriod)
+      )
+    }
 
   def toPeriodWithHours(period: Period, usualAndActualHours: UsualAndActualHours): PeriodWithHours =
     PeriodWithHours(period.startDate, period.endDate, usualAndActualHours.usualHours, usualAndActualHours.actualHours)

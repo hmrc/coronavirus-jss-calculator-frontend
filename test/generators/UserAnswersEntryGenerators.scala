@@ -35,7 +35,8 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryTemporaryWorkingAgreementUserAnswersEntry: Arbitrary[(TemporaryWorkingAgreementPage.type, JsValue)] =
+  implicit lazy val arbitraryTemporaryWorkingAgreementUserAnswersEntry
+    : Arbitrary[(TemporaryWorkingAgreementPage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[TemporaryWorkingAgreementPage.type]

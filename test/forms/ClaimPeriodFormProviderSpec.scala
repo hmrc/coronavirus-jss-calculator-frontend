@@ -26,7 +26,7 @@ class ClaimPeriodFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" must {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "claimPeriod.error.required"
 
     behave like optionsField[ClaimPeriod](

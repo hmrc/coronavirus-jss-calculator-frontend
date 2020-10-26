@@ -31,7 +31,7 @@ import views.html.SelectWorkPeriodsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelectWorkPeriodsController @Inject()(
+class SelectWorkPeriodsController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
@@ -42,7 +42,9 @@ class SelectWorkPeriodsController @Inject()(
   val controllerComponents: MessagesControllerComponents,
   view: SelectWorkPeriodsView
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with PeriodHelper {
+    extends FrontendBaseController
+    with I18nSupport
+    with PeriodHelper {
 
   private val form = formProvider()
 
@@ -53,13 +55,12 @@ class SelectWorkPeriodsController @Inject()(
     }
     getView(
       request.userAnswers,
-      periods => {
+      periods =>
         if (periods.length == 1) {
           saveAndRedirect(request.userAnswers, periods)
         } else {
           Future.successful(Ok(view(preparedForm, periods)))
         }
-      }
     )
   }
 
@@ -67,17 +68,16 @@ class SelectWorkPeriodsController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => {
-          getView(request.userAnswers, periods => Future.successful(BadRequest(view(formWithErrors, periods))))
-        },
+        formWithErrors =>
+          getView(request.userAnswers, periods => Future.successful(BadRequest(view(formWithErrors, periods)))),
         value => saveAndRedirect(request.userAnswers, value)
       )
   }
 
   private def getView(userAnswers: UserAnswers, result: (List[Period]) => Future[Result]): Future[Result] = {
-    val maybeClaimPeriod = userAnswers.get(ClaimPeriodPage)
+    val maybeClaimPeriod  = userAnswers.get(ClaimPeriodPage)
     val maybePayFrequency = userAnswers.get(PayFrequencyPage)
-    val maybeLastPayDay = userAnswers.get(LastPayDatePage)
+    val maybeLastPayDay   = userAnswers.get(LastPayDatePage)
 
     (maybeClaimPeriod, maybePayFrequency, maybeLastPayDay) match {
       case (Some(cp), Some(pf), Some(lpd)) => result(getPayPeriods(lpd, pf, cp.supportClaimPeriod))

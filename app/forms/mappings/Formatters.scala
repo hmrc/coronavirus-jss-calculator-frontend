@@ -59,7 +59,8 @@ trait Formatters {
     requiredKey: String,
     wholeNumberKey: String,
     nonNumericKey: String,
-    args: Seq[String] = Seq.empty): Formatter[Int] =
+    args: Seq[String] = Seq.empty
+  ): Formatter[Int] =
     new Formatter[Int] {
 
       val decimalRegexp = """^-?(\d*\.\d*)$"""
@@ -75,7 +76,7 @@ trait Formatters {
           .flatMap {
             case s if s.matches(decimalRegexp) =>
               Left(Seq(FormError(key, wholeNumberKey, args)))
-            case s =>
+            case s                             =>
               nonFatalCatch
                 .either(s.toInt)
                 .left
@@ -86,7 +87,9 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
-  private[mappings] def enumerableFormatter[A](requiredKey: String, invalidKey: String)(implicit ev: Enumerable[A]): Formatter[A] =
+  private[mappings] def enumerableFormatter[A](requiredKey: String, invalidKey: String)(implicit
+    ev: Enumerable[A]
+  ): Formatter[A] =
     new Formatter[A] {
 
       private val baseFormatter = stringFormatter(requiredKey)
@@ -120,7 +123,8 @@ trait Formatters {
   private[mappings] def bigDecimalFormatter(
     requiredKey: String,
     nonNumericKey: String,
-    args: Seq[String] = Seq.empty): Formatter[BigDecimal] =
+    args: Seq[String] = Seq.empty
+  ): Formatter[BigDecimal] =
     new Formatter[BigDecimal] {
       private val baseFormatter = stringFormatter(requiredKey)
 
@@ -131,19 +135,22 @@ trait Formatters {
           .map(_.replace(",", ""))
           .map(_.trim)
           .right
-          .flatMap {
-            case s =>
-              nonFatalCatch
-                .either(BigDecimal(s))
-                .left
-                .map(_ => Seq(FormError(key, nonNumericKey, args)))
+          .flatMap { case s =>
+            nonFatalCatch
+              .either(BigDecimal(s))
+              .left
+              .map(_ => Seq(FormError(key, nonNumericKey, args)))
           }
 
       override def unbind(key: String, value: BigDecimal) =
         baseFormatter.unbind(key, value.toString)
     }
 
-  private[mappings] def doubleFormatter(requiredKey: String, nonNumericKey: String, args: Seq[String] = Seq.empty): Formatter[Double] =
+  private[mappings] def doubleFormatter(
+    requiredKey: String,
+    nonNumericKey: String,
+    args: Seq[String] = Seq.empty
+  ): Formatter[Double] =
     new Formatter[Double] {
 
       private val baseFormatter = stringFormatter(requiredKey)
@@ -154,12 +161,11 @@ trait Formatters {
           .right
           .map(_.replace(",", ""))
           .right
-          .flatMap {
-            case s =>
-              nonFatalCatch
-                .either(s.toDouble)
-                .left
-                .map(_ => Seq(FormError(key, nonNumericKey, args)))
+          .flatMap { case s =>
+            nonFatalCatch
+              .either(s.toDouble)
+              .left
+              .map(_ => Seq(FormError(key, nonNumericKey, args)))
           }
 
       override def unbind(key: String, value: Double) =

@@ -32,7 +32,7 @@ import views.html.LastPayDateView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class LastPayDateController @Inject()(
+class LastPayDateController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
@@ -43,7 +43,8 @@ class LastPayDateController @Inject()(
   val controllerComponents: MessagesControllerComponents,
   view: LastPayDateView
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport {
+    extends FrontendBaseController
+    with I18nSupport {
 
   private def form(firstDayOfClaim: LocalDate)(implicit messages: Messages) = formProvider(firstDayOfClaim)
 

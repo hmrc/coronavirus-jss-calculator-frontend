@@ -32,7 +32,7 @@ case object SelectWorkPeriodsPage extends QuestionPage[List[Period]] {
       case Some(_) =>
         userAnswers
           .setList(UsualAndActualHoursPage, Seq.empty)
-      case _ =>
+      case _       =>
         super.cleanup(value, userAnswers)
     }
 }

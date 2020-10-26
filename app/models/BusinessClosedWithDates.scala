@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-package utils
+package models
 
-import play.api.libs.json._
+import java.time.LocalDate
 
-object ValueClassFormat {
-  def format[A : Format](fromStringToA: String => A)(fromAToString: A => String) =
-    Format[A](
-      Reads[A] {
-        case JsString(str) => JsSuccess(fromStringToA(str))
-        case unknown       => JsError(s"JsString value expected, got: $unknown")
-      },
-      Writes[A](a => JsString(fromAToString(a)))
-    )
-}
+case class BusinessClosedWithDates(startDate: LocalDate, endDate: LocalDate)

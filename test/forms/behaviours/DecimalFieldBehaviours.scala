@@ -47,7 +47,13 @@ trait DecimalFieldBehaviours extends FieldBehaviours {
       }
     }
 
-  def decimalsFieldWithRange(form: Form[_], fieldName: String, minimum: Double, maximum: Double, expectedError: FormError): Unit =
+  def decimalsFieldWithRange(
+    form: Form[_],
+    fieldName: String,
+    minimum: Double,
+    maximum: Double,
+    expectedError: FormError
+  ): Unit =
     s"not bind numbers outside the range $minimum to $maximum" in {
 
       forAll(decimalsOutsideRange(minimum, maximum) -> "intOutsideRange") { number =>

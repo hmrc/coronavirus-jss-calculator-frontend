@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package utils
+package models
 
-import play.api.libs.json._
+import java.time.LocalDate
 
-object ValueClassFormat {
-  def format[A : Format](fromStringToA: String => A)(fromAToString: A => String) =
-    Format[A](
-      Reads[A] {
-        case JsString(str) => JsSuccess(fromStringToA(str))
-        case unknown       => JsError(s"JsString value expected, got: $unknown")
-      },
-      Writes[A](a => JsString(fromAToString(a)))
-    )
+import julienrf.json.derived
+import play.api.libs.json.{Json, OFormat}
+
+sealed trait ClosedPeriodType
+object ClosedPeriodType {
+  case object STWA extends ClosedPeriodType
+  case object CLOSED extends ClosedPeriodType
+
+  implicit val format: OFormat[ClosedPeriodType] = derived.oformat[ClosedPeriodType]()
+}
+
+final case class ClosedPeriodWithHours(start: LocalDate, end: LocalDate, tpe: ClosedPeriodType)
+
+object ClosedPeriodWithHours {
+  implicit val format: OFormat[ClosedPeriodWithHours] = Json.format[ClosedPeriodWithHours]
 }

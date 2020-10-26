@@ -41,11 +41,13 @@ class NavigatorSpec extends SpecBase {
       }
 
       "go to PayFrequencyPage after ClaimPeriod" in {
-        navigator.nextPage(ClaimPeriodPage, NormalMode, emptyUserAnswers) mustBe routes.PayFrequencyController.onPageLoad()
+        navigator.nextPage(ClaimPeriodPage, NormalMode, emptyUserAnswers) mustBe routes.PayFrequencyController
+          .onPageLoad()
       }
 
       "go to LastPayDatePage after PayFrequency" in {
-        navigator.nextPage(PayFrequencyPage, NormalMode, emptyUserAnswers) mustBe routes.LastPayDateController.onPageLoad()
+        navigator.nextPage(PayFrequencyPage, NormalMode, emptyUserAnswers) mustBe routes.LastPayDateController
+          .onPageLoad()
       }
 
       "go to correct page after PayMethod" in {
@@ -67,7 +69,8 @@ class NavigatorSpec extends SpecBase {
 
       "go to correct page after PayPeriodsPage" in {
         var userAnswers = emptyUserAnswers.set(PayPeriodsPage, PayPeriods.Yes).success.value
-        navigator.nextPage(PayPeriodsPage, NormalMode, userAnswers) mustBe routes.SelectWorkPeriodsController.onPageLoad()
+        navigator.nextPage(PayPeriodsPage, NormalMode, userAnswers) mustBe routes.SelectWorkPeriodsController
+          .onPageLoad()
 
         userAnswers = emptyUserAnswers.set(PayPeriodsPage, PayPeriods.No).success.value
         navigator.nextPage(PayPeriodsPage, NormalMode, userAnswers) mustBe routes.LastPayDateController.onPageLoad()
@@ -75,22 +78,33 @@ class NavigatorSpec extends SpecBase {
 
       "go to correct page after SelectWorkPeriodsPage" in {
         val userAnswers = emptyUserAnswers.set(SelectWorkPeriodsPage, periods).success.value
-        navigator.nextPage(SelectWorkPeriodsPage, NormalMode, userAnswers) mustBe routes.RegularPayAmountController.onPageLoad()
+        navigator.nextPage(SelectWorkPeriodsPage, NormalMode, userAnswers) mustBe routes.RegularPayAmountController
+          .onPageLoad()
       }
 
       "go to TemporaryWorkingAgreementPage after RegularPayAmountPage" in {
         val userAnswers = emptyUserAnswers.set(SelectWorkPeriodsPage, periods).success.value
-        navigator.nextPage(RegularPayAmountPage, NormalMode, userAnswers) mustBe routes.TemporaryWorkingAgreementController.onPageLoad()
+        navigator.nextPage(
+          RegularPayAmountPage,
+          NormalMode,
+          userAnswers
+        ) mustBe routes.TemporaryWorkingAgreementController.onPageLoad()
       }
 
       "go to BusinessClosedPage after TemporaryWorkingAgreementPage" in {
-        val userAnswers = emptyUserAnswers.set(TemporaryWorkingAgreementPage, TemporaryWorkingAgreement.Yes).success.value
-        navigator.nextPage(TemporaryWorkingAgreementPage, NormalMode, userAnswers) mustBe routes.BusinessClosedController.onPageLoad()
+        val userAnswers =
+          emptyUserAnswers.set(TemporaryWorkingAgreementPage, TemporaryWorkingAgreement.Yes).success.value
+        navigator.nextPage(
+          TemporaryWorkingAgreementPage,
+          NormalMode,
+          userAnswers
+        ) mustBe routes.BusinessClosedController.onPageLoad()
       }
 
       "go to UsualAndActualHoursPage after BusinessClosedPage" in {
         val userAnswers = emptyUserAnswers.set(BusinessClosedPage, BusinessClosed.Yes).success.value
-        navigator.nextPage(BusinessClosedPage, NormalMode, userAnswers) mustBe routes.UsualAndActualHoursController.onPageLoad(1)
+        navigator.nextPage(BusinessClosedPage, NormalMode, userAnswers) mustBe routes.UsualAndActualHoursController
+          .onPageLoad(1)
       }
 
       "go to Confirmation after UsualAndActualHoursPage" in {
@@ -101,7 +115,12 @@ class NavigatorSpec extends SpecBase {
           .set(UsualAndActualHoursPage, UsualAndActualHours(10.00, 20.00), Some(1))
           .success
           .value
-        navigator.nextPage(UsualAndActualHoursPage, NormalMode, userAnswers, Some(1)) mustBe routes.ConfirmationController.onPageLoad()
+        navigator.nextPage(
+          UsualAndActualHoursPage,
+          NormalMode,
+          userAnswers,
+          Some(1)
+        ) mustBe routes.ConfirmationController.onPageLoad()
       }
 
       "go to PayMethodPage after EndPayDate" in {

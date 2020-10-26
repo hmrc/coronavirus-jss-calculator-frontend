@@ -21,245 +21,9 @@ import java.time.LocalDate
 import base.SpecBase
 import models.{BusinessClosedWithDates, JobSupport, PayFrequency, PeriodWithHours, SupportClaimPeriod, TemporaryWorkingAgreementWithDates}
 
-class RegularPayGrantCalculatorSpec extends SpecBase {
+class WeeklySpec extends SpecBase {
 
   "Regular Pay Calculator" when {
-
-//    "4 weekly" should {
-//
-//      "sc1" in new RegularPayGrantCalculator {
-//
-//        val supportClaimPeriod = SupportClaimPeriod(
-//          LocalDate.of(2020, 11, 1),
-//          LocalDate.of(2020, 11, 30)
-//        )
-//
-//        val twasList = List(
-//          TemporaryWorkingAgreementWithDates(
-//            LocalDate.of(2020, 11, 1),
-//            LocalDate.of(2020, 11, 30)
-//          )
-//        )
-//
-//        val closedList = List(
-//          BusinessClosedWithDates(
-//            LocalDate.of(2020, 11, 3),
-//            LocalDate.of(2020, 11, 30)
-//          )
-//        )
-//
-//        val pp: List[PeriodWithHours] = List(
-//          PeriodWithHours(
-//            LocalDate.of(2020, 10, 6),
-//            LocalDate.of(2020, 11, 2),
-//            20,
-//            10
-//          ),
-//          PeriodWithHours(
-//            LocalDate.of(2020, 11, 3),
-//            LocalDate.of(2020, 11, 30),
-//            0,
-//            0
-//          )
-//        )
-//
-//        val jobSupport: JobSupport = calculateJobSupport(
-//          supportClaimPeriod,
-//          pp,
-//          twasList,
-//          closedList,
-//          PayFrequency.FourWeekly,
-//          2345.45
-//        )
-//
-//        println(s"\n $jobSupport")
-//
-//        jobSupport.totalEmployeeSalary mustEqual 268.60
-//        jobSupport.totalEmployersGrant mustEqual 248.45
-//        jobSupport.totalClosed mustEqual 400
-//        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 648.45
-//      }
-//    }
-//
-//    "fornight" should {
-//
-//      "sc-1" in new RegularPayGrantCalculator {
-//
-//        val supportClaimPeriod = SupportClaimPeriod(
-//          LocalDate.of(2020, 11, 1),
-//          LocalDate.of(2020, 11, 30)
-//        )
-//
-//        val twasList = List(
-//          TemporaryWorkingAgreementWithDates(
-//            LocalDate.of(2020, 11, 1),
-//            LocalDate.of(2020, 11, 30)
-//          )
-//        )
-//
-//        val closedList = List(
-//          BusinessClosedWithDates(
-//            LocalDate.of(2020, 11, 2),
-//            LocalDate.of(2020, 11, 15)
-//          )
-//        )
-//
-//        val pp: List[PeriodWithHours] = List(
-//          PeriodWithHours(
-//            LocalDate.of(2020, 10, 19),
-//            LocalDate.of(2020, 11, 1),
-//            10,
-//            5
-//          ),
-//          PeriodWithHours(
-//            LocalDate.of(2020, 11, 2),
-//            LocalDate.of(2020, 11, 15),
-//            90.4,
-//            30
-//          ),
-//          PeriodWithHours(
-//            LocalDate.of(2020, 11, 16),
-//            LocalDate.of(2020, 11, 29),
-//            89.5,
-//            30
-//          )
-//        )
-//
-//        val jobSupport: JobSupport = calculateJobSupport(
-//          supportClaimPeriod,
-//          pp,
-//          twasList,
-//          closedList,
-//          PayFrequency.FortNightly,
-//          650
-//        )
-//
-//        println(s"\n $jobSupport")
-//
-//        jobSupport.totalEmployeeSalary mustEqual 268.60
-//        jobSupport.totalEmployersGrant mustEqual 248.45
-//        jobSupport.totalClosed mustEqual 400
-//        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 648.45
-//
-//      }
-//
-//      "sc-9" in new RegularPayGrantCalculator {
-//
-//        val supportClaimPeriod = SupportClaimPeriod(
-//          LocalDate.of(2020, 11, 1),
-//          LocalDate.of(2020, 11, 30)
-//        )
-//
-//        val twasList = List(
-//          TemporaryWorkingAgreementWithDates(
-//            LocalDate.of(2020, 11, 1),
-//            LocalDate.of(2020, 11, 30)
-//          )
-//        )
-//
-//        val closedList = List(
-//          BusinessClosedWithDates(
-//            LocalDate.of(2020, 11, 2),
-//            LocalDate.of(2020, 11, 11)
-//          ),
-//          BusinessClosedWithDates(
-//            LocalDate.of(2020, 11, 18),
-//            LocalDate.of(2020, 11, 24)
-//          )
-//        )
-//
-//        val pp: List[PeriodWithHours] = List(
-//          PeriodWithHours(
-//            LocalDate.of(2020, 10, 29),
-//            LocalDate.of(2020, 11, 11),
-//            10,
-//            4.5
-//          ),
-//          PeriodWithHours(
-//            LocalDate.of(2020, 11, 12),
-//            LocalDate.of(2020, 11, 25),
-//            38.9,
-//            6
-//          )
-//        )
-//
-//        val jobSupport: JobSupport = calculateJobSupport(
-//          supportClaimPeriod,
-//          pp,
-//          twasList,
-//          closedList,
-//          PayFrequency.FortNightly,
-//          1410.10
-//        )
-//
-//        println(s"\n $jobSupport")
-//
-//        jobSupport.totalEmployeeSalary mustEqual 268.60
-//        jobSupport.totalEmployersGrant mustEqual 248.45
-//        jobSupport.totalClosed mustEqual 400
-//        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 648.45
-//
-//      }
-//
-//      "sc-10" in new RegularPayGrantCalculator {
-//
-//        val supportClaimPeriod = SupportClaimPeriod(
-//          LocalDate.of(2020, 11, 1),
-//          LocalDate.of(2020, 11, 30)
-//        )
-//
-//        val twasList = List(
-//          TemporaryWorkingAgreementWithDates(
-//            LocalDate.of(2020, 11, 1),
-//            LocalDate.of(2020, 11, 30)
-//          )
-//        )
-//
-//        val closedList = List(
-//          BusinessClosedWithDates(
-//            LocalDate.of(2020, 11, 2),
-//            LocalDate.of(2020, 11, 11)
-//          ),
-//          BusinessClosedWithDates(
-//            LocalDate.of(2020, 11, 18),
-//            LocalDate.of(2020, 11, 24)
-//          )
-//        )
-//
-//        val pp: List[PeriodWithHours] = List(
-//          PeriodWithHours(
-//            LocalDate.of(2020, 10, 29),
-//            LocalDate.of(2020, 11, 11),
-//            10,
-//            4.5
-//          ),
-//          PeriodWithHours(
-//            LocalDate.of(2020, 11, 12),
-//            LocalDate.of(2020, 11, 25),
-//            38.9,
-//            6
-//          )
-//        )
-//
-//        val jobSupport: JobSupport = calculateJobSupport(
-//          supportClaimPeriod,
-//          pp,
-//          twasList,
-//          closedList,
-//          PayFrequency.FortNightly,
-//          1439.10
-//        )
-//
-//        println(s"\n $jobSupport")
-//
-//        jobSupport.totalEmployeeSalary mustEqual 268.60
-//        jobSupport.totalEmployersGrant mustEqual 248.45
-//        jobSupport.totalClosed mustEqual 400
-//        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 648.45
-//
-//      }
-//
-//    }
 
     "computing the JSS-O on weekly freq" should {
 
@@ -399,8 +163,6 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           350
         )
 
-        println(s"\n Job Support is : $jobSupport")
-
         jobSupport.totalEmployeeSalary mustEqual 252.51000000000002
         jobSupport.totalEmployersGrant mustEqual 233.57
         jobSupport.totalClosed mustEqual 533.3333333333334
@@ -460,8 +222,6 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           525.56
         )
 
-        println(s"\n Job Support is : $jobSupport")
-
         jobSupport.totalEmployeeSalary mustEqual 0.0
         jobSupport.totalEmployersGrant mustEqual 0.0
         jobSupport.totalClosed mustEqual 1401.493333333333
@@ -520,8 +280,6 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           PayFrequency.Weekly,
           623.21
         )
-
-        println(s"\n Job Support is : $jobSupport")
 
         jobSupport.totalEmployeeSalary mustEqual 0.0
         jobSupport.totalEmployersGrant mustEqual 0.0
@@ -586,8 +344,6 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           456.66
         )
 
-        println(s"\n Job Support is : $jobSupport")
-
         jobSupport.totalEmployeeSalary mustEqual 486.86
         jobSupport.totalEmployersGrant mustEqual 450.35
         jobSupport.totalClosed mustEqual 0
@@ -644,8 +400,6 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           PayFrequency.Weekly,
           700.10
         )
-
-        println(s"\n Job Support is : $jobSupport")
 
         jobSupport.totalEmployeeSalary mustEqual 248.33
         jobSupport.totalEmployersGrant mustEqual 229.70
@@ -716,8 +470,6 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           690.12
         )
 
-        println(s"\n Job Support is : $jobSupport")
-
         jobSupport.totalEmployeeSalary mustEqual 307.13
         jobSupport.totalEmployersGrant mustEqual 284.09000000000003
         jobSupport.totalClosed mustEqual 460.08
@@ -784,8 +536,6 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           PayFrequency.Weekly,
           500
         )
-
-        println(s"\n Job Support is : $jobSupport")
 
         jobSupport.totalEmployeeSalary mustEqual 190.5
         jobSupport.totalEmployersGrant mustEqual 176.20
@@ -854,8 +604,6 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           1000
         )
 
-        println(s"\n Job Support is : $jobSupport")
-
         jobSupport.totalEmployeeSalary mustEqual 274.0
         jobSupport.totalEmployersGrant mustEqual 253.44
         jobSupport.totalClosed mustEqual 1232.8799999999999
@@ -922,8 +670,6 @@ class RegularPayGrantCalculatorSpec extends SpecBase {
           PayFrequency.Weekly,
           500
         )
-
-        println(s"\n Job Support is : $jobSupport")
 
         jobSupport.totalEmployeeSalary mustEqual 349.24
         jobSupport.totalEmployersGrant mustEqual 323.03999999999996

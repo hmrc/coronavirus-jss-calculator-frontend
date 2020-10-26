@@ -33,22 +33,23 @@ class SelectWorkPeriodsControllerSpec extends SpecBaseControllerSpecs {
 
   val view = app.injector.instanceOf[SelectWorkPeriodsView]
 
-  private lazy val selectWorkPeriodsRouteGet = routes.SelectWorkPeriodsController.onPageLoad().url
+  private lazy val selectWorkPeriodsRouteGet  = routes.SelectWorkPeriodsController.onPageLoad().url
   private lazy val selectWorkPeriodsRoutePost = routes.SelectWorkPeriodsController.onSubmit().url
 
   private val formProvider = new SelectWorkPeriodsFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
-  val claimPeriod = ClaimPeriod.Nov2020
+  val claimPeriod  = ClaimPeriod.Nov2020
   val payFrequency = PayFrequency.FortNightly
-  val lastPayDate = "2020-10-31"
+  val lastPayDate  = "2020-10-31"
 
   val userAnswers = UserAnswers(
     userAnswersId,
     Json.obj(
       ClaimPeriodPage.toString  -> JsString(claimPeriod),
       PayFrequencyPage.toString -> JsString(payFrequency),
-      LastPayDatePage.toString  -> JsString(lastPayDate))
+      LastPayDatePage.toString  -> JsString(lastPayDate)
+    )
   )
 
   val period1 = Period(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 14))

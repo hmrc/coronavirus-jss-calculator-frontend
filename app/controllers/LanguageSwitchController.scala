@@ -23,11 +23,12 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
-class LanguageSwitchController @Inject()(
+class LanguageSwitchController @Inject() (
   appConfig: FrontendAppConfig,
   override implicit val messagesApi: MessagesApi,
   val controllerComponents: MessagesControllerComponents
-) extends FrontendBaseController with I18nSupport {
+) extends FrontendBaseController
+    with I18nSupport {
 
   private def fallbackURL: String = routes.StartPageController.onPageLoad().url
 

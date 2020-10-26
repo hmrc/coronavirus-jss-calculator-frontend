@@ -25,43 +25,32 @@ import pages._
 import play.api.mvc.Call
 
 @Singleton
-class Navigator @Inject()() {
+class Navigator @Inject() () {
 
   private val normalRoutes: Page => UserAnswers => Call = {
-    case ClaimPeriodPage =>
-      _ =>
-        routes.PayFrequencyController.onPageLoad()
-    case PayFrequencyPage =>
-      _ =>
-        routes.LastPayDateController.onPageLoad()
-    case PayMethodPage =>
-      userAnswers =>
-        payMethodRoutes(userAnswers)
-    case LastPayDatePage =>
-      userAnswers =>
-        lastPayDateRoute(userAnswers)
-    case EndPayDatePage =>
-      _ =>
-        routes.PayMethodController.onPageLoad()
-    case PayPeriodsPage =>
-      userAnswers =>
-        payPeriodsRoute(userAnswers)
+    case ClaimPeriodPage       =>
+      _ => routes.PayFrequencyController.onPageLoad()
+    case PayFrequencyPage      =>
+      _ => routes.LastPayDateController.onPageLoad()
+    case PayMethodPage         =>
+      userAnswers => payMethodRoutes(userAnswers)
+    case LastPayDatePage       =>
+      userAnswers => lastPayDateRoute(userAnswers)
+    case EndPayDatePage        =>
+      _ => routes.PayMethodController.onPageLoad()
+    case PayPeriodsPage        =>
+      userAnswers => payPeriodsRoute(userAnswers)
     case SelectWorkPeriodsPage =>
-      _ =>
-        routes.RegularPayAmountController.onPageLoad()
+      _ => routes.RegularPayAmountController.onPageLoad()
 
-    case RegularPayAmountPage =>
-      _ =>
-        routes.TemporaryWorkingAgreementController.onPageLoad()
+    case RegularPayAmountPage          =>
+      _ => routes.TemporaryWorkingAgreementController.onPageLoad()
     case TemporaryWorkingAgreementPage =>
-      _ =>
-        routes.BusinessClosedController.onPageLoad()
-    case BusinessClosedPage =>
-      _ =>
-        routes.UsualAndActualHoursController.onPageLoad(1)
-    case _ =>
-      _ =>
-        routes.StartPageController.onPageLoad()
+      _ => routes.BusinessClosedController.onPageLoad()
+    case BusinessClosedPage            =>
+      _ => routes.UsualAndActualHoursController.onPageLoad(1)
+    case _                             =>
+      _ => routes.StartPageController.onPageLoad()
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, idx: Option[Int] = None): Call =
@@ -69,9 +58,8 @@ class Navigator @Inject()() {
 
   private val idxRoutes: Page => (Int, UserAnswers) => Call = {
     case UsualAndActualHoursPage => selectUsualAndActualHoursPageRoutes
-    case _ =>
-      (_, _) =>
-        routes.StartPageController.onPageLoad()
+    case _                       =>
+      (_, _) => routes.StartPageController.onPageLoad()
   }
 
   private def payPeriodsRoute(userAnswers: UserAnswers): Call =
@@ -92,8 +80,8 @@ class Navigator @Inject()() {
     userAnswers.get(SelectWorkPeriodsPage) match {
       case Some(workPeriods) if workPeriods.isDefinedAt(previousIdx) =>
         routes.UsualAndActualHoursController.onPageLoad(previousIdx + 1)
-      case Some(_) => routes.ConfirmationController.onPageLoad()
-      case _       => routes.SelectWorkPeriodsController.onPageLoad()
+      case Some(_)                                                   => routes.ConfirmationController.onPageLoad()
+      case _                                                         => routes.SelectWorkPeriodsController.onPageLoad()
     }
   }
 
