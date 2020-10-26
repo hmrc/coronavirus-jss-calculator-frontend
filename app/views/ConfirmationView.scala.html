@@ -83,44 +83,59 @@
 
     @h2(Html(messages("confirmation.breakdown.header")), classes = Some("govuk-heading-m"))
 
-    @p(Html(Messages("confirmation.breakdown.p1")))
+    @p(Html(Messages("confirmation.breakdown.p1", jobSupport.referenceSalary)))
     @p(Html(Messages("confirmation.breakdown.p2", <a href="" class="govuk-link">{Messages("confirmation.breakdown.p2.guidance")}</a>)))
 
     @for(gfp <- jobSupport.periodSupport) {
         @h3(Html(messages(
             "confirmation.breakdown.h3",
-            dateToStringWithoutYear(LocalDate.of(1800, 1, 1)),
-            dateToString(LocalDate.of(1800, 1, 1))
+            dateToStringWithoutYear(gfp.startDate),
+            dateToString(gfp.endDate)
         )))
+
         @p{
             <span class="govuk-!-font-weight-bold">@messages("confirmation.breakdown.h3.p1")</span>
          }
 
         <ul class="govuk-list govuk-list--number">
-            <li>@messages("confirmation.breakdown.h3.p1.l1", "1")</li>
-            <li>@messages("confirmation.breakdown.h3.p1.l2", "1")</li>
-            <li>@messages("confirmation.breakdown.h3.p1.l3", "1")</li>
-            <li>@messages("confirmation.breakdown.h3.p1.l4", "1")</li>
-            <li>@messages("confirmation.breakdown.h3.p1.l5", "1")</li>
-            <li>@messages("confirmation.breakdown.h3.p1.l6", "1")</li>
+            <li>@messages("confirmation.breakdown.h3.open.p1.l1", jobSupport.referenceSalary)</li>
+            <li>@messages("confirmation.breakdown.h3.open.p1.l2", gfp.daysInPeriod)</li>
+            <li>@messages("confirmation.breakdown.h3.open.p1.l3", gfp.open.twaDays)</li>
+            <li>@messages("confirmation.breakdown.h3.open.p1.l4", gfp.open.usualHours)</li>
+            <li>@messages("confirmation.breakdown.h3.open.p1.l5", gfp.open.usualHours - gfp.open.actualHours)</li>
+            <li>@messages("confirmation.breakdown.h3.open.p1.l6", gfp.open.salary)</li>
         </ul>
 
-        @p(Html(Messages("confirmation.breakdown.p2")))
+        @p{
+           @messages("confirmation.breakdown.h3.p3")
+        }
+
 
         @p{
-            <span class="govuk-!-font-weight-bold">@messages("confirmation.breakdown.h3.p2")</span>
+        <span class="govuk-!-font-weight-bold">@messages("confirmation.breakdown.h3.p4")</span>
         }
 
         <ul class="govuk-list govuk-list--number">
-            <li>@messages("confirmation.breakdown.h3.p2.l1", "1")</li>
-            <li>@messages("confirmation.breakdown.h3.p2.l2", "1")</li>
-            <li>@messages("confirmation.breakdown.h3.p2.l3", "1")</li>
+            <li>@messages("confirmation.breakdown.h3.open.p4.l1", gfp.open.salary)</li>
+            <li>@messages("confirmation.breakdown.h3.open.p4.l2")</li>
+            <li>@messages("confirmation.breakdown.h3.open.p4.l3", gfp.open.grant)</li>
         </ul>
 
-    }
+        @p{
+        <span class="govuk-!-font-weight-bold">@messages("confirmation.breakdown.h3.p5")</span>
+        }
 
-    @p(Html(Messages("confirmation.breakdown.total.to.pay.during.business.closed", "1")))
-    @p(Html(Messages("confirmation.breakdown.amount.to.pay", "1")))
+        <ul class="govuk-list govuk-list--number">
+            <li>@messages("confirmation.breakdown.h3.closed.p5.l1", jobSupport.referenceSalary)</li>
+            <li>@messages("confirmation.breakdown.h3.closed.p5.l2", gfp.closed.closedDays)</li>
+            <li>@messages("confirmation.breakdown.h3.closed.p5.l3", gfp.closed.closedDays)</li>
+            <li>@messages("confirmation.breakdown.h3.closed.p5.l4")</li>
+            <li>@messages("confirmation.breakdown.h3.closed.p5.l5", gfp.closed.grant)</li>
+        </ul>
+
+        @p{@messages("confirmation.breakdown.h3.closed.p6", gfp.closed.grant)}
+        @p{@messages("confirmation.breakdown.h3.closed.p7", gfp.closed.grant)}
+    }
 
     @p(Html(link(appConfig.webchatHelpUrl, "confirmation.webchat.label", true)))
     @p(Html(link(routes.FeedbackSurveyController.startSurvey(), "confirmation.feedbackSurvey.label", true)))
