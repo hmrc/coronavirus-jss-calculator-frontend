@@ -48,7 +48,7 @@ trait RegularPayGrantCalculator {
       PeriodSupport(
         payPeriod.startDate,
         payPeriod.endDate,
-        qualifyingClaimDays(payPeriod, supportClaimPeriod),
+        daysInPeriod(payFrequency, payPeriod),
         calculateJobSupportOpen(
           supportClaimPeriod,
           payPeriod,
