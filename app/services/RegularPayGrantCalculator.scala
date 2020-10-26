@@ -22,32 +22,11 @@ import java.time.{LocalDate, Month}
 
 import models.PayFrequency.{FortNightly, FourWeekly, Monthly, Weekly}
 import models.PeriodGrant.OpenPeriodGrant
-import models.{BusinessClosedWithDates, Grant, JobSupport, JobSupportClosed, JobSupportOpen, PayFrequency, PeriodWithHours, SupportClaimPeriod, TemporaryWorkingAgreementWithDates, UsualAndActualHours}
+import models.{BusinessClosedWithDates, Grant, JobSupport, JobSupportClosed, JobSupportOpen, PayFrequency, PeriodSupport, PeriodWithHours, SupportClaimPeriod, TemporaryWorkingAgreementWithDates, UsualAndActualHours}
 import services.RegularPayGrantCalculator.partialPeriodPayCaps
 
 import scala.collection.mutable.ListBuffer
 import scala.math.BigDecimal.{RoundingMode, double2bigDecimal}
-
-case class PeriodSupport(
-  open: JobSupportOpen,
-  closed: JobSupportClosed
-)
-
-/*
-  //TODO: draft implementation of the calculator - needs refactoring and re-design
- */
-object PeriodSupport {
-  implicit class PeriodSupportOps(private val periodSupports: List[PeriodSupport]) {
-    def totalEmployeeSalary: Double =
-      periodSupports.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.salary)
-
-    def totalEmployersGrant: Double = periodSupports.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.grant)
-
-    def totalClosed: Double = periodSupports.map(s => s.closed).foldLeft(0.0)((acc, f) => acc + f.f)
-
-    def totalGrant: Double = totalEmployersGrant + totalClosed
-  }
-}
 
 trait RegularPayGrantCalculator {
 
@@ -67,6 +46,9 @@ trait RegularPayGrantCalculator {
     val results: List[PeriodSupport] = payPeriods.map { payPeriod =>
       //TODO: refactor: assess whether this pay period needs to run both calculation (efficiency)
       PeriodSupport(
+        payPeriod.startDate,
+        payPeriod.endDate,
+        qualifyingClaimDays(payPeriod, supportClaimPeriod),
         calculateJobSupportOpen(
           supportClaimPeriod,
           payPeriod,
@@ -87,9 +69,7 @@ trait RegularPayGrantCalculator {
 
     JobSupport(
       results,
-      false, //FIXME
-      results.totalEmployeeSalary,
-      results.totalGrant
+      referencePay
     )
   }
 
@@ -121,7 +101,7 @@ trait RegularPayGrantCalculator {
 
     val closed = step5 * (totalClosedDaysInPP / step2) * 2.0 / 3.0
 
-    JobSupportClosed(closed)
+    JobSupportClosed(totalClosedDaysInPP.toInt, closed) //FIXME: Double to Int
 
   }
 
@@ -236,10 +216,10 @@ trait RegularPayGrantCalculator {
     referencePay: Double
   ): JobSupportOpen =
     if (twas.isEmpty) {
-      JobSupportOpen(0.0, 0.0)
+      JobSupportOpen.noSupport
     } else if (ppCoveredByBC(periodWithHours, bcs)) {
-      JobSupportOpen(0.0, 0.0)
-    } else {
+      JobSupportOpen.noSupport
+    } else
       (hasOnlyTwaPeriods(bcs), hasOverlappingTwaAndBusinessClosedPeriods(twas, bcs)) match {
         case (true, _) =>
           val numberOfDaysInTwa = totalNumberOfTwaDaysInPayPeriod(periodWithHours, twas)
@@ -265,6 +245,9 @@ trait RegularPayGrantCalculator {
           val employersGrant = employeeSalary * (61.67 / 66.67)
 
           JobSupportOpen(
+            numberOfDaysInTwa,
+            periodWithHours.usualHours,
+            periodWithHours.actualHours,
             BigDecimal(employeeSalary).setScale(2, RoundingMode.UP).toDouble,
             BigDecimal(employersGrant).setScale(2, RoundingMode.UP).toDouble
           )
@@ -290,6 +273,9 @@ trait RegularPayGrantCalculator {
           val employersGrant = employeeSalary * (61.67 / 66.67)
 
           JobSupportOpen(
+            s,
+            periodWithHours.usualHours,
+            periodWithHours.actualHours,
             BigDecimal(employeeSalary).setScale(2, RoundingMode.UP).toDouble,
             BigDecimal(employersGrant).setScale(2, RoundingMode.UP).toDouble
           )
@@ -319,12 +305,14 @@ trait RegularPayGrantCalculator {
           val employersGrant = employeeSalary * (61.67 / 66.67)
 
           JobSupportOpen(
+            s,
+            periodWithHours.usualHours,
+            periodWithHours.actualHours,
             BigDecimal(employeeSalary).setScale(2, RoundingMode.UP).toDouble,
             BigDecimal(employersGrant).setScale(2, RoundingMode.UP).toDouble
           )
 
       }
-    }
 
   def twaSurgery(
     temporaryWorkingAgreementWithDates: List[TemporaryWorkingAgreementWithDates],
