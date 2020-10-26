@@ -46,15 +46,30 @@ class ConfirmationController @Inject() (
     val regularPay          = request.userAnswers.get(RegularPayAmountPage)
     val payFrequency        = request.userAnswers.get(PayFrequencyPage)
     val supportClaimPeriod  = request.userAnswers.get(ClaimPeriodPage)
+    val stwaDates           = request.userAnswers.getList(ShortTermWorkingAgreementPeriodPage).toList
+    val bcDates             = request.userAnswers.getList(BusinessClosedPeriodsPage).toList
 
-    (workPeriods, usualAndActualHours, regularPay, payFrequency, supportClaimPeriod) match {
-      case (Some(wps), hours, Some(rp), Some(pf), Some(cp)) =>
-        val grant = calculateRegularPayGrant(periodsWithHours(wps, hours), rp.value, cp.supportClaimPeriod, pf)
-        Ok(view(grant, appConfig.calculatorVersion))
+    (workPeriods, usualAndActualHours, payFrequency, supportClaimPeriod, regularPay) match {
+      case (Some(wps), hours, Some(pf), Some(cp), Some(rp)) =>
+        val grant = calculateJobSupport(
+          cp.supportClaimPeriod,
+          periodsWithHours(wps, hours),
+          stwaDates,
+          bcDates,
+          pf,
+          rp.value.toDouble
+        )
+        if (grant.isEligible) {
+          Ok(view(grant, appConfig.calculatorVersion))
+        } else {
+          Ok(view(grant, appConfig.calculatorVersion))
+          //Redirect(routes.YouAreNotEligibleController.onPageLoad())
+        }
       case _                                                =>
         Logger.warn("expected data is missing from userAnswers, redirecting user to start page")
         Redirect(routes.ClaimPeriodController.onPageLoad())
     }
+
   }
 
   private def periodsWithHours(periods: List[Period], hours: Seq[UsualAndActualHours]) =

@@ -20,7 +20,7 @@ import java.time.{LocalDate, ZoneOffset}
 
 import base.SpecBaseControllerSpecs
 import forms.BusinessClosedPeriodsFormProvider
-import models.{BusinessClosedPeriods, UserAnswers}
+import models.{BusinessClosedWithDates, UserAnswers}
 import pages.BusinessClosedPeriodsPage
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
@@ -66,7 +66,7 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
     view
   )
 
-  val bcPeriods = BusinessClosedPeriods(validAnswer, validAnswer.plusDays(1))
+  val bcPeriods = BusinessClosedWithDates(validAnswer, validAnswer.plusDays(1))
 
   "BusinessClosedPeriods Controller" must {
 

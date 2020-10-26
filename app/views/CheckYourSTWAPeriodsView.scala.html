@@ -25,9 +25,9 @@
         link: components.link
 )
 
-@(swtaPeriods: Seq[ShortTermWorkingAgreementPeriod])(implicit request: Request[_], messages: Messages)
+@(swtaPeriods: Seq[TemporaryWorkingAgreementWithDates])(implicit request: Request[_], messages: Messages)
 
-    @checkAnswerBlock(id: String, stwaWithIndex: (ShortTermWorkingAgreementPeriod, Int)) = {
+    @checkAnswerBlock(id: String, stwaWithIndex: (TemporaryWorkingAgreementWithDates, Int)) = {
         <dl class="app-check-your-answers app-check-your-answers--long margin-top-30 margin-bottom-20">
             <div class="app-check-your-answers__contents">
                 <dd class="app-check-your-answers__answer" id="@stwaWithIndex._2">

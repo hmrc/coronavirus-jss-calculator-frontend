@@ -17,8 +17,6 @@
 @import java.time.LocalDate
 @import config.FrontendAppConfig
 @import viewmodels.ConfirmationBreakdownHelper
-@import java.time.LocalDate
-@import java.time.format.DateTimeFormatter
 
 @this(
         govukLayout: templates.GovukLayoutWrapper,
@@ -33,7 +31,7 @@
         breakdownHelper: ConfirmationBreakdownHelper
 )
 
-@(grant: Grant, calculatorVersion: String)(implicit request: Request[_], messages: Messages)
+@(grant: JobSupport, calculatorVersion: String)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(pageTitle = Some(titleNoForm("confirmation.title"))) {
 
@@ -52,16 +50,17 @@
         @p {
             <span class="govuk-!-font-weight-bold">@messages("confirmation.jss.open.label")</span>
         }
-        @p(Html(Messages("confirmation.jss.open.p1", "1.00")))
-        @p(Html(Messages("confirmation.jss.open.p2", "1.00")))
-        @p(Html(Messages("confirmation.jss.open.p3", "1.00")))
+
+        @p(Html(Messages("confirmation.jss.open.p1", "&pound;"+ grant.totalSalaryToPayEmployee.formatted("%.2f"))))
+        @p(Html(Messages("confirmation.jss.open.p2", "&pound;"+ grant.totalGrant.formatted("%.2f"))))
+        @p(Html(Messages("confirmation.jss.open.p3", "&pound;"+ grant.totalSalaryToPayEmployee.formatted("%.2f"))))
 
         @p {
             <span class="govuk-!-font-weight-bold">@messages("confirmation.jss.closed.label")</span>
         }
-        @p(Html(Messages("confirmation.jss.closed.p1", "1.00")))
-        @p(Html(Messages("confirmation.jss.closed.p2", "1.00")))
-        @p(Html(Messages("confirmation.jss.closed.p3", "1.00")))
+        @p(Html(Messages("confirmation.jss.closed.p1", "&pound;"+ grant.totalSalaryToPayEmployee.formatted("%.2f"))))
+        @p(Html(Messages("confirmation.jss.closed.p2", "&pound;"+ grant.totalGrant.formatted("%.2f"))))
+        @p(Html(Messages("confirmation.jss.closed.p3", "&pound;"+ grant.totalSalaryToPayEmployee.formatted("%.2f"))))
     </div>
 
     @p {
@@ -88,8 +87,12 @@
     @p(Html(Messages("confirmation.breakdown.p1")))
     @p(Html(Messages("confirmation.breakdown.p2", <a href="" class="govuk-link">{Messages("confirmation.breakdown.p2.guidance")}</a>)))
 
-    @for(gfp <- grant.grantForPeriods) {
-        @h3(Html(breakdownHelper.breakdownH3(gfp)))
+    @for(gfp <- grant.periodSupport) {
+        @h3(Html(messages(
+            "confirmation.breakdown.h3",
+            dateToStringWithoutYear(LocalDate.of(1800, 1, 1)),
+            dateToString(LocalDate.of(1800, 1, 1))
+        )))
         @p{
             <span class="govuk-!-font-weight-bold">@messages("confirmation.breakdown.h3.p1")</span>
          }

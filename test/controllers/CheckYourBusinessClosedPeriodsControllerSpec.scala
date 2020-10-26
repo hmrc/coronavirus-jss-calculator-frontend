@@ -19,7 +19,7 @@ package controllers
 import java.time.LocalDate
 
 import base.SpecBaseControllerSpecs
-import models.{BusinessClosedPeriods, UserAnswers}
+import models.{BusinessClosedWithDates, UserAnswers}
 import pages.BusinessClosedPeriodsPage
 import play.api.test.Helpers._
 import views.html.CheckYourBusinessClosedPeriodsView
@@ -45,7 +45,7 @@ class CheckYourBusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpe
   val startDate = LocalDate.now()
   val endDate   = LocalDate.now().plusDays(10)
 
-  val bcPeriods = List(BusinessClosedPeriods(startDate, endDate))
+  val bcPeriods = List(BusinessClosedWithDates(startDate, endDate))
 
   "CheckYourSTWAPeriods Controller" must {
 

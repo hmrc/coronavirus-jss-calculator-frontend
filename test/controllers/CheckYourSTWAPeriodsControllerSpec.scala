@@ -19,7 +19,7 @@ package controllers
 import java.time.LocalDate
 
 import base.SpecBaseControllerSpecs
-import models.{ShortTermWorkingAgreementPeriod, UserAnswers}
+import models.{TemporaryWorkingAgreementWithDates, UserAnswers}
 import pages.ShortTermWorkingAgreementPeriodPage
 import play.api.test.Helpers._
 import views.html.CheckYourSTWAPeriodsView
@@ -44,7 +44,7 @@ class CheckYourSTWAPeriodsControllerSpec extends SpecBaseControllerSpecs {
   val startDate = LocalDate.now()
   val endDate   = LocalDate.now().plusDays(10)
 
-  val stwaPeriods = List(ShortTermWorkingAgreementPeriod(startDate, endDate))
+  val stwaPeriods = List(TemporaryWorkingAgreementWithDates(startDate, endDate))
 
   "CheckYourSTWAPeriods Controller" must {
 
