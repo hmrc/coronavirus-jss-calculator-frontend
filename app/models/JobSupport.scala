@@ -61,6 +61,7 @@ object JobSupport {
       jobSupport.periodSupport.map(support => support.closed).foldLeft(0.0)((acc, f) => acc + f.grant)
 
     def totalGrant: Double = totalEmployersGrant + totalClosed
+
   }
 
 }
