@@ -31,18 +31,18 @@
         breakdownHelper: ConfirmationBreakdownHelper
 )
 
-@(grant: JobSupport, calculatorVersion: String)(implicit request: Request[_], messages: Messages)
+@(jobSupport: JobSupport, calculatorVersion: String)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(pageTitle = Some(titleNoForm("confirmation.title"))) {
 
-    @if(!grant.isEligible) {
+    @if(!jobSupport.isEligible) {
         @p(Html(messages("confirmation.confirmation.p1.noteligible")))
     }
 
     @confirmation {
         @h1(Html(messages("confirmation.confirmation.p1")), classes = Some(""))
         <div class="grant-heading">
-            <p class="govuk-panel__title">&pound;@grant.totalGrant.formatted("%.2f")</p>
+            <p class="govuk-panel__title">&pound;@jobSupport.totalGrantEligible.formatted("%.2f")</p>
         </div>
     }
 
@@ -51,16 +51,16 @@
             <span class="govuk-!-font-weight-bold">@messages("confirmation.jss.open.label")</span>
         }
 
-        @p(Html(Messages("confirmation.jss.open.p1", "&pound;"+ grant.totalSalaryToPayEmployee.formatted("%.2f"))))
-        @p(Html(Messages("confirmation.jss.open.p2", "&pound;"+ grant.totalGrant.formatted("%.2f"))))
-        @p(Html(Messages("confirmation.jss.open.p3", "&pound;"+ grant.totalSalaryToPayEmployee.formatted("%.2f"))))
+        @p(Html(Messages("confirmation.jss.open.p1", "&pound;"+ jobSupport.totalSalaryToPayEmployee.formatted("%.2f"))))
+        @p(Html(Messages("confirmation.jss.open.p2", "&pound;"+ jobSupport.totalGrant.formatted("%.2f"))))
+        @p(Html(Messages("confirmation.jss.open.p3", "&pound;"+ jobSupport.totalSalaryToPayEmployee.formatted("%.2f"))))
 
         @p {
             <span class="govuk-!-font-weight-bold">@messages("confirmation.jss.closed.label")</span>
         }
-        @p(Html(Messages("confirmation.jss.closed.p1", "&pound;"+ grant.totalSalaryToPayEmployee.formatted("%.2f"))))
-        @p(Html(Messages("confirmation.jss.closed.p2", "&pound;"+ grant.totalGrant.formatted("%.2f"))))
-        @p(Html(Messages("confirmation.jss.closed.p3", "&pound;"+ grant.totalSalaryToPayEmployee.formatted("%.2f"))))
+        @p(Html(Messages("confirmation.jss.closed.p1", "&pound;"+ jobSupport.totalSalaryToPayEmployee.formatted("%.2f"))))
+        @p(Html(Messages("confirmation.jss.closed.p2", "&pound;"+ jobSupport.totalGrant.formatted("%.2f"))))
+        @p(Html(Messages("confirmation.jss.closed.p3", "&pound;"+ jobSupport.totalSalaryToPayEmployee.formatted("%.2f"))))
     </div>
 
     @p {
@@ -87,7 +87,7 @@
     @p(Html(Messages("confirmation.breakdown.p1")))
     @p(Html(Messages("confirmation.breakdown.p2", <a href="" class="govuk-link">{Messages("confirmation.breakdown.p2.guidance")}</a>)))
 
-    @for(gfp <- grant.periodSupport) {
+    @for(gfp <- jobSupport.periodSupport) {
         @h3(Html(messages(
             "confirmation.breakdown.h3",
             dateToStringWithoutYear(LocalDate.of(1800, 1, 1)),

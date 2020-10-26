@@ -47,6 +47,8 @@ object JobSupport {
     def totalEmployersGrant = jobSupport.periodSupport.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.grant)
 
     def totalClosed = jobSupport.periodSupport.map(s => s.closed).foldLeft(0.0)((acc, f) => acc + f.f)
+
+    def totalGrantEligible = totalEmployersGrant + totalClosed
   }
 
 }
