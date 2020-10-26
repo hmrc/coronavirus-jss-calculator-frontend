@@ -24,9 +24,11 @@ import pages._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.RegularPayGrantCalculator
+import services.{AuditService, RegularPayGrantCalculator}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ConfirmationView
+
+import scala.concurrent.ExecutionContext
 
 class ConfirmationController @Inject() (
   override val messagesApi: MessagesApi,
@@ -35,8 +37,10 @@ class ConfirmationController @Inject() (
   requireData: DataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
   view: ConfirmationView,
-  appConfig: FrontendAppConfig
-) extends FrontendBaseController
+  appConfig: FrontendAppConfig,
+  auditService: AuditService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport
     with RegularPayGrantCalculator {
 
@@ -51,7 +55,7 @@ class ConfirmationController @Inject() (
 
     (workPeriods, usualAndActualHours, payFrequency, supportClaimPeriod, regularPay) match {
       case (Some(wps), hours, Some(pf), Some(cp), Some(rp)) =>
-        val grant = calculateJobSupport(
+        val jobSupport = calculateJobSupport(
           cp.supportClaimPeriod,
           periodsWithHours(wps, hours),
           stwaDates,
@@ -59,7 +63,9 @@ class ConfirmationController @Inject() (
           pf,
           rp.value.toDouble
         )
-        Ok(view(grant, appConfig.calculatorVersion))
+
+        auditService.sendCalculationPerformed(request.userAnswers, jobSupport)
+        Ok(view(jobSupport, appConfig.calculatorVersion))
 
       case _ =>
         Logger.warn("expected data is missing from userAnswers, redirecting user to start page")

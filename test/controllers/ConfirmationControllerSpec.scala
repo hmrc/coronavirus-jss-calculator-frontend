@@ -74,7 +74,8 @@ class ConfirmationControllerSpec extends SpecBaseControllerSpecs {
 //        dataRequired,
 //        component,
 //        view,
-//        frontendAppConfig
+//        frontendAppConfig,
+//        audit
 //      )
 //
 //      val fakeRequest =
