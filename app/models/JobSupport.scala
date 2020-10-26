@@ -16,37 +16,51 @@
 
 package models
 
-import services.PeriodSupport
-
 final case class JobSupportOpen(
+  twaDays: Int,
+  usualHours: Double,
+  actualHours: Double,
   salary: Double,
   grant: Double
 )
 
 object JobSupportOpen {
-  val none = JobSupportOpen(0, 0)
+  val noSupport = JobSupportOpen(0, 0, 0, 0, 0)
 }
 
 final case class JobSupportClosed(
-  f: Double
+  closedDays: Int,
+  grant: Double
 )
+
+object JobSupportClosed {
+  val noSupport = JobSupportClosed(0, 0)
+}
 
 final case class JobSupport(
   periodSupport: List[PeriodSupport],
-  isEligible: Boolean,
-  totalGrant: Double,
-  totalSalaryToPayEmployee: Double
+  referenceSalary: Double
 )
 
 object JobSupport {
 
   implicit class JobSupportOps(private val jobSupport: JobSupport) {
+
+    def totalActualHours = jobSupport.periodSupport.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.actualHours)
+
+    def totalUsualHours = jobSupport.periodSupport.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.usualHours)
+
+    def isEligible: Boolean = (totalUsualHours / totalActualHours) > 0.20
+
     def totalEmployeeSalary: Double =
       jobSupport.periodSupport.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.salary)
 
-    def totalEmployersGrant = jobSupport.periodSupport.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.grant)
+    def totalEmployersGrant: Double = jobSupport.periodSupport.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.grant)
 
-    def totalClosed = jobSupport.periodSupport.map(s => s.closed).foldLeft(0.0)((acc, f) => acc + f.f)
+    def totalClosed: Double =
+      jobSupport.periodSupport.map(support => support.closed).foldLeft(0.0)((acc, f) => acc + f.grant)
+
+    def totalGrant: Double = totalEmployersGrant + totalClosed
   }
 
 }
