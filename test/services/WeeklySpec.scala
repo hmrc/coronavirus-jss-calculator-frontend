@@ -344,10 +344,10 @@ class WeeklySpec extends SpecBase {
           456.66
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 486.86
-        jobSupport.totalEmployersGrant mustEqual 450.35
+        jobSupport.totalEmployeeSalary mustEqual 386.84999999999997
+        jobSupport.totalEmployersGrant mustEqual 357.84000000000003
         jobSupport.totalClosed mustEqual 0
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 450.35
+        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 357.84000000000003
       }
 
       "scenario-6" in new RegularPayGrantCalculator {
