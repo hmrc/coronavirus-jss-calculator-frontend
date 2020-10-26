@@ -225,13 +225,13 @@ trait RegularPayGrantCalculator {
           val numberOfDaysInTwa = totalNumberOfTwaDaysInPayPeriod(periodWithHours, twas)
 
           // THis is the number of days a pay period is in the claim period
-          val step2: Int = qualifyingClaimDays(periodWithHours, supportClaimPeriod)
+          val _: Int = qualifyingClaimDays(periodWithHours, supportClaimPeriod)
 
           // This returns the number of days in the frequency
           val freqDays = daysInPeriod(payFrequency, periodWithHours)
 
           // The reference pay is adjusted to account for the number days in this pay period that span the claim period
-          val step3 = trialadjustedReferencePay(referencePay, numberOfDaysInTwa, step2)
+          val step3 = trialadjustedReferencePay(referencePay, numberOfDaysInTwa, freqDays)
 
           // This gets the cap to be applied and it is apportioned appropriately
           val step4 = referencePayCap(numberOfDaysInTwa, !(freqDays == numberOfDaysInTwa), payFrequency)
