@@ -113,8 +113,8 @@ final case class UserAnswers(
     }
   }
 
-  def getList[A](page: Gettable[A])(implicit rds: Reads[A]): Seq[A] =
-    page.path.read[Seq[A]].reads(data).getOrElse(Seq.empty)
+  def getList[A](page: Gettable[A])(implicit rds: Reads[A]): List[A] =
+    page.path.read[List[A]].reads(data).getOrElse(List.empty)
 }
 
 object UserAnswers {

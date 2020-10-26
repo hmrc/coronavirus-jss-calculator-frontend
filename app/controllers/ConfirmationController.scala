@@ -46,8 +46,8 @@ class ConfirmationController @Inject() (
     val regularPay          = request.userAnswers.get(RegularPayAmountPage)
     val payFrequency        = request.userAnswers.get(PayFrequencyPage)
     val supportClaimPeriod  = request.userAnswers.get(ClaimPeriodPage)
-    val stwaDates           = request.userAnswers.getList(ShortTermWorkingAgreementPeriodPage).toList
-    val bcDates             = request.userAnswers.getList(BusinessClosedPeriodsPage).toList
+    val stwaDates           = request.userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
+    val bcDates             = request.userAnswers.getList(BusinessClosedPeriodsPage)
 
     (workPeriods, usualAndActualHours, payFrequency, supportClaimPeriod, regularPay) match {
       case (Some(wps), hours, Some(pf), Some(cp), Some(rp)) =>
@@ -68,12 +68,13 @@ class ConfirmationController @Inject() (
 
   }
 
-  private def periodsWithHours(periods: List[Period], hours: Seq[UsualAndActualHours]) = {
-    val failSafeHours =
-      hours match {
-        case Nil => List.fill(periods.length)(UsualAndActualHours(0.0, 0.0))
-        case _   => hours
-      }
+  private def periodsWithHours(periods: List[Period], hours: List[UsualAndActualHours]) = {
+
+    val failSafeHours = if (hours.isEmpty) {
+      List.fill(periods.length)(UsualAndActualHours(0.0, 0.0))
+    } else {
+      hours
+    }
 
     periods.zip(failSafeHours).map { x =>
       PeriodWithHours(x._1.startDate, x._1.endDate, x._2.usualHours, x._2.actualHours)
