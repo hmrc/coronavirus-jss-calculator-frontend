@@ -27,7 +27,7 @@ class ConfirmationBreakdownHelper @Inject() () {
 
   def breakdownH3(grantForPeriod: OpenPeriodGrant)(implicit messages: Messages): String =
     messages(
-      if (grantForPeriod.isPartialPayPeriod) "confirmation.breakdown.h3.partial" else "confirmation.breakdown.h3",
+      "confirmation.breakdown.h3",
       dateToStringWithoutYear(grantForPeriod.period.startDate),
       dateToString(grantForPeriod.period.endDate),
       if (grantForPeriod.payFrequency == Monthly) {

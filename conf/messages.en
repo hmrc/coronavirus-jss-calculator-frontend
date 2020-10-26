@@ -337,8 +337,7 @@ confirmation.confirmation.p1.noteligible = This employee is not eligible for a c
 confirmation.breakdown.p1 = You told us this employee gets paid a [{0}] amount each time. There is a maximum amount you can claim. If this affects your claim, we’ve adjusted the calculations.
 confirmation.breakdown.p2 = Before making a claim you must check the employee has worked at least the {0}
 confirmation.breakdown.p2.guidance = minimum amount of their usual hours required under JSS Open.
-confirmation.breakdown.h3.partial = For pay period {0} to {1} (partial {2} days)
-confirmation.breakdown.h3 = For pay period {0} to {1} ( {2} days)
+confirmation.breakdown.h3 = For pay period {0} to {1}
 confirmation.breakdown.h3.p1 = To calculate the overall amount you must pay the employee for their non-working hours:
 
 confirmation.breakdown.reference-pay.p1 = Take the reference pay for the pay period:
@@ -348,16 +347,28 @@ confirmation.breakdown.reference-pay.p1.l3 =  Multiply by {0} hours worked.
 confirmation.breakdown.reference-pay.p2 = Pay for hours worked = {0}
 
 confirmation.breakdown.p3 = Then:
-confirmation.breakdown.h3.p1.l1.partial = 1. Calculate total pay for the days worked = {0} * {1} / {2} = {3}
-confirmation.breakdown.h3.p1.l1 = 1. Total pay for the days worked = {0}
-confirmation.breakdown.h3.p1.l2.partial = 2. Calculate reference pay Cap = {0} * {1} = {2}
-confirmation.breakdown.h3.p1.l2 = 2. Reference pay Cap = {0}
-confirmation.breakdown.h3.p1.l3 = 3. Minimum of the above two = {0}
-confirmation.breakdown.h3.p1.l4 = 4. Hours not worked = {0} - {1} = {2}
-confirmation.breakdown.h3.p1.grant = 5. Capped Grant = {0}* {1} / {2} = {3}
-confirmation.breakdown.h3.p1.grant.eligible = 6. Grant eligible = {0} / {1} = {2}
+confirmation.breakdown.h3.p1.l1.partial = Start with {0} (the reference salary for the pay period).
+confirmation.breakdown.h3.p1.l1 = Start with {0} (the reference salary for the pay period).
+confirmation.breakdown.h3.p1.l2.partial = Divide by {0} (the number of calendar days in the pay period).
+confirmation.breakdown.h3.p1.l2 = Divide by {0} (the number of calendar days in the pay period).
+confirmation.breakdown.h3.p1.l3 = Multiply by {0} (the number of days subject to a Temporary Working Agreement in the pay period).
+confirmation.breakdown.h3.p1.l4 = Divide by {0} (the number of usual hours for the JSS Open days in the pay period.
+confirmation.breakdown.h3.p1.l5 = Multiply by 25 (the number of non-working hours for the JSS Open days).
+confirmation.breakdown.h3.p1.l6 = Multiply by 66.67% = {0}
 
-confirmation.p5 = The results of the calculation rely on the accuracy of the information you entered, for which you are responsible. You cannot claim for more money than you are going to pay out under the scheme.
+confirmation.breakdown.p2 = This is made up of a 5% employer contribution, and a 61.67% government contribution which can be reclaimed.
+
+confirmation.breakdown.h3.p2 = To calculate the government contribution to the employee’s pay for their non-working hours:
+confirmation.breakdown.h3.p2.l1 = Start with {0} (the total pay for the non-working hours).
+confirmation.breakdown.h3.p2.l2 = Divide by 66.673
+confirmation.breakdown.h3.p2.l3 = Multiply by 61.67 = {0}
+
+confirmation.breakdown.total.to.pay.during.business.closed = The total amount you must pay the employee for the time the business is closed during this pay period = {0}.
+confirmation.breakdown.amount.to.pay =  Amount to pay the employee: {0}.
+
+confirmation.print.label = Print or save a copy of this page
+confirmation.webchat.label = Webchat help (opens in a new tab)
+confirmation.feedbackSurvey.label = What do you think of this service?
 
 endPayDate.title = What’s the end of the next pay period after {0}?
 endPayDate.heading = What’s the end of the next pay period after {0}?
@@ -370,11 +381,6 @@ endPayDate.error.required.two = Enter the correct date to apply for the Job Supp
 endPayDate.error.required = Enter the correct date to apply for the Job Support scheme
 endPayDate.error.invalid = Enter the correct date to apply for the Job Support scheme
 endPayDate.error.invalid.must.be.after = The end pay date must be after {0}
-
-
-confirmation.print.label = Print or save a copy of this page
-confirmation.webchat.label = Webchat help (opens in a new tab)
-confirmation.feedbackSurvey.label = What do you think of this service?
 
 comingSoon.title = We are unable to do this calculation at the moment
 comingSoon.heading = We are unable to do this calculation at the moment
