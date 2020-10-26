@@ -59,21 +59,24 @@ class ConfirmationController @Inject() (
           pf,
           rp.value.toDouble
         )
-        if (grant.isEligible) {
-          Ok(view(grant, appConfig.calculatorVersion))
-        } else {
-          Ok(view(grant, appConfig.calculatorVersion))
-          //Redirect(routes.YouAreNotEligibleController.onPageLoad())
-        }
-      case _                                                =>
+        Ok(view(grant, appConfig.calculatorVersion))
+
+      case _ =>
         Logger.warn("expected data is missing from userAnswers, redirecting user to start page")
         Redirect(routes.ClaimPeriodController.onPageLoad())
     }
 
   }
 
-  private def periodsWithHours(periods: List[Period], hours: Seq[UsualAndActualHours]) =
-    periods.zip(hours).map { x =>
+  private def periodsWithHours(periods: List[Period], hours: Seq[UsualAndActualHours]) = {
+    val failSafeHours =
+      hours match {
+        case Nil => List.fill(periods.length)(UsualAndActualHours(0.0, 0.0))
+        case _   => hours
+      }
+
+    periods.zip(failSafeHours).map { x =>
       PeriodWithHours(x._1.startDate, x._1.endDate, x._2.usualHours, x._2.actualHours)
     }
+  }
 }
