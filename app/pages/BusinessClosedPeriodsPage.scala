@@ -16,22 +16,12 @@
 
 package pages
 
-import models.{TemporaryWorkingAgreement, UserAnswers}
+import models.BusinessClosedPeriods
 import play.api.libs.json.JsPath
 
-import scala.util.Try
-
-case object TemporaryWorkingAgreementPage extends QuestionPage[TemporaryWorkingAgreement] {
+case object BusinessClosedPeriodsPage extends QuestionPage[BusinessClosedPeriods] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "temporaryWorkingAgreement"
-
-  override def cleanup(value: Option[TemporaryWorkingAgreement], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(TemporaryWorkingAgreement.No) =>
-        userAnswers.setList(ShortTermWorkingAgreementPeriodPage, Seq.empty)
-      case _                                  => super.cleanup(value, userAnswers)
-    }
-
+  override def toString: String = "businessClosedPeriods"
 }

@@ -49,36 +49,43 @@
     }
 
     <div class="govuk-inset-text">
-        @p(Html(Messages("confirmation.p1", grant.totalGrant.formatted("%.2f"))))
-        @p(Html(Messages("confirmation.p2", grant.referencePay.formatted("%.2f"))))
+        @p{<span class="govuk-!-font-weight-bold">@messages("confirmation.jss.open.label")</span>}
+        @p(Html(Messages("confirmation.jss.open.p1", "1.00")))
+        @p(Html(Messages("confirmation.jss.open.p2", "1.00")))
+        @p(Html(Messages("confirmation.jss.open.p3", "1.00")))
+
+        @p{<span class="govuk-!-font-weight-bold">@messages("confirmation.jss.closed.label")</span>}
+        @p(Html(Messages("confirmation.jss.closed.p1", "1.00")))
+        @p(Html(Messages("confirmation.jss.closed.p2", "1.00")))
+        @p(Html(Messages("confirmation.jss.closed.p3", "1.00")))
     </div>
 
     @p {
-        <span class="govuk-!-font-weight-bold">@messages("confirmation.calculated.on")</span>
-        @dateToString(LocalDate.now())
-        @Html(messages("confirmation.date.version", calculatorVersion))
+        <span class="govuk-!-font-weight-bold">@messages("confirmation.calculated.on", dateToString(LocalDate.now()))</span>
     }
 
-    @p(Html(Messages("confirmation.p4")))
+    @p(Html(Messages("confirmation.calculated.p1")))
 
     @h2(Html(messages("confirmation.nextSteps.heading")), classes = Some("govuk-heading-m"))
 
     <ul class="govuk-list govuk-list--number">
-        <li>@Html(Messages("confirmation.nextSteps.l1", <a href="" onClick="window.print()" class="govuk-link">Print or save a copy of this page</a>))</li>
+        <li>@Html(Messages("confirmation.nextSteps.l1", <a href="" onClick="window.print()" class="govuk-link">{Messages("confirmation.nextSteps.l1.print.or.save")}</a>))</li>
         <li>@messages("confirmation.nextSteps.l2")</li>
         <li>@messages("confirmation.nextSteps.l3")</li>
         <li>@messages("confirmation.nextSteps.l4")</li>
-        <li>@Html(Messages("confirmation.nextSteps.l5", <a href="" class="govuk-link">Job Support Scheme online claim service (opens in a new window or tab)</a>))</li>
+        <li>@Html(Messages("confirmation.nextSteps.l5", <a href="" class="govuk-link">{Messages("confirmation.nextSteps.l5.guidance")}</a>))</li>
+        <li>@Html(Messages("confirmation.nextSteps.l6", <a href="" class="govuk-link">{Messages("confirmation.nextSteps.l6.jss.claim.service")}</a>))</li>
     </ul>
 
     @button(messages("confirmation.startAgain"), href = Some(routes.ClaimPeriodController.onPageLoad()), classes = Some("govuk-button"))
 
-    @h2("confirmation.breakdown.header")
+    @h2(Html(messages("confirmation.breakdown.header")), classes = Some("govuk-heading-m"))
 
     @p(Html(Messages("confirmation.breakdown.p1")))
+    @p(Html(Messages("confirmation.breakdown.p2", <a href="" class="govuk-link">{Messages("confirmation.breakdown.p2.guidance")}</a>)))
 
     @for(gfp <- grant.grantForPeriods) {
-        @h2(breakdownHelper.breakdownH3(gfp))
+        @h2(Html(breakdownHelper.breakdownH3(gfp)), classes = Some("govuk-heading-m"))
         @h3(Html(Messages("confirmation.breakdown.h3.p1")))
 
         @p(Html(breakdownHelper.totalPayForTheDaysWorked(gfp)))

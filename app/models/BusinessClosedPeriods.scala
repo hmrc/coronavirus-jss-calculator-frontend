@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import models.{BusinessClosed, UserAnswers}
-import play.api.libs.json.JsPath
+import java.time.LocalDate
 
-import scala.util.Try
+import play.api.libs.json.{Format, Json}
 
-case object BusinessClosedPage extends QuestionPage[BusinessClosed] {
+case class BusinessClosedPeriods(startDate: LocalDate, endDate: LocalDate)
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "businessClosed"
-
-  override def cleanup(value: Option[BusinessClosed], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(BusinessClosed.No) =>
-        userAnswers.setList(BusinessClosedPeriodsPage, Seq.empty)
-      case _                       => super.cleanup(value, userAnswers)
-    }
+object BusinessClosedPeriods extends Enumerable.Implicits {
+  implicit val format: Format[BusinessClosedPeriods] = Json.format
 }

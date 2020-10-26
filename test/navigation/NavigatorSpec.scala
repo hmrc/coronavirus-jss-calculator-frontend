@@ -91,6 +91,18 @@ class NavigatorSpec extends SpecBase {
         ) mustBe routes.TemporaryWorkingAgreementController.onPageLoad()
       }
 
+      "go to CheckYourSTWAPeriodsController after ShortTermWorkingAgreementPeriodPage" in {
+        val userAnswers = emptyUserAnswers.setList(ShortTermWorkingAgreementPeriodPage, Seq.empty).success.value
+        navigator
+          .nextPage(
+            ShortTermWorkingAgreementPeriodPage,
+            NormalMode,
+            userAnswers,
+            Some(1)
+          ) mustBe routes.CheckYourSTWAPeriodsController
+          .onPageLoad()
+      }
+
       "go to BusinessClosedPage after TemporaryWorkingAgreementPage" in {
         val userAnswers =
           emptyUserAnswers.set(TemporaryWorkingAgreementPage, TemporaryWorkingAgreement.Yes).success.value
@@ -98,13 +110,50 @@ class NavigatorSpec extends SpecBase {
           TemporaryWorkingAgreementPage,
           NormalMode,
           userAnswers
-        ) mustBe routes.BusinessClosedController.onPageLoad()
+        ) mustBe routes.ShortTermWorkingAgreementPeriodController
+          .onPageLoad(1)
       }
 
-      "go to UsualAndActualHoursPage after BusinessClosedPage" in {
+      "go to BusinessClosedPeriodsPage after BusinessClosedPage if user says yes" in {
         val userAnswers = emptyUserAnswers.set(BusinessClosedPage, BusinessClosed.Yes).success.value
+        navigator.nextPage(BusinessClosedPage, NormalMode, userAnswers) mustBe routes.BusinessClosedPeriodsController
+          .onPageLoad(1)
+      }
+
+      "go to CheckYourBusinessClosedPeriodsController after BusinessClosedPeriodsPage" in {
+        val userAnswers = emptyUserAnswers.setList(BusinessClosedPeriodsPage, List.empty).success.value
+        navigator
+          .nextPage(
+            BusinessClosedPeriodsPage,
+            NormalMode,
+            userAnswers,
+            Some(1)
+          ) mustBe routes.CheckYourBusinessClosedPeriodsController
+          .onPageLoad()
+      }
+
+      "go to UsualAndActualHoursPage after BusinessClosedPage if user says no and SWTA is yes" in {
+        val userAnswers = emptyUserAnswers
+          .set(BusinessClosedPage, BusinessClosed.No)
+          .success
+          .value
+          .set(TemporaryWorkingAgreementPage, TemporaryWorkingAgreement.Yes)
+          .success
+          .value
         navigator.nextPage(BusinessClosedPage, NormalMode, userAnswers) mustBe routes.UsualAndActualHoursController
           .onPageLoad(1)
+      }
+
+      "go to /you-are not-eligible page after BusinessClosedPage if user says no  and also STWA is also a no" in {
+        val userAnswers = emptyUserAnswers
+          .set(BusinessClosedPage, BusinessClosed.No)
+          .success
+          .value
+          .set(TemporaryWorkingAgreementPage, TemporaryWorkingAgreement.No)
+          .success
+          .value
+        navigator.nextPage(BusinessClosedPage, NormalMode, userAnswers) mustBe routes.YouAreNotEligibleController
+          .onPageLoad()
       }
 
       "go to Confirmation after UsualAndActualHoursPage" in {

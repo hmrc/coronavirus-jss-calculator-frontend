@@ -16,21 +16,17 @@
 
 package pages
 
-import models.{BusinessClosed, UserAnswers}
-import play.api.libs.json.JsPath
+import models.ShortTermWorkingAgreementPeriod
+import pages.behaviours.PageBehaviours
 
-import scala.util.Try
+class ShortTermWorkingAgreementPeriodPageSpec extends PageBehaviours {
 
-case object BusinessClosedPage extends QuestionPage[BusinessClosed] {
+  "ShortTermWorkingAgreementPeriodPage" must {
 
-  override def path: JsPath = JsPath \ toString
+    beRetrievable[ShortTermWorkingAgreementPeriod](ShortTermWorkingAgreementPeriodPage)
 
-  override def toString: String = "businessClosed"
+    beSettable[ShortTermWorkingAgreementPeriod](ShortTermWorkingAgreementPeriodPage)
 
-  override def cleanup(value: Option[BusinessClosed], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(BusinessClosed.No) =>
-        userAnswers.setList(BusinessClosedPeriodsPage, Seq.empty)
-      case _                       => super.cleanup(value, userAnswers)
-    }
+    beRemovable[ShortTermWorkingAgreementPeriod](ShortTermWorkingAgreementPeriodPage)
+  }
 }

@@ -9,6 +9,7 @@ site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
 site.continue = Continue
+site.confirmAndContinue = Confirm and continue
 site.tryAgain = Try again
 site.startAgain = Start again
 site.confirm = Confirm
@@ -233,6 +234,7 @@ lastPayDate.error.required.all = Enter the correct date to apply for the Job Sup
 lastPayDate.error.required.two = Enter the correct date to apply for the Job Support scheme
 lastPayDate.error.required = Enter the correct date to apply for the Job Support scheme
 lastPayDate.error.invalid = Enter the correct date to apply for the Job Support scheme
+lastPayDate.error.invalid.must.be.before = The last pay date must be before {0}
 
 month.1 = January
 month.2 = February
@@ -251,17 +253,17 @@ payPeriods.title = Are these pay periods correct?
 payPeriods.heading = Are these pay periods correct?
 payPeriods.yes = Yes
 payPeriods.no = No - change details
-payPeriods.p1 = We’ve worked them out based on your answers.
+payPeriods.p1 = We’ve calculated them based on your answers:
 payPeriods.from.to = From {0} to {1}
 payPeriods.p2 = Together, they should cover your claim, though may be partly outside it.
 payPeriods.p3 = We’ve assumed for regular pay periods. The calculator cannot be used for irregular pay periods.
-payPeriods.error.required = Select an option from below
+payPeriods.error.required = Select yes if the pay periods are correct
 
 selectWorkPeriods.title = When did this employee work during the claim period?
 selectWorkPeriods.heading = When did this employee work during the claim period?
 selectWorkPeriods.hint = Select all that apply.
 selectWorkPeriods.from.to = {0} to {1}
-selectWorkPeriods.error.required = Select all that apply
+selectWorkPeriods.error.required = Select all the periods that employee has worked during the claim.
 
 regularPayAmount.title = Enter the highest recent pay amount before 19 March or 23 September 2020
 regularPayAmount.heading = Enter the highest recent pay amount before 19 March or 23 September 2020
@@ -271,6 +273,7 @@ regularPayAmount.info = If this employee started work between 1 and 18 March 202
 regularPayAmount.error.required = Enter regular pay amount
 amount.error.max.2.decimals = The amount cannot have more than two decimal places
 regularPayAmount.error.nonNumeric = Enter the regular pay amount in numbers
+regularPayAmount.error.negative = Enter a valid amount
 
 whatToInclude.summary = What should be included in this amount?
 whatToInclude.include = Include:
@@ -299,33 +302,52 @@ actualHours.p1 = Actual hours worked in this period
 actualHours.hint = Enter the actual hours that would be worked outside the scheme in decimal format, such as 124.4
 actualHours.error.nonNumeric = Enter your actual hours using numbers
 actualHours.error.required = Enter your actual hours
+usualHours.error.min = Usual hours can not be negative
+actualHours.error.min = Actual hours can not be negative
 
 confirmation.title = confirmation
 confirmation.heading = confirmation
 confirmation.confirmation.p1 = What you can claim for this employee
-confirmation.p1 = You must pay this employee {0}
-confirmation.p2 = This adds up to 77% of their usual wage ({0}).
-confirmation.p3 = To be eligible for the grant you must pay employees at least 77% of their wages for the time they are furloughed. You can choose to pay more than this but do not have to.
-confirmation.calculated.on = Calculated on:
-confirmation.date.version = (Calculator Version v{0})
-confirmation.p4 = The results of the calculation rely on the accuracy of the information you entered, for which you are responsible. You cannot claim for more money than you are going to pay out under the scheme.
+confirmation.jss.open.label = For JSS Open
+confirmation.jss.open.p1 = Amount to pay employee for hours not worked: [{0}]
+confirmation.jss.open.p2 = Amount to claim from the government for hours not worked: [{0}]
+confirmation.jss.open.p3 = This is made up of a 85% employer contribution and a 61.67% government contribution. Employees must also be paid their full contracted rate for any hours they worked.
+confirmation.jss.closed.label = For JSS Closed
+confirmation.jss.closed.p1 = Amount to pay employee for time the business was closed: [{0}]
+confirmation.jss.closed.p2 = Amount to claim from the government for time the business was closed: [{0}]
+confirmation.jss.closed.p3 = The government contributes two thirds of their normal pay. The employee must be paid at least [{0}] for their non-working hours.
+confirmation.calculated.on = Calculated on: {0}
+confirmation.calculated.p1 = The results of the calculation rely on the accuracy of the information you entered, for which you are responsible. Before you claim you must have paid the government grant and any employer contribution to the employee in full, in addition to any pay they were due for the time worked.
 confirmation.nextSteps.heading = Next steps
-confirmation.nextSteps.l1 = Print or save a copy of this page for your records.
+confirmation.nextSteps.l1 = {0} for your records.
+confirmation.nextSteps.l1.print.or.save = Print or save a copy of this page
 confirmation.nextSteps.l2 = Make a note of these results.
-confirmation.nextSteps.l3 = Use the calculator again for other employees furloughed within this claim period (1 November to 30 November) and note of the results.
+confirmation.nextSteps.l3 = Use the calculator again for other employees with a temporary working agreement during this claim period, and note the results.
 confirmation.nextSteps.l4 = Add up all the results to calculate the total amount you can claim.
-confirmation.nextSteps.l5 = Make a claim using the Job Retention Scheme online claim service (opens in a new window or tab).
+confirmation.nextSteps.l5 = Read {0}.
+confirmation.nextSteps.l5.guidance = guidance on how to claim
+confirmation.nextSteps.l6 = Make a claim using the {0}
+confirmation.nextSteps.l6.jss.claim.service = Job Support Scheme online claim service (opens in a new window or tab)
 confirmation.startAgain = Start another calculation
 
 confirmation.confirmation.p1.noteligible = This employee is not eligible for a claim
 confirmation.breakdown.header = Breakdown of calculations
 confirmation.confirmation.p1.noteligible = This employee is not eligible for a claim
-confirmation.breakdown.p1 = You told us this employee is paid a regular amount each time. We’ve calculated their daily earnings and multiplied by the number of furlough days and furlough hours in each pay period. The furlough grant is 77% of this.
-confirmation.breakdown.p2 = You can claim a maximum amount. If this affects your claim, we’ve adjusted the calculations. Work out the maximum wage amount you can claim (opens in new tab).
-confirmation.breakdown.p3 = Calculations are rounded to the nearest penny unless otherwise stated.
+
+confirmation.breakdown.p1 = You told us this employee gets paid a [{0}] amount each time. There is a maximum amount you can claim. If this affects your claim, we’ve adjusted the calculations.
+confirmation.breakdown.p2 = Before making a claim you must check the employee has worked at least the {0}
+confirmation.breakdown.p2.guidance = minimum amount of their usual hours required under JSS Open.
 confirmation.breakdown.h3.partial = For pay period {0} to {1} (partial {2} days)
 confirmation.breakdown.h3 = For pay period {0} to {1} ( {2} days)
-confirmation.breakdown.h3.p1 = Calculate pay based on days worked
+confirmation.breakdown.h3.p1 = To calculate the overall amount you must pay the employee for their non-working hours:
+
+confirmation.breakdown.reference-pay.p1 = Take the reference pay for the pay period:
+confirmation.breakdown.reference-pay.p1.l1 = Start with: {0}
+confirmation.breakdown.reference-pay.p1.l2 = Divide by the {0} usual hours worked.
+confirmation.breakdown.reference-pay.p1.l3 =  Multiply by {0} hours worked.
+confirmation.breakdown.reference-pay.p2 = Pay for hours worked = {0}
+
+confirmation.breakdown.p3 = Then:
 confirmation.breakdown.h3.p1.l1.partial = 1. Calculate total pay for the days worked = {0} * {1} / {2} = {3}
 confirmation.breakdown.h3.p1.l1 = 1. Total pay for the days worked = {0}
 confirmation.breakdown.h3.p1.l2.partial = 2. Calculate reference pay Cap = {0} * {1} = {2}
@@ -334,6 +356,8 @@ confirmation.breakdown.h3.p1.l3 = 3. Minimum of the above two = {0}
 confirmation.breakdown.h3.p1.l4 = 4. Hours not worked = {0} - {1} = {2}
 confirmation.breakdown.h3.p1.grant = 5. Capped Grant = {0}* {1} / {2} = {3}
 confirmation.breakdown.h3.p1.grant.eligible = 6. Grant eligible = {0} / {1} = {2}
+
+confirmation.p5 = The results of the calculation rely on the accuracy of the information you entered, for which you are responsible. You cannot claim for more money than you are going to pay out under the scheme.
 
 endPayDate.title = What’s the end of the next pay period after {0}?
 endPayDate.heading = What’s the end of the next pay period after {0}?
@@ -345,11 +369,78 @@ endPayDate.error.required.all = Enter the correct date to apply for the Job Supp
 endPayDate.error.required.two = Enter the correct date to apply for the Job Support scheme
 endPayDate.error.required = Enter the correct date to apply for the Job Support scheme
 endPayDate.error.invalid = Enter the correct date to apply for the Job Support scheme
+endPayDate.error.invalid.must.be.after = The end pay date must be after {0}
 
 
+confirmation.print.label = Print or save a copy of this page
+confirmation.webchat.label = Webchat help (opens in a new tab)
 confirmation.feedbackSurvey.label = What do you think of this service?
 
 comingSoon.title = We are unable to do this calculation at the moment
 comingSoon.heading = We are unable to do this calculation at the moment
 comingSoon.p = This will be available in a future version.
 comingSoon.start.another = Start another calculation
+
+temporaryWorkingAgreement.title = Did the employee have a temporary working agreement during this claim?
+temporaryWorkingAgreement.heading = Did the employee have a temporary working agreement during this claim?
+temporaryWorkingAgreement.p1 = Each temporary working agreement must cover a minimum period of seven days.
+temporaryWorkingAgreement.yes = Yes
+temporaryWorkingAgreement.no = No
+temporaryWorkingAgreement.error.required = Select Yes if the employee have a temporary working agreement during this claim
+
+businessClosed.title = Was your business closed and unable to trade during this claim?
+businessClosed.heading = Was your business closed and unable to trade during this claim?
+businessClosed.p1 = The period is known as the closed period. It covers businesses as a result of restrictions set by one of the four UK governments that legally require them to close their premises. Each closed period must cover a minimum period of seven days.
+businessClosed.yes = Yes
+businessClosed.no = No
+businessClosed.error.required = Select yes if your business closed and unable to trade during this claim
+
+shortTermWorkingAgreementPeriod.title = Enter the dates for this employee’s temporary working agreement
+shortTermWorkingAgreementPeriod.heading = Enter the dates for this employee’s temporary working agreement
+shortTermWorkingAgreementPeriod.p1 = Each temporary working agreement must cover a minimum period of seven days. Include one or more date range.
+shortTermWorkingAgreementPeriod.startDate.label = Start date
+shortTermWorkingAgreementPeriod.endDate.label = End date
+shortTermWorkingAgreementPeriod.startDate.hint = For example, 1 3 2020.
+shortTermWorkingAgreementPeriod.endDate.hint = For example, 7 3 2020.
+shortTermWorkingAgreementPeriod.error.required.all = Enter valid dates
+shortTermWorkingAgreementPeriod.error.required.two = Enter valid dates
+shortTermWorkingAgreementPeriod.error.required = Enter valid dates
+shortTermWorkingAgreementPeriod.error.invalid = Enter valid dates
+
+shortTermWorkingAgreementPeriod.addMore.heading = Do you want to add more dates ?
+shortTermWorkingAgreementPeriod.addmore.error.required = Select yes if you want to add more dates
+addMore.yes = Yes
+addMore.no = No
+businessClosedPeriods.title = Enter the periods when your business was closed
+businessClosedPeriods.heading = Enter the periods when your business was closed
+businessClosedPeriods.p1 = The period is know as the closed period. It covers businesses due to restrictions set by one of the four UK governments that legally require them to close their premises. Each closed period must cover a minimum period of seven days. Include one or more period.
+businessClosedPeriods.startDate.label = Start date
+businessClosedPeriods.endDate.label = End date
+businessClosedPeriods.startDate.hint = For example, 1 3 2020.
+businessClosedPeriods.endDate.hint = For example, 7 3 2020.
+businessClosedPeriods.error.required.all = Enter valid dates
+businessClosedPeriods.error.required.two = Enter valid dates
+businessClosedPeriods.error.required = Enter valid dates
+businessClosedPeriods.error.invalid = Enter valid dates
+
+businessClosedPeriods.addMore.heading = Do you want to add more dates ?
+businessClosedPeriods.addmore.error.required = Select yes if you want to add more dates
+
+checkYourSTWAPeriods.title = Check your answers
+checkYourSTWAPeriods.heading = Check your answers
+checkYourSTWAPeriods.startDate.row = Start date: {0}
+checkYourSTWAPeriods.endDate.row = End date: {0}
+checkYourSTWAPeriods.row.change.label = Change
+checkYourSTWAPeriods.row.remove.label = Remove
+checkYourSTWAPeriods.add-another-period = Add another period
+
+checkYourBusinessClosedPeriods.title = Check your answers
+checkYourBusinessClosedPeriods.heading = Check your answers
+checkYourBusinessClosedPeriods.startDate.row = Start date: {0}
+checkYourBusinessClosedPeriods.endDate.row = End date: {0}
+checkYourBusinessClosedPeriods.row.change.label = Change
+checkYourBusinessClosedPeriods.row.remove.label = Remove
+checkYourBusinessClosedPeriods.add-another-period = Add another period
+
+youAreNotEligible.title = You are not eligible to make a claim
+youAreNotEligible.heading = You are not eligible to make a claim

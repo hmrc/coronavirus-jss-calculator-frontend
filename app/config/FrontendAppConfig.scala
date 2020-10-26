@@ -18,8 +18,10 @@ package config
 
 import com.google.inject.{Inject, Singleton}
 import play.api.Configuration
-import play.api.mvc.RequestHeader
+import play.api.i18n.Lang
+import play.api.mvc.{Call, RequestHeader}
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
+import controllers.routes
 
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {
@@ -40,6 +42,14 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val countdown: Int = configuration.get[Int]("timeout.countdown")
 
   lazy val languageTranslationEnabled: Boolean = configuration.get[Boolean]("features.welsh-translation")
+
+  def languageMap: Map[String, Lang] = Map(
+    "english" -> Lang("en"),
+    "cymraeg" -> Lang("cy")
+  )
+
+  def routeToSwitchLanguage: String => Call =
+    (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
   lazy val cookies: String         = host + configuration.get[String]("urls.footer.cookies")
   lazy val privacy: String         = host + configuration.get[String]("urls.footer.privacy")

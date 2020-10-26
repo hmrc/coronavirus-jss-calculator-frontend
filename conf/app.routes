@@ -1,52 +1,67 @@
 # microservice specific routes
 
-GET         /                                   controllers.StartPageController.onPageLoad
+GET         /                                                       controllers.StartPageController.onPageLoad
 
-GET         /assets/*file                       controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                                           controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /language/:lang                     controllers.LanguageSwitchController.switchToLanguage(lang: Language)
+GET         /language/:lang                                         controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET         /this-service-has-been-reset        controllers.SessionExpiredController.onPageLoad
+GET         /this-service-has-been-reset                            controllers.SessionExpiredController.onPageLoad
 
-GET         /accessibility-statement            controllers.AccessibilityStatementController.onPageLoad
+GET         /accessibility-statement                                controllers.AccessibilityStatementController.onPageLoad
 
-GET         /start-survey                       controllers.FeedbackSurveyController.startSurvey()
+GET         /start-survey                                           controllers.FeedbackSurveyController.startSurvey()
 
-GET         /claim-period                       controllers.ClaimPeriodController.onPageLoad
-POST        /claim-period                       controllers.ClaimPeriodController.onSubmit
+GET         /claim-period                                           controllers.ClaimPeriodController.onPageLoad
+POST        /claim-period                                           controllers.ClaimPeriodController.onSubmit
 
-GET         /start                              controllers.StartPageController.onPageLoad()
+GET         /start                                                  controllers.StartPageController.onPageLoad()
 
-GET         /pay-frequency                      controllers.PayFrequencyController.onPageLoad()
-POST        /pay-frequency                      controllers.PayFrequencyController.onSubmit()
+GET         /pay-frequency                                          controllers.PayFrequencyController.onPageLoad()
+POST        /pay-frequency                                          controllers.PayFrequencyController.onSubmit()
 
-GET         /pay-method                         controllers.PayMethodController.onPageLoad()
-POST        /pay-method                         controllers.PayMethodController.onSubmit()
+GET         /pay-method                                             controllers.PayMethodController.onPageLoad()
+POST        /pay-method                                             controllers.PayMethodController.onSubmit()
 
-GET         /last-pay-date                      controllers.LastPayDateController.onPageLoad()
-POST        /last-pay-date                      controllers.LastPayDateController.onSubmit()
+GET         /last-pay-date                                          controllers.LastPayDateController.onPageLoad()
+POST        /last-pay-date                                          controllers.LastPayDateController.onSubmit()
 
-GET         /pay-periods                        controllers.PayPeriodsController.onPageLoad()
-POST        /pay-periods                        controllers.PayPeriodsController.onSubmit()
+GET         /pay-periods                                            controllers.PayPeriodsController.onPageLoad()
+POST        /pay-periods                                            controllers.PayPeriodsController.onSubmit()
 
-GET         /select-work-periods                controllers.SelectWorkPeriodsController.onPageLoad()
-POST        /select-work-periods                controllers.SelectWorkPeriodsController.onSubmit()
+GET         /select-work-periods                                    controllers.SelectWorkPeriodsController.onPageLoad()
+POST        /select-work-periods                                    controllers.SelectWorkPeriodsController.onSubmit()
 
-GET         /regular-pay-amount                 controllers.RegularPayAmountController.onPageLoad()
-POST        /regular-pay-amount                 controllers.RegularPayAmountController.onSubmit()
+GET         /regular-pay-amount                                     controllers.RegularPayAmountController.onPageLoad()
+POST        /regular-pay-amount                                     controllers.RegularPayAmountController.onSubmit()
 
-GET         /usual-and-actual-hours/:idx        controllers.UsualAndActualHoursController.onPageLoad(idx: Int)
-POST        /usual-and-actual-hours/:idx        controllers.UsualAndActualHoursController.onSubmit(idx: Int)
+GET         /usual-and-actual-hours/:idx                            controllers.UsualAndActualHoursController.onPageLoad(idx: Int)
+POST        /usual-and-actual-hours/:idx                            controllers.UsualAndActualHoursController.onSubmit(idx: Int)
 
-GET         /confirmation                       controllers.ConfirmationController.onPageLoad()
+GET         /confirmation                                           controllers.ConfirmationController.onPageLoad()
 
-GET         /end-pay-date                       controllers.EndPayDateController.onPageLoad()
-POST        /end-pay-date                       controllers.EndPayDateController.onSubmit()
+GET         /end-pay-date                                           controllers.EndPayDateController.onPageLoad()
+POST        /end-pay-date                                           controllers.EndPayDateController.onSubmit()
 
-GET         /coming-soon                        controllers.ComingSoonController.onPageLoad()
+GET         /coming-soon                                            controllers.ComingSoonController.onPageLoad()
 
-GET         /temporary-working-agreement        controllers.TemporaryWorkingAgreementController.onPageLoad()
-POST        /temporary-working-agreement        controllers.TemporaryWorkingAgreementController.onSubmit()
+GET         /temporary-working-agreement                            controllers.TemporaryWorkingAgreementController.onPageLoad()
+POST        /temporary-working-agreement                            controllers.TemporaryWorkingAgreementController.onSubmit()
 
-GET         /business-closed                    controllers.BusinessClosedController.onPageLoad()
-POST        /business-closed                    controllers.BusinessClosedController.onSubmit()
+GET         /business-closed                                        controllers.BusinessClosedController.onPageLoad()
+POST        /business-closed                                        controllers.BusinessClosedController.onSubmit()
+
+GET         /short-term-working-agreement-period                    controllers.ShortTermWorkingAgreementPeriodController.onPageLoad(idx: Int)
+POST        /short-term-working-agreement-period                    controllers.ShortTermWorkingAgreementPeriodController.onSubmit(idx: Int)
+GET         /short-term-working-agreement-period/remove/:idx        controllers.ShortTermWorkingAgreementPeriodController.remove(idx: Int)
+
+GET         /business-closed-periods                                controllers.BusinessClosedPeriodsController.onPageLoad(idx: Int)
+POST        /business-closed-periods                                controllers.BusinessClosedPeriodsController.onSubmit(idx: Int)
+GET         /business-closed-periods/remove/:idx                    controllers.BusinessClosedPeriodsController.remove(idx: Int)
+
+GET         /check-your-stwa-periods                                controllers.CheckYourSTWAPeriodsController.onPageLoad()
+
+GET         /check-your-business-closed-periods                     controllers.CheckYourBusinessClosedPeriodsController.onPageLoad()
+GET         /confirm-your-business-closed-periods                   controllers.CheckYourBusinessClosedPeriodsController.confirm()
+
+GET         /you-are-not-eligible                                   controllers.YouAreNotEligibleController.onPageLoad()

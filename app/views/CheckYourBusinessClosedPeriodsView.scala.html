@@ -1,0 +1,68 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@this(
+        govukLayout: templates.GovukLayoutWrapper,
+        formHelper: FormWithCSRF,
+        errorSummary: components.errorSummary,
+        inputRadio: components.inputRadio,
+        button: components.button,
+        h1: components.h1,
+        h3: components.h3,
+        link: components.link
+)
+
+@(businessClosedPeriods: Seq[BusinessClosedPeriods])(implicit request: Request[_], messages: Messages)
+
+@checkAnswerBlock(bcpWithIndex: (BusinessClosedPeriods, Int)) = {
+    <dl class="app-check-your-answers app-check-your-answers--long margin-top-30 margin-bottom-20">
+        <div class="app-check-your-answers__contents">
+            <dd class="app-check-your-answers__answer" id="@bcpWithIndex._2">
+                @messages("checkYourBusinessClosedPeriods.startDate.row", dateToString(bcpWithIndex._1.startDate)) <br>
+                @messages("checkYourBusinessClosedPeriods.endDate.row", dateToString(bcpWithIndex._1.endDate)) <br>
+            </dd>
+            <dd class="app-check-your-answers__change">
+                <a href="@routes.BusinessClosedPeriodsController.onPageLoad(bcpWithIndex._2 + 1)">
+                @messages("checkYourBusinessClosedPeriods.row.change.label")
+                </a>
+            </dd>
+            <dd class="app-check-your-answers__change">
+                <a href="@routes.BusinessClosedPeriodsController.remove(bcpWithIndex._2)">
+                @messages("checkYourBusinessClosedPeriods.row.remove.label")
+                </a>
+            </dd>
+        </div>
+    </dl>
+}
+
+@govukLayout(pageTitle = Some(messages("checkYourBusinessClosedPeriods.title"))) {
+
+    @h1("checkYourBusinessClosedPeriods.heading")
+
+    @for(bcpWithIndex <- businessClosedPeriods.zipWithIndex) {
+        @checkAnswerBlock(bcpWithIndex)
+    }
+
+    <dl class="app-check-your-answers app-check-your-answers--long margin-top-30 margin-bottom-20">
+        <div class="app-check-your-answers__contents">
+            <dd class="app-check-your-answers__change">
+            @link(routes.BusinessClosedPeriodsController.onPageLoad(businessClosedPeriods.length + 1).url, "checkYourBusinessClosedPeriods.add-another-period")
+            </dd>
+        </div>
+    </dl>
+
+    @button("site.confirmAndContinue", Some(routes.CheckYourBusinessClosedPeriodsController.confirm().url))
+}

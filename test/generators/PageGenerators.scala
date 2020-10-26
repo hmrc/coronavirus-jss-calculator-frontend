@@ -22,6 +22,12 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryBusinessClosedPeriodsPage: Arbitrary[BusinessClosedPeriodsPage.type] =
+    Arbitrary(BusinessClosedPeriodsPage)
+
+  implicit lazy val arbitraryShortTermWorkingAgreementPeriodPage: Arbitrary[ShortTermWorkingAgreementPeriodPage.type] =
+    Arbitrary(ShortTermWorkingAgreementPeriodPage)
+
   implicit lazy val arbitraryBusinessClosedPage: Arbitrary[BusinessClosedPage.type] =
     Arbitrary(BusinessClosedPage)
 

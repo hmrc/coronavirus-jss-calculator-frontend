@@ -13,23 +13,25 @@ object AppDependencies {
     "uk.gov.hmrc"       %% "play-frontend-govuk"           % "0.49.0-play-26",
     "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "0.17.0-play-26",
     "uk.gov.hmrc"       %% "domain"                        % "5.6.0-play-26",
-    "org.julienrf"      %% "play-json-derived-codecs"      % "6.0.0"
+    "org.julienrf"      %% "play-json-derived-codecs"      % "6.0.0",
+    "uk.gov.hmrc"       %% "domain"                        % "5.6.0-play-26",
+    "uk.gov.hmrc"       %% "play-language"                 % "4.4.0-play-26"
   )
 
-  val test = Seq(
-    "org.scalatest"          %% "scalatest"          % "3.0.8",
-    "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2",
-    "org.pegdown"            % "pegdown"             % "1.6.0",
-    "org.jsoup"              % "jsoup"               % "1.12.1",
-    "com.typesafe.play"      %% "play-test"          % PlayVersion.current,
-    "org.mockito"            % "mockito-all"         % "1.10.19",
-    "org.scalacheck"         %% "scalacheck"         % "1.14.1",
-    "com.github.tomakehurst" % "wiremock-standalone" % "2.25.0"
+  val test                   = Seq(
+    "org.scalatest"          %% "scalatest"           % "3.0.8",
+    "org.scalatestplus.play" %% "scalatestplus-play"  % "3.1.2",
+    "org.pegdown"             % "pegdown"             % "1.6.0",
+    "org.jsoup"               % "jsoup"               % "1.12.1",
+    "com.typesafe.play"      %% "play-test"           % PlayVersion.current,
+    "org.mockito"             % "mockito-all"         % "1.10.19",
+    "org.scalacheck"         %% "scalacheck"          % "1.14.1",
+    "com.github.tomakehurst"  % "wiremock-standalone" % "2.25.0"
   ).map(_ % "test,it")
 
   def apply(): Seq[ModuleID] = compile ++ test
 
-  val akkaVersion = "2.5.23"
+  val akkaVersion     = "2.5.23"
   val akkaHttpVersion = "10.0.15"
 
   val overrides = Seq(
