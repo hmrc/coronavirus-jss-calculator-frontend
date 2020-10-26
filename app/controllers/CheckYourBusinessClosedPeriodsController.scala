@@ -25,27 +25,29 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.CheckYourBusinessClosedPeriodsView
 
-class CheckYourBusinessClosedPeriodsController @Inject()(
+class CheckYourBusinessClosedPeriodsController @Inject() (
   override val messagesApi: MessagesApi,
   getSession: GetSessionAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
   view: CheckYourBusinessClosedPeriodsView
-) extends FrontendBaseController with I18nSupport {
+) extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
     Ok(view(request.userAnswers.getList(BusinessClosedPeriodsPage)))
   }
 
   def confirm(): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
-    val stwa = request.userAnswers.get(TemporaryWorkingAgreementPage)
+    val stwa           = request.userAnswers.get(TemporaryWorkingAgreementPage)
     val businessClosed = request.userAnswers.get(BusinessClosedPage)
 
     val result = (stwa, businessClosed) match {
       case (Some(TemporaryWorkingAgreement.Yes), _)                       => routes.UsualAndActualHoursController.onPageLoad(1)
       case (Some(TemporaryWorkingAgreement.No), Some(BusinessClosed.Yes)) => routes.ConfirmationController.onPageLoad()
-      case (Some(TemporaryWorkingAgreement.No), Some(BusinessClosed.No))  => routes.YouAreNotEligibleController.onPageLoad()
+      case (Some(TemporaryWorkingAgreement.No), Some(BusinessClosed.No))  =>
+        routes.YouAreNotEligibleController.onPageLoad()
       case (None, _)                                                      => routes.TemporaryWorkingAgreementController.onPageLoad()
       case (_, None)                                                      => routes.BusinessClosedController.onPageLoad()
     }

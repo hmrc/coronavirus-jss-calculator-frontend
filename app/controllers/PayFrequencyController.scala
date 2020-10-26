@@ -27,10 +27,11 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.PayFrequencyView
+import models.PayFrequency.writes
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PayFrequencyController @Inject()(
+class PayFrequencyController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
@@ -41,7 +42,8 @@ class PayFrequencyController @Inject()(
   val controllerComponents: MessagesControllerComponents,
   view: PayFrequencyView
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport {
+    extends FrontendBaseController
+    with I18nSupport {
 
   private val form = formProvider()
 

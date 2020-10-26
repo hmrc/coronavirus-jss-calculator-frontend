@@ -31,6 +31,6 @@ case object BusinessClosedPage extends QuestionPage[BusinessClosed] {
     value match {
       case Some(BusinessClosed.No) =>
         userAnswers.setList(BusinessClosedPeriodsPage, Seq.empty)
-      case _ => super.cleanup(value, userAnswers)
+      case _                       => super.cleanup(value, userAnswers)
     }
 }

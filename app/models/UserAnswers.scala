@@ -39,7 +39,7 @@ final case class UserAnswers(
     val updatedData = data.setObject(query.path, Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
-      case JsError(errors) =>
+      case JsError(errors)       =>
         Failure(JsResultException(errors))
     }
 
@@ -54,7 +54,7 @@ final case class UserAnswers(
     val updatedData = data.setObject(query.path, JsNull) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
-      case JsError(_) =>
+      case JsError(_)            =>
         Success(data)
     }
 
@@ -69,7 +69,7 @@ final case class UserAnswers(
     val updatedData = data.setObject(path(page, idx), Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
-      case JsError(errors) =>
+      case JsError(errors)       =>
         Failure(JsResultException(errors))
     }
 
@@ -89,7 +89,7 @@ final case class UserAnswers(
     val updatedData = result match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
-      case JsError(_) =>
+      case JsError(_)            =>
         Success(data)
     }
 
@@ -103,7 +103,7 @@ final case class UserAnswers(
     val updatedData = data.setObject(path(page, None), Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
-      case JsError(errors) =>
+      case JsError(errors)       =>
         Failure(JsResultException(errors))
     }
 

@@ -33,6 +33,8 @@ class LastPayDateFormProvider @Inject() extends Mappings {
         allRequiredKey = "lastPayDate.error.required.all",
         twoRequiredKey = "lastPayDate.error.required.two",
         requiredKey = "lastPayDate.error.required"
-      ).verifying(maxDate(firstDayOfClaim, "lastPayDate.error.invalid.must.be.before", ViewUtils.dateToString(firstDayOfClaim)))
+      ).verifying(
+        maxDate(firstDayOfClaim, "lastPayDate.error.invalid.must.be.before", ViewUtils.dateToString(firstDayOfClaim))
+      )
     )
 }

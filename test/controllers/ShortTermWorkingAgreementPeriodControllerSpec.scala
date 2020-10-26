@@ -34,12 +34,14 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
   val view = app.injector.instanceOf[ShortTermWorkingAgreementPeriodView]
 
   private val formProvider = new ShortTermWorkingAgreementPeriodFormProvider()
-  private def form = formProvider()
+  private def form         = formProvider()
 
   private val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
-  private lazy val shortTermWorkingAgreementPeriodRouteGet = routes.ShortTermWorkingAgreementPeriodController.onPageLoad(1).url
-  private lazy val shortTermWorkingAgreementPeriodRoutePost = routes.ShortTermWorkingAgreementPeriodController.onSubmit(1).url
+  private lazy val shortTermWorkingAgreementPeriodRouteGet  =
+    routes.ShortTermWorkingAgreementPeriodController.onPageLoad(1).url
+  private lazy val shortTermWorkingAgreementPeriodRoutePost =
+    routes.ShortTermWorkingAgreementPeriodController.onSubmit(1).url
 
   override val emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 

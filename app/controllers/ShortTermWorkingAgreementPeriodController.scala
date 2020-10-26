@@ -30,7 +30,7 @@ import views.html.ShortTermWorkingAgreementPeriodView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ShortTermWorkingAgreementPeriodController @Inject()(
+class ShortTermWorkingAgreementPeriodController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
@@ -41,7 +41,8 @@ class ShortTermWorkingAgreementPeriodController @Inject()(
   val controllerComponents: MessagesControllerComponents,
   view: ShortTermWorkingAgreementPeriodView
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport {
+    extends FrontendBaseController
+    with I18nSupport {
 
   private def form = formProvider()
 
@@ -54,28 +55,33 @@ class ShortTermWorkingAgreementPeriodController @Inject()(
     Ok(view(preparedForm, idx))
   }
 
-  def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ShortTermWorkingAgreementPeriodPage, value, Some(idx)))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ShortTermWorkingAgreementPeriodPage, NormalMode, updatedAnswers, Some(idx)))
-        }
-      )
+  def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
+    implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
+          value =>
+            for {
+              updatedAnswers <-
+                Future.fromTry(request.userAnswers.set(ShortTermWorkingAgreementPeriodPage, value, Some(idx)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(
+              navigator.nextPage(ShortTermWorkingAgreementPeriodPage, NormalMode, updatedAnswers, Some(idx))
+            )
+        )
   }
 
-  def remove(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
-    val existingPeriods = request.userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
-    val remainingPeriods = existingPeriods.zipWithIndex.filterNot(p => p._2 == idx).map(_._1)
+  def remove(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
+    implicit request =>
+      val existingPeriods  = request.userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
+      val remainingPeriods = existingPeriods.zipWithIndex.filterNot(p => p._2 == idx).map(_._1)
 
-    for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.setList(ShortTermWorkingAgreementPeriodPage, remainingPeriods))
-      _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(ShortTermWorkingAgreementPeriodPage, NormalMode, updatedAnswers, Some(idx)))
+      for {
+        updatedAnswers <-
+          Future.fromTry(request.userAnswers.setList(ShortTermWorkingAgreementPeriodPage, remainingPeriods))
+        _              <- sessionRepository.set(updatedAnswers)
+      } yield Redirect(navigator.nextPage(ShortTermWorkingAgreementPeriodPage, NormalMode, updatedAnswers, Some(idx)))
 
   }
 }

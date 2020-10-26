@@ -28,7 +28,7 @@ import services.RegularPayGrantCalculator
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ConfirmationView
 
-class ConfirmationController @Inject()(
+class ConfirmationController @Inject() (
   override val messagesApi: MessagesApi,
   getSession: GetSessionAction,
   getData: DataRetrievalAction,
@@ -36,20 +36,22 @@ class ConfirmationController @Inject()(
   val controllerComponents: MessagesControllerComponents,
   view: ConfirmationView,
   appConfig: FrontendAppConfig
-) extends FrontendBaseController with I18nSupport with RegularPayGrantCalculator {
+) extends FrontendBaseController
+    with I18nSupport
+    with RegularPayGrantCalculator {
 
   def onPageLoad: Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
-    val workPeriods = request.userAnswers.get(SelectWorkPeriodsPage)
+    val workPeriods         = request.userAnswers.get(SelectWorkPeriodsPage)
     val usualAndActualHours = request.userAnswers.getList(UsualAndActualHoursPage)
-    val regularPay = request.userAnswers.get(RegularPayAmountPage)
-    val payFrequency = request.userAnswers.get(PayFrequencyPage)
-    val supportClaimPeriod = request.userAnswers.get(ClaimPeriodPage)
+    val regularPay          = request.userAnswers.get(RegularPayAmountPage)
+    val payFrequency        = request.userAnswers.get(PayFrequencyPage)
+    val supportClaimPeriod  = request.userAnswers.get(ClaimPeriodPage)
 
     (workPeriods, usualAndActualHours, regularPay, payFrequency, supportClaimPeriod) match {
       case (Some(wps), hours, Some(rp), Some(pf), Some(cp)) =>
         val grant = calculateRegularPayGrant(periodsWithHours(wps, hours), rp.value, cp.supportClaimPeriod, pf)
         Ok(view(grant, appConfig.calculatorVersion))
-      case _ =>
+      case _                                                =>
         Logger.warn("expected data is missing from userAnswers, redirecting user to start page")
         Redirect(routes.ClaimPeriodController.onPageLoad())
     }

@@ -42,7 +42,7 @@ class CheckYourSTWAPeriodsControllerSpec extends SpecBaseControllerSpecs {
   )
 
   val startDate = LocalDate.now()
-  val endDate = LocalDate.now().plusDays(10)
+  val endDate   = LocalDate.now().plusDays(10)
 
   val stwaPeriods = List(ShortTermWorkingAgreementPeriod(startDate, endDate))
 
@@ -64,7 +64,8 @@ class CheckYourSTWAPeriodsControllerSpec extends SpecBaseControllerSpecs {
 
       val request = fakeRequest(GET, checkYourSTWAPeriodsRoute)
 
-      val userAnswers = UserAnswers(userAnswersId).setList(ShortTermWorkingAgreementPeriodPage, stwaPeriods).success.value
+      val userAnswers =
+        UserAnswers(userAnswersId).setList(ShortTermWorkingAgreementPeriodPage, stwaPeriods).success.value
 
       val result = controller(Some(userAnswers)).onPageLoad()(request)
 

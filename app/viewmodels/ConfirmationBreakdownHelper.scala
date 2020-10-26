@@ -17,15 +17,15 @@
 package viewmodels
 
 import com.google.inject.{Inject, Singleton}
-import models.GrantForPeriod
 import models.PayFrequency.Monthly
+import models.PeriodGrant.OpenPeriodGrant
 import play.api.i18n.Messages
 import views.ViewUtils._
 
 @Singleton
-class ConfirmationBreakdownHelper @Inject()() {
+class ConfirmationBreakdownHelper @Inject() () {
 
-  def breakdownH3(grantForPeriod: GrantForPeriod)(implicit messages: Messages): String =
+  def breakdownH3(grantForPeriod: OpenPeriodGrant)(implicit messages: Messages): String =
     messages(
       if (grantForPeriod.isPartialPayPeriod) "confirmation.breakdown.h3.partial" else "confirmation.breakdown.h3",
       dateToStringWithoutYear(grantForPeriod.period.startDate),
@@ -36,23 +36,23 @@ class ConfirmationBreakdownHelper @Inject()() {
       else grantForPeriod.daysInFrequency.-(1)
     )
 
-  def totalPayForTheDaysWorked(grantForPeriod: GrantForPeriod)(implicit messages: Messages): String =
+  def totalPayForTheDaysWorked(grantForPeriod: OpenPeriodGrant)(implicit messages: Messages): String =
     if (grantForPeriod.isPartialPayPeriod) {
       messages(
         "confirmation.breakdown.h3.p1.l1.partial",
-        grantForPeriod.referencePay,
+        grantForPeriod.referencePayCap,
         grantForPeriod.daysInPeriod,
         grantForPeriod.daysInFrequency,
-        grantForPeriod.referencePay * grantForPeriod.daysInPeriod / grantForPeriod.daysInFrequency
+        grantForPeriod.referencePayCap * grantForPeriod.daysInPeriod / grantForPeriod.daysInFrequency
       )
     } else {
       messages(
         "confirmation.breakdown.h3.p1.l1",
-        grantForPeriod.referencePay,
+        grantForPeriod.referencePayCap
       )
     }
 
-  def referencePayCapForTheDaysWorked(grantForPeriod: GrantForPeriod)(implicit messages: Messages): String =
+  def referencePayCapForTheDaysWorked(grantForPeriod: OpenPeriodGrant)(implicit messages: Messages): String =
     if (grantForPeriod.isPartialPayPeriod) {
       messages(
         "confirmation.breakdown.h3.p1.l2.partial",
@@ -63,11 +63,11 @@ class ConfirmationBreakdownHelper @Inject()() {
     } else {
       messages(
         "confirmation.breakdown.h3.p1.l2",
-        grantForPeriod.referencePayCap,
+        grantForPeriod.referencePayCap
       )
     }
 
-  def hoursNotWorked(grantForPeriod: GrantForPeriod)(implicit messages: Messages): String =
+  def hoursNotWorked(grantForPeriod: OpenPeriodGrant)(implicit messages: Messages): String =
     messages(
       "confirmation.breakdown.h3.p1.l4",
       grantForPeriod.period.usualHours,
@@ -75,21 +75,21 @@ class ConfirmationBreakdownHelper @Inject()() {
       grantForPeriod.period.usualHours - grantForPeriod.period.actualHours
     )
 
-  def cappedGrant(grantForPeriod: GrantForPeriod)(implicit messages: Messages): String = {
+  def cappedGrant(grantForPeriod: OpenPeriodGrant)(implicit messages: Messages): String = {
     val hoursNotWorked = grantForPeriod.period.usualHours - grantForPeriod.period.actualHours
-    val finalGrant = grantForPeriod.adjustedReferencePay * hoursNotWorked / grantForPeriod.period.usualHours
+    val finalGrant     = grantForPeriod.adjustedReferencePay * hoursNotWorked / grantForPeriod.period.usualHours
     messages(
       "confirmation.breakdown.h3.p1.grant",
       grantForPeriod.adjustedReferencePay,
       hoursNotWorked,
       grantForPeriod.period.usualHours,
-      finalGrant,
+      finalGrant
     )
   }
 
-  def eligibility(grantForPeriod: GrantForPeriod)(implicit messages: Messages): String = {
+  def eligibility(grantForPeriod: OpenPeriodGrant)(implicit messages: Messages): String = {
     val hoursNotWorked = grantForPeriod.period.usualHours - grantForPeriod.period.actualHours
-    val grant = grantForPeriod.adjustedReferencePay * hoursNotWorked / grantForPeriod.period.usualHours
+    val grant          = grantForPeriod.adjustedReferencePay * hoursNotWorked / grantForPeriod.period.usualHours
     messages(
       "confirmation.breakdown.h3.p1.grant.eligible",
       grant,

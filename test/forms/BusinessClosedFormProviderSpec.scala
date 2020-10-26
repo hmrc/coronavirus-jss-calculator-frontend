@@ -26,7 +26,7 @@ class BusinessClosedFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" must {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "businessClosed.error.required"
 
     behave like optionsField[BusinessClosed](

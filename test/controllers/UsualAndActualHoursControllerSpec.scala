@@ -35,11 +35,11 @@ class UsualAndActualHoursControllerSpec extends SpecBaseControllerSpecs {
   val view = app.injector.instanceOf[UsualAndActualHoursView]
 
   private val formProvider = new UsualAndActualHoursFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
   private val validAnswer = UsualAndActualHours(10.00, 20.00)
 
-  private def usualAndActualHoursRouteGet(idx: Int) = routes.UsualAndActualHoursController.onPageLoad(idx).url
+  private def usualAndActualHoursRouteGet(idx: Int)  = routes.UsualAndActualHoursController.onPageLoad(idx).url
   private def usualAndActualHoursRoutePost(idx: Int) = routes.UsualAndActualHoursController.onSubmit(idx).url
 
   def getRequest(method: String, idx: Int) =
@@ -59,7 +59,7 @@ class UsualAndActualHoursControllerSpec extends SpecBaseControllerSpecs {
   )
 
   val startDate = LocalDate.of(2020, 10, 31)
-  val endDate = LocalDate.of(2020, 11, 29)
+  val endDate   = LocalDate.of(2020, 11, 29)
 
   val periods = List(Period(startDate, endDate))
 
@@ -105,7 +105,10 @@ class UsualAndActualHoursControllerSpec extends SpecBaseControllerSpecs {
 
       val request =
         fakeRequest(POST, usualAndActualHoursRoutePost(1))
-          .withFormUrlEncodedBody("usualHours" -> validAnswer.usualHours.toString, "actualHours" -> validAnswer.actualHours.toString)
+          .withFormUrlEncodedBody(
+            "usualHours"  -> validAnswer.usualHours.toString,
+            "actualHours" -> validAnswer.actualHours.toString
+          )
 
       val result = controller(Some(userAnswers)).onSubmit(1)(request)
 

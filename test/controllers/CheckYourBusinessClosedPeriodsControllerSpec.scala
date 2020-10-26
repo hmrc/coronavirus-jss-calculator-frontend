@@ -28,7 +28,8 @@ class CheckYourBusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpe
 
   val view = app.injector.instanceOf[CheckYourBusinessClosedPeriodsView]
 
-  private lazy val checkYourBusinessClosedPeriodsRoute = routes.CheckYourBusinessClosedPeriodsController.onPageLoad().url
+  private lazy val checkYourBusinessClosedPeriodsRoute =
+    routes.CheckYourBusinessClosedPeriodsController.onPageLoad().url
 
   override val emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
@@ -42,7 +43,7 @@ class CheckYourBusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpe
   )
 
   val startDate = LocalDate.now()
-  val endDate = LocalDate.now().plusDays(10)
+  val endDate   = LocalDate.now().plusDays(10)
 
   val bcPeriods = List(BusinessClosedPeriods(startDate, endDate))
 

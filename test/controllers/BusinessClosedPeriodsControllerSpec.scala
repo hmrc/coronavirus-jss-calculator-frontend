@@ -34,11 +34,11 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
   val view = app.injector.instanceOf[BusinessClosedPeriodsView]
 
   private val formProvider = new BusinessClosedPeriodsFormProvider()
-  private def form = formProvider()
+  private def form         = formProvider()
 
   private val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
-  private lazy val businessClosedPeriodsRouteGet = routes.BusinessClosedPeriodsController.onPageLoad(1).url
+  private lazy val businessClosedPeriodsRouteGet  = routes.BusinessClosedPeriodsController.onPageLoad(1).url
   private lazy val businessClosedPeriodsRoutePost = routes.BusinessClosedPeriodsController.onSubmit(1).url
 
   override val emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)

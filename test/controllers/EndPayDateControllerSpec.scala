@@ -34,9 +34,9 @@ class EndPayDateControllerSpec extends SpecBaseControllerSpecs {
   val view = app.injector.instanceOf[EndPayDateView]
 
   private val formProvider = new EndPayDateFormProvider()
-  private def form = formProvider
+  private def form         = formProvider
 
-  private lazy val endPayDateRouteGet = routes.EndPayDateController.onPageLoad().url
+  private lazy val endPayDateRouteGet  = routes.EndPayDateController.onPageLoad().url
   private lazy val endPayDateRoutePost = routes.EndPayDateController.onSubmit().url
 
   override val emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)

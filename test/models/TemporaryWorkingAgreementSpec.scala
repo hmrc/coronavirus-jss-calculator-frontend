@@ -31,7 +31,10 @@ class TemporaryWorkingAgreementSpec extends WordSpec with MustMatchers with Scal
       val gen = Gen.oneOf(TemporaryWorkingAgreement.values.toSeq)
 
       forAll(gen) { temporaryWorkingAgreement =>
-        JsString(temporaryWorkingAgreement.toString).validate[TemporaryWorkingAgreement].asOpt.value mustEqual temporaryWorkingAgreement
+        JsString(temporaryWorkingAgreement.toString)
+          .validate[TemporaryWorkingAgreement]
+          .asOpt
+          .value mustEqual temporaryWorkingAgreement
       }
     }
 

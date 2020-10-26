@@ -45,14 +45,16 @@ class EndPayDateFormProviderSpec extends SpecBaseControllerSpecs {
 
     "not bind any dates earlier than LastPayDate" in {
       val inputDate = lastPayDate.minusDays(1)
-      val data = Map(
+      val data      = Map(
         s"$value.day"   -> inputDate.getDayOfMonth.toString,
         s"$value.month" -> inputDate.getMonthValue.toString,
         s"$value.year"  -> inputDate.getYear.toString
       )
 
       val result = form(lastPayDate).bind(data)
-      result.errors shouldBe List(FormError("value", List("endPayDate.error.invalid.must.be.after"), Array("31 October 2020")))
+      result.errors shouldBe List(
+        FormError("value", List("endPayDate.error.invalid.must.be.after"), Array("31 October 2020"))
+      )
     }
 
     "fail to bind when no answers are selected" in {

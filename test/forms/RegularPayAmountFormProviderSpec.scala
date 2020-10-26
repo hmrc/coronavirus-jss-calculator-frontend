@@ -22,8 +22,8 @@ import play.api.data.FormError
 class RegularPayAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
   val requiredKey = "regularPayAmount.error.required"
-  val invalidKey = "regularPayAmount.error.nonNumeric"
-  val maxLength = 100
+  val invalidKey  = "regularPayAmount.error.nonNumeric"
+  val maxLength   = 100
 
   val form = new RegularPayAmountFormProvider()()
 

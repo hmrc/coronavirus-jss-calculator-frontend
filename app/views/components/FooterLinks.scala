@@ -22,7 +22,7 @@ import javax.inject.Inject
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.footer.FooterItem
 
-class FooterLinks @Inject()(appConfig: FrontendAppConfig) {
+class FooterLinks @Inject() (appConfig: FrontendAppConfig) {
 
   def cookieLink(implicit messages: Messages): FooterItem = FooterItem(
     Some(messages("footer.cookies")),

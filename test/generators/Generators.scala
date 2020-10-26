@@ -35,13 +35,11 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     for {
       seq1 <- gen
       seq2 <- Gen.listOfN(seq1.length, genValue)
-    } yield {
-      seq1.toSeq.zip(seq2).foldRight("") {
-        case ((n, Some(v)), m) =>
-          m + n + v
-        case ((n, _), m) =>
-          m + n
-      }
+    } yield seq1.toSeq.zip(seq2).foldRight("") {
+      case ((n, Some(v)), m) =>
+        m + n + v
+      case ((n, _), m)       =>
+        m + n
     }
   }
 
@@ -151,22 +149,18 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
 
     Gen.frequency(
       (10, genWholeBigDecimal),
-      (10, genSmallBigDecimal),
+      (10, genSmallBigDecimal)
     )
   }
 
   def positiveBigDecimalsWith2dp: Gen[BigDecimal] =
     for {
       value <- arbitrary[BigDecimal] suchThat (bd => bd >= 1)
-    } yield {
-      value.setScale(2, RoundingMode.HALF_UP)
-    }
+    } yield value.setScale(2, RoundingMode.HALF_UP)
 
   def positiveBigDecimalsWithMoreThan2dp: Gen[BigDecimal] =
     for {
       value <- arbitrary[BigDecimal] suchThat (bd => bd >= 1)
-    } yield {
-      value.setScale(3, RoundingMode.HALF_UP)
-    }
+    } yield value.setScale(3, RoundingMode.HALF_UP)
 
 }

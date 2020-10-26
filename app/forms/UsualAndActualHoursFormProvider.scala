@@ -27,7 +27,7 @@ class UsualAndActualHoursFormProvider @Inject() extends Mappings {
   def apply(): Form[UsualAndActualHours] =
     Form(
       mapping(
-        "usualHours" -> double("usualHours.error.required", "usualHours.error.nonNumeric")
+        "usualHours"  -> double("usualHours.error.required", "usualHours.error.nonNumeric")
           .verifying(greaterThan(0.0, "usualHours.error.min")),
         "actualHours" -> double("actualHours.error.required", "actualHours.error.nonNumeric")
           .verifying(greaterThan(0.0, "actualHours.error.min"))

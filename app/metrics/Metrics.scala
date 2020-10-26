@@ -20,18 +20,18 @@ import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.Timer.Context
 import javax.inject.Inject
 
-class MetricsService @Inject()(kenshooMetrics: com.kenshoo.play.metrics.Metrics) {
+class MetricsService @Inject() (kenshooMetrics: com.kenshoo.play.metrics.Metrics) {
   private val registry: MetricRegistry = kenshooMetrics.defaultRegistry
 
   def startTimer(metric: Timer): Context = registry.timer(metric.path).time()
-  def mark(metric: Meter): Unit = registry.meter(metric.path).mark()
-  def inc(metric: Counter): Unit = registry.counter(metric.path).inc()
-  def dec(metric: Counter): Unit = registry.counter(metric.path).dec()
+  def mark(metric: Meter): Unit          = registry.meter(metric.path).mark()
+  def inc(metric: Counter): Unit         = registry.counter(metric.path).inc()
+  def dec(metric: Counter): Unit         = registry.counter(metric.path).dec()
 
   case class InflightRequestMonitor(timerContext: Context, openRequestCounter: Counter, statusCounter: Int => Counter) {
     private var ended: Boolean = false
 
-    def end(): Unit = end(None)
+    def end(): Unit                = end(None)
     def end(statusCode: Int): Unit = end(Some(statusCode))
 
     private def end(statusCode: Option[Int]): Unit =
@@ -46,13 +46,10 @@ class MetricsService @Inject()(kenshooMetrics: com.kenshoo.play.metrics.Metrics)
   def beginRequest[A](monitor: RequestMonitor)(block: InflightRequestMonitor => A): A = {
     inc(monitor.openRequestCounter)
     inc(monitor.counter)
-    val context = startTimer(monitor.timer)
+    val context                = startTimer(monitor.timer)
     val inflightRequestMonitor = InflightRequestMonitor(context, monitor.openRequestCounter, monitor.statusCounter)
-    try {
-      block(inflightRequestMonitor)
-    } finally {
-      inflightRequestMonitor.end()
-    }
+    try block(inflightRequestMonitor)
+    finally inflightRequestMonitor.end()
   }
 }
 
@@ -61,10 +58,10 @@ case class Meter(name: String) { val path = s"$name.rate" }
 case class Counter(name: String) { val path = s"$name" }
 
 case class RequestMonitor(name: String) {
-  val path = s"$name.request"
-  val timer = Timer(path)
-  val counter = Counter(path)
-  val openRequestCounter = Counter(s"$path.openRequests")
+  val path                                    = s"$name.request"
+  val timer                                   = Timer(path)
+  val counter                                 = Counter(path)
+  val openRequestCounter                      = Counter(s"$path.openRequests")
   def statusCounter(statusCode: Int): Counter = Counter(s"$path.responseStatus.$statusCode")
 }
 

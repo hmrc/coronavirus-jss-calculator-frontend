@@ -39,7 +39,7 @@ class TemporaryWorkingAgreementControllerSpec extends SpecBase with MockitoSugar
   private lazy val temporaryWorkingAgreementRoute = routes.TemporaryWorkingAgreementController.onPageLoad().url
 
   private val formProvider = new TemporaryWorkingAgreementFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
   "TemporaryWorkingAgreement Controller" must {
 
@@ -64,7 +64,10 @@ class TemporaryWorkingAgreementControllerSpec extends SpecBase with MockitoSugar
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(TemporaryWorkingAgreementPage, TemporaryWorkingAgreement.values.head).success.value
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(TemporaryWorkingAgreementPage, TemporaryWorkingAgreement.values.head)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 

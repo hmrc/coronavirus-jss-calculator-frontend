@@ -30,7 +30,7 @@ import views.html.BusinessClosedPeriodsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class BusinessClosedPeriodsController @Inject()(
+class BusinessClosedPeriodsController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
@@ -41,7 +41,8 @@ class BusinessClosedPeriodsController @Inject()(
   val controllerComponents: MessagesControllerComponents,
   view: BusinessClosedPeriodsView
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport {
+    extends FrontendBaseController
+    with I18nSupport {
 
   private def form = formProvider()
 
@@ -54,27 +55,29 @@ class BusinessClosedPeriodsController @Inject()(
     Ok(view(preparedForm, idx))
   }
 
-  def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessClosedPeriodsPage, value, Some(idx)))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessClosedPeriodsPage, NormalMode, updatedAnswers, Some(idx)))
-      )
+  def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
+    implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessClosedPeriodsPage, value, Some(idx)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(BusinessClosedPeriodsPage, NormalMode, updatedAnswers, Some(idx)))
+        )
   }
 
-  def remove(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
-    val existingPeriods = request.userAnswers.getList(BusinessClosedPeriodsPage)
-    val remainingPeriods = existingPeriods.zipWithIndex.filterNot(p => p._2 == idx).map(_._1)
+  def remove(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
+    implicit request =>
+      val existingPeriods  = request.userAnswers.getList(BusinessClosedPeriodsPage)
+      val remainingPeriods = existingPeriods.zipWithIndex.filterNot(p => p._2 == idx).map(_._1)
 
-    for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.setList(BusinessClosedPeriodsPage, remainingPeriods))
-      _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(BusinessClosedPeriodsPage, NormalMode, updatedAnswers, Some(idx)))
+      for {
+        updatedAnswers <- Future.fromTry(request.userAnswers.setList(BusinessClosedPeriodsPage, remainingPeriods))
+        _              <- sessionRepository.set(updatedAnswers)
+      } yield Redirect(navigator.nextPage(BusinessClosedPeriodsPage, NormalMode, updatedAnswers, Some(idx)))
 
   }
 }

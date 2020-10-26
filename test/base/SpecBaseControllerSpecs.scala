@@ -40,18 +40,18 @@ import scala.concurrent.Future
 
 trait SpecBaseControllerSpecs extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with TryValues {
 
-  val userAnswersId: String = "id"
+  val userAnswersId: String         = "id"
   val emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
-  val injector: Injector = app.injector
-  def messagesApi = injector.instanceOf[MessagesApi]
-  val component = injector.instanceOf[MessagesControllerComponents]
-  val getSessionAction = injector.instanceOf[FakeGetSessionAction]
-  val dataRequired: DataRequiredAction = injector.instanceOf[DataRequiredActionImpl]
-  val navigator = injector.instanceOf[Navigator]
-  val dataRetrieval: DataRetrievalAction = new DataRetrievalActionImpl(mockSessionRepository)
-  val configuration = injector.instanceOf[Configuration]
-  implicit val errorHandler: ErrorHandler = injector.instanceOf[ErrorHandler]
+  val injector: Injector                            = app.injector
+  def messagesApi                                   = injector.instanceOf[MessagesApi]
+  val component                                     = injector.instanceOf[MessagesControllerComponents]
+  val getSessionAction                              = injector.instanceOf[FakeGetSessionAction]
+  val dataRequired: DataRequiredAction              = injector.instanceOf[DataRequiredActionImpl]
+  val navigator                                     = injector.instanceOf[Navigator]
+  val dataRetrieval: DataRetrievalAction            = new DataRetrievalActionImpl(mockSessionRepository)
+  val configuration                                 = injector.instanceOf[Configuration]
+  implicit val errorHandler: ErrorHandler           = injector.instanceOf[ErrorHandler]
   implicit val frontendAppConfig: FrontendAppConfig = new FrontendAppConfig(configuration)
 
   def fakeRequest(method: String = "", path: String = ""): FakeRequest[AnyContentAsEmpty.type] =
@@ -66,6 +66,7 @@ trait SpecBaseControllerSpecs extends PlaySpec with GuiceOneAppPerSuite with Moc
     mockSession
   }
 
-  val stubDataRetrieval: Option[UserAnswers] => DataRetrievalAction = stubbedAnswer => new FakeDataRetrievalAction(stubbedAnswer)
+  val stubDataRetrieval: Option[UserAnswers] => DataRetrievalAction = stubbedAnswer =>
+    new FakeDataRetrievalAction(stubbedAnswer)
 
 }

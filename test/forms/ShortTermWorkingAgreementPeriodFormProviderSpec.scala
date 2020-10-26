@@ -28,7 +28,7 @@ class ShortTermWorkingAgreementPeriodFormProviderSpec extends DateBehaviours {
   "form" should {
 
     val startDate = LocalDate.of(2020, 10, 20)
-    val endDate = startDate.plusDays(10)
+    val endDate   = startDate.plusDays(10)
     "bind valid values" in {
       val data = Map(
         "startDate.day"   -> startDate.getDayOfMonth.toString,

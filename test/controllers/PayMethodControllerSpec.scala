@@ -27,12 +27,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class PayMethodControllerSpec extends SpecBaseControllerSpecs {
 
-  val view = app.injector.instanceOf[PayMethodView]
-  private lazy val payMethodRouteGet = routes.PayMethodController.onPageLoad().url
+  val view                            = app.injector.instanceOf[PayMethodView]
+  private lazy val payMethodRouteGet  = routes.PayMethodController.onPageLoad().url
   private lazy val payMethodRoutePost = routes.PayMethodController.onSubmit().url
 
   private val formProvider = new PayMethodFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
   def controller(userAnswers: Option[UserAnswers]) = new PayMethodController(
     messagesApi,

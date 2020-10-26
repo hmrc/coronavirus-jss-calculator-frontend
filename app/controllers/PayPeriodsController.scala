@@ -28,10 +28,11 @@ import repositories.SessionRepository
 import services.PeriodHelper
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.PayPeriodsView
+import models.PayPeriods.writes
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PayPeriodsController @Inject()(
+class PayPeriodsController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
@@ -42,7 +43,9 @@ class PayPeriodsController @Inject()(
   val controllerComponents: MessagesControllerComponents,
   view: PayPeriodsView
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with PeriodHelper {
+    extends FrontendBaseController
+    with I18nSupport
+    with PeriodHelper {
 
   private val form = formProvider()
 
@@ -59,9 +62,8 @@ class PayPeriodsController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => {
-          Future.successful(getView(request.userAnswers, periods => BadRequest(view(formWithErrors, periods))))
-        },
+        formWithErrors =>
+          Future.successful(getView(request.userAnswers, periods => BadRequest(view(formWithErrors, periods)))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PayPeriodsPage, value))
@@ -71,9 +73,9 @@ class PayPeriodsController @Inject()(
   }
 
   private def getView(userAnswers: UserAnswers, result: (List[Period]) => Result) = {
-    val maybeClaimPeriod = userAnswers.get(ClaimPeriodPage)
+    val maybeClaimPeriod  = userAnswers.get(ClaimPeriodPage)
     val maybePayFrequency = userAnswers.get(PayFrequencyPage)
-    val maybeLastPayDay = userAnswers.get(LastPayDatePage)
+    val maybeLastPayDay   = userAnswers.get(LastPayDatePage)
 
     (maybeClaimPeriod, maybePayFrequency, maybeLastPayDay) match {
       case (Some(cp), Some(pf), Some(lpd)) => result(getPayPeriods(lpd, pf, cp.supportClaimPeriod))

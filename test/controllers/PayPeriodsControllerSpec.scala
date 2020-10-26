@@ -30,12 +30,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class PayPeriodsControllerSpec extends SpecBaseControllerSpecs {
 
-  val view = app.injector.instanceOf[PayPeriodsView]
-  private lazy val payPeriodsRouteGet = routes.PayPeriodsController.onPageLoad().url
+  val view                             = app.injector.instanceOf[PayPeriodsView]
+  private lazy val payPeriodsRouteGet  = routes.PayPeriodsController.onPageLoad().url
   private lazy val payPeriodsRoutePost = routes.PayPeriodsController.onSubmit().url
 
   private val formProvider = new PayPeriodsFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
   def controller(userAnswers: Option[UserAnswers]) = new PayPeriodsController(
     messagesApi,
@@ -49,18 +49,19 @@ class PayPeriodsControllerSpec extends SpecBaseControllerSpecs {
     view
   )
 
-  val claimPeriod = ClaimPeriod.Nov2020
+  val claimPeriod  = ClaimPeriod.Nov2020
   val payFrequency = PayFrequency.Monthly
-  val lastPayDate = "2020-10-30"
+  val lastPayDate  = "2020-10-30"
 
   val userAnswers = UserAnswers(
     userAnswersId,
     Json.obj(
       ClaimPeriodPage.toString  -> JsString(claimPeriod),
       PayFrequencyPage.toString -> JsString(payFrequency),
-      LastPayDatePage.toString  -> JsString(lastPayDate))
+      LastPayDatePage.toString  -> JsString(lastPayDate)
+    )
   )
-  val periods = List(Period(LocalDate.of(2020, 10, 31), LocalDate.of(2020, 11, 30)))
+  val periods     = List(Period(LocalDate.of(2020, 10, 31), LocalDate.of(2020, 11, 30)))
 
   "PayPeriods Controller" must {
 

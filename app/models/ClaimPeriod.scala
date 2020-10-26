@@ -26,8 +26,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 sealed trait ClaimPeriod {
-  def key: String = getClass.getSimpleName.dropRight(1)
-  def yearMonth: YearMonth = YearMonth.parse(toString, pattern)
+  def key: String                            = getClass.getSimpleName.dropRight(1)
+  def yearMonth: YearMonth                   = YearMonth.parse(toString, pattern)
   def supportClaimPeriod: SupportClaimPeriod = SupportClaimPeriod(yearMonth.atDay(1), yearMonth.atEndOfMonth())
 }
 
@@ -65,9 +65,10 @@ object ClaimPeriod extends Enumerable.Implicits {
     Nov2021
   )
 
-  def options(form: Form[_], schemeEnds: String, currentMonthYear: YearMonth = YearMonth.now())(
-    implicit messages: Messages): Seq[RadioItem] = {
-    val nov2020 = YearMonth.parse("November 2020", pattern)
+  def options(form: Form[_], schemeEnds: String, currentMonthYear: YearMonth = YearMonth.now())(implicit
+    messages: Messages
+  ): Seq[RadioItem] = {
+    val nov2020        = YearMonth.parse("November 2020", pattern)
     val schemeEndsTime = YearMonth.parse(schemeEnds, pattern)
 
     if (currentMonthYear.compareTo(nov2020) <= 0) {
@@ -76,13 +77,16 @@ object ClaimPeriod extends Enumerable.Implicits {
           value = Some(Nov2020.toString),
           content = Text(messages(s"claimPeriod.${Nov2020.key}")),
           checked = form("value").value.contains(Nov2020.key)
-        ))
+        )
+      )
     } else {
       values
         .filter { value =>
           val ym = YearMonth.parse(value, pattern)
           //the date should be be on or before schemeEnds date && show only dates till current month && current date should be on or before schemeEnds date
-          ym.compareTo(schemeEndsTime) <= 0 && ym.compareTo(currentMonthYear) <= 0 && currentMonthYear.compareTo(schemeEndsTime) <= 0
+          ym.compareTo(schemeEndsTime) <= 0 && ym.compareTo(currentMonthYear) <= 0 && currentMonthYear.compareTo(
+            schemeEndsTime
+          ) <= 0
         }
         .map { value =>
           RadioItem(

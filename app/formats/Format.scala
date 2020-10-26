@@ -22,7 +22,8 @@ import play.api.i18n.Messages
 
 object Format {
 
-  def dateFormatter(implicit messages: Messages): DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy", messages.lang.toLocale)
-  def formattedDate(date: LocalDate)(implicit messages: Messages): String = date.format(dateFormatter)
+  def dateFormatter(implicit messages: Messages): DateTimeFormatter           =
+    DateTimeFormatter.ofPattern("d MMMM yyyy", messages.lang.toLocale)
+  def formattedDate(date: LocalDate)(implicit messages: Messages): String     = date.format(dateFormatter)
   def formattedDate(date: LocalDateTime)(implicit messages: Messages): String = date.format(dateFormatter)
 }

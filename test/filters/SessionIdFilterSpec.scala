@@ -36,7 +36,7 @@ object SessionIdFilterSpec {
 
   val sessionId = "28836767-a008-46be-ac18-695ab140e705"
 
-  class TestSessionIdFilter @Inject()(
+  class TestSessionIdFilter @Inject() (
     override val mat: Materializer,
     sessionCookieBaker: SessionCookieBaker,
     ec: ExecutionContext
@@ -53,9 +53,9 @@ class SessionIdFilterSpec extends WordSpec with MustMatchers with OptionValues w
     import play.api.routing.sird._
 
     lazy val router: Router = Router.from {
-      case GET(p"/test") =>
+      case GET(p"/test")  =>
         defaultActionBuilder.apply { request =>
-          val fromHeader = request.headers.get(HeaderNames.xSessionId).getOrElse("")
+          val fromHeader  = request.headers.get(HeaderNames.xSessionId).getOrElse("")
           val fromSession = request.session.get(SessionKeys.sessionId).getOrElse("")
           Results.Ok(
             Json.obj(

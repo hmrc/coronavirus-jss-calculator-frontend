@@ -32,16 +32,12 @@ trait ModelGenerators {
   implicit lazy val genTemporaryWorkingAgreementPeriod: Gen[ShortTermWorkingAgreementPeriod] =
     for {
       period <- periodGen
-    } yield {
-      ShortTermWorkingAgreementPeriod(period.startDate, period.endDate)
-    }
+    } yield ShortTermWorkingAgreementPeriod(period.startDate, period.endDate)
 
   implicit lazy val genBusinessClosedPeriods: Gen[BusinessClosedPeriods] =
     for {
       period <- periodGen
-    } yield {
-      BusinessClosedPeriods(period.startDate, period.endDate)
-    }
+    } yield BusinessClosedPeriods(period.startDate, period.endDate)
 
   implicit lazy val arbitraryShortTermWorkingAgreementPeriod: Arbitrary[ShortTermWorkingAgreementPeriod] =
     Arbitrary {
@@ -97,9 +93,7 @@ trait ModelGenerators {
   val periodGen: Gen[Period] =
     for {
       date <- datesGen
-    } yield {
-      Period(date, date.plusDays(10))
-    }
+    } yield Period(date, date.plusDays(10))
 
   implicit lazy val arbitraryPeriod: Arbitrary[Period] =
     Arbitrary {

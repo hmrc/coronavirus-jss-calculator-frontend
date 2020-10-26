@@ -29,11 +29,11 @@ class PayFrequencyControllerSpec extends SpecBaseControllerSpecs {
 
   val view = app.injector.instanceOf[PayFrequencyView]
 
-  private lazy val payFrequencyRouteGet = routes.PayFrequencyController.onPageLoad().url
+  private lazy val payFrequencyRouteGet  = routes.PayFrequencyController.onPageLoad().url
   private lazy val payFrequencyRoutePost = routes.PayFrequencyController.onSubmit().url
 
   private val formProvider = new PayFrequencyFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
   def controller(userAnswers: Option[UserAnswers]) = new PayFrequencyController(
     messagesApi,

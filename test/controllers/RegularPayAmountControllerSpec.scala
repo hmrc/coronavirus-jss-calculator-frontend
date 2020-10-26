@@ -32,9 +32,9 @@ class RegularPayAmountControllerSpec extends SpecBaseControllerSpecs {
   val view = app.injector.instanceOf[RegularPayAmountView]
 
   private val formProvider = new RegularPayAmountFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
-  private lazy val regularPayAmountRouteGet = routes.RegularPayAmountController.onPageLoad().url
+  private lazy val regularPayAmountRouteGet  = routes.RegularPayAmountController.onPageLoad().url
   private lazy val regularPayAmountRoutePost = routes.RegularPayAmountController.onSubmit().url
 
   val lastPayDate = LocalDate.of(2020, 10, 30)

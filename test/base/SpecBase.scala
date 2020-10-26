@@ -35,13 +35,13 @@ import play.api.test.FakeRequest
 
 class FakeMetrics extends Metrics {
   override val defaultRegistry: MetricRegistry = new MetricRegistry
-  override val toJson: String = "{}"
+  override val toJson: String                  = "{}"
 }
 
 trait SpecBase extends PlaySpec with TryValues with ScalaFutures with IntegrationPatience with MockitoSugar {
 
-  val index: Index = Index(0)
-  val userAnswersId: String = "id"
+  val index: Index                  = Index(0)
+  val userAnswersId: String         = "id"
   val emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest())

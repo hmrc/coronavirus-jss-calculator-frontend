@@ -31,7 +31,7 @@ case object TemporaryWorkingAgreementPage extends QuestionPage[TemporaryWorkingA
     value match {
       case Some(TemporaryWorkingAgreement.No) =>
         userAnswers.setList(ShortTermWorkingAgreementPeriodPage, Seq.empty)
-      case _ => super.cleanup(value, userAnswers)
+      case _                                  => super.cleanup(value, userAnswers)
     }
 
 }

@@ -33,7 +33,7 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
           twoRequiredKey = "shortTermWorkingAgreementPeriod.error.required.two",
           requiredKey = "shortTermWorkingAgreementPeriod.error.required"
         ),
-        "endDate" -> localDate(
+        "endDate"   -> localDate(
           invalidKey = "shortTermWorkingAgreementPeriod.error.invalid",
           allRequiredKey = "shortTermWorkingAgreementPeriod.error.required.all",
           twoRequiredKey = "shortTermWorkingAgreementPeriod.error.required.two",

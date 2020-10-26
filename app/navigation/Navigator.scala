@@ -26,59 +26,45 @@ import pages._
 import play.api.mvc.Call
 
 @Singleton
-class Navigator @Inject()() {
+class Navigator @Inject() () {
 
   private val normalRoutes: Page => UserAnswers => Call = {
-    case ClaimPeriodPage =>
-      _ =>
-        routes.PayFrequencyController.onPageLoad()
-    case PayFrequencyPage =>
-      _ =>
-        routes.LastPayDateController.onPageLoad()
-    case PayMethodPage =>
-      userAnswers =>
-        payMethodRoutes(userAnswers)
-    case LastPayDatePage =>
-      userAnswers =>
-        lastPayDateRoute(userAnswers)
-    case EndPayDatePage =>
-      _ =>
-        routes.PayMethodController.onPageLoad()
-    case PayPeriodsPage =>
-      userAnswers =>
-        payPeriodsRoute(userAnswers)
+    case ClaimPeriodPage       =>
+      _ => routes.PayFrequencyController.onPageLoad()
+    case PayFrequencyPage      =>
+      _ => routes.LastPayDateController.onPageLoad()
+    case PayMethodPage         =>
+      userAnswers => payMethodRoutes(userAnswers)
+    case LastPayDatePage       =>
+      userAnswers => lastPayDateRoute(userAnswers)
+    case EndPayDatePage        =>
+      _ => routes.PayMethodController.onPageLoad()
+    case PayPeriodsPage        =>
+      userAnswers => payPeriodsRoute(userAnswers)
     case SelectWorkPeriodsPage =>
-      _ =>
-        routes.RegularPayAmountController.onPageLoad()
+      _ => routes.RegularPayAmountController.onPageLoad()
 
-    case RegularPayAmountPage =>
-      _ =>
-        routes.TemporaryWorkingAgreementController.onPageLoad()
+    case RegularPayAmountPage          =>
+      _ => routes.TemporaryWorkingAgreementController.onPageLoad()
     case TemporaryWorkingAgreementPage =>
-      userAnswers =>
-        temporaryWorkingAgreementRoutes(userAnswers)
-    case BusinessClosedPage =>
-      userAnswers =>
-        businessClosedRoutes(userAnswers)
-    case _ =>
-      _ =>
-        routes.StartPageController.onPageLoad()
+      userAnswers => temporaryWorkingAgreementRoutes(userAnswers)
+    case BusinessClosedPage            =>
+      userAnswers => businessClosedRoutes(userAnswers)
+    case _                             =>
+      _ => routes.StartPageController.onPageLoad()
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, idx: Option[Int] = None): Call =
     idx.fold(normalRoutes(page)(userAnswers))(idx => idxRoutes(page)(idx, userAnswers))
 
   private val idxRoutes: Page => (Int, UserAnswers) => Call = {
-    case UsualAndActualHoursPage => selectUsualAndActualHoursPageRoutes
+    case UsualAndActualHoursPage             => selectUsualAndActualHoursPageRoutes
     case ShortTermWorkingAgreementPeriodPage =>
-      (_, _) =>
-        routes.CheckYourSTWAPeriodsController.onPageLoad()
-    case BusinessClosedPeriodsPage =>
-      (_, _) =>
-        routes.CheckYourBusinessClosedPeriodsController.onPageLoad()
-    case _ =>
-      (_, _) =>
-        routes.StartPageController.onPageLoad()
+      (_, _) => routes.CheckYourSTWAPeriodsController.onPageLoad()
+    case BusinessClosedPeriodsPage           =>
+      (_, _) => routes.CheckYourBusinessClosedPeriodsController.onPageLoad()
+    case _                                   =>
+      (_, _) => routes.StartPageController.onPageLoad()
   }
 
   private def payPeriodsRoute(userAnswers: UserAnswers): Call =
@@ -99,8 +85,8 @@ class Navigator @Inject()() {
     userAnswers.get(SelectWorkPeriodsPage) match {
       case Some(workPeriods) if workPeriods.isDefinedAt(previousIdx) =>
         routes.UsualAndActualHoursController.onPageLoad(previousIdx + 1)
-      case Some(_) => routes.ConfirmationController.onPageLoad()
-      case _       => routes.SelectWorkPeriodsController.onPageLoad()
+      case Some(_)                                                   => routes.ConfirmationController.onPageLoad()
+      case _                                                         => routes.SelectWorkPeriodsController.onPageLoad()
     }
   }
 
@@ -121,8 +107,10 @@ class Navigator @Inject()() {
   private def businessClosedRoutes(userAnswers: UserAnswers): Call =
     (userAnswers.get(BusinessClosedPage), userAnswers.get(TemporaryWorkingAgreementPage)) match {
       case (Some(BusinessClosed.Yes), _)                                  => routes.BusinessClosedPeriodsController.onPageLoad(1)
-      case (Some(BusinessClosed.No), Some(TemporaryWorkingAgreement.Yes)) => routes.UsualAndActualHoursController.onPageLoad(1)
-      case (Some(BusinessClosed.No), Some(TemporaryWorkingAgreement.No))  => routes.YouAreNotEligibleController.onPageLoad()
+      case (Some(BusinessClosed.No), Some(TemporaryWorkingAgreement.Yes)) =>
+        routes.UsualAndActualHoursController.onPageLoad(1)
+      case (Some(BusinessClosed.No), Some(TemporaryWorkingAgreement.No))  =>
+        routes.YouAreNotEligibleController.onPageLoad()
       case _                                                              => routes.BusinessClosedController.onPageLoad()
     }
 }

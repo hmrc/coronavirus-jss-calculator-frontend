@@ -31,7 +31,7 @@ import views.html.UsualAndActualHoursView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UsualAndActualHoursController @Inject()(
+class UsualAndActualHoursController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
@@ -42,7 +42,8 @@ class UsualAndActualHoursController @Inject()(
   val controllerComponents: MessagesControllerComponents,
   view: UsualAndActualHoursView
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport {
+    extends FrontendBaseController
+    with I18nSupport {
 
   private val form = formProvider()
 
@@ -57,20 +58,21 @@ class UsualAndActualHoursController @Inject()(
     Ok(view(preparedForm, idx, startDateToShow, endDateToShow))
   }
 
-  def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => {
-          val (startDateToShow, endDateToShow) = getStartAndEndDatesToShow(idx - 1, request)
-          Future.successful(BadRequest(view(formWithErrors, idx, startDateToShow, endDateToShow)))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UsualAndActualHoursPage, value, Some(idx)))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(UsualAndActualHoursPage, NormalMode, updatedAnswers, Some(idx)))
-      )
+  def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
+    implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
+            val (startDateToShow, endDateToShow) = getStartAndEndDatesToShow(idx - 1, request)
+            Future.successful(BadRequest(view(formWithErrors, idx, startDateToShow, endDateToShow)))
+          },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(UsualAndActualHoursPage, value, Some(idx)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(UsualAndActualHoursPage, NormalMode, updatedAnswers, Some(idx)))
+        )
   }
 
   private def getStartAndEndDatesToShow(idx: Int, request: DataRequest[_]) = {
@@ -86,7 +88,8 @@ class UsualAndActualHoursController @Inject()(
     }
 
     val startDateToShow =
-      if (workPeriod.startDate.isBefore(supportClaimPeriod.startDate)) supportClaimPeriod.startDate else workPeriod.startDate
+      if (workPeriod.startDate.isBefore(supportClaimPeriod.startDate)) supportClaimPeriod.startDate
+      else workPeriod.startDate
 
     val endDateToShow = workPeriod.endDate
 
