@@ -221,7 +221,7 @@ payMethod.heading = How is this employee paid?
 payMethod.p1 = This is the basic amount. Exclude extra payments such as overtime.
 payMethod.regular = A regular amount each time
 payMethod.variable = A variable amount each time
-payMethod.error.required = Select a pay method
+payMethod.error.required = Select how this employee is paid
 
 lastPayDate.title = What’s the last day this employee was paid for before {0}?
 lastPayDate.heading = What’s the last day this employee was paid for before {0}?
