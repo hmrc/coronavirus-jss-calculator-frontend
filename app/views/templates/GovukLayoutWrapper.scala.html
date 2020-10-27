@@ -119,7 +119,10 @@
 
 @content = {
 @contentBlock
-@scriptElem
+
+@if(appConfig.nuanceWebchatEnabled){
+    @scriptElem
+}
 
 
 <div class="govuk-!-margin-top-8">
