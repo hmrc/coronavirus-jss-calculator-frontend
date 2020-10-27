@@ -72,4 +72,10 @@ class UsualAndActualHoursFormProviderSpec extends DecimalFieldBehaviours {
       requiredError = FormError(actualHours, "actualHours.error.required")
     )
   }
+
+  "errors should be shown if actual hours is more than usual hours" in {
+
+    val result = form.bind(Map("usualHours" -> "20.00", "actualHours" -> "21.00"))
+    result.errors shouldEqual Seq(FormError("", "actualHours.cannot.be.morethan.usualHours", Seq.empty))
+  }
 }

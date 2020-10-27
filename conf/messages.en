@@ -304,6 +304,7 @@ actualHours.error.nonNumeric = Enter your actual hours using numbers
 actualHours.error.required = Enter your actual hours
 usualHours.error.min = Usual hours can not be negative
 actualHours.error.min = Actual hours can not be negative
+actualHours.cannot.be.morethan.usualHours = Actual hours can not be more than usual hours
 
 confirmation.title = confirmation
 confirmation.heading = confirmation
