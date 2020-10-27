@@ -41,11 +41,17 @@
 
         @p(Html(Messages("payPeriods.p1")))
 
-        <ul class="govuk-list govuk-list--bullet">
+        @if(periods.size == 1) {
+          <div class="govuk-inset-text">
+          @messages("payPeriods.from.to", dateToStringWithoutYear(periods.head.startDate), dateToString(periods.head.endDate))
+          </div>
+        } else {
+            <ul class="govuk-list govuk-list--bullet">
             @periods.map { period =>
                 <li>@messages("payPeriods.from.to", dateToStringWithoutYear(period.startDate), dateToString(period.endDate))</li>
             }
-        </ul>
+            </ul>
+        }
 
         @p(Html(Messages("payPeriods.p2")))
 

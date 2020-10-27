@@ -32,28 +32,24 @@
 
         @formHelper(action = BusinessClosedPeriodsController.onSubmit(idx), 'autoComplete -> "off") {
 
-            @errorSummary(form.errors, Some("date-value.day"))
+            @errorSummary(form.errors, errorFieldSuffix = Some(".day"))
 
             @h1(messages("businessClosedPeriods.heading"))
 
             @p(Html(Messages("businessClosedPeriods.p1")))
 
-            @p(Html(Messages("businessClosedPeriods.startDate.label")))
-
             @inputDate(
                 form = form,
-                legendContent = "",
+                legendContent = "businessClosedPeriods.startDate.label",
                 id = "startDate",
                 hintText = Some("businessClosedPeriods.startDate.hint"),
                 legendAsPageHeading = false,
                 legendClasses = "govuk-label--m"
             )
 
-            @p(Html(Messages("businessClosedPeriods.endDate.label")))
-
             @inputDate(
                 form = form,
-                legendContent = "",
+                legendContent = "businessClosedPeriods.endDate.label",
                 id = "endDate",
                 hintText = Some("businessClosedPeriods.endDate.hint"),
                 legendAsPageHeading = false,
