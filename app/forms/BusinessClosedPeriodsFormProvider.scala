@@ -17,6 +17,7 @@
 package forms
 
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 import forms.mappings.Mappings
 import javax.inject.Inject
@@ -49,6 +50,10 @@ class BusinessClosedPeriodsFormProvider @Inject() extends Mappings {
           bcp => bcp.endDate.compareTo(bcp.startDate) > 0
         )
         .verifying("businessClosedPeriods.periods.should.not.overlap", bcp => !isIntersecting(previousBCPeriods, bcp))
+        .verifying(
+          "businessClosedPeriods.period.shouldbe.minimum.7.days",
+          bcp => ChronoUnit.DAYS.between(bcp.startDate, bcp.endDate) >= 6 //endDate is exclusive for 'between' so '6'
+        )
     )
 
   private def isDateWithInClaim(date: LocalDate, claimPeriod: SupportClaimPeriod) =

@@ -17,6 +17,7 @@
 package forms
 
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 import forms.mappings.Mappings
 import javax.inject.Inject
@@ -51,6 +52,10 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
         .verifying(
           "shortTermWorkingAgreementPeriod.periods.should.not.overlap",
           swa => !isIntersecting(previousTWAPeriods, swa)
+        )
+        .verifying(
+          "shortTermWorkingAgreementPeriod.period.shouldbe.minimum.7.days",
+          swa => ChronoUnit.DAYS.between(swa.startDate, swa.endDate) >= 6 //endDate is exclusive for 'between' so '6'
         )
     )
 
