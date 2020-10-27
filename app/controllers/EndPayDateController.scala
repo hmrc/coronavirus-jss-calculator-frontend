@@ -23,7 +23,7 @@ import forms.EndPayDateFormProvider
 import javax.inject.Inject
 import models.NormalMode
 import navigation.Navigator
-import pages.{EndPayDatePage, LastPayDatePage}
+import pages.{ClaimPeriodPage, EndPayDatePage, LastPayDatePage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -46,35 +46,39 @@ class EndPayDateController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(lastPayDate: LocalDate)(implicit messages: Messages) = formProvider(lastPayDate)
+  private def form(lastPayDate: LocalDate, claimEnd: LocalDate)(implicit messages: Messages) =
+    formProvider(lastPayDate, claimEnd)
 
   def onPageLoad(): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
-    request.userAnswers.get(LastPayDatePage) match {
-      case Some(date) =>
+    (request.userAnswers.get(LastPayDatePage), request.userAnswers.get(ClaimPeriodPage)) match {
+      case (Some(lastPayDate), Some(claimPeriod)) =>
         val preparedForm = request.userAnswers.get(EndPayDatePage) match {
-          case None        => form(date)
-          case Some(value) => form(date).fill(value)
+          case None        => form(lastPayDate, claimPeriod.supportClaimPeriod.endDate)
+          case Some(value) => form(lastPayDate, claimPeriod.supportClaimPeriod.endDate).fill(value)
         }
-        Ok(view(preparedForm, date))
+        Ok(view(preparedForm, lastPayDate))
 
-      case None => Redirect(routes.LastPayDateController.onPageLoad())
+      case (None, _) => Redirect(routes.LastPayDateController.onPageLoad())
+      case (_, None) => Redirect(routes.ClaimPeriodController.onPageLoad())
     }
   }
 
   def onSubmit(): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
-    request.userAnswers.get(LastPayDatePage) match {
-      case Some(date) =>
-        form(date)
+    (request.userAnswers.get(LastPayDatePage), request.userAnswers.get(ClaimPeriodPage)) match {
+      case (Some(lastPayDate), Some(claimPeriod)) =>
+        form(lastPayDate, claimPeriod.supportClaimPeriod.endDate)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, date))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lastPayDate))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(EndPayDatePage, value))
                 _              <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(EndPayDatePage, NormalMode, updatedAnswers))
           )
-      case None       => Future.successful(Redirect(routes.LastPayDateController.onPageLoad()))
+
+      case (None, _) => Future.successful(Redirect(routes.LastPayDateController.onPageLoad()))
+      case (_, None) => Future.successful(Redirect(routes.ClaimPeriodController.onPageLoad()))
     }
 
   }

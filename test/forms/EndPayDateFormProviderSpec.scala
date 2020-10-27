@@ -27,9 +27,10 @@ class EndPayDateFormProviderSpec extends SpecBaseControllerSpecs {
   val dateBehaviours = new DateBehaviours()
   import dateBehaviours._
 
-  def form(lastPayDate: LocalDate) = new EndPayDateFormProvider()(lastPayDate)
+  def form(lastPayDate: LocalDate, claimEndDate: LocalDate) = new EndPayDateFormProvider()(lastPayDate, claimEndDate)
 
-  val lastPayDate = LocalDate.of(2020, 10, 31)
+  val lastPayDate  = LocalDate.of(2020, 10, 31)
+  val claimEndDate = LocalDate.of(2020, 11, 30)
 
   ".value" should {
 
@@ -40,7 +41,7 @@ class EndPayDateFormProviderSpec extends SpecBaseControllerSpecs {
         max = LocalDate.now(ZoneOffset.UTC)
       )
 
-      behave like dateField(form(lastPayDate), "value", validData)
+      behave like dateField(form(lastPayDate, claimEndDate), "value", validData)
     }
 
     "not bind any dates earlier than LastPayDate" in {
@@ -51,14 +52,28 @@ class EndPayDateFormProviderSpec extends SpecBaseControllerSpecs {
         s"$value.year"  -> inputDate.getYear.toString
       )
 
-      val result = form(lastPayDate).bind(data)
+      val result = form(lastPayDate, claimEndDate).bind(data)
       result.errors shouldBe List(
         FormError("value", List("endPayDate.error.invalid.must.be.after"), Array("31 October 2020"))
       )
     }
 
+    "not bind any dates after claim end date" in {
+      val inputDate = claimEndDate.plusDays(1)
+      val data      = Map(
+        s"$value.day"   -> inputDate.getDayOfMonth.toString,
+        s"$value.month" -> inputDate.getMonthValue.toString,
+        s"$value.year"  -> inputDate.getYear.toString
+      )
+
+      val result = form(lastPayDate, claimEndDate).bind(data)
+      result.errors shouldBe List(
+        FormError("value", List("endPayDate.error.invalid.must.be.before"), Array("30 November 2020"))
+      )
+    }
+
     "fail to bind when no answers are selected" in {
-      behave like mandatoryDateField(form(lastPayDate), "value", "endPayDate.error.required.all")
+      behave like mandatoryDateField(form(lastPayDate, claimEndDate), "value", "endPayDate.error.required.all")
     }
   }
 }
