@@ -104,21 +104,18 @@
 @nuanceUrl = @{if (appConfig.preProdMode) {appConfig.nuancePreProdUrl} else {appConfig.nuanceUrl}}
 
 @scriptElem = {
-@if(!appConfig.performanceTest){
-<div id="HMRC_Anchored_1"></div>
-
-<script type="text/javascript">
-        var nuanceData = {
-            "mdtpdfSessionID" : "@{nuanceData.nuanceSessionId}",
-            "mdtpSessionID" : "@{nuanceData.mdtpSessionID}",
-            "deviceID" : "@{nuanceData.deviceID}"
-        }
-    </script>
-
-<script id="webchat-tag" type="text/javascript" src=@nuanceUrl></script>
-
-}}
-
+    @if(!appConfig.performanceTest){
+        <div id="HMRC_Anchored_1"></div>
+        <script type="text/javascript">
+                var nuanceData = {
+                    "mdtpdfSessionID" : "@{nuanceData.nuanceSessionId}",
+                    "mdtpSessionID" : "@{nuanceData.mdtpSessionID}",
+                    "deviceID" : "@{nuanceData.deviceID}"
+                }
+            </script>
+        <script id="webchat-tag" type="text/javascript" src=@nuanceUrl></script>
+    }
+}
 
 @content = {
 @contentBlock
