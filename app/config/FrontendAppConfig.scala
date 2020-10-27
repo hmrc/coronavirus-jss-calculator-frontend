@@ -69,6 +69,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val calculatorVersion: String = configuration.get[String]("calculator.version")
 
   val nuanceUrl: String                  = "https://hmrc-uk.digital.nuance.com/chatskins/launch/inqChatLaunch10006719.js"
+  val nuancePreProdUrl: String           = "https://hmrc-uk-preprod.digital.nuance.com/chatskins/launch/inqChatLaunch10006719.js"
   lazy val nuanceWebchatEnabled: Boolean = configuration.get[Boolean]("features.nuance.webchat")
   val performanceTest: Boolean           = configuration.get[Boolean](s"performance-test.mode")
+  val preProdMode: Boolean               = configuration.get[Boolean](s"pre-prod.mode")
 }

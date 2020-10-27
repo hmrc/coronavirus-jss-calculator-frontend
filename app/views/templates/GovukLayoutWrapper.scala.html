@@ -101,6 +101,8 @@
         HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, request = Some(request)))
 }
 
+@nuanceUrl = @{if (appConfig.preProdMode) {appConfig.nuancePreProdUrl} else {appConfig.nuanceUrl}}
+
 @scriptElem = {
 @if(!appConfig.performanceTest){
 <div id="HMRC_Anchored_1"></div>
@@ -113,7 +115,7 @@
         }
     </script>
 
-<script id="webchat-tag" type="text/javascript" src=@appConfig.nuanceUrl></script>
+<script id="webchat-tag" type="text/javascript" src=@nuanceUrl></script>
 
 }}
 
