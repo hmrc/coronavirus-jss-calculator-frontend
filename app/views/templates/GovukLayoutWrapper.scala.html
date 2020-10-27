@@ -102,7 +102,7 @@
 }
 
 @scriptElem = {
-
+@if(!appConfig.performanceTest){
 <div id="HMRC_Anchored_1"></div>
 
 <script type="text/javascript">
@@ -114,7 +114,8 @@
     </script>
 
 <script id="webchat-tag" type="text/javascript" src=@appConfig.nuanceUrl></script>
-}
+
+}}
 
 
 @content = {

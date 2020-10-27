@@ -70,4 +70,5 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val nuanceUrl: String                  = "https://hmrc-uk.digital.nuance.com/chatskins/launch/inqChatLaunch10006719.js"
   lazy val nuanceWebchatEnabled: Boolean = configuration.get[Boolean]("features.nuance.webchat")
+  val performanceTest: Boolean           = configuration.get[Boolean](s"performance-test.mode")
 }
