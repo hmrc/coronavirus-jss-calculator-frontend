@@ -292,14 +292,15 @@ whatToInclude.doNotInclude.l3 = non-monetary benefits like benefits in kind (suc
 
 usualAndActualHours.title = What were the employee’s usual and actual hours from {0} to {1}?
 usualAndActualHours.heading = What were the employee’s usual and actual hours from {0} to {1}?
+usualAndActualHours.p1 = Actual hours cannot be greater than usual hours.
 usualHours.p1 = Usual hours worked in this period
 usualHours.hint = Enter the usual hours that would be worked outside the scheme in decimal format, such as 124.4
-usualHours.error.nonNumeric = Enter your usual hours using numbers
-usualHours.error.required = Enter your usual hours
+usualHours.error.nonNumeric = Enter the employee’s usual hours using numbers
+usualHours.error.required = Enter the employee’s usual hours
 actualHours.p1 = Actual hours worked in this period
 actualHours.hint = Enter the actual hours that would be worked outside the scheme in decimal format, such as 124.4
-actualHours.error.nonNumeric = Enter your actual hours using numbers
-actualHours.error.required = Enter your actual hours
+actualHours.error.nonNumeric = Enter the employee’s actual hours using numbers
+actualHours.error.required = Enter the employee’s actual hours
 usualHours.error.min = Usual hours can not be negative
 actualHours.error.min = Actual hours can not be negative
 

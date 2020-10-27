@@ -35,6 +35,8 @@
 
         @h1(messages("usualAndActualHours.heading", dateToStringWithoutYear(startDate), dateToString(endDate)))
 
+        <p class="govuk-body">@messages("usualAndActualHours.p1")</p>
+
         @inputNumber(
             form,
             id = "usualHours",
