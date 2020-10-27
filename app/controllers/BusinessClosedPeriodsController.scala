@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.BusinessClosedPeriodsFormProvider
 import javax.inject.Inject
-import models.NormalMode
+import models.{BusinessClosedWithDates, NormalMode}
 import navigation.Navigator
 import pages.BusinessClosedPeriodsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,12 +44,14 @@ class BusinessClosedPeriodsController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form = formProvider()
+  private def form(previousBCPeriods: Seq[BusinessClosedWithDates]) = formProvider(previousBCPeriods)
 
   def onPageLoad(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(BusinessClosedPeriodsPage, Some(idx)) match {
-      case None        => form
-      case Some(value) => form.fill(value)
+    val previousBCPeriods =
+      request.userAnswers.getList(BusinessClosedPeriodsPage)
+    val preparedForm      = request.userAnswers.get(BusinessClosedPeriodsPage, Some(idx)) match {
+      case None        => form(previousBCPeriods)
+      case Some(value) => form(previousBCPeriods).fill(value)
     }
 
     Ok(view(preparedForm, idx))
@@ -57,7 +59,10 @@ class BusinessClosedPeriodsController @Inject() (
 
   def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
     implicit request =>
-      form
+      val previousBCPeriods =
+        request.userAnswers.getList(BusinessClosedPeriodsPage).zipWithIndex.filter(_._2 != idx - 1).map(_._1)
+
+      form(previousBCPeriods)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),

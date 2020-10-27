@@ -16,7 +16,7 @@
 
 package controllers
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.LocalDate
 
 import base.SpecBaseControllerSpecs
 import forms.ShortTermWorkingAgreementPeriodFormProvider
@@ -34,9 +34,10 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
   val view = app.injector.instanceOf[ShortTermWorkingAgreementPeriodView]
 
   private val formProvider = new ShortTermWorkingAgreementPeriodFormProvider()
-  private def form         = formProvider()
+  private def form         = formProvider
 
-  private val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  private val startDate = LocalDate.now().minusDays(10)
+  private val endDate   = LocalDate.now()
 
   private lazy val shortTermWorkingAgreementPeriodRouteGet  =
     routes.ShortTermWorkingAgreementPeriodController.onPageLoad(1).url
@@ -48,12 +49,12 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
   private lazy val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
     fakeRequest(POST, shortTermWorkingAgreementPeriodRoutePost)
       .withFormUrlEncodedBody(
-        "startDate.day"   -> validAnswer.getDayOfMonth.toString,
-        "startDate.month" -> validAnswer.getMonthValue.toString,
-        "startDate.year"  -> validAnswer.getYear.toString,
-        "endDate.day"     -> validAnswer.getDayOfMonth.toString,
-        "endDate.month"   -> validAnswer.getMonthValue.toString,
-        "endDate.year"    -> validAnswer.getYear.toString
+        "startDate.day"   -> startDate.getDayOfMonth.toString,
+        "startDate.month" -> startDate.getMonthValue.toString,
+        "startDate.year"  -> startDate.getYear.toString,
+        "endDate.day"     -> endDate.getDayOfMonth.toString,
+        "endDate.month"   -> endDate.getMonthValue.toString,
+        "endDate.year"    -> endDate.getYear.toString
       )
 
   def controller(userAnswers: Option[UserAnswers]) = new ShortTermWorkingAgreementPeriodController(
@@ -68,7 +69,7 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
     view
   )
 
-  val stwa = TemporaryWorkingAgreementWithDates(validAnswer, validAnswer.plusDays(10))
+  val stwa = TemporaryWorkingAgreementWithDates(startDate, endDate)
 
   "ShortTermWorkingAgreementPeriod Controller" must {
 
@@ -81,7 +82,7 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, 1)(request, messages).toString
+        view(form(List.empty), 1)(request, messages).toString
     }
   }
 
@@ -96,7 +97,7 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
     status(result) mustEqual OK
 
     contentAsString(result) mustEqual
-      view(form.fill(stwa), 1)(request, messages).toString
+      view(form(List.empty).fill(stwa), 1)(request, messages).toString
   }
 
   "redirect to check-your-answers when valid data is submitted" in {

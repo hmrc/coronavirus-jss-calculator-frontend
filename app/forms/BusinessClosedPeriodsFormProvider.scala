@@ -16,6 +16,8 @@
 
 package forms
 
+import java.time.LocalDate
+
 import forms.mappings.Mappings
 import javax.inject.Inject
 import models.BusinessClosedWithDates
@@ -24,7 +26,7 @@ import play.api.data.Forms.mapping
 
 class BusinessClosedPeriodsFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[BusinessClosedWithDates] =
+  def apply(previousBCPeriods: Seq[BusinessClosedWithDates]): Form[BusinessClosedWithDates] =
     Form(
       mapping(
         "startDate" -> localDate(
@@ -40,5 +42,18 @@ class BusinessClosedPeriodsFormProvider @Inject() extends Mappings {
           requiredKey = "businessClosedPeriods.error.required"
         )
       )(BusinessClosedWithDates.apply)(BusinessClosedWithDates.unapply)
+        .verifying(
+          "businessClosedPeriods.endDate.must.be.after.startDate",
+          bcp => bcp.endDate.compareTo(bcp.startDate) > 0
+        )
+        .verifying("businessClosedPeriods.periods.should.not.overlap", bcp => !isIntersecting(previousBCPeriods, bcp))
     )
+
+  private def isIntersecting(previousPeriods: Seq[BusinessClosedWithDates], newPeriod: BusinessClosedWithDates) =
+    previousPeriods.exists(p =>
+      isDateInteractsPeriod(newPeriod.startDate, p) || isDateInteractsPeriod(newPeriod.endDate, p)
+    )
+
+  private def isDateInteractsPeriod(date: LocalDate, period: BusinessClosedWithDates) =
+    date.compareTo(period.startDate) >= 0 && date.compareTo(period.endDate) <= 0;
 }
