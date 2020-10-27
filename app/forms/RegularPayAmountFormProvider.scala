@@ -29,7 +29,7 @@ class RegularPayAmountFormProvider @Inject() extends Mappings {
       "value" -> bigDecimal(
         requiredKey = "regularPayAmount.error.required",
         nonNumericKey = "regularPayAmount.error.nonNumeric"
-      ).verifying(minimumValue(BigDecimal(0.0), "regularPayAmount.error.negative"))
+      ).verifying(greaterThan(BigDecimal(0.0), "regularPayAmount.error.negative"))
         .verifying(maxTwoDecimals())
     )(Amount.apply)(Amount.unapply)
   )

@@ -23,7 +23,6 @@ class RegularPayAmountFormProviderSpec extends BigDecimalFieldBehaviours {
 
   val requiredKey = "regularPayAmount.error.required"
   val invalidKey  = "regularPayAmount.error.nonNumeric"
-  val maxLength   = 100
 
   val form = new RegularPayAmountFormProvider()()
 
@@ -36,6 +35,12 @@ class RegularPayAmountFormProviderSpec extends BigDecimalFieldBehaviours {
       fieldName,
       error = FormError(fieldName, invalidKey)
     )
+
+    "not allow zero for pay" in {
+      form.bind(Map("value" -> "0.0")).errors shouldBe Seq(
+        FormError("value", "regularPayAmount.error.negative")
+      )
+    }
 
     behave like mandatoryField(
       form,
