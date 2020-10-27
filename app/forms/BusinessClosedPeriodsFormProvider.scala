@@ -29,14 +29,10 @@ class BusinessClosedPeriodsFormProvider @Inject() extends Mappings {
       mapping(
         "startDate" -> localDate(
           invalidKey = "businessClosedPeriods.error.invalid",
-          allRequiredKey = "businessClosedPeriods.error.required.all",
-          twoRequiredKey = "businessClosedPeriods.error.required.two",
           requiredKey = "businessClosedPeriods.error.required"
         ),
         "endDate"   -> localDate(
           invalidKey = "businessClosedPeriods.error.invalid",
-          allRequiredKey = "businessClosedPeriods.error.required.all",
-          twoRequiredKey = "businessClosedPeriods.error.required.two",
           requiredKey = "businessClosedPeriods.error.required"
         )
       )(BusinessClosedWithDates.apply)(BusinessClosedWithDates.unapply)

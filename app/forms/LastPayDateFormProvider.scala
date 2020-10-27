@@ -30,9 +30,8 @@ class LastPayDateFormProvider @Inject() extends Mappings {
     Form(
       "value" -> localDate(
         invalidKey = "lastPayDate.error.invalid",
-        allRequiredKey = "lastPayDate.error.required.all",
-        twoRequiredKey = "lastPayDate.error.required.two",
-        requiredKey = "lastPayDate.error.required"
+        requiredKey = "lastPayDate.error.required",
+        args = Seq(ViewUtils.dateToString(firstDayOfClaim))
       ).verifying(
         maxDate(firstDayOfClaim, "lastPayDate.error.invalid.must.be.before", ViewUtils.dateToString(firstDayOfClaim))
       )

@@ -230,10 +230,8 @@ lastPayDate.p2 = We’ll use this date to work out all the pay periods that cove
 lastPayDate.details.title = What is a pay period?
 lastPayDate.details.p1 = A ‘pay period’ is the period when the employee is paid for, such as weekly or monthly. The end date of a pay period is the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually receives their pay.
 lastPayDate.hint = For example 01 11 2020
-lastPayDate.error.required.all = Enter the correct date to apply for the Job Support scheme
-lastPayDate.error.required.two = Enter the correct date to apply for the Job Support scheme
-lastPayDate.error.required = Enter the correct date to apply for the Job Support scheme
-lastPayDate.error.invalid = Enter the correct date to apply for the Job Support scheme
+lastPayDate.error.required = Enter the last date the employee was paid before {0}
+lastPayDate.error.invalid = Enter the last date the employee was paid before {0}
 lastPayDate.error.invalid.must.be.before = The last pay date must be before {0}
 
 month.1 = January
@@ -375,10 +373,8 @@ endPayDate.p1 = This is the last day in the pay period, not the date they receiv
 endPayDate.details.title = What is a pay period?
 endPayDate.details.p1 = A ‘pay period’ is the period when the employee is paid for, such as weekly or monthly. The end date of a pay period is the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually receives their pay.
 endPayDate.hint = For example 01 12 2020
-endPayDate.error.required.all = Enter the correct date to apply for the Job Support scheme
-endPayDate.error.required.two = Enter the correct date to apply for the Job Support scheme
-endPayDate.error.required = Enter the correct date to apply for the Job Support scheme
-endPayDate.error.invalid = Enter the correct date to apply for the Job Support scheme
+endPayDate.error.required = Enter the end of the next pay period after {0}
+endPayDate.error.invalid = Enter the end of the next pay period after {0}
 endPayDate.error.invalid.must.be.after = The end pay date must be after {0}
 
 comingSoon.title = We are unable to do this calculation at the moment
@@ -407,8 +403,6 @@ shortTermWorkingAgreementPeriod.startDate.label = Start date
 shortTermWorkingAgreementPeriod.endDate.label = End date
 shortTermWorkingAgreementPeriod.startDate.hint = For example, 1 3 2020.
 shortTermWorkingAgreementPeriod.endDate.hint = For example, 7 3 2020.
-shortTermWorkingAgreementPeriod.error.required.all = Enter valid dates
-shortTermWorkingAgreementPeriod.error.required.two = Enter valid dates
 shortTermWorkingAgreementPeriod.error.required = Enter valid dates
 shortTermWorkingAgreementPeriod.error.invalid = Enter valid dates
 
@@ -423,8 +417,6 @@ businessClosedPeriods.startDate.label = Start date
 businessClosedPeriods.endDate.label = End date
 businessClosedPeriods.startDate.hint = For example, 1 3 2020.
 businessClosedPeriods.endDate.hint = For example, 7 3 2020.
-businessClosedPeriods.error.required.all = Enter valid dates
-businessClosedPeriods.error.required.two = Enter valid dates
 businessClosedPeriods.error.required = Enter valid dates
 businessClosedPeriods.error.invalid = Enter valid dates
 
