@@ -16,7 +16,7 @@
 
 package controllers
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.LocalDate
 
 import base.SpecBaseControllerSpecs
 import forms.BusinessClosedPeriodsFormProvider
@@ -34,9 +34,10 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
   val view = app.injector.instanceOf[BusinessClosedPeriodsView]
 
   private val formProvider = new BusinessClosedPeriodsFormProvider()
-  private def form         = formProvider()
+  private def form         = formProvider
 
-  private val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  private val startDate = LocalDate.now().minusDays(10)
+  private val endDate   = LocalDate.now()
 
   private lazy val businessClosedPeriodsRouteGet  = routes.BusinessClosedPeriodsController.onPageLoad(1).url
   private lazy val businessClosedPeriodsRoutePost = routes.BusinessClosedPeriodsController.onSubmit(1).url
@@ -46,12 +47,12 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
   private lazy val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
     fakeRequest(POST, businessClosedPeriodsRoutePost)
       .withFormUrlEncodedBody(
-        "startDate.day"   -> validAnswer.getDayOfMonth.toString,
-        "startDate.month" -> validAnswer.getMonthValue.toString,
-        "startDate.year"  -> validAnswer.getYear.toString,
-        "endDate.day"     -> validAnswer.getDayOfMonth.toString,
-        "endDate.month"   -> validAnswer.getMonthValue.toString,
-        "endDate.year"    -> validAnswer.getYear.toString
+        "startDate.day"   -> startDate.getDayOfMonth.toString,
+        "startDate.month" -> startDate.getMonthValue.toString,
+        "startDate.year"  -> startDate.getYear.toString,
+        "endDate.day"     -> endDate.getDayOfMonth.toString,
+        "endDate.month"   -> endDate.getMonthValue.toString,
+        "endDate.year"    -> endDate.getYear.toString
       )
 
   def controller(userAnswers: Option[UserAnswers]) = new BusinessClosedPeriodsController(
@@ -66,7 +67,7 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
     view
   )
 
-  val bcPeriods = BusinessClosedWithDates(validAnswer, validAnswer.plusDays(1))
+  val bcPeriods = BusinessClosedWithDates(startDate, endDate)
 
   "BusinessClosedPeriods Controller" must {
 
@@ -79,7 +80,7 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, 1)(request, messages).toString
+        view(form(List.empty), 1)(request, messages).toString
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -93,11 +94,11 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(bcPeriods), 1)(request, messages).toString
+        view(form(List.empty).fill(bcPeriods), 1)(request, messages).toString
     }
   }
 
-  "redirect to add more dates when valid data is submitted and radio answer is yes" in {
+  "redirect to /check-your-business-closed-periods when valid data is submitted" in {
 
     val result = controller(Some(emptyUserAnswers)).onSubmit(1)(postRequest)
 
@@ -111,12 +112,12 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
     val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
       fakeRequest(POST, businessClosedPeriodsRoutePost)
         .withFormUrlEncodedBody(
-          "startDate.day"   -> validAnswer.getDayOfMonth.toString,
-          "startDate.month" -> validAnswer.getMonthValue.toString,
-          "startDate.year"  -> validAnswer.getYear.toString,
-          "endDate.day"     -> validAnswer.getDayOfMonth.toString,
-          "endDate.month"   -> validAnswer.getMonthValue.toString,
-          "endDate.year"    -> validAnswer.getYear.toString
+          "startDate.day"   -> startDate.getDayOfMonth.toString,
+          "startDate.month" -> startDate.getMonthValue.toString,
+          "startDate.year"  -> startDate.getYear.toString,
+          "endDate.day"     -> endDate.getDayOfMonth.toString,
+          "endDate.month"   -> endDate.getMonthValue.toString,
+          "endDate.year"    -> endDate.getYear.toString
         )
 
     val result = controller(Some(emptyUserAnswers)).onSubmit(1)(postRequest)

@@ -16,6 +16,8 @@
 
 package forms
 
+import java.time.LocalDate
+
 import forms.mappings.Mappings
 import javax.inject.Inject
 import models.TemporaryWorkingAgreementWithDates
@@ -24,7 +26,7 @@ import play.api.data.Forms._
 
 class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[TemporaryWorkingAgreementWithDates] =
+  def apply(previousTWAPeriods: Seq[TemporaryWorkingAgreementWithDates]): Form[TemporaryWorkingAgreementWithDates] =
     Form(
       mapping(
         "startDate" -> localDate(
@@ -40,5 +42,24 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
           requiredKey = "shortTermWorkingAgreementPeriod.error.required"
         )
       )(TemporaryWorkingAgreementWithDates.apply)(TemporaryWorkingAgreementWithDates.unapply)
+        .verifying(
+          "shortTermWorkingAgreementPeriod.endDate.must.be.after.startDate",
+          swa => swa.endDate.compareTo(swa.startDate) > 0
+        )
+        .verifying(
+          "shortTermWorkingAgreementPeriod.periods.should.not.overlap",
+          swa => !isIntersecting(previousTWAPeriods, swa)
+        )
     )
+
+  private def isIntersecting(
+    previousPeriods: Seq[TemporaryWorkingAgreementWithDates],
+    newPeriod: TemporaryWorkingAgreementWithDates
+  ) =
+    previousPeriods.exists(p =>
+      isDateInteractsPeriod(newPeriod.startDate, p) || isDateInteractsPeriod(newPeriod.endDate, p)
+    )
+
+  private def isDateInteractsPeriod(date: LocalDate, period: TemporaryWorkingAgreementWithDates) =
+    date.compareTo(period.startDate) >= 0 && date.compareTo(period.endDate) <= 0;
 }
