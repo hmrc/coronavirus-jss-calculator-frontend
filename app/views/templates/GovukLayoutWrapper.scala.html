@@ -98,8 +98,7 @@
 @nuanceData = @{
     EncryptedNuanceData.create(
         nuanceCryptoService,
-        HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, request = Some(request))
-)
+        HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, request = Some(request)))
 }
 
 @scriptElem = {
@@ -120,10 +119,10 @@
 
 @content = {
 @contentBlock
+@scriptElem
 
 
-
-    <div class="govuk-!-margin-top-8">
+<div class="govuk-!-margin-top-8">
     @hmrcReportTechnicalIssue(
         uk.gov.hmrc.hmrcfrontend.views.html.components.ReportTechnicalIssue(appConfig.appName, Some(messages.lang.language))
     )
