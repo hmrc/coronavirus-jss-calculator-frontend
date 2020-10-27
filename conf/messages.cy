@@ -259,7 +259,7 @@ payPeriods.error.required = Select yes if the pay periods are correct
 
 selectWorkPeriods.title = When did this employee work during the claim period?
 selectWorkPeriods.heading = When did this employee work during the claim period?
-selectWorkPeriods.hint = Select all that apply.
+selectWorkPeriods.hint = Select all that apply
 selectWorkPeriods.from.to = {0} to {1}
 selectWorkPeriods.error.required = Select all the periods that employee has worked during the claim.
 
@@ -398,15 +398,15 @@ businessClosed.yes = Yes
 businessClosed.no = No
 businessClosed.error.required = Select yes if your business closed and unable to trade during this claim
 
-shortTermWorkingAgreementPeriod.title = Enter the dates for this employee’s temporary working agreement
-shortTermWorkingAgreementPeriod.heading = Enter the dates for this employee’s temporary working agreement
-shortTermWorkingAgreementPeriod.p1 = Each temporary working agreement must cover a minimum period of seven days. Include one or more date range.
+shortTermWorkingAgreementPeriod.title = Enter the dates for this employee’s temporary working agreements
+shortTermWorkingAgreementPeriod.heading = Enter the dates for this employee’s temporary working agreements
+shortTermWorkingAgreementPeriod.p1 = Each temporary working agreement must cover a minimum period of seven days. These are the dates when this agreement started and ended.  You can add more than one agreement.
 shortTermWorkingAgreementPeriod.startDate.label = Start date
 shortTermWorkingAgreementPeriod.endDate.label = End date
-shortTermWorkingAgreementPeriod.startDate.hint = For example, 1 3 2020.
-shortTermWorkingAgreementPeriod.endDate.hint = For example, 7 3 2020.
-shortTermWorkingAgreementPeriod.error.required = Enter valid dates
-shortTermWorkingAgreementPeriod.error.invalid = Enter valid dates
+shortTermWorkingAgreementPeriod.startDate.hint = For example, 1 3 2020
+shortTermWorkingAgreementPeriod.endDate.hint = For example, 7 3 2020
+businessClosedPeriods.error.required = Enter a valid start date
+businessClosedPeriods.error.invalid = Enter a valid end date
 
 shortTermWorkingAgreementPeriod.addMore.heading = Do you want to add more dates ?
 shortTermWorkingAgreementPeriod.addmore.error.required = Select yes if you want to add more dates
@@ -417,10 +417,10 @@ businessClosedPeriods.heading = Enter the periods when your business was closed
 businessClosedPeriods.p1 = The period is know as the closed period. It covers businesses due to restrictions set by one of the four UK governments that legally require them to close their premises. Each closed period must cover a minimum period of seven days. Include one or more period.
 businessClosedPeriods.startDate.label = Start date
 businessClosedPeriods.endDate.label = End date
-businessClosedPeriods.startDate.hint = For example, 1 3 2020.
-businessClosedPeriods.endDate.hint = For example, 7 3 2020.
-businessClosedPeriods.error.required = Enter valid dates
-businessClosedPeriods.error.invalid = Enter valid dates
+businessClosedPeriods.startDate.hint = For example, 1 3 2020
+businessClosedPeriods.endDate.hint = For example, 7 3 2020
+businessClosedPeriods.error.required = Enter a valid start date
+businessClosedPeriods.error.invalid = Enter a valid end date
 
 businessClosedPeriods.addMore.heading = Do you want to add more dates ?
 businessClosedPeriods.addmore.error.required = Select yes if you want to add more dates
