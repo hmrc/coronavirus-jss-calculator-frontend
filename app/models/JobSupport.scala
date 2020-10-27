@@ -54,7 +54,7 @@ object JobSupport {
 
     def totalUsualHours = jobSupport.periodSupport.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.usualHours)
 
-    def isIneligible: Boolean = (totalUsualHours / totalActualHours) < 0.20
+    def isIneligible: Boolean = (totalActualHours / totalUsualHours) < 0.20
 
     def totalEmployeeSalary: Double =
       jobSupport.periodSupport.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.salary)
