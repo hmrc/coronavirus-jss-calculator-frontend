@@ -19,9 +19,9 @@ package controllers
 import controllers.actions._
 import forms.BusinessClosedPeriodsFormProvider
 import javax.inject.Inject
-import models.{BusinessClosedWithDates, NormalMode}
+import models.{BusinessClosedWithDates, NormalMode, SupportClaimPeriod}
 import navigation.Navigator
-import pages.BusinessClosedPeriodsPage
+import pages.{BusinessClosedPeriodsPage, ClaimPeriodPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -44,17 +44,23 @@ class BusinessClosedPeriodsController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(previousBCPeriods: Seq[BusinessClosedWithDates]) = formProvider(previousBCPeriods)
+  private def form(previousBCPeriods: Seq[BusinessClosedWithDates], claimPeriod: SupportClaimPeriod) =
+    formProvider(previousBCPeriods, claimPeriod)
 
   def onPageLoad(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
     val previousBCPeriods =
       request.userAnswers.getList(BusinessClosedPeriodsPage)
-    val preparedForm      = request.userAnswers.get(BusinessClosedPeriodsPage, Some(idx)) match {
-      case None        => form(previousBCPeriods)
-      case Some(value) => form(previousBCPeriods).fill(value)
-    }
 
-    Ok(view(preparedForm, idx))
+    request.userAnswers.get(ClaimPeriodPage).map(_.supportClaimPeriod) match {
+      case Some(cp) =>
+        val preparedForm = request.userAnswers.get(BusinessClosedPeriodsPage, Some(idx)) match {
+          case None        => form(previousBCPeriods, cp)
+          case Some(value) => form(previousBCPeriods, cp).fill(value)
+        }
+
+        Ok(view(preparedForm, idx))
+      case None     => Redirect(routes.ClaimPeriodController.onPageLoad())
+    }
   }
 
   def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
@@ -62,16 +68,20 @@ class BusinessClosedPeriodsController @Inject() (
       val previousBCPeriods =
         request.userAnswers.getList(BusinessClosedPeriodsPage).zipWithIndex.filter(_._2 != idx - 1).map(_._1)
 
-      form(previousBCPeriods)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessClosedPeriodsPage, value, Some(idx)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(BusinessClosedPeriodsPage, NormalMode, updatedAnswers, Some(idx)))
-        )
+      request.userAnswers.get(ClaimPeriodPage).map(_.supportClaimPeriod) match {
+        case Some(cp) =>
+          form(previousBCPeriods, cp)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessClosedPeriodsPage, value, Some(idx)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(BusinessClosedPeriodsPage, NormalMode, updatedAnswers, Some(idx)))
+            )
+        case None     => Future.successful(Redirect(routes.ClaimPeriodController.onPageLoad()))
+      }
   }
 
   def remove(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
