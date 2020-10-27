@@ -20,26 +20,37 @@ import java.time.LocalDate
 
 import forms.behaviours.DateBehaviours
 import models.BusinessClosedWithDates
+import play.api.data.FormError
 
 class BusinessClosedPeriodsFormProviderSpec extends DateBehaviours {
 
-  val form = new BusinessClosedPeriodsFormProvider()()
+  val form = new BusinessClosedPeriodsFormProvider()
+
+  val startDate = LocalDate.of(2020, 10, 20)
+  val endDate   = startDate.plusDays(10)
+
+  val data = Map(
+    "startDate.day"   -> startDate.getDayOfMonth.toString,
+    "startDate.month" -> startDate.getMonthValue.toString,
+    "startDate.year"  -> startDate.getYear.toString,
+    "endDate.day"     -> endDate.getDayOfMonth.toString,
+    "endDate.month"   -> endDate.getMonthValue.toString,
+    "endDate.year"    -> endDate.getYear.toString
+  )
 
   "form" should {
 
-    val startDate = LocalDate.of(2020, 10, 20)
-    val endDate   = startDate.plusDays(10)
     "bind valid values" in {
-      val data = Map(
-        "startDate.day"   -> startDate.getDayOfMonth.toString,
-        "startDate.month" -> startDate.getMonthValue.toString,
-        "startDate.year"  -> startDate.getYear.toString,
-        "endDate.day"     -> endDate.getDayOfMonth.toString,
-        "endDate.month"   -> endDate.getMonthValue.toString,
-        "endDate.year"    -> endDate.getYear.toString
-      )
+      form(List.empty).bind(data).get shouldEqual BusinessClosedWithDates(startDate, endDate)
+    }
 
-      form.bind(data).get shouldEqual BusinessClosedWithDates(startDate, endDate)
+    "throw form error in case of overlapping periods" in {
+
+      val previousPeriods = List(BusinessClosedWithDates(startDate.minusDays(10), startDate.plusDays(2)))
+
+      form(previousPeriods).bind(data).errors shouldEqual Seq(
+        FormError("", "businessClosedPeriods.periods.should.not.overlap")
+      )
     }
   }
 }

@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.ShortTermWorkingAgreementPeriodFormProvider
 import javax.inject.Inject
-import models.NormalMode
+import models.{NormalMode, TemporaryWorkingAgreementWithDates}
 import navigation.Navigator
 import pages.ShortTermWorkingAgreementPeriodPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,12 +44,14 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form = formProvider()
+  private def form(previousTWAPeriod: Seq[TemporaryWorkingAgreementWithDates]) = formProvider(previousTWAPeriod)
 
   def onPageLoad(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
+    val previousTWAPeriods = request.userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
+
     val preparedForm = request.userAnswers.get(ShortTermWorkingAgreementPeriodPage, Some(idx)) match {
-      case None        => form
-      case Some(value) => form.fill(value)
+      case None        => form(previousTWAPeriods)
+      case Some(value) => form(previousTWAPeriods).fill(value)
     }
 
     Ok(view(preparedForm, idx))
@@ -57,7 +59,10 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
 
   def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
     implicit request =>
-      form
+      val previousTWAPeriods =
+        request.userAnswers.getList(ShortTermWorkingAgreementPeriodPage).zipWithIndex.filter(_._2 != idx - 1).map(_._1)
+
+      form(previousTWAPeriods)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
