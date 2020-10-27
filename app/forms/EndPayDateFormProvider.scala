@@ -30,8 +30,6 @@ class EndPayDateFormProvider @Inject() extends Mappings {
     Form(
       "value" -> localDate(
         invalidKey = "endPayDate.error.invalid",
-        allRequiredKey = "endPayDate.error.required.all",
-        twoRequiredKey = "endPayDate.error.required.two",
         requiredKey = "endPayDate.error.required"
       ).verifying(minDate(lastPayDate, "endPayDate.error.invalid.must.be.after", ViewUtils.dateToString(lastPayDate)))
     )

@@ -17,7 +17,7 @@
 @this(
         govukLayout: templates.GovukLayoutWrapper,
         h1: components.h1,
-        h3: components.h3,
+        h2: components.h2,
         p: components.p
 )
 
@@ -57,14 +57,7 @@
 
     @p(Html(Messages("startPage.p8")))
 
-    <a href="/job-support-scheme-calculator/claim-period" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button">
-        @Messages("site.startNow")
-        <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
-            <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/>
-        </svg>
-    </a>
-
-    @h3("startPage.beforeYouStart")
+    @h2("startPage.beforeYouStart")
 
     @p(Html(Messages("startPage.p9")))
 
@@ -88,4 +81,10 @@
 
     @p{<a href="" class="govuk-link">@messages("startPage.p11")</a>}
 
+    <a href="/job-support-scheme-calculator/claim-period" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button">
+        @Messages("site.startNow")
+        <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/>
+        </svg>
+    </a>
 }

@@ -31,14 +31,10 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
       mapping(
         "startDate" -> localDate(
           invalidKey = "shortTermWorkingAgreementPeriod.error.invalid",
-          allRequiredKey = "shortTermWorkingAgreementPeriod.error.required.all",
-          twoRequiredKey = "shortTermWorkingAgreementPeriod.error.required.two",
           requiredKey = "shortTermWorkingAgreementPeriod.error.required"
         ),
         "endDate"   -> localDate(
           invalidKey = "shortTermWorkingAgreementPeriod.error.invalid",
-          allRequiredKey = "shortTermWorkingAgreementPeriod.error.required.all",
-          twoRequiredKey = "shortTermWorkingAgreementPeriod.error.required.two",
           requiredKey = "shortTermWorkingAgreementPeriod.error.required"
         )
       )(TemporaryWorkingAgreementWithDates.apply)(TemporaryWorkingAgreementWithDates.unapply)
