@@ -19,9 +19,9 @@ package controllers
 import controllers.actions._
 import forms.ShortTermWorkingAgreementPeriodFormProvider
 import javax.inject.Inject
-import models.{NormalMode, TemporaryWorkingAgreementWithDates}
+import models.{NormalMode, SupportClaimPeriod, TemporaryWorkingAgreementWithDates}
 import navigation.Navigator
-import pages.ShortTermWorkingAgreementPeriodPage
+import pages.{ClaimPeriodPage, ShortTermWorkingAgreementPeriodPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -44,17 +44,22 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(previousTWAPeriod: Seq[TemporaryWorkingAgreementWithDates]) = formProvider(previousTWAPeriod)
+  private def form(previousTWAPeriod: Seq[TemporaryWorkingAgreementWithDates], claimPeriod: SupportClaimPeriod) =
+    formProvider(previousTWAPeriod, claimPeriod: SupportClaimPeriod)
 
   def onPageLoad(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
     val previousTWAPeriods = request.userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
 
-    val preparedForm = request.userAnswers.get(ShortTermWorkingAgreementPeriodPage, Some(idx)) match {
-      case None        => form(previousTWAPeriods)
-      case Some(value) => form(previousTWAPeriods).fill(value)
-    }
+    request.userAnswers.get(ClaimPeriodPage).map(_.supportClaimPeriod) match {
+      case Some(cp) =>
+        val preparedForm = request.userAnswers.get(ShortTermWorkingAgreementPeriodPage, Some(idx)) match {
+          case None        => form(previousTWAPeriods, cp)
+          case Some(value) => form(previousTWAPeriods, cp).fill(value)
+        }
 
-    Ok(view(preparedForm, idx))
+        Ok(view(preparedForm, idx))
+      case None     => Redirect(routes.ClaimPeriodController.onPageLoad())
+    }
   }
 
   def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
@@ -62,19 +67,23 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
       val previousTWAPeriods =
         request.userAnswers.getList(ShortTermWorkingAgreementPeriodPage).zipWithIndex.filter(_._2 != idx - 1).map(_._1)
 
-      form(previousTWAPeriods)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
-          value =>
-            for {
-              updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(ShortTermWorkingAgreementPeriodPage, value, Some(idx)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(
-              navigator.nextPage(ShortTermWorkingAgreementPeriodPage, NormalMode, updatedAnswers, Some(idx))
+      request.userAnswers.get(ClaimPeriodPage).map(_.supportClaimPeriod) match {
+        case Some(cp) =>
+          form(previousTWAPeriods, cp)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
+              value =>
+                for {
+                  updatedAnswers <-
+                    Future.fromTry(request.userAnswers.set(ShortTermWorkingAgreementPeriodPage, value, Some(idx)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(
+                  navigator.nextPage(ShortTermWorkingAgreementPeriodPage, NormalMode, updatedAnswers, Some(idx))
+                )
             )
-        )
+        case None     => Future.successful(Redirect(routes.ClaimPeriodController.onPageLoad()))
+      }
   }
 
   def remove(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {

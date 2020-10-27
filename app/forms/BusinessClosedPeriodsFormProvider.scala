@@ -20,13 +20,16 @@ import java.time.LocalDate
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.BusinessClosedWithDates
+import models.{BusinessClosedWithDates, SupportClaimPeriod}
 import play.api.data.Form
 import play.api.data.Forms.mapping
 
 class BusinessClosedPeriodsFormProvider @Inject() extends Mappings {
 
-  def apply(previousBCPeriods: Seq[BusinessClosedWithDates]): Form[BusinessClosedWithDates] =
+  def apply(
+    previousBCPeriods: Seq[BusinessClosedWithDates],
+    claimPeriod: SupportClaimPeriod
+  ): Form[BusinessClosedWithDates] =
     Form(
       mapping(
         "startDate" -> localDate(
@@ -34,6 +37,9 @@ class BusinessClosedPeriodsFormProvider @Inject() extends Mappings {
           allRequiredKey = "businessClosedPeriods.error.required.all",
           twoRequiredKey = "businessClosedPeriods.error.required.two",
           requiredKey = "businessClosedPeriods.error.required"
+        ).verifying(
+          "businessClosedPeriods.startDate.outside.claimPeriod",
+          date => isDateWithInClaim(date, claimPeriod)
         ),
         "endDate"   -> localDate(
           invalidKey = "businessClosedPeriods.error.invalid",
@@ -48,6 +54,9 @@ class BusinessClosedPeriodsFormProvider @Inject() extends Mappings {
         )
         .verifying("businessClosedPeriods.periods.should.not.overlap", bcp => !isIntersecting(previousBCPeriods, bcp))
     )
+
+  private def isDateWithInClaim(date: LocalDate, claimPeriod: SupportClaimPeriod) =
+    (date.isEqual(claimPeriod.startDate) || date.isAfter(claimPeriod.startDate)) && date.isBefore(claimPeriod.endDate)
 
   private def isIntersecting(previousPeriods: Seq[BusinessClosedWithDates], newPeriod: BusinessClosedWithDates) =
     previousPeriods.exists(p =>

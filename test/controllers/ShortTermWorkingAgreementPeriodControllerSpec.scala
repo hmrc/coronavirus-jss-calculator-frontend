@@ -20,8 +20,8 @@ import java.time.LocalDate
 
 import base.SpecBaseControllerSpecs
 import forms.ShortTermWorkingAgreementPeriodFormProvider
-import models.{TemporaryWorkingAgreementWithDates, UserAnswers}
-import pages.ShortTermWorkingAgreementPeriodPage
+import models.{ClaimPeriod, TemporaryWorkingAgreementWithDates, UserAnswers}
+import pages.{ClaimPeriodPage, ShortTermWorkingAgreementPeriodPage}
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,8 +36,8 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
   private val formProvider = new ShortTermWorkingAgreementPeriodFormProvider()
   private def form         = formProvider
 
-  private val startDate = LocalDate.now().minusDays(10)
-  private val endDate   = LocalDate.now()
+  private val startDate = LocalDate.of(2020, 11, 1)
+  private val endDate   = startDate.plusDays(10)
 
   private lazy val shortTermWorkingAgreementPeriodRouteGet  =
     routes.ShortTermWorkingAgreementPeriodController.onPageLoad(1).url
@@ -45,6 +45,10 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
     routes.ShortTermWorkingAgreementPeriodController.onSubmit(1).url
 
   override val emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
+
+  val claimPeriod = ClaimPeriod.Nov2020
+
+  val userAnswers = emptyUserAnswers.set(ClaimPeriodPage, claimPeriod).success.value
 
   private lazy val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
     fakeRequest(POST, shortTermWorkingAgreementPeriodRoutePost)
@@ -77,32 +81,32 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
 
       val request = fakeRequest(GET, shortTermWorkingAgreementPeriodRouteGet)
 
-      val result = controller(Some(emptyUserAnswers)).onPageLoad(1)(request)
+      val result = controller(Some(userAnswers)).onPageLoad(1)(request)
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(List.empty), 1)(request, messages).toString
+        view(form(List.empty, claimPeriod.supportClaimPeriod), 1)(request, messages).toString
     }
   }
 
   "populate the view correctly on a GET when the question has previously been answered" in {
 
-    val userAnswers = UserAnswers(userAnswersId).set(ShortTermWorkingAgreementPeriodPage, stwa, Some(1)).success.value
+    val userAnswersUpdated = userAnswers.set(ShortTermWorkingAgreementPeriodPage, stwa, Some(1)).success.value
 
     val request = fakeRequest(GET, shortTermWorkingAgreementPeriodRouteGet)
 
-    val result = controller(Some(userAnswers)).onPageLoad(1)(request)
+    val result = controller(Some(userAnswersUpdated)).onPageLoad(1)(request)
 
     status(result) mustEqual OK
 
     contentAsString(result) mustEqual
-      view(form(List.empty).fill(stwa), 1)(request, messages).toString
+      view(form(List.empty, claimPeriod.supportClaimPeriod).fill(stwa), 1)(request, messages).toString
   }
 
   "redirect to check-your-answers when valid data is submitted" in {
 
-    val result = controller(Some(emptyUserAnswers)).onSubmit(1)(postRequest)
+    val result = controller(Some(userAnswers)).onSubmit(1)(postRequest)
 
     status(result) mustEqual SEE_OTHER
 
@@ -114,7 +118,7 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
       fakeRequest(POST, shortTermWorkingAgreementPeriodRoutePost)
         .withFormUrlEncodedBody(("value", "invalid value"))
 
-    val result = controller(Some(emptyUserAnswers)).onSubmit(1)(request)
+    val result = controller(Some(userAnswers)).onSubmit(1)(request)
 
     status(result) mustEqual BAD_REQUEST
   }

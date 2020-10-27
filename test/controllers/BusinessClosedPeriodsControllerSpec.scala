@@ -20,8 +20,8 @@ import java.time.LocalDate
 
 import base.SpecBaseControllerSpecs
 import forms.BusinessClosedPeriodsFormProvider
-import models.{BusinessClosedWithDates, UserAnswers}
-import pages.BusinessClosedPeriodsPage
+import models.{BusinessClosedWithDates, ClaimPeriod, UserAnswers}
+import pages.{BusinessClosedPeriodsPage, ClaimPeriodPage}
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,8 +36,8 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
   private val formProvider = new BusinessClosedPeriodsFormProvider()
   private def form         = formProvider
 
-  private val startDate = LocalDate.now().minusDays(10)
-  private val endDate   = LocalDate.now()
+  private val startDate = LocalDate.of(2020, 11, 1)
+  private val endDate   = startDate.plusDays(10)
 
   private lazy val businessClosedPeriodsRouteGet  = routes.BusinessClosedPeriodsController.onPageLoad(1).url
   private lazy val businessClosedPeriodsRoutePost = routes.BusinessClosedPeriodsController.onSubmit(1).url
@@ -54,6 +54,10 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
         "endDate.month"   -> endDate.getMonthValue.toString,
         "endDate.year"    -> endDate.getYear.toString
       )
+
+  val claimPeriod = ClaimPeriod.Nov2020
+
+  val userAnswers = emptyUserAnswers.set(ClaimPeriodPage, claimPeriod).success.value
 
   def controller(userAnswers: Option[UserAnswers]) = new BusinessClosedPeriodsController(
     messagesApi,
@@ -75,32 +79,32 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
 
       val request = fakeRequest(GET, businessClosedPeriodsRouteGet)
 
-      val result = controller(Some(emptyUserAnswers)).onPageLoad(1)(request)
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form(List.empty), 1)(request, messages).toString
-    }
-
-    "populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers(userAnswersId).set(BusinessClosedPeriodsPage, bcPeriods, Some(1)).success.value
-
-      val request = fakeRequest(GET, businessClosedPeriodsRouteGet)
-
       val result = controller(Some(userAnswers)).onPageLoad(1)(request)
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(List.empty).fill(bcPeriods), 1)(request, messages).toString
+        view(form(List.empty, claimPeriod.supportClaimPeriod), 1)(request, messages).toString
+    }
+
+    "populate the view correctly on a GET when the question has previously been answered" in {
+
+      val userAnswersUpdated = userAnswers.set(BusinessClosedPeriodsPage, bcPeriods, Some(1)).success.value
+
+      val request = fakeRequest(GET, businessClosedPeriodsRouteGet)
+
+      val result = controller(Some(userAnswersUpdated)).onPageLoad(1)(request)
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(form(List.empty, claimPeriod.supportClaimPeriod).fill(bcPeriods), 1)(request, messages).toString
     }
   }
 
   "redirect to /check-your-business-closed-periods when valid data is submitted" in {
 
-    val result = controller(Some(emptyUserAnswers)).onSubmit(1)(postRequest)
+    val result = controller(Some(userAnswers)).onSubmit(1)(postRequest)
 
     status(result) mustEqual SEE_OTHER
 
@@ -109,18 +113,7 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
 
   "redirect to usual and actual hours page when valid data is submitted and radio answer is no" in {
 
-    val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-      fakeRequest(POST, businessClosedPeriodsRoutePost)
-        .withFormUrlEncodedBody(
-          "startDate.day"   -> startDate.getDayOfMonth.toString,
-          "startDate.month" -> startDate.getMonthValue.toString,
-          "startDate.year"  -> startDate.getYear.toString,
-          "endDate.day"     -> endDate.getDayOfMonth.toString,
-          "endDate.month"   -> endDate.getMonthValue.toString,
-          "endDate.year"    -> endDate.getYear.toString
-        )
-
-    val result = controller(Some(emptyUserAnswers)).onSubmit(1)(postRequest)
+    val result = controller(Some(userAnswers)).onSubmit(1)(postRequest)
 
     status(result) mustEqual SEE_OTHER
 
@@ -133,7 +126,7 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
       fakeRequest(POST, businessClosedPeriodsRoutePost)
         .withFormUrlEncodedBody(("value", "invalid value"))
 
-    val result = controller(Some(emptyUserAnswers)).onSubmit(1)(request)
+    val result = controller(Some(userAnswers)).onSubmit(1)(request)
 
     status(result) mustEqual BAD_REQUEST
   }

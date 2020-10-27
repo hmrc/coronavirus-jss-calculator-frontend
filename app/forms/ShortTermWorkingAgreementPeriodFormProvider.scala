@@ -20,13 +20,16 @@ import java.time.LocalDate
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.TemporaryWorkingAgreementWithDates
+import models.{SupportClaimPeriod, TemporaryWorkingAgreementWithDates}
 import play.api.data.Form
 import play.api.data.Forms._
 
 class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
 
-  def apply(previousTWAPeriods: Seq[TemporaryWorkingAgreementWithDates]): Form[TemporaryWorkingAgreementWithDates] =
+  def apply(
+    previousTWAPeriods: Seq[TemporaryWorkingAgreementWithDates],
+    claimPeriod: SupportClaimPeriod
+  ): Form[TemporaryWorkingAgreementWithDates] =
     Form(
       mapping(
         "startDate" -> localDate(
@@ -34,6 +37,9 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
           allRequiredKey = "shortTermWorkingAgreementPeriod.error.required.all",
           twoRequiredKey = "shortTermWorkingAgreementPeriod.error.required.two",
           requiredKey = "shortTermWorkingAgreementPeriod.error.required"
+        ).verifying(
+          "shortTermWorkingAgreementPeriod.startDate.outside.claimPeriod",
+          date => isDateWithInClaim(date, claimPeriod)
         ),
         "endDate"   -> localDate(
           invalidKey = "shortTermWorkingAgreementPeriod.error.invalid",
@@ -51,6 +57,9 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
           swa => !isIntersecting(previousTWAPeriods, swa)
         )
     )
+
+  private def isDateWithInClaim(date: LocalDate, claimPeriod: SupportClaimPeriod) =
+    (date.isEqual(claimPeriod.startDate) || date.isAfter(claimPeriod.startDate)) && date.isBefore(claimPeriod.endDate)
 
   private def isIntersecting(
     previousPeriods: Seq[TemporaryWorkingAgreementWithDates],
