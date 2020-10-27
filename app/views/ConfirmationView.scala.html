@@ -35,15 +35,15 @@
 
 @govukLayout(pageTitle = Some(titleNoForm("confirmation.title"))) {
 
-    @if(!jobSupport.isEligible) {
-        @p(Html(messages("confirmation.confirmation.p1.noteligible")))
-    }
-
     @confirmation {
         @h1(Html(messages("confirmation.confirmation.p1")), classes = Some(""))
         <div class="grant-heading">
             <p class="govuk-panel__title">&pound;@jobSupport.totalGrant.formatted("%.2f")</p>
         </div>
+    }
+
+    @if(jobSupport.isIneligible){
+        @h2(Html(messages("confirmation.confirmation.ineligible")))
     }
 
     <div class="govuk-inset-text">

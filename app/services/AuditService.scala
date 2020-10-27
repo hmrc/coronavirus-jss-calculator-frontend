@@ -77,7 +77,7 @@ class AuditService @Inject() (auditConnector: AuditConnector, config: FrontendAp
     Json.obj(
       "periodSupport"       -> Json.toJson(jobSupport.periodSupport),
       "referenceSalary"     -> JsNumber(jobSupport.referenceSalary),
-      "isEligible"          -> JsBoolean(jobSupport.isEligible),
+      "isIneligible"        -> JsBoolean(jobSupport.isIneligible),
       "totalEmployeeSalary" -> JsNumber(jobSupport.totalEmployeeSalary),
       "totalEmployersGrant" -> JsNumber(jobSupport.totalEmployersGrant),
       "totalClosed"         -> JsNumber(jobSupport.totalClosed),
