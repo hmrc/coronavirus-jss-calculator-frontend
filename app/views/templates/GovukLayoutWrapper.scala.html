@@ -17,6 +17,8 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import views.components.FooterLinks
 @import views.html.templates.GovukFullWidthLayout
+@import uk.gov.hmrc.play.HeaderCarrierConverter
+@import services.NuanceCryptoService
 
 @this(
         govukLayout: GovukLayout,
@@ -29,7 +31,8 @@
         appConfig: config.FrontendAppConfig,
         footerLinks: FooterLinks,
         hmrcReportTechnicalIssue: hmrcReportTechnicalIssue,
-        timeoutDialog: HmrcTimeoutDialog
+        timeoutDialog: HmrcTimeoutDialog,
+        nuanceCryptoService: NuanceCryptoService
 )
 
 @(pageTitle: Option[String] = None, timeout: Boolean = true, js: Option[Html] = None, backLink: Boolean = true, fullWidth: Boolean = false)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
@@ -92,13 +95,28 @@
 }
 }
 
+@nuanceData = @{
+    EncryptedNuanceData.create(
+        nuanceCryptoService,
+        HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, request = Some(request))
+)
+}
+
+@nuanceJson = {
+<script type="text/javascript">
+                var nuanceData = {
+                    "mdtpdfSessionID" : "@{nuanceData.nuanceSessionId}",
+                    "mdtpSessionID" : "@{nuanceData.mdtpSessionID}",
+                    "deviceID" : "@{nuanceData.deviceID}"
+                };
+        </script>
+}
+
+
 @content = {
 @contentBlock
 
-    @if(appConfig.nuanceWebchatEnabled) {
-        <div id="HMRC_Anchored_1"></div>
-        <script id="webchat-tag" type="text/javascript" src=@appConfig.nuanceUrl></script>
-    }
+
 
     <div class="govuk-!-margin-top-8">
     @hmrcReportTechnicalIssue(
