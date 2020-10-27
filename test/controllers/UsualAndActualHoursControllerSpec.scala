@@ -37,7 +37,7 @@ class UsualAndActualHoursControllerSpec extends SpecBaseControllerSpecs {
   private val formProvider = new UsualAndActualHoursFormProvider()
   private val form         = formProvider()
 
-  private val validAnswer = UsualAndActualHours(10.00, 20.00)
+  private val validAnswer = UsualAndActualHours(20.00, 10.00)
 
   private def usualAndActualHoursRouteGet(idx: Int)  = routes.UsualAndActualHoursController.onPageLoad(idx).url
   private def usualAndActualHoursRoutePost(idx: Int) = routes.UsualAndActualHoursController.onSubmit(idx).url
