@@ -410,6 +410,7 @@ shortTermWorkingAgreementPeriod.error.required = Enter valid dates
 shortTermWorkingAgreementPeriod.error.invalid = Enter valid dates
 shortTermWorkingAgreementPeriod.periods.should.not.overlap = These dates should not overlap previously given periods
 shortTermWorkingAgreementPeriod.endDate.must.be.after.startDate = End date must be later than start date
+shortTermWorkingAgreementPeriod.startDate.outside.claimPeriod = Start date must fall with in claim period
 
 shortTermWorkingAgreementPeriod.addMore.heading = Do you want to add more dates ?
 shortTermWorkingAgreementPeriod.addmore.error.required = Select yes if you want to add more dates
@@ -426,7 +427,7 @@ businessClosedPeriods.error.required = Enter valid dates
 businessClosedPeriods.error.invalid = Enter valid dates
 businessClosedPeriods.periods.should.not.overlap = These dates should not overlap previously given periods
 businessClosedPeriods.endDate.must.be.after.startDate = End date must be later than start date
-
+businessClosedPeriods.startDate.outside.claimPeriod = Start date must fall with in claim period
 businessClosedPeriods.addMore.heading = Do you want to add more dates ?
 businessClosedPeriods.addmore.error.required = Select yes if you want to add more dates
 
