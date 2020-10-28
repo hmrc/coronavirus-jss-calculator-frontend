@@ -18,13 +18,17 @@ package forms
 
 import java.time.LocalDate
 
+import base.SpecBaseControllerSpecs
 import forms.behaviours.DateBehaviours
 import models.{BusinessClosedPeriod, ClaimPeriod}
 import play.api.data.FormError
 
-class BusinessClosedPeriodsFormProviderSpec extends DateBehaviours {
+class BusinessClosedPeriodsFormProviderSpec extends SpecBaseControllerSpecs {
 
-  val form = new BusinessClosedPeriodsFormProvider()
+  val dateBehaviours = new DateBehaviours()
+  import dateBehaviours._
+
+  val form = app.injector.instanceOf[BusinessClosedPeriodsFormProvider]
 
   val claimPeriod = ClaimPeriod.Nov2020.supportClaimPeriod
   val startDate   = LocalDate.of(2020, 11, 1)
@@ -43,15 +47,37 @@ class BusinessClosedPeriodsFormProviderSpec extends DateBehaviours {
   "form" should {
 
     "bind valid values" in {
-      form(List.empty, claimPeriod).bind(data).get shouldEqual BusinessClosedPeriod(startDate, endDate)
+      form(List.empty).bind(data).get shouldEqual BusinessClosedPeriod(startDate, endDate)
     }
 
     "throw form error in case of overlapping periods" in {
 
       val previousPeriods = List(BusinessClosedPeriod(startDate.minusDays(10), startDate.plusDays(2)))
 
-      form(previousPeriods, claimPeriod).bind(data).errors shouldEqual Seq(
+      form(previousPeriods).bind(data).errors shouldEqual Seq(
         FormError("", "businessClosedPeriods.periods.should.not.overlap")
+      )
+    }
+
+    "throw form error for dates outside claim start and claim end dates" in {
+
+      val previousPeriods = List(BusinessClosedPeriod(startDate.minusDays(10), startDate.plusDays(2)))
+
+      val startDateInput = form.config.schemeStartDate.minusDays(1)
+      val endDateInput   = form.config.schemeEndDate.plusDays(11)
+      val data           = Map(
+        "startDate.day"   -> startDateInput.getDayOfMonth.toString,
+        "startDate.month" -> startDateInput.getMonthValue.toString,
+        "startDate.year"  -> startDateInput.getYear.toString,
+        "endDate.day"     -> endDateInput.getDayOfMonth.toString,
+        "endDate.month"   -> endDateInput.getMonthValue.toString,
+        "endDate.year"    -> endDateInput.getYear.toString,
+        "addAnother"      -> "false"
+      )
+
+      form(previousPeriods).bind(data).errors shouldEqual Seq(
+        FormError("startDate", "businessClosedPeriods.startDate.outside.claimPeriod"),
+        FormError("endDate", "businessClosedPeriods.endDate.outside.claimPeriod")
       )
     }
   }
