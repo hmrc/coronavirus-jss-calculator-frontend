@@ -112,4 +112,10 @@ trait Constraints {
       import ev._
       if (value > minimum) Valid else Invalid(errorKey)
   }
+
+  protected def greaterThanOrEquals[A](minimum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
+    Constraint { value =>
+      import ev._
+      if (value >= minimum) Valid else Invalid(errorKey)
+    }
 }
