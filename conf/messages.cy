@@ -164,8 +164,8 @@ claimPeriod.Aug2021 = August 2021
 claimPeriod.Sep2021 = September 2021
 claimPeriod.Oct2021 = October 2021
 claimPeriod.Nov2021 = November 2021
-claimPeriod.error.required = Select one value
-claimPeriod.error.invalid = Choose a claim period
+claimPeriod.error.required = Select which month you will claim for
+claimPeriod.error.invalid = Select which month you will claim for
 
 startPage.title = Job Support Scheme Calculator
 startPage.heading = Job Support Scheme Calculator
@@ -290,67 +290,63 @@ actualHours.error.required = Enter the employee’s actual hours
 usualHours.error.min = Usual hours can not be negative
 actualHours.error.min = Actual hours can not be negative
 
-confirmation.title = confirmation
+confirmation.title = What you can claim for this employee
 confirmation.heading = confirmation
 confirmation.confirmation.p1 = What you can claim for this employee
 confirmation.jss.open.label = For JSS Open
-confirmation.jss.open.p1 = Amount to pay employee for hours not worked: [{0}]
-confirmation.jss.open.p2 = Amount to claim from the government for hours not worked: [{0}]
-confirmation.jss.open.p3 = This is made up of a 85% employer contribution and a 61.67% government contribution. Employees must also be paid their full contracted rate for any hours they worked.
+confirmation.jss.open.p1 = Amount to pay employee for hours not worked:
+confirmation.jss.open.p2 = Amount to claim from the government for hours not worked:
+confirmation.jss.open.p3 = This is made up of a 5% employer contribution and a 61.67% government contribution. Employees must also be paid their full contracted rate for any hours they worked.
 confirmation.jss.closed.label = For JSS Closed
-confirmation.jss.closed.p1 = Amount to pay employee for time the business was closed: [{0}]
-confirmation.jss.closed.p2 = Amount to claim from the government for time the business was closed: [{0}]
-confirmation.jss.closed.p3 = The government contributes two thirds of their normal pay. The employee must be paid at least [{0}] for their non-working hours.
+confirmation.jss.closed.p1 = Amount to pay employee for time the business was closed:
+confirmation.jss.closed.p2 = Amount to claim from the government for time the business was closed:
+confirmation.jss.closed.p3.start = The government contributes two thirds of their normal pay. The employee must be paid at least
+confirmation.jss.closed.p3.end = for their non-working hours.
 confirmation.calculated.on = Calculated on: {0}
 confirmation.calculated.p1 = The results of the calculation rely on the accuracy of the information you entered, for which you are responsible. Before you claim you must have paid the government grant and any employer contribution to the employee in full, in addition to any pay they were due for the time worked.
 confirmation.nextSteps.heading = Next steps
-confirmation.nextSteps.l1 = {0} for your records.
-confirmation.nextSteps.l1.print.or.save = Print or save a copy of this page
-confirmation.nextSteps.l2 = Make a note of these results.
-confirmation.nextSteps.l3 = Use the calculator again for other employees with a temporary working agreement during this claim period, and note the results.
-confirmation.nextSteps.l4 = Add up all the results to calculate the total amount you can claim.
-confirmation.nextSteps.l5 = Read {0}.
-confirmation.nextSteps.l5.guidance = guidance on how to claim
-confirmation.nextSteps.l6 = Make a claim using the {0}
-confirmation.nextSteps.l6.jss.claim.service = Job Support Scheme online claim service (opens in a new window or tab)
+confirmation.nextSteps.l1 = Make a note of these results.
+confirmation.nextSteps.l2 = Use the calculator again for other employees you need to claim for in this claim period, and note the results.
+confirmation.nextSteps.l3 = Read {0}.
+confirmation.nextSteps.l3.guidance = guidance on how to claim
 confirmation.startAgain = Start another calculation
 
 confirmation.confirmation.p1.noteligible = This employee is not eligible for a claim
 confirmation.breakdown.header = Breakdown of calculations
 confirmation.confirmation.p1.noteligible = This employee is not eligible for a claim
 
-confirmation.breakdown.p1 = You told us this employee gets paid a [{0}] amount each time. There is a maximum amount you can claim. If this affects your claim, we’ve adjusted the calculations.
-confirmation.breakdown.p2 = Before making a claim you must check the employee has worked at least the {0}
-confirmation.breakdown.p2.guidance = minimum amount of their usual hours required under JSS Open.
+confirmation.breakdown.p1 = You told us this employee gets paid a £{0} amount each time. There is a maximum amount you can claim. If this affects your claim, we’ve adjusted the calculations.
+confirmation.breakdown.p2 = Before making a claim you must check the employee has worked at least the {0} required under JSS Open.
+confirmation.breakdown.p2.guidance = minimum amount of their usual hours
 confirmation.breakdown.h3 = For pay period {0} to {1}
 confirmation.breakdown.h3.p1 = To calculate the overall amount you must pay the employee for their non-working hours:
 
-confirmation.breakdown.reference-pay.p1 = Take the reference pay for the pay period:
-confirmation.breakdown.reference-pay.p1.l1 = Start with: {0}
-confirmation.breakdown.reference-pay.p1.l2 = Divide by the {0} usual hours worked.
-confirmation.breakdown.reference-pay.p1.l3 =  Multiply by {0} hours worked.
-confirmation.breakdown.reference-pay.p2 = Pay for hours worked = {0}
+confirmation.breakdown.h3.open.p1.l1=Start with £{0} (the reference salary for the pay period).
+confirmation.breakdown.h3.open.p1.l2=Divide by {0} (the number of calendar days in the pay period).
+confirmation.breakdown.h3.open.p1.l3=Multiply by {0} (the number of days subject to a Temporary Working Agreement in the pay period).
+confirmation.breakdown.h3.open.p1.l4=Divide by {0} (the number of usual hours for the JSS Open days in the pay period).
+confirmation.breakdown.h3.open.p1.l5=Multiply by {0} (the number of non-working hours for the JSS Open days).
+confirmation.breakdown.h3.open.p1.l6=Multiply by 66.67% = £{0}.
+confirmation.breakdown.h3.open.p2=This is made up of a 5% employer contribution, and a 61.67% government contribution which can be reclaimed.
 
-confirmation.breakdown.p3 = Then:
-confirmation.breakdown.h3.p1.l1.partial = Start with {0} (the reference salary for the pay period).
-confirmation.breakdown.h3.p1.l1 = Start with {0} (the reference salary for the pay period).
-confirmation.breakdown.h3.p1.l2.partial = Divide by {0} (the number of calendar days in the pay period).
-confirmation.breakdown.h3.p1.l2 = Divide by {0} (the number of calendar days in the pay period).
-confirmation.breakdown.h3.p1.l3 = Multiply by {0} (the number of days subject to a Temporary Working Agreement in the pay period).
-confirmation.breakdown.h3.p1.l4 = Divide by {0} (the number of usual hours for the JSS Open days in the pay period.
-confirmation.breakdown.h3.p1.l5 = Multiply by 25 (the number of non-working hours for the JSS Open days).
-confirmation.breakdown.h3.p1.l6 = Multiply by 66.67% = {0}
+confirmation.breakdown.h3.p3=This is made up of a 5% employer contribution, and a 61.67% government contribution which can be reclaimed.
 
-confirmation.breakdown.p2 = This is made up of a 5% employer contribution, and a 61.67% government contribution which can be reclaimed.
+confirmation.breakdown.h3.p4 = To calculate the government contribution to the employee’s pay for the non-working hours:
+confirmation.breakdown.h3.open.p4.l1=Start with £{0} (the total pay for the non-working hours).
+confirmation.breakdown.h3.open.p4.l2=Divide by 66.67.
+confirmation.breakdown.h3.open.p4.l3=Multiply by 61.67 = £{0}.
 
-confirmation.breakdown.h3.p2 = To calculate the government contribution to the employee’s pay for their non-working hours:
-confirmation.breakdown.h3.p2.l1 = Start with {0} (the total pay for the non-working hours).
-confirmation.breakdown.h3.p2.l2 = Divide by 66.673
-confirmation.breakdown.h3.p2.l3 = Multiply by 61.67 = {0}
+confirmation.breakdown.h3.p5 =To calculate the overall amount you can pay the employee for time could not work:
+confirmation.breakdown.h3.closed.p5.l1=Start with £ {0} (the reference salary for the pay period).
+confirmation.breakdown.h3.closed.p5.l2=Divide by {0} (the number of calendar days in the pay period).
+confirmation.breakdown.h3.closed.p5.l3=Multiply by {0} (the number of days the employee could not work in this pay period).
+confirmation.breakdown.h3.closed.p5.l4=Multiply by 2.
+confirmation.breakdown.h3.closed.p5.l5=Divide by 3 = £{0}.
 
-confirmation.breakdown.total.to.pay.during.business.closed = The total amount you must pay the employee for the time the business is closed during this pay period = {0}.
-confirmation.breakdown.amount.to.pay =  Amount to pay the employee: {0}.
+confirmation.breakdown.h3.closed.p6=The total amount you must pay the employee for the time the business is closed during this pay period = £{0}.
+confirmation.breakdown.h3.closed.p7=Amount to pay the employee = £{0}.
 
+confirmation.confirmation.ineligible=You are ineligible
 confirmation.print.label = Print or save a copy of this page
 confirmation.webchat.label = Webchat help (opens in a new tab)
 confirmation.feedbackSurvey.label = What do you think of this service?
@@ -379,7 +375,7 @@ temporaryWorkingAgreement.error.required = Select Yes if the employee have a tem
 
 businessClosed.title = Was your business closed and unable to trade during this claim?
 businessClosed.heading = Was your business closed and unable to trade during this claim?
-businessClosed.p1 = The period is known as the closed period. It covers businesses as a result of restrictions set by one of the four UK governments that legally require them to close their premises. Each closed period must cover a minimum period of seven days.
+businessClosed.p1 = This is called the closed period or when the business was legally required to close its premises due to government restrictions. Each closed period must cover a minimum period of seven days. The closed period must be from 1 November 2020 until 31 March 2021. You can add one or more closed periods.
 businessClosed.yes = Yes
 businessClosed.no = No
 businessClosed.error.required = Select yes if your business closed and unable to trade during this claim
@@ -402,7 +398,7 @@ addMore.yes = Yes
 addMore.no = No
 businessClosedPeriods.title = Enter the periods when your business was closed
 businessClosedPeriods.heading = Enter the periods when your business was closed
-businessClosedPeriods.p1 = The period is know as the closed period. It covers businesses due to restrictions set by one of the four UK governments that legally require them to close their premises. Each closed period must cover a minimum period of seven days. Include one or more period.
+businessClosedPeriods.p1 = This is called the closed period or when the business was legally required to close its premises due to government restrictions. Each closed period must cover a minimum period of seven days. The closed period must be from 1 November 2020 until 31 March 2021. You can add one or more closed periods.
 businessClosedPeriods.startDate.label = Start date
 businessClosedPeriods.endDate.label = End date
 businessClosedPeriods.startDate.hint = For example, 1 3 2020
@@ -415,5 +411,7 @@ businessClosedPeriods.addAnother.error.required = Select yes if you need to add 
 businessClosedPeriods.addMore.heading = Do you want to add more dates ?
 businessClosedPeriods.addmore.error.required = Select yes if you want to add more dates
 
-youAreNotEligible.title = You are not eligible to make a claim
-youAreNotEligible.heading = You are not eligible to make a claim
+youAreNotEligible.title = You cannot proceed with this calculation
+youAreNotEligible.heading = You cannot proceed with this calculation
+youAreNotEligible.p1 = You have selected no to the business being closed during the claim period and no to the employee being on a temporary working agreement. Select yes to one or both of them to proceed with your calculation.
+youAreNotEligible.startAgain = Start another calculation
