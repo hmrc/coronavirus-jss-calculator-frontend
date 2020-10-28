@@ -372,7 +372,8 @@ comingSoon.start.another = Start another calculation
 
 temporaryWorkingAgreement.title = Did the employee have temporary working agreements during this claim?
 temporaryWorkingAgreement.heading = Did the employee have temporary working agreements during this claim?
-temporaryWorkingAgreement.p1 = Each temporary working agreement must cover a minimum period of seven days.
+temporaryWorkingAgreement.p1 = Enter dates for JSS Open temporary working agreements when the employee has worked reduced hours.
+temporaryWorkingAgreement.p2 = Each temporary working agreement must cover a minimum period of seven days.
 temporaryWorkingAgreement.yes = Yes
 temporaryWorkingAgreement.no = No
 temporaryWorkingAgreement.error.required = Select yes if the employee had temporary working agreements during this claim
