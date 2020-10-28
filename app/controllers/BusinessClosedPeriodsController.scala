@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.BusinessClosedPeriodsFormProvider
 import javax.inject.Inject
-import models.{BusinessClosedWithDates, NormalMode, SupportClaimPeriod}
+import models.{BusinessClosedPeriod, NormalMode, SupportClaimPeriod}
 import navigation.Navigator
 import pages.{BusinessClosedPeriodsPage, ClaimPeriodPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -46,7 +46,7 @@ class BusinessClosedPeriodsController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(previousBCPeriods: Seq[BusinessClosedWithDates], claimPeriod: SupportClaimPeriod) =
+  private def form(previousBCPeriods: Seq[BusinessClosedPeriod], claimPeriod: SupportClaimPeriod) =
     formProvider(previousBCPeriods, claimPeriod)
 
   def onPageLoad(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>

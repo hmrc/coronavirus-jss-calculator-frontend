@@ -18,15 +18,10 @@ package models
 
 import java.time.LocalDate
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, Json}
 
-case class PeriodWithHours(
-  startDate: LocalDate,
-  endDate: LocalDate,
-  usualHours: Double,
-  actualHours: Double
-)
+case class TemporaryWorkingAgreementPeriod(startDate: LocalDate, endDate: LocalDate, addAnother: Boolean = false)
 
-object PeriodWithHours {
-  implicit val format = Json.format[PeriodWithHours]
+object TemporaryWorkingAgreementPeriod {
+  implicit val format: Format[TemporaryWorkingAgreementPeriod] = Json.format
 }

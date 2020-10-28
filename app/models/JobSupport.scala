@@ -17,6 +17,7 @@
 package models
 
 import play.api.libs.json.{Format, Json}
+import utils.MoneyUtils.round
 
 final case class OpenJobSupport(
   numberOfTemporaryWorkingDaysInPayPeriod: Int,
@@ -28,7 +29,7 @@ final case class OpenJobSupport(
 
 object OpenJobSupport {
   implicit val format: Format[OpenJobSupport] = Json.format
-  val noSupport: OpenJobSupport               = OpenJobSupport(0, 0.0, 0.0, 0.0, 0.0)
+  val zeroFinancialSupport: OpenJobSupport    = OpenJobSupport(0, 0.0, 0.0, 0.0, 0.0)
 }
 
 final case class ClosedJobSupport(
@@ -38,7 +39,6 @@ final case class ClosedJobSupport(
 
 object ClosedJobSupport {
   implicit val format: Format[ClosedJobSupport] = Json.format
-  val noSupport: ClosedJobSupport               = ClosedJobSupport(0, 0.0)
 }
 
 final case class JobSupport(
@@ -47,8 +47,6 @@ final case class JobSupport(
 )
 
 object JobSupport {
-
-  private def round(amount: Double): Double = BigDecimal(amount).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
 
   implicit class JobSupportOps(private val jobSupport: JobSupport) {
 

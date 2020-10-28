@@ -20,8 +20,8 @@ import java.time.LocalDate
 
 import play.api.libs.json.{Format, Json}
 
-case class TemporaryWorkingAgreementWithDates(startDate: LocalDate, endDate: LocalDate, addAnother: Boolean = false)
+case class BusinessClosedPeriod(startDate: LocalDate, endDate: LocalDate, addAnother: Boolean = false)
 
-object TemporaryWorkingAgreementWithDates {
-  implicit val format: Format[TemporaryWorkingAgreementWithDates] = Json.format
+object BusinessClosedPeriod {
+  implicit val format: Format[BusinessClosedPeriod] = Json.format
 }

@@ -21,16 +21,16 @@ import java.time.temporal.ChronoUnit
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.{BusinessClosedWithDates, SupportClaimPeriod}
+import models.{BusinessClosedPeriod, SupportClaimPeriod}
 import play.api.data.Form
 import play.api.data.Forms.mapping
 
 class BusinessClosedPeriodsFormProvider @Inject() extends Mappings {
 
   def apply(
-    previousBCPeriods: Seq[BusinessClosedWithDates],
+    previousBCPeriods: Seq[BusinessClosedPeriod],
     claimPeriod: SupportClaimPeriod
-  ): Form[BusinessClosedWithDates] =
+  ): Form[BusinessClosedPeriod] =
     Form(
       mapping(
         "startDate"  -> localDate(
@@ -47,7 +47,7 @@ class BusinessClosedPeriodsFormProvider @Inject() extends Mappings {
         "addAnother" -> boolean(
           requiredKey = "businessClosedPeriods.addAnother.error.required"
         )
-      )(BusinessClosedWithDates.apply)(BusinessClosedWithDates.unapply)
+      )(BusinessClosedPeriod.apply)(BusinessClosedPeriod.unapply)
         .verifying(
           "businessClosedPeriods.endDate.must.be.after.startDate",
           bcp => bcp.endDate.compareTo(bcp.startDate) > 0
@@ -62,11 +62,11 @@ class BusinessClosedPeriodsFormProvider @Inject() extends Mappings {
   private def isDateWithInClaim(date: LocalDate, claimPeriod: SupportClaimPeriod) =
     (date.isEqual(claimPeriod.startDate) || date.isAfter(claimPeriod.startDate)) && date.isBefore(claimPeriod.endDate)
 
-  private def isIntersecting(previousPeriods: Seq[BusinessClosedWithDates], newPeriod: BusinessClosedWithDates) =
+  private def isIntersecting(previousPeriods: Seq[BusinessClosedPeriod], newPeriod: BusinessClosedPeriod) =
     previousPeriods.exists(p =>
       isDateInteractsPeriod(newPeriod.startDate, p) || isDateInteractsPeriod(newPeriod.endDate, p)
     )
 
-  private def isDateInteractsPeriod(date: LocalDate, period: BusinessClosedWithDates) =
+  private def isDateInteractsPeriod(date: LocalDate, period: BusinessClosedPeriod) =
     date.compareTo(period.startDate) >= 0 && date.compareTo(period.endDate) <= 0;
 }

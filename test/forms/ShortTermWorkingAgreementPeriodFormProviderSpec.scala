@@ -19,7 +19,7 @@ package forms
 import java.time.LocalDate
 
 import forms.behaviours.DateBehaviours
-import models.{ClaimPeriod, TemporaryWorkingAgreementWithDates}
+import models.{ClaimPeriod, TemporaryWorkingAgreementPeriod}
 import play.api.data.FormError
 
 class ShortTermWorkingAgreementPeriodFormProviderSpec extends DateBehaviours {
@@ -41,7 +41,7 @@ class ShortTermWorkingAgreementPeriodFormProviderSpec extends DateBehaviours {
       "addAnother"      -> "true"
     )
     "bind valid values" in {
-      form(List.empty, claimPeriod).bind(data).get shouldEqual TemporaryWorkingAgreementWithDates(
+      form(List.empty, claimPeriod).bind(data).get shouldEqual TemporaryWorkingAgreementPeriod(
         startDate,
         endDate,
         true
@@ -50,7 +50,7 @@ class ShortTermWorkingAgreementPeriodFormProviderSpec extends DateBehaviours {
 
     "throw form error in case of overlapping periods" in {
 
-      val previousPeriods = List(TemporaryWorkingAgreementWithDates(startDate.minusDays(10), startDate.plusDays(2)))
+      val previousPeriods = List(TemporaryWorkingAgreementPeriod(startDate.minusDays(10), startDate.plusDays(2)))
 
       form(previousPeriods, claimPeriod).bind(data).errors shouldEqual Seq(
         FormError("", "shortTermWorkingAgreementPeriod.periods.should.not.overlap")

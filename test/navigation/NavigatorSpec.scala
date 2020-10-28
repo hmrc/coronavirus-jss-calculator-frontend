@@ -97,7 +97,7 @@ class NavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers
             .set(
               ShortTermWorkingAgreementPeriodPage,
-              TemporaryWorkingAgreementWithDates(LocalDate.now, LocalDate.now, addAnother = true),
+              TemporaryWorkingAgreementPeriod(LocalDate.now, LocalDate.now, addAnother = true),
               Some(1)
             )
             .success
@@ -119,7 +119,7 @@ class NavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers
             .set(
               ShortTermWorkingAgreementPeriodPage,
-              TemporaryWorkingAgreementWithDates(LocalDate.now, LocalDate.now, addAnother = false),
+              TemporaryWorkingAgreementPeriod(LocalDate.now, LocalDate.now, addAnother = false),
               Some(1)
             )
             .success
@@ -158,7 +158,7 @@ class NavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers
             .set(
               BusinessClosedPeriodsPage,
-              BusinessClosedWithDates(LocalDate.now, LocalDate.now, addAnother = true),
+              BusinessClosedPeriod(LocalDate.now, LocalDate.now, addAnother = true),
               Some(1)
             )
             .success
@@ -181,7 +181,7 @@ class NavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers
             .set(
               BusinessClosedPeriodsPage,
-              BusinessClosedWithDates(LocalDate.now, LocalDate.now, addAnother = false),
+              BusinessClosedPeriod(LocalDate.now, LocalDate.now, addAnother = false),
               Some(1)
             )
             .success
@@ -207,7 +207,7 @@ class NavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers
             .set(
               BusinessClosedPeriodsPage,
-              BusinessClosedWithDates(LocalDate.now, LocalDate.now, addAnother = false),
+              BusinessClosedPeriod(LocalDate.now, LocalDate.now, addAnother = false),
               Some(1)
             )
             .success
@@ -241,7 +241,7 @@ class NavigatorSpec extends SpecBase {
             .value
             .set(
               BusinessClosedPeriodsPage,
-              BusinessClosedWithDates(LocalDate.now, LocalDate.now, addAnother = false),
+              BusinessClosedPeriod(LocalDate.now, LocalDate.now, addAnother = false),
               Some(1)
             )
             .success
@@ -263,7 +263,7 @@ class NavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers
             .set(
               BusinessClosedPeriodsPage,
-              BusinessClosedWithDates(LocalDate.now, LocalDate.now, addAnother = false),
+              BusinessClosedPeriod(LocalDate.now, LocalDate.now, addAnother = false),
               Some(1)
             )
             .success

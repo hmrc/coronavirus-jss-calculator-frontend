@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBaseControllerSpecs
 import forms.ShortTermWorkingAgreementPeriodFormProvider
-import models.{ClaimPeriod, TemporaryWorkingAgreementWithDates, UserAnswers}
+import models.{ClaimPeriod, TemporaryWorkingAgreementPeriod, UserAnswers}
 import pages.{ClaimPeriodPage, ShortTermWorkingAgreementPeriodPage}
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
@@ -75,7 +75,7 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
     frontendAppConfig
   )
 
-  val stwa = TemporaryWorkingAgreementWithDates(startDate, endDate)
+  val stwa = TemporaryWorkingAgreementPeriod(startDate, endDate)
 
   "ShortTermWorkingAgreementPeriod Controller" must {
 

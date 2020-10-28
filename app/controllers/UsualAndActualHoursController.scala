@@ -24,7 +24,7 @@ import controllers.actions._
 import forms.UsualAndActualHoursFormProvider
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{BusinessClosedWithDates, NormalMode, Period, PeriodWithHours, TemporaryWorkingAgreementWithDates, UserAnswers, UsualAndActualHours}
+import models.{BusinessClosedPeriod, NormalMode, PayPeriod, Period, TemporaryWorkingAgreementPeriod, UserAnswers, UsualAndActualHours}
 import navigation.Navigator
 import pages._
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -123,9 +123,9 @@ class UsualAndActualHoursController @Inject() (
     val bcPeriods   = userAnswers.getList(BusinessClosedPeriodsPage)
 
     //FIXME: Hacky way to pass 0.0s for hours to see if Twa intercepts PP
-    val periodWithHours = PeriodWithHours(workPeriod.startDate, workPeriod.endDate, 0.0, 0.0)
+    val periodWithHours = PayPeriod(workPeriod.startDate, workPeriod.endDate, 0.0, 0.0)
 
-    val twaDaysInPayPeriod = totalNumberOfTwaDaysInPayPeriod(periodWithHours, stwaPeriods)
+    val twaDaysInPayPeriod = getTotalNumberOfTemporaryWorkingAgreementDaysInPayPeriod(periodWithHours, stwaPeriods)
 
     //No TWA days in PP
     if (twaDaysInPayPeriod == 0) {
@@ -156,12 +156,12 @@ class UsualAndActualHoursController @Inject() (
   }
 
   private def businessClosedCoversAllTWA(
-    twaPeriods: List[TemporaryWorkingAgreementWithDates],
-    bcPeriods: List[BusinessClosedWithDates]
+    twaPeriods: List[TemporaryWorkingAgreementPeriod],
+    bcPeriods: List[BusinessClosedPeriod]
   ) = {
 
-    val twaDays = sortedTWA(twaPeriods).flatMap(d => datesIn(d.startDate, d.endDate))
-    val bcDays  = sortedBusinessClosed(bcPeriods).flatMap(d => datesIn(d.startDate, d.endDate))
+    val twaDays = sortedTemporaryWorkingAgreements(twaPeriods).flatMap(d => datesIn(d.startDate, d.endDate))
+    val bcDays  = sortedBusinessClosedPeriods(bcPeriods).flatMap(d => datesIn(d.startDate, d.endDate))
 
     val unCoveredTwaInBC = twaDays.filter(d => !bcDays.contains(d))
 

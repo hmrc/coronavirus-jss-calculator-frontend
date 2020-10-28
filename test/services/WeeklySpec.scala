@@ -19,7 +19,7 @@ package services
 import java.time.LocalDate
 
 import base.SpecBase
-import models.{BusinessClosedWithDates, JobSupport, PayFrequency, PeriodWithHours, SupportClaimPeriod, TemporaryWorkingAgreementWithDates}
+import models.{BusinessClosedPeriod, JobSupport, PayFrequency, PayPeriod, SupportClaimPeriod, TemporaryWorkingAgreementPeriod}
 
 class WeeklySpec extends SpecBase {
 
@@ -35,45 +35,45 @@ class WeeklySpec extends SpecBase {
         )
 
         val twasList = List(
-          TemporaryWorkingAgreementWithDates(
+          TemporaryWorkingAgreementPeriod(
             LocalDate.of(2020, 11, 1),
             LocalDate.of(2020, 11, 30)
           )
         )
 
         val closedList = List(
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 3),
             LocalDate.of(2020, 11, 16)
           )
         )
 
-        val pp: List[PeriodWithHours] = List(
-          PeriodWithHours(
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
             LocalDate.of(2020, 10, 27),
             LocalDate.of(2020, 11, 2),
             15,
             7.5
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 3),
             LocalDate.of(2020, 11, 9),
             15,
             7.5
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 10),
             LocalDate.of(2020, 11, 16),
             15,
             7.5
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 17),
             LocalDate.of(2020, 11, 23),
             37.5,
             15
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 24),
             LocalDate.of(2020, 11, 30),
             37.5,
@@ -90,7 +90,7 @@ class WeeklySpec extends SpecBase {
           300
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 268.60
+        jobSupport.totalEmployeeSalary mustEqual 268.59
         jobSupport.totalEmployersGrant mustEqual 248.45
         jobSupport.totalClosed mustEqual 400
         jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 648.45
@@ -104,49 +104,49 @@ class WeeklySpec extends SpecBase {
         )
 
         val twasList = List(
-          TemporaryWorkingAgreementWithDates(
+          TemporaryWorkingAgreementPeriod(
             LocalDate.of(2020, 11, 1),
             LocalDate.of(2020, 11, 30)
           )
         )
 
         val closedList = List(
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 3),
             LocalDate.of(2020, 11, 11)
           ),
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 19),
             LocalDate.of(2020, 11, 25)
           )
         )
 
-        val pp: List[PeriodWithHours] = List(
-          PeriodWithHours(
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
             LocalDate.of(2020, 10, 26),
             LocalDate.of(2020, 11, 1),
             5.7,
             2
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 2),
             LocalDate.of(2020, 11, 8),
             40,
             25
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 9),
             LocalDate.of(2020, 11, 15),
             40,
             22
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 16),
             LocalDate.of(2020, 11, 22),
             40,
             10
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 23),
             LocalDate.of(2020, 11, 29),
             40,
@@ -163,10 +163,10 @@ class WeeklySpec extends SpecBase {
           350
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 252.51
-        jobSupport.totalEmployersGrant mustEqual 233.57
+        jobSupport.totalEmployeeSalary mustEqual 252.48
+        jobSupport.totalEmployersGrant mustEqual 233.55
         jobSupport.totalClosed mustEqual 533.33
-        jobSupport.totalGrant mustEqual 766.90
+        jobSupport.totalGrant mustEqual 766.88
       }
 
       "scenario-3" in new RegularPayGrantCalculator {
@@ -180,32 +180,32 @@ class WeeklySpec extends SpecBase {
         )
 
         val closedList = List(
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 1),
             LocalDate.of(2020, 11, 30)
           )
         )
 
-        val pp: List[PeriodWithHours] = List(
-          PeriodWithHours(
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
             LocalDate.of(2020, 11, 1),
             LocalDate.of(2020, 11, 7),
             0,
             0
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 8),
             LocalDate.of(2020, 11, 14),
             0,
             0
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 15),
             LocalDate.of(2020, 11, 21),
             0,
             0
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 22),
             LocalDate.of(2020, 11, 28),
             0,
@@ -239,32 +239,32 @@ class WeeklySpec extends SpecBase {
         )
 
         val closedList = List(
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 7),
             LocalDate.of(2020, 11, 21)
           )
         )
 
-        val pp: List[PeriodWithHours] = List(
-          PeriodWithHours(
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
             LocalDate.of(2020, 10, 29),
             LocalDate.of(2020, 11, 4),
             0,
             0
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 5),
             LocalDate.of(2020, 11, 11),
             0,
             0
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 12),
             LocalDate.of(2020, 11, 18),
             0,
             0
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 19),
             LocalDate.of(2020, 11, 25),
             0,
@@ -295,11 +295,11 @@ class WeeklySpec extends SpecBase {
         )
 
         val twasList = List(
-          TemporaryWorkingAgreementWithDates(
+          TemporaryWorkingAgreementPeriod(
             LocalDate.of(2020, 11, 1),
             LocalDate.of(2020, 11, 15)
           ),
-          TemporaryWorkingAgreementWithDates(
+          TemporaryWorkingAgreementPeriod(
             LocalDate.of(2020, 11, 20),
             LocalDate.of(2020, 11, 30)
           )
@@ -308,26 +308,26 @@ class WeeklySpec extends SpecBase {
         val closedList = List(
         )
 
-        val pp: List[PeriodWithHours] = List(
-          PeriodWithHours(
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
             LocalDate.of(2020, 10, 29),
             LocalDate.of(2020, 11, 4),
             30.3,
             0
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 5),
             LocalDate.of(2020, 11, 11),
             45.6,
             15
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 12),
             LocalDate.of(2020, 11, 18),
             30.5,
             29
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 19),
             LocalDate.of(2020, 11, 25),
             40.12,
@@ -344,10 +344,10 @@ class WeeklySpec extends SpecBase {
           456.66
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 386.85
-        jobSupport.totalEmployersGrant mustEqual 357.84
+        jobSupport.totalEmployeeSalary mustEqual 386.84
+        jobSupport.totalEmployersGrant mustEqual 357.82
         jobSupport.totalClosed mustEqual 0.0
-        jobSupport.totalGrant mustEqual 357.84
+        jobSupport.totalGrant mustEqual 357.82
       }
 
       "scenario-6" in new RegularPayGrantCalculator {
@@ -358,33 +358,33 @@ class WeeklySpec extends SpecBase {
         )
 
         val twasList = List(
-          TemporaryWorkingAgreementWithDates(
+          TemporaryWorkingAgreementPeriod(
             LocalDate.of(2020, 11, 1),
             LocalDate.of(2020, 11, 10)
           )
         )
 
         val closedList = List(
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 18),
             LocalDate.of(2020, 11, 24)
           )
         )
 
-        val pp: List[PeriodWithHours] = List(
-          PeriodWithHours(
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
             LocalDate.of(2020, 11, 4),
             LocalDate.of(2020, 11, 10),
             45.6,
             21.34
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 11),
             LocalDate.of(2020, 11, 17),
             0,
             0
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 18),
             LocalDate.of(2020, 11, 24),
             0,
@@ -401,7 +401,7 @@ class WeeklySpec extends SpecBase {
           700.10
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 248.33
+        jobSupport.totalEmployeeSalary mustEqual 248.32
         jobSupport.totalEmployersGrant mustEqual 229.70
         jobSupport.totalClosed mustEqual 466.73
         jobSupport.totalGrant mustEqual 696.43
@@ -415,45 +415,45 @@ class WeeklySpec extends SpecBase {
         )
 
         val twasList = List(
-          TemporaryWorkingAgreementWithDates(
+          TemporaryWorkingAgreementPeriod(
             LocalDate.of(2020, 11, 1),
             LocalDate.of(2020, 11, 9)
           )
         )
 
         val closedList = List(
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 16),
             LocalDate.of(2020, 11, 22)
           )
         )
 
-        val pp: List[PeriodWithHours] = List(
-          PeriodWithHours(
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
             LocalDate.of(2020, 10, 27),
             LocalDate.of(2020, 11, 2),
             23,
             10
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 3),
             LocalDate.of(2020, 11, 9),
             46.56,
             23
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 10),
             LocalDate.of(2020, 11, 16),
             0,
             0
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 17),
             LocalDate.of(2020, 11, 23),
             0,
             0
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 24),
             LocalDate.of(2020, 11, 30),
             0,
@@ -470,7 +470,7 @@ class WeeklySpec extends SpecBase {
           690.12
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 307.13
+        jobSupport.totalEmployeeSalary mustEqual 307.12
         jobSupport.totalEmployersGrant mustEqual 284.09
         jobSupport.totalClosed mustEqual 460.08
         jobSupport.totalGrant mustEqual 744.17
@@ -484,43 +484,43 @@ class WeeklySpec extends SpecBase {
         )
 
         val twasList = List(
-          TemporaryWorkingAgreementWithDates(
+          TemporaryWorkingAgreementPeriod(
             LocalDate.of(2020, 11, 1),
             LocalDate.of(2020, 11, 30)
           )
         )
 
         val closedList = List(
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 2),
             LocalDate.of(2020, 11, 11)
           ),
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 18),
             LocalDate.of(2020, 11, 25)
           )
         )
 
-        val pp: List[PeriodWithHours] = List(
-          PeriodWithHours(
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
             LocalDate.of(2020, 10, 31),
             LocalDate.of(2020, 11, 6),
             6,
             6
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 7),
             LocalDate.of(2020, 11, 13),
             12,
             0
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 14),
             LocalDate.of(2020, 11, 20),
             24,
             12
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 21),
             LocalDate.of(2020, 11, 27),
             12,
@@ -537,7 +537,7 @@ class WeeklySpec extends SpecBase {
           500
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 190.5
+        jobSupport.totalEmployeeSalary mustEqual 190.48
         jobSupport.totalEmployersGrant mustEqual 176.20
         jobSupport.totalClosed mustEqual 857.16
         jobSupport.totalGrant mustEqual 1033.36
@@ -551,43 +551,43 @@ class WeeklySpec extends SpecBase {
         )
 
         val twasList = List(
-          TemporaryWorkingAgreementWithDates(
+          TemporaryWorkingAgreementPeriod(
             LocalDate.of(2020, 11, 1),
             LocalDate.of(2020, 11, 30)
           )
         )
 
         val closedList = List(
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 2),
             LocalDate.of(2020, 11, 11)
           ),
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 18),
             LocalDate.of(2020, 11, 25)
           )
         )
 
-        val pp: List[PeriodWithHours] = List(
-          PeriodWithHours(
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
             LocalDate.of(2020, 10, 31),
             LocalDate.of(2020, 11, 6),
             6,
             6
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 7),
             LocalDate.of(2020, 11, 13),
             12,
             0
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 14),
             LocalDate.of(2020, 11, 20),
             24,
             12
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 21),
             LocalDate.of(2020, 11, 27),
             12,
@@ -604,7 +604,7 @@ class WeeklySpec extends SpecBase {
           1000
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 274.0
+        jobSupport.totalEmployeeSalary mustEqual 273.98
         jobSupport.totalEmployersGrant mustEqual 253.44
         jobSupport.totalClosed mustEqual 1232.89
         jobSupport.totalGrant mustEqual 1486.33
@@ -618,43 +618,43 @@ class WeeklySpec extends SpecBase {
         )
 
         val twasList = List(
-          TemporaryWorkingAgreementWithDates(
+          TemporaryWorkingAgreementPeriod(
             LocalDate.of(2020, 11, 1),
             LocalDate.of(2020, 11, 30)
           )
         )
 
         val closedList = List(
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 2),
             LocalDate.of(2020, 11, 11)
           ),
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 18),
             LocalDate.of(2020, 11, 25)
           )
         )
 
-        val pp: List[PeriodWithHours] = List(
-          PeriodWithHours(
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
             LocalDate.of(2020, 10, 31),
             LocalDate.of(2020, 11, 6),
             6,
             6
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 7),
             LocalDate.of(2020, 11, 13),
             12,
             0
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 14),
             LocalDate.of(2020, 11, 20),
             24,
             0
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 21),
             LocalDate.of(2020, 11, 27),
             12,
@@ -671,10 +671,10 @@ class WeeklySpec extends SpecBase {
           500
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 349.24
-        jobSupport.totalEmployersGrant mustEqual 323.04
+        jobSupport.totalEmployeeSalary mustEqual 349.23
+        jobSupport.totalEmployersGrant mustEqual 323.03
         jobSupport.totalClosed mustEqual 857.16
-        jobSupport.totalGrant mustEqual 1180.20
+        jobSupport.totalGrant mustEqual 1180.19
       }
     }
   }

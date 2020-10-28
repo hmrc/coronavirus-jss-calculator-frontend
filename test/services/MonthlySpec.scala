@@ -19,7 +19,7 @@ package services
 import java.time.LocalDate
 
 import base.SpecBase
-import models.{BusinessClosedWithDates, JobSupport, PayFrequency, PeriodWithHours, SupportClaimPeriod, TemporaryWorkingAgreementWithDates}
+import models.{BusinessClosedPeriod, JobSupport, PayFrequency, PayPeriod, SupportClaimPeriod, TemporaryWorkingAgreementPeriod}
 
 class MonthlySpec extends SpecBase {
 
@@ -35,21 +35,21 @@ class MonthlySpec extends SpecBase {
         )
 
         val twasList = List(
-          TemporaryWorkingAgreementWithDates(
+          TemporaryWorkingAgreementPeriod(
             LocalDate.of(2020, 11, 5),
             LocalDate.of(2020, 11, 12)
           )
         )
 
         val closedList = List(
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 17),
             LocalDate.of(2020, 11, 26)
           )
         )
 
-        val pp: List[PeriodWithHours] = List(
-          PeriodWithHours(
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
             LocalDate.of(2020, 10, 26),
             LocalDate.of(2020, 11, 25),
             320.12,
@@ -69,7 +69,7 @@ class MonthlySpec extends SpecBase {
         jobSupport.totalGrant mustEqual 657.58
       }
 
-      "sc-6" in new RegularPayGrantCalculator {
+      "scenario-6" in new RegularPayGrantCalculator {
 
         val supportClaimPeriod = SupportClaimPeriod(
           LocalDate.of(2020, 11, 1),
@@ -77,21 +77,21 @@ class MonthlySpec extends SpecBase {
         )
 
         val twasList = List(
-          TemporaryWorkingAgreementWithDates(
+          TemporaryWorkingAgreementPeriod(
             LocalDate.of(2020, 11, 1),
             LocalDate.of(2020, 11, 15)
           )
         )
 
         val closedList = List(
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 16),
             LocalDate.of(2020, 11, 28)
           )
         )
 
-        val pp: List[PeriodWithHours] = List(
-          PeriodWithHours(
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
             LocalDate.of(2020, 10, 29),
             LocalDate.of(2020, 11, 28),
             310.15,
@@ -108,7 +108,7 @@ class MonthlySpec extends SpecBase {
           3330.00
         )
 
-        jobSupport.totalGrant mustEqual 1428.85
+        jobSupport.totalGrant mustEqual 1428.84
       }
     }
   }

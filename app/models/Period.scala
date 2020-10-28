@@ -84,6 +84,6 @@ object Period {
       )
     }
 
-  def toPeriodWithHours(period: Period, usualAndActualHours: UsualAndActualHours): PeriodWithHours =
-    PeriodWithHours(period.startDate, period.endDate, usualAndActualHours.usualHours, usualAndActualHours.actualHours)
+  def toPeriodWithHours(period: Period, usualAndActualHours: UsualAndActualHours): PayPeriod =
+    PayPeriod(period.startDate, period.endDate, usualAndActualHours.usualHours, usualAndActualHours.actualHours)
 }

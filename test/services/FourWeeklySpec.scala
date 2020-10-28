@@ -19,7 +19,7 @@ package services
 import java.time.LocalDate
 
 import base.SpecBase
-import models.{BusinessClosedWithDates, JobSupport, PayFrequency, PeriodWithHours, SupportClaimPeriod, TemporaryWorkingAgreementWithDates}
+import models.{BusinessClosedPeriod, JobSupport, PayFrequency, PayPeriod, SupportClaimPeriod, TemporaryWorkingAgreementPeriod}
 
 class FourWeeklySpec extends SpecBase {
 
@@ -35,27 +35,27 @@ class FourWeeklySpec extends SpecBase {
         )
 
         val twasList = List(
-          TemporaryWorkingAgreementWithDates(
+          TemporaryWorkingAgreementPeriod(
             LocalDate.of(2020, 11, 1),
             LocalDate.of(2020, 11, 30)
           )
         )
 
         val closedList = List(
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 2),
             LocalDate.of(2020, 11, 19)
           )
         )
 
-        val pp: List[PeriodWithHours] = List(
-          PeriodWithHours(
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
             LocalDate.of(2020, 10, 6),
             LocalDate.of(2020, 11, 2),
             14,
             5
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 3),
             LocalDate.of(2020, 11, 30),
             85.4,
@@ -72,7 +72,7 @@ class FourWeeklySpec extends SpecBase {
           2500
         )
 
-        jobSupport.totalGrant mustEqual 1547.97
+        jobSupport.totalGrant mustEqual 1547.96
       }
     }
   }

@@ -19,7 +19,7 @@ package forms
 import java.time.LocalDate
 
 import forms.behaviours.DateBehaviours
-import models.{BusinessClosedWithDates, ClaimPeriod}
+import models.{BusinessClosedPeriod, ClaimPeriod}
 import play.api.data.FormError
 
 class BusinessClosedPeriodsFormProviderSpec extends DateBehaviours {
@@ -43,12 +43,12 @@ class BusinessClosedPeriodsFormProviderSpec extends DateBehaviours {
   "form" should {
 
     "bind valid values" in {
-      form(List.empty, claimPeriod).bind(data).get shouldEqual BusinessClosedWithDates(startDate, endDate)
+      form(List.empty, claimPeriod).bind(data).get shouldEqual BusinessClosedPeriod(startDate, endDate)
     }
 
     "throw form error in case of overlapping periods" in {
 
-      val previousPeriods = List(BusinessClosedWithDates(startDate.minusDays(10), startDate.plusDays(2)))
+      val previousPeriods = List(BusinessClosedPeriod(startDate.minusDays(10), startDate.plusDays(2)))
 
       form(previousPeriods, claimPeriod).bind(data).errors shouldEqual Seq(
         FormError("", "businessClosedPeriods.periods.should.not.overlap")

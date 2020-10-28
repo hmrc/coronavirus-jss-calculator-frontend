@@ -16,10 +16,10 @@
 
 package pages
 
-import models.BusinessClosedWithDates
+import models.BusinessClosedPeriod
 import play.api.libs.json.JsPath
 
-case object BusinessClosedPeriodsPage extends QuestionPage[BusinessClosedWithDates] {
+case object BusinessClosedPeriodsPage extends QuestionPage[BusinessClosedPeriod] {
 
   override def path: JsPath = JsPath \ toString
 

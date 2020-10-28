@@ -21,16 +21,16 @@ import java.time.temporal.ChronoUnit
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.{ClaimPeriod, SupportClaimPeriod, TemporaryWorkingAgreementWithDates}
+import models.{ClaimPeriod, SupportClaimPeriod, TemporaryWorkingAgreementPeriod}
 import play.api.data.Form
 import play.api.data.Forms._
 
 class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
 
   def apply(
-    previousTWAPeriods: Seq[TemporaryWorkingAgreementWithDates],
+    previousTWAPeriods: Seq[TemporaryWorkingAgreementPeriod],
     claimPeriod: SupportClaimPeriod
-  ): Form[TemporaryWorkingAgreementWithDates] =
+  ): Form[TemporaryWorkingAgreementPeriod] =
     Form(
       mapping(
         "startDate"  -> localDate(
@@ -47,7 +47,7 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
         "addAnother" -> boolean(
           requiredKey = "shortTermWorkingAgreementPeriod.addAnother.error.required"
         )
-      )(TemporaryWorkingAgreementWithDates.apply)(TemporaryWorkingAgreementWithDates.unapply)
+      )(TemporaryWorkingAgreementPeriod.apply)(TemporaryWorkingAgreementPeriod.unapply)
         .verifying(
           "shortTermWorkingAgreementPeriod.endDate.must.be.after.startDate",
           swa => swa.endDate.compareTo(swa.startDate) > 0
@@ -69,14 +69,14 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
   }
 
   private def isIntersecting(
-    previousPeriods: Seq[TemporaryWorkingAgreementWithDates],
-    newPeriod: TemporaryWorkingAgreementWithDates
+    previousPeriods: Seq[TemporaryWorkingAgreementPeriod],
+    newPeriod: TemporaryWorkingAgreementPeriod
   ) =
     previousPeriods.exists(p =>
       isDateInteractsPeriod(newPeriod.startDate, p) || isDateInteractsPeriod(newPeriod.endDate, p)
     )
 
-  private def isDateInteractsPeriod(date: LocalDate, period: TemporaryWorkingAgreementWithDates) =
+  private def isDateInteractsPeriod(date: LocalDate, period: TemporaryWorkingAgreementPeriod) =
     date.compareTo(period.startDate) >= 0 && date.compareTo(period.endDate) <= 0;
 
   private def onOrAfter(date1: LocalDate, date2: LocalDate) =
