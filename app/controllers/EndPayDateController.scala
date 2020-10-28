@@ -46,15 +46,17 @@ class EndPayDateController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(lastPayDate: LocalDate, claimEnd: LocalDate)(implicit messages: Messages) =
-    formProvider(lastPayDate, claimEnd)
+  private def form(claimStartDate: LocalDate, claimEnd: LocalDate)(implicit messages: Messages) =
+    formProvider(claimStartDate, claimEnd)
 
   def onPageLoad(): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
     (request.userAnswers.get(LastPayDatePage), request.userAnswers.get(ClaimPeriodPage)) match {
       case (Some(lastPayDate), Some(claimPeriod)) =>
+        val startDate    = claimPeriod.supportClaimPeriod.startDate
+        val endDate      = claimPeriod.supportClaimPeriod.endDate
         val preparedForm = request.userAnswers.get(EndPayDatePage) match {
-          case None        => form(lastPayDate, claimPeriod.supportClaimPeriod.endDate)
-          case Some(value) => form(lastPayDate, claimPeriod.supportClaimPeriod.endDate).fill(value)
+          case None        => form(startDate, endDate)
+          case Some(value) => form(startDate, endDate).fill(value)
         }
         Ok(view(preparedForm, lastPayDate))
 
@@ -66,7 +68,7 @@ class EndPayDateController @Inject() (
   def onSubmit(): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
     (request.userAnswers.get(LastPayDatePage), request.userAnswers.get(ClaimPeriodPage)) match {
       case (Some(lastPayDate), Some(claimPeriod)) =>
-        form(lastPayDate, claimPeriod.supportClaimPeriod.endDate)
+        form(claimPeriod.supportClaimPeriod.startDate, claimPeriod.supportClaimPeriod.endDate)
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lastPayDate))),
