@@ -181,8 +181,8 @@ startPage.p5.l2 = returned from statutory leave such as maternity
 startPage.p6 = The calculator cannot be used for employees if they:
 startPage.p6.l1 = receive director’s payments outside PAYE
 startPage.p6.l2 = receive variable pay amounts (you will be able to calculate for variable pay shortly)
-startPage.p6.l3 = have been transferred under Transfer of Undertakings (Protection of Employment) Regulations 2006 (TUPE).
-startPage.p6.l4 = were not employed continuously before the Job Support Scheme started.
+startPage.p6.l3 = have been transferred under Transfer of Undertakings (Protection of Employment) Regulations 2006 (TUPE)
+startPage.p6.l4 = were not employed continuously before the Job Support Scheme started
 startPage.p7.1 = In these cases, you can work out what you can claim manually using the
 startPage.p7.link.text = calculation guidance
 startPage.p7.2 = or seek professional advice.
@@ -193,6 +193,7 @@ startPage.p9.l2 = regular payment amounts
 startPage.p9.l3 = usual and actual hours worked
 startPage.p9.l4 = dates of Temporary Working Agreements
 startPage.p9.l5 = dates of when the business was closed
+startPage.beforeYouStart = Before you start
 
 payFrequency.title = How often do you pay this employee?
 payFrequency.heading = How often do you pay this employee?
@@ -366,12 +367,12 @@ comingSoon.heading = We are unable to do this calculation at the moment
 comingSoon.p = This will be available in a future version.
 comingSoon.start.another = Start another calculation
 
-temporaryWorkingAgreement.title = Did the employee have a temporary working agreement during this claim?
-temporaryWorkingAgreement.heading = Did the employee have a temporary working agreement during this claim?
+temporaryWorkingAgreement.title = Did the employee have temporary working agreements during this claim?
+temporaryWorkingAgreement.heading = Did the employee have temporary working agreements during this claim?
 temporaryWorkingAgreement.p1 = Each temporary working agreement must cover a minimum period of seven days.
 temporaryWorkingAgreement.yes = Yes
 temporaryWorkingAgreement.no = No
-temporaryWorkingAgreement.error.required = Select Yes if the employee have a temporary working agreement during this claim
+temporaryWorkingAgreement.error.required = Select yes if the employee had temporary working agreements during this claim
 
 businessClosed.title = Was your business closed and unable to trade during this claim?
 businessClosed.heading = Was your business closed and unable to trade during this claim?
@@ -389,6 +390,8 @@ shortTermWorkingAgreementPeriod.startDate.hint = For example, 1 3 2020
 shortTermWorkingAgreementPeriod.endDate.hint = For example, 7 3 2020
 shortTermWorkingAgreementPeriod.error.required = Enter a valid start date
 shortTermWorkingAgreementPeriod.error.invalid = Enter a valid end date
+shortTermWorkingAgreementPeriod.dateRange = Date range {0}
+
 businessClosedPeriods.addAnother.label = Do you need to add more dates?
 businessClosedPeriods.addAnother.error.required = Select yes if you need to add more dates
 
@@ -407,6 +410,7 @@ businessClosedPeriods.error.required = Enter a valid start date
 businessClosedPeriods.error.invalid = Enter a valid end date
 businessClosedPeriods.addAnother.label = Do you need to add more dates?
 businessClosedPeriods.addAnother.error.required = Select yes if you need to add more dates
+businessClosedPeriods.dateRange = Date range {0}
 
 businessClosedPeriods.addMore.heading = Do you want to add more dates ?
 businessClosedPeriods.addmore.error.required = Select yes if you want to add more dates
