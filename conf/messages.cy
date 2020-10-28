@@ -244,8 +244,8 @@ payPeriods.p2 = Together, they should cover your claim, though may be partly out
 payPeriods.p3 = We’ve assumed regular pay periods. The calculator cannot be used for irregular pay periods.
 payPeriods.error.required = Select yes if the pay periods are correct
 
-selectWorkPeriods.title = When did this employee work during the claim period?
-selectWorkPeriods.heading = When did this employee work during the claim period?
+selectWorkPeriods.title = Select the pay periods you wish to calculate for
+selectWorkPeriods.heading = Select the pay periods you wish to calculate for
 selectWorkPeriods.hint = Select all that apply
 selectWorkPeriods.from.to = {0} to {1}
 selectWorkPeriods.error.required = Select all the periods that employee has worked during the claim.
