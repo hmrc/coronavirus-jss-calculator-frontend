@@ -354,16 +354,16 @@ confirmation.print.label = Print or save a copy of this page
 confirmation.webchat.label = Webchat help (opens in a new tab)
 confirmation.feedbackSurvey.label = What do you think of this service?
 
-endPayDate.title = What’s the end of the next pay period after {0}?
-endPayDate.heading = What’s the end of the next pay period after {0}?
+endPayDate.title = What’s the last date of the next pay period after {0}?
+endPayDate.heading = What’s the last date of the next pay period after {0}?
 endPayDate.p1 = This is the last day in the pay period, not the date they received their pay.
 endPayDate.details.title = What is a pay period?
 endPayDate.details.p1 = A ‘pay period’ is the period when the employee is paid for, such as weekly or monthly. The end date of a pay period is the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually receives their pay.
 endPayDate.hint = For example 01 12 2020
-endPayDate.error.required = Enter the end of the next pay period after {0}
-endPayDate.error.invalid = Enter the end of the next pay period after {0}
-endPayDate.error.invalid.must.be.after = The end pay date must be after {0}
-endPayDate.error.invalid.must.be.before = The end pay date must be before claim end ({0})
+endPayDate.error.required = Enter the last date of the next pay period after {0}
+endPayDate.error.invalid = Enter the last date of the next pay period after {0}
+endPayDate.error.invalid.must.be.after = The last date must be after {0}
+endPayDate.error.invalid.must.be.before = The last date must be before claim end ({0})
 
 comingSoon.title = We are unable to do this calculation at the moment
 comingSoon.heading = We are unable to do this calculation at the moment
