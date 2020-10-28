@@ -16,19 +16,25 @@
 
 package controllers
 
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
+import java.util.stream.Collectors
+
 import controllers.actions._
 import forms.UsualAndActualHoursFormProvider
 import javax.inject.Inject
-import models.NormalMode
 import models.requests.DataRequest
+import models.{BusinessClosedWithDates, NormalMode, Period, PeriodWithHours, TemporaryWorkingAgreementWithDates, UserAnswers, UsualAndActualHours}
 import navigation.Navigator
-import pages.{ClaimPeriodPage, SelectWorkPeriodsPage, UsualAndActualHoursPage}
+import pages._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.RegularPayGrantCalculator
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.UsualAndActualHoursView
 
+import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future}
 
 class UsualAndActualHoursController @Inject() (
@@ -43,19 +49,34 @@ class UsualAndActualHoursController @Inject() (
   view: UsualAndActualHoursView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
+    with RegularPayGrantCalculator
     with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(UsualAndActualHoursPage, Some(idx)) match {
-      case None        => form
-      case Some(value) => form.fill(value)
-    }
+  def onPageLoad(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(UsualAndActualHoursPage, Some(idx)) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
 
-    val (startDateToShow, endDateToShow) = getStartAndEndDatesToShow(idx - 1, request)
+      val workPeriod = request.userAnswers.get(SelectWorkPeriodsPage).flatMap(_.lift(idx - 1)) match {
+        case Some(period) => period
+        case None         => throw new RuntimeException(s"expected WorkPeriod at index: ${idx - 1}, but it doesn't exist")
+      }
 
-    Ok(view(preparedForm, idx, startDateToShow, endDateToShow))
+      if (isPeriodEligibleForHours(request.userAnswers, workPeriod)) {
+        val (startDateToShow, endDateToShow) = getStartAndEndDatesToShow(idx - 1, request)
+        Future.successful(Ok(view(preparedForm, idx, startDateToShow, endDateToShow)))
+      } else {
+        //store u hours in mongo and proceed to next page in the loop
+        for {
+          updatedAnswers <-
+            Future.fromTry(request.userAnswers.set(UsualAndActualHoursPage, UsualAndActualHours(0.0, 0.0), Some(idx)))
+          _              <- sessionRepository.set(updatedAnswers)
+        } yield Redirect(navigator.nextPage(UsualAndActualHoursPage, NormalMode, updatedAnswers, Some(idx)))
+      }
   }
 
   def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
@@ -95,4 +116,67 @@ class UsualAndActualHoursController @Inject() (
 
     (startDateToShow, endDateToShow)
   }
+
+  private def isPeriodEligibleForHours(userAnswers: UserAnswers, workPeriod: Period): Boolean = {
+
+    val stwaPeriods = userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
+    val bcPeriods   = userAnswers.getList(BusinessClosedPeriodsPage)
+
+    //FIXME: Hacky way to pass 0.0s for hours to see if Twa intercepts PP
+    val periodWithHours = PeriodWithHours(workPeriod.startDate, workPeriod.endDate, 0.0, 0.0)
+
+    val twaDaysInPayPeriod = totalNumberOfTwaDaysInPayPeriod(periodWithHours, stwaPeriods)
+
+    //No TWA days in PP
+    if (twaDaysInPayPeriod == 0) {
+      false
+    } else { //TWA days exist in PP
+      //is TWA fully covered by BC
+      val overlappingTwaInPayPeriod =
+        stwaPeriods.filter(p =>
+          isDateInteractsPeriod(workPeriod.startDate, Period(p.startDate, p.endDate))
+            || isDateInteractsPeriod(workPeriod.endDate, Period(p.startDate, p.endDate))
+        )
+
+      val overlappingBcInPayPeriod =
+        bcPeriods.filter(p =>
+          isDateInteractsPeriod(workPeriod.startDate, Period(p.startDate, p.endDate))
+            || isDateInteractsPeriod(workPeriod.endDate, Period(p.startDate, p.endDate))
+        )
+
+      val hasBusinessClosedCoversAllTWA =
+        businessClosedCoversAllTWA(overlappingTwaInPayPeriod, overlappingBcInPayPeriod)
+
+      if (hasBusinessClosedCoversAllTWA) {
+        false
+      } else {
+        true
+      }
+    }
+  }
+
+  private def businessClosedCoversAllTWA(
+    twaPeriods: List[TemporaryWorkingAgreementWithDates],
+    bcPeriods: List[BusinessClosedWithDates]
+  ) = {
+
+    val twaDays = sortedTWA(twaPeriods).flatMap(d => datesIn(d.startDate, d.endDate))
+    val bcDays  = sortedBusinessClosed(bcPeriods).flatMap(d => datesIn(d.startDate, d.endDate))
+
+    val unCoveredTwaInBC = twaDays.filter(d => !bcDays.contains(d))
+
+    unCoveredTwaInBC.isEmpty
+  }
+
+  private def isDateInteractsPeriod(date: LocalDate, period: Period) =
+    date.compareTo(period.startDate) >= 0 && date.compareTo(period.endDate) <= 0;
+
+  private def datesIn(startDate: LocalDate, endDate: LocalDate) =
+    java.util.stream.Stream
+      .iterate[LocalDate](startDate, date => date.plusDays(1))
+      .limit(ChronoUnit.DAYS.between(startDate, endDate.plusDays(1)))
+      .collect(Collectors.toList())
+      .asScala
+      .toList
+
 }
