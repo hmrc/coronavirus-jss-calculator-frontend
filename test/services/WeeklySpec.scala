@@ -163,10 +163,10 @@ class WeeklySpec extends SpecBase {
           350
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 252.51000000000002
+        jobSupport.totalEmployeeSalary mustEqual 252.51
         jobSupport.totalEmployersGrant mustEqual 233.57
-        jobSupport.totalClosed mustEqual 533.3333333333334
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 766.9033333333334
+        jobSupport.totalClosed mustEqual 533.33
+        jobSupport.totalGrant mustEqual 766.90
       }
 
       "scenario-3" in new RegularPayGrantCalculator {
@@ -224,8 +224,8 @@ class WeeklySpec extends SpecBase {
 
         jobSupport.totalEmployeeSalary mustEqual 0.0
         jobSupport.totalEmployersGrant mustEqual 0.0
-        jobSupport.totalClosed mustEqual 1401.493333333333
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 1401.493333333333
+        jobSupport.totalClosed mustEqual 1401.48
+        jobSupport.totalGrant mustEqual 1401.48
       }
 
       "scenario-4" in new RegularPayGrantCalculator {
@@ -283,7 +283,7 @@ class WeeklySpec extends SpecBase {
 
         jobSupport.totalEmployeeSalary mustEqual 0.0
         jobSupport.totalEmployersGrant mustEqual 0.0
-        jobSupport.totalClosed mustEqual 890.3
+        jobSupport.totalClosed mustEqual 890.30
         jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 890.3
       }
 
@@ -344,10 +344,10 @@ class WeeklySpec extends SpecBase {
           456.66
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 386.84999999999997
-        jobSupport.totalEmployersGrant mustEqual 357.84000000000003
-        jobSupport.totalClosed mustEqual 0
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 357.84000000000003
+        jobSupport.totalEmployeeSalary mustEqual 386.85
+        jobSupport.totalEmployersGrant mustEqual 357.84
+        jobSupport.totalClosed mustEqual 0.0
+        jobSupport.totalGrant mustEqual 357.84
       }
 
       "scenario-6" in new RegularPayGrantCalculator {
@@ -403,8 +403,8 @@ class WeeklySpec extends SpecBase {
 
         jobSupport.totalEmployeeSalary mustEqual 248.33
         jobSupport.totalEmployersGrant mustEqual 229.70
-        jobSupport.totalClosed mustEqual 466.73333333333335
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 696.4333333333334
+        jobSupport.totalClosed mustEqual 466.73
+        jobSupport.totalGrant mustEqual 696.43
       }
 
       "scenario-7" in new RegularPayGrantCalculator {
@@ -471,9 +471,9 @@ class WeeklySpec extends SpecBase {
         )
 
         jobSupport.totalEmployeeSalary mustEqual 307.13
-        jobSupport.totalEmployersGrant mustEqual 284.09000000000003
+        jobSupport.totalEmployersGrant mustEqual 284.09
         jobSupport.totalClosed mustEqual 460.08
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 744.1700000000001
+        jobSupport.totalGrant mustEqual 744.17
       }
 
       "scenario-8" in new RegularPayGrantCalculator {
@@ -539,8 +539,8 @@ class WeeklySpec extends SpecBase {
 
         jobSupport.totalEmployeeSalary mustEqual 190.5
         jobSupport.totalEmployersGrant mustEqual 176.20
-        jobSupport.totalClosed mustEqual 857.1428571428571
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 1033.3428571428572
+        jobSupport.totalClosed mustEqual 857.16
+        jobSupport.totalGrant mustEqual 1033.36
       }
 
       "scenario-9" in new RegularPayGrantCalculator {
@@ -606,8 +606,8 @@ class WeeklySpec extends SpecBase {
 
         jobSupport.totalEmployeeSalary mustEqual 274.0
         jobSupport.totalEmployersGrant mustEqual 253.44
-        jobSupport.totalClosed mustEqual 1232.8799999999999
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 1486.32
+        jobSupport.totalClosed mustEqual 1232.89
+        jobSupport.totalGrant mustEqual 1486.33
       }
 
       "scenario-10" in new RegularPayGrantCalculator {
@@ -672,9 +672,9 @@ class WeeklySpec extends SpecBase {
         )
 
         jobSupport.totalEmployeeSalary mustEqual 349.24
-        jobSupport.totalEmployersGrant mustEqual 323.03999999999996
-        jobSupport.totalClosed mustEqual 857.1428571428571
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 1180.182857142857
+        jobSupport.totalEmployersGrant mustEqual 323.04
+        jobSupport.totalClosed mustEqual 857.16
+        jobSupport.totalGrant mustEqual 1180.20
       }
     }
   }

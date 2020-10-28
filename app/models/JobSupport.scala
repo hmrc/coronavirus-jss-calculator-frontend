@@ -48,25 +48,33 @@ final case class JobSupport(
 
 object JobSupport {
 
+  private def round(amount: Double): Double = BigDecimal(amount).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+
   implicit class JobSupportOps(private val jobSupport: JobSupport) {
 
-    def totalActualHours: Double =
+    def totalActualHours: Double = round(
       jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.open.actualHours).sum
+    )
 
-    def totalUsualHours: Double =
+    def totalUsualHours: Double = round(
       jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.open.usualHours).sum
+    )
 
     def isIneligible: Boolean = (totalActualHours / totalUsualHours) < 0.20
 
-    def totalEmployeeSalary: Double =
+    def totalEmployeeSalary: Double = round(
       jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.open.salary).sum
+    )
 
-    def totalEmployersGrant: Double =
+    def totalEmployersGrant: Double = round(
       jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.open.grant).sum
+    )
 
-    def totalClosed: Double = jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.closed.grant).sum
+    def totalClosed: Double = round(
+      jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.closed.grant).sum
+    )
 
-    def totalGrant: Double = totalEmployersGrant + totalClosed
+    def totalGrant: Double = round(totalEmployersGrant + totalClosed)
 
   }
 
