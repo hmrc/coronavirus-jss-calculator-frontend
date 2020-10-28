@@ -79,7 +79,7 @@ trait RegularPayGrantCalculator {
   ): JobSupportClosed = {
 
     //TODO: refactor
-    val totalClosedDaysInPP = getTotalNumberOfClosedDaysInAPayPeriod(periodWithHours, bcs).toDouble
+    val totalClosedDaysInPP = getTotalNumberOfClosedDaysInAPayPeriod(periodWithHours, bcs)
 
     // THis is the number of days a pay period is in the claim period
     val step2: Int = qualifyingClaimDays(periodWithHours, supportClaimPeriod)
