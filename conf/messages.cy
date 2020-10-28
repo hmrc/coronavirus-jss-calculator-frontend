@@ -248,7 +248,7 @@ selectWorkPeriods.title = Select the pay periods you wish to calculate for
 selectWorkPeriods.heading = Select the pay periods you wish to calculate for
 selectWorkPeriods.hint = Select all that apply
 selectWorkPeriods.from.to = {0} to {1}
-selectWorkPeriods.error.required = Select all the periods that employee has worked during the claim.
+selectWorkPeriods.error.required = Select the periods to be calculated.
 
 regularPayAmount.title = Calculation of the employee’s reference pay
 regularPayAmount.heading = Calculation of the employee’s reference pay
