@@ -70,7 +70,7 @@ class UsualAndActualHoursController @Inject() (
         val (startDateToShow, endDateToShow) = getStartAndEndDatesToShow(idx - 1, request)
         Future.successful(Ok(view(preparedForm, idx, startDateToShow, endDateToShow)))
       } else {
-        //store u hours in mongo and proceed to next page in the loop
+        //store 0.0 hours in mongo and proceed to next page in the loop
         for {
           updatedAnswers <-
             Future.fromTry(request.userAnswers.set(UsualAndActualHoursPage, UsualAndActualHours(0.0, 0.0), Some(idx)))
