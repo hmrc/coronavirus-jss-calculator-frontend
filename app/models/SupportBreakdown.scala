@@ -20,22 +20,22 @@ import java.time.LocalDate
 
 import play.api.libs.json.{Format, Json}
 
-final case class PeriodSupport(
+final case class SupportBreakdown(
   startDate: LocalDate,
   endDate: LocalDate,
   daysInPeriod: Int,
-  open: JobSupportOpen,
+  open: OpenJobSupport,
   closed: ClosedJobSupport
 )
 
 /*
   //TODO: draft implementation of the calculator - needs refactoring and re-design
  */
-object PeriodSupport {
+object SupportBreakdown {
 
-  implicit val format: Format[PeriodSupport] = Json.format
+  implicit val format: Format[SupportBreakdown] = Json.format
 
-  implicit class PeriodSupportOps(private val periodSupports: List[PeriodSupport]) {
+  implicit class PeriodSupportOps(private val periodSupports: List[SupportBreakdown]) {
     def totalEmployeeSalary: Double =
       periodSupports.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.salary)
 

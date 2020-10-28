@@ -18,7 +18,7 @@ package services
 
 import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
-import models.{BusinessClosedWithDates, JobSupport, Period, PeriodSupport, TemporaryWorkingAgreementWithDates, UserAnswers, UsualAndActualHours}
+import models.{BusinessClosedWithDates, JobSupport, Period, SupportBreakdown, TemporaryWorkingAgreementWithDates, UserAnswers, UsualAndActualHours}
 import pages._
 import play.api.libs.json.{Format, Json}
 import play.api.mvc.Request
@@ -75,7 +75,7 @@ object UserAnswersAuditDetails {
 }
 
 case class JobSupportAuditDetails(
-  periodSupport: List[PeriodSupport],
+  periodSupport: List[SupportBreakdown],
   referenceSalary: Double,
   isIneligible: Boolean,
   totalEmployeeSalary: Double,
@@ -87,7 +87,7 @@ case class JobSupportAuditDetails(
 object JobSupportAuditDetails {
   def apply(jobSupport: JobSupport): JobSupportAuditDetails =
     new JobSupportAuditDetails(
-      jobSupport.periodSupport,
+      jobSupport.supportBreakdown,
       jobSupport.referenceSalary,
       jobSupport.isIneligible,
       jobSupport.totalEmployeeSalary,

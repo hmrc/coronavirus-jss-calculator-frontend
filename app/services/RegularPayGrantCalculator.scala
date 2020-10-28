@@ -20,7 +20,7 @@ import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 import models.PayFrequency.{FortNightly, FourWeekly, Monthly, Weekly}
-import models.{BusinessClosedWithDates, ClosedJobSupport, JobSupport, JobSupportOpen, PayFrequency, PeriodSupport, PeriodWithHours, SupportClaimPeriod, TemporaryWorkingAgreementWithDates}
+import models.{BusinessClosedWithDates, ClosedJobSupport, JobSupport, OpenJobSupport, PayFrequency, PeriodWithHours, SupportBreakdown, SupportClaimPeriod, TemporaryWorkingAgreementWithDates}
 
 import scala.collection.mutable.ListBuffer
 import scala.math.BigDecimal.RoundingMode
@@ -40,9 +40,9 @@ trait RegularPayGrantCalculator {
     val sortedTWAList = sortedTWA(temporaryWorkingAgreementWithDates)
     val sortedBCList  = sortedBusinessClosed(businessClosedWithDates)
 
-    val results: List[PeriodSupport] = payPeriods.map { payPeriod =>
+    val results: List[SupportBreakdown] = payPeriods.map { payPeriod =>
       //TODO: refactor: assess whether this pay period needs to run both calculation (efficiency)
-      PeriodSupport(
+      SupportBreakdown(
         payPeriod.startDate,
         payPeriod.endDate,
         getNumberOfDaysInPayFrequency(payFrequency, payPeriod),
@@ -70,23 +70,25 @@ trait RegularPayGrantCalculator {
     )
   }
 
-  //TODO: simplify + refactor
   def calculateOpenJobSupport(
     supportClaimPeriod: SupportClaimPeriod,
     periodWithHours: PeriodWithHours,
-    twas: List[TemporaryWorkingAgreementWithDates],
-    bcs: List[BusinessClosedWithDates],
+    temporaryWorkingAgreementWithDates: List[TemporaryWorkingAgreementWithDates],
+    businessClosedWithDates: List[BusinessClosedWithDates],
     payFrequency: PayFrequency,
     referencePay: Double
-  ): JobSupportOpen =
-    if (twas.isEmpty) {
-      JobSupportOpen.noSupport
-    } else if (ppCoveredByBC(periodWithHours, bcs)) {
-      JobSupportOpen.noSupport
+  ): OpenJobSupport =
+    if (temporaryWorkingAgreementWithDates.isEmpty) {
+      OpenJobSupport.noSupport
+    } else if (ppCoveredByBC(periodWithHours, businessClosedWithDates)) {
+      OpenJobSupport.noSupport
     } else
-      (hasOnlyTwaPeriods(bcs), hasOverlappingTwaAndBusinessClosedPeriods(twas, bcs)) match {
+      (
+        hasOnlyTwaPeriods(businessClosedWithDates),
+        hasOverlappingTwaAndBusinessClosedPeriods(temporaryWorkingAgreementWithDates, businessClosedWithDates)
+      ) match {
         case (true, _) =>
-          val numberOfDaysInTwa = totalNumberOfTwaDaysInPayPeriod(periodWithHours, twas)
+          val numberOfDaysInTwa = totalNumberOfTwaDaysInPayPeriod(periodWithHours, temporaryWorkingAgreementWithDates)
 
           // THis is the number of days a pay period is in the claim period
           val _: Int = getNumberOfPayPeriodDaysInClaimDays(periodWithHours, supportClaimPeriod)
@@ -108,7 +110,7 @@ trait RegularPayGrantCalculator {
 
           val employersGrant = employeeSalary * (61.67 / 66.67)
 
-          JobSupportOpen(
+          OpenJobSupport(
             numberOfDaysInTwa,
             periodWithHours.usualHours,
             periodWithHours.actualHours,
@@ -117,7 +119,7 @@ trait RegularPayGrantCalculator {
           )
 
         case (false, false) =>
-          val s = totalNumberOfTwaDaysInPayPeriod(periodWithHours, twas)
+          val s = totalNumberOfTwaDaysInPayPeriod(periodWithHours, temporaryWorkingAgreementWithDates)
 
           // This returns the number of days in the frequency
           val freqDays = getNumberOfDaysInPayFrequency(payFrequency, periodWithHours)
@@ -136,7 +138,7 @@ trait RegularPayGrantCalculator {
 
           val employersGrant = employeeSalary * (61.67 / 66.67)
 
-          JobSupportOpen(
+          OpenJobSupport(
             s,
             periodWithHours.usualHours,
             periodWithHours.actualHours,
@@ -145,9 +147,10 @@ trait RegularPayGrantCalculator {
           )
 
         case (false, true) =>
-          val adjustedTwaList = getAllTwasInThisPayPeriod(periodWithHours, twas, bcs)
+          val adjustedTwaList =
+            getAllTwasInThisPayPeriod(periodWithHours, temporaryWorkingAgreementWithDates, businessClosedWithDates)
 
-          val newAdjustedTwas = twaSurgery(adjustedTwaList, bcs)
+          val newAdjustedTwas = twaSurgery(adjustedTwaList, businessClosedWithDates)
 
           val s = totalNumberOfTwaDaysInPayPeriod(periodWithHours, newAdjustedTwas)
 
@@ -168,7 +171,7 @@ trait RegularPayGrantCalculator {
 
           val employersGrant = employeeSalary * (61.67 / 66.67)
 
-          JobSupportOpen(
+          OpenJobSupport(
             s,
             periodWithHours.usualHours,
             periodWithHours.actualHours,

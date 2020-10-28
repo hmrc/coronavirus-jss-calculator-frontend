@@ -18,31 +18,31 @@ package models
 
 import play.api.libs.json.{Format, Json}
 
-final case class JobSupportOpen(
-  twaDays: Int,
+final case class OpenJobSupport(
+  numberOfTemporaryWorkingDaysInPayPeriod: Int,
   usualHours: Double,
   actualHours: Double,
   salary: Double,
   grant: Double
 )
 
-object JobSupportOpen {
-  implicit val format: Format[JobSupportOpen] = Json.format
-  val noSupport                               = JobSupportOpen(0, 0, 0, 0, 0)
+object OpenJobSupport {
+  implicit val format: Format[OpenJobSupport] = Json.format
+  val noSupport: OpenJobSupport               = OpenJobSupport(0, 0.0, 0.0, 0.0, 0.0)
 }
 
 final case class ClosedJobSupport(
-  closedDays: Int,
+  numberOfClosedDaysInPayPeriod: Int,
   grant: Double
 )
 
 object ClosedJobSupport {
   implicit val format: Format[ClosedJobSupport] = Json.format
-  val noSupport                                 = ClosedJobSupport(0, 0)
+  val noSupport: ClosedJobSupport               = ClosedJobSupport(0, 0.0)
 }
 
 final case class JobSupport(
-  periodSupport: List[PeriodSupport],
+  supportBreakdown: List[SupportBreakdown],
   referenceSalary: Double
 )
 
@@ -50,19 +50,21 @@ object JobSupport {
 
   implicit class JobSupportOps(private val jobSupport: JobSupport) {
 
-    def totalActualHours = jobSupport.periodSupport.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.actualHours)
+    def totalActualHours: Double =
+      jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.open.actualHours).sum
 
-    def totalUsualHours = jobSupport.periodSupport.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.usualHours)
+    def totalUsualHours: Double =
+      jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.open.usualHours).sum
 
     def isIneligible: Boolean = (totalActualHours / totalUsualHours) < 0.20
 
     def totalEmployeeSalary: Double =
-      jobSupport.periodSupport.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.salary)
+      jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.open.salary).sum
 
-    def totalEmployersGrant: Double = jobSupport.periodSupport.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.grant)
+    def totalEmployersGrant: Double =
+      jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.open.grant).sum
 
-    def totalClosed: Double =
-      jobSupport.periodSupport.map(support => support.closed).foldLeft(0.0)((acc, f) => acc + f.grant)
+    def totalClosed: Double = jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.closed.grant).sum
 
     def totalGrant: Double = totalEmployersGrant + totalClosed
 
