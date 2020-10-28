@@ -164,8 +164,8 @@ claimPeriod.Aug2021 = August 2021
 claimPeriod.Sep2021 = September 2021
 claimPeriod.Oct2021 = October 2021
 claimPeriod.Nov2021 = November 2021
-claimPeriod.error.required = Select one value
-claimPeriod.error.invalid = Choose a claim period
+claimPeriod.error.required = Select which month you will claim for
+claimPeriod.error.invalid = Select which month you will claim for
 
 startPage.title = Job Support Scheme Calculator
 startPage.heading = Job Support Scheme Calculator
@@ -290,7 +290,7 @@ actualHours.error.required = Enter the employee’s actual hours
 usualHours.error.min = Usual hours can not be negative
 actualHours.error.min = Actual hours can not be negative
 
-confirmation.title = confirmation
+confirmation.title = What you can claim for this employee
 confirmation.heading = confirmation
 confirmation.confirmation.p1 = What you can claim for this employee
 confirmation.jss.open.label = For JSS Open

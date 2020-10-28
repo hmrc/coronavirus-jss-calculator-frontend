@@ -292,7 +292,7 @@ usualHours.error.min = Usual hours can not be negative
 actualHours.error.min = Actual hours can not be negative
 actualHours.cannot.be.morethan.usualHours = Actual hours can not be more than usual hours
 
-confirmation.title = confirmation
+confirmation.title = What you can claim for this employee
 confirmation.heading = confirmation
 confirmation.confirmation.p1 = What you can claim for this employee
 confirmation.jss.open.label = For JSS Open
