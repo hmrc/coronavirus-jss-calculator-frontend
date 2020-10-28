@@ -44,8 +44,9 @@ class EndPayDateControllerSpec extends SpecBaseControllerSpecs {
   private lazy val getRequest: FakeRequest[AnyContentAsEmpty.type] =
     fakeRequest(GET, endPayDateRouteGet)
 
-  val lastPayDate  = LocalDate.of(2020, 10, 30)
-  val claimEndDate = LocalDate.of(2020, 11, 30)
+  val lastPayDate    = LocalDate.of(2020, 10, 30)
+  val claimStartDate = LocalDate.of(2020, 11, 1)
+  val claimEndDate   = LocalDate.of(2020, 11, 30)
 
   private val validAnswer = lastPayDate.plusDays(10)
 
@@ -88,7 +89,7 @@ class EndPayDateControllerSpec extends SpecBaseControllerSpecs {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(lastPayDate, claimEndDate), lastPayDate)(getRequest, messages).toString
+        view(form(claimStartDate, claimEndDate), lastPayDate)(getRequest, messages).toString
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -102,7 +103,7 @@ class EndPayDateControllerSpec extends SpecBaseControllerSpecs {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(lastPayDate, claimEndDate).fill(validAnswer), lastPayDate)(getRequest, messages).toString
+        view(form(claimStartDate, claimEndDate).fill(validAnswer), lastPayDate)(getRequest, messages).toString
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -122,7 +123,7 @@ class EndPayDateControllerSpec extends SpecBaseControllerSpecs {
         fakeRequest(POST, endPayDateRoutePost)
           .withFormUrlEncodedBody(("value", "invalid value"))
 
-      val boundForm = form(lastPayDate, claimEndDate).bind(Map("value" -> "invalid value"))
+      val boundForm = form(claimStartDate, claimEndDate).bind(Map("value" -> "invalid value"))
 
       val result = controller(Some(userAnswers)).onSubmit()(request)
 
