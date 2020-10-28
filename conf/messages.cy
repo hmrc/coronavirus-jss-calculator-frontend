@@ -361,7 +361,7 @@ endPayDate.hint = For example 01 12 2020
 endPayDate.error.required = Enter the correct date to apply for the Job Support scheme
 endPayDate.error.invalid = Enter the correct date to apply for the Job Support scheme
 endPayDate.error.invalid.must.be.on.or.after = The end pay date must be on or after {0}
-endPayDate.error.invalid.must.be.on.or.before = The end pay date must be before on or before ({0})
+endPayDate.error.invalid.must.be.on.or.before = The end pay date must be on or before ({0})
 
 comingSoon.title = We are unable to do this calculation at the moment
 comingSoon.heading = We are unable to do this calculation at the moment
