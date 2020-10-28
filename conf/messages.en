@@ -422,6 +422,8 @@ businessClosedPeriods.startDate.outside.claimPeriod = Start date must fall with 
 businessClosedPeriods.addMore.heading = Do you want to add more dates ?
 businessClosedPeriods.addmore.error.required = Select yes if you want to add more dates
 businessClosedPeriods.period.shouldbe.minimum.7.days = Business closed period must cover a minimum period of seven days
+businessClosedPeriods.addAnother.label = Do you need to add more dates?
+businessClosedPeriods.addAnother.error.required = Select yes if you need to add more dates
 
 checkYourSTWAPeriods.title = Check your answers
 checkYourSTWAPeriods.heading = Check your answers

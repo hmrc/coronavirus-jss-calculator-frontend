@@ -60,8 +60,7 @@ class Navigator @Inject() () {
   private val idxRoutes: Page => (Int, UserAnswers) => Call = {
     case UsualAndActualHoursPage             => selectUsualAndActualHoursPageRoutes
     case ShortTermWorkingAgreementPeriodPage => shortTermWorkingAgreementPeriodRoutes
-    case BusinessClosedPeriodsPage           =>
-      (_, _) => routes.CheckYourBusinessClosedPeriodsController.onPageLoad()
+    case BusinessClosedPeriodsPage           => businessClosedPeriodRoutes
     case _                                   =>
       (_, _) => routes.StartPageController.onPageLoad()
   }
@@ -72,6 +71,30 @@ class Navigator @Inject() () {
       case Some(_)                           => routes.BusinessClosedController.onPageLoad()
       case None                              => routes.StartPageController.onPageLoad()
     }
+
+  private def businessClosedPeriodRoutes(idx: Int, answers: UserAnswers): Call = {
+
+    def noMorePeriodsRoutes: Call = {
+      val stwa           = answers.get(TemporaryWorkingAgreementPage)
+      val businessClosed = answers.get(BusinessClosedPage)
+
+      (stwa, businessClosed) match {
+        case (Some(TemporaryWorkingAgreement.Yes), _)                       => routes.UsualAndActualHoursController.onPageLoad(1)
+        case (Some(TemporaryWorkingAgreement.No), Some(BusinessClosed.Yes)) =>
+          routes.ConfirmationController.onPageLoad()
+        case (Some(TemporaryWorkingAgreement.No), Some(BusinessClosed.No))  =>
+          routes.YouAreNotEligibleController.onPageLoad()
+        case (None, _)                                                      => routes.TemporaryWorkingAgreementController.onPageLoad()
+        case (_, None)                                                      => routes.BusinessClosedController.onPageLoad()
+      }
+    }
+
+    answers.get(BusinessClosedPeriodsPage, Some(idx)) match {
+      case Some(answer) if answer.addAnother => routes.BusinessClosedPeriodsController.onPageLoad(idx + 1)
+      case Some(_)                           => noMorePeriodsRoutes
+      case None                              => routes.StartPageController.onPageLoad()
+    }
+  }
 
   private def payPeriodsRoute(userAnswers: UserAnswers): Call =
     userAnswers.get(PayPeriodsPage) match {

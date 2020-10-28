@@ -97,7 +97,7 @@ class NavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers
             .set(
               ShortTermWorkingAgreementPeriodPage,
-              TemporaryWorkingAgreementWithDates(LocalDate.now, LocalDate.now, true),
+              TemporaryWorkingAgreementWithDates(LocalDate.now, LocalDate.now, addAnother = true),
               Some(1)
             )
             .success
@@ -119,7 +119,7 @@ class NavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers
             .set(
               ShortTermWorkingAgreementPeriodPage,
-              TemporaryWorkingAgreementWithDates(LocalDate.now, LocalDate.now, false),
+              TemporaryWorkingAgreementWithDates(LocalDate.now, LocalDate.now, addAnother = false),
               Some(1)
             )
             .success
@@ -152,16 +152,131 @@ class NavigatorSpec extends SpecBase {
           .onPageLoad(1)
       }
 
-      "go to CheckYourBusinessClosedPeriodsController after BusinessClosedPeriodsPage" in {
-        val userAnswers = emptyUserAnswers.setList(BusinessClosedPeriodsPage, List.empty).success.value
-        navigator
-          .nextPage(
-            BusinessClosedPeriodsPage,
-            NormalMode,
-            userAnswers,
-            Some(1)
-          ) mustBe routes.CheckYourBusinessClosedPeriodsController
-          .onPageLoad()
+      "go from BusinessClosedPeriodsPage to BusinessClosedPeriodsPage for the next index" when {
+
+        "the user answers Yes to adding another period" in {
+          val userAnswers = emptyUserAnswers
+            .set(
+              BusinessClosedPeriodsPage,
+              BusinessClosedWithDates(LocalDate.now, LocalDate.now, addAnother = true),
+              Some(1)
+            )
+            .success
+            .value
+
+          navigator
+            .nextPage(
+              BusinessClosedPeriodsPage,
+              NormalMode,
+              userAnswers,
+              Some(1)
+            ) mustBe routes.BusinessClosedPeriodsController
+            .onPageLoad(2)
+        }
+      }
+
+      "go from BusinessClosedPeriodsPage to UsualAndActualHoursPage at index 1" when {
+
+        "the user answers No to adding more periods, and there is a STWA in place" in {
+          val userAnswers = emptyUserAnswers
+            .set(
+              BusinessClosedPeriodsPage,
+              BusinessClosedWithDates(LocalDate.now, LocalDate.now, addAnother = false),
+              Some(1)
+            )
+            .success
+            .value
+            .set(TemporaryWorkingAgreementPage, TemporaryWorkingAgreement.Yes, None)
+            .success
+            .value
+
+          navigator
+            .nextPage(
+              BusinessClosedPeriodsPage,
+              NormalMode,
+              userAnswers,
+              Some(1)
+            ) mustBe routes.UsualAndActualHoursController
+            .onPageLoad(1)
+        }
+      }
+
+      "go from BusinessClosedPeriodsPage to Confirmation" when {
+
+        "the user answers No to adding more periods, there is not a STWA in place, and the business closed" in {
+          val userAnswers = emptyUserAnswers
+            .set(
+              BusinessClosedPeriodsPage,
+              BusinessClosedWithDates(LocalDate.now, LocalDate.now, addAnother = false),
+              Some(1)
+            )
+            .success
+            .value
+            .set(TemporaryWorkingAgreementPage, TemporaryWorkingAgreement.No, None)
+            .success
+            .value
+            .set(BusinessClosedPage, BusinessClosed.Yes, None)
+            .success
+            .value
+
+          navigator
+            .nextPage(
+              BusinessClosedPeriodsPage,
+              NormalMode,
+              userAnswers,
+              Some(1)
+            ) mustBe routes.ConfirmationController.onPageLoad()
+        }
+      }
+
+      "go from BusinessClosedPeriodsPage to NotEligible" when {
+
+        "the user answers No to adding more periods, there is not a STWA in place, and the business was not closed" in {
+          val userAnswers = emptyUserAnswers
+            .set(TemporaryWorkingAgreementPage, TemporaryWorkingAgreement.No, None)
+            .success
+            .value
+            .set(BusinessClosedPage, BusinessClosed.No, None)
+            .success
+            .value
+            .set(
+              BusinessClosedPeriodsPage,
+              BusinessClosedWithDates(LocalDate.now, LocalDate.now, addAnother = false),
+              Some(1)
+            )
+            .success
+            .value
+
+          navigator
+            .nextPage(
+              BusinessClosedPeriodsPage,
+              NormalMode,
+              userAnswers,
+              Some(1)
+            ) mustBe routes.YouAreNotEligibleController.onPageLoad()
+        }
+      }
+
+      "go from BusinessClosedPeriodsPage to Temporary Working Agreement" when {
+
+        "the user answers No to adding more periods and the TWA question has not been answered" in {
+          val userAnswers = emptyUserAnswers
+            .set(
+              BusinessClosedPeriodsPage,
+              BusinessClosedWithDates(LocalDate.now, LocalDate.now, addAnother = false),
+              Some(1)
+            )
+            .success
+            .value
+
+          navigator
+            .nextPage(
+              BusinessClosedPeriodsPage,
+              NormalMode,
+              userAnswers,
+              Some(1)
+            ) mustBe routes.TemporaryWorkingAgreementController.onPageLoad()
+        }
       }
 
       "go to UsualAndActualHoursPage after BusinessClosedPage if user says no and SWTA is yes" in {

@@ -36,7 +36,8 @@ class BusinessClosedPeriodsFormProviderSpec extends DateBehaviours {
     "startDate.year"  -> startDate.getYear.toString,
     "endDate.day"     -> endDate.getDayOfMonth.toString,
     "endDate.month"   -> endDate.getMonthValue.toString,
-    "endDate.year"    -> endDate.getYear.toString
+    "endDate.year"    -> endDate.getYear.toString,
+    "addAnother"      -> "false"
   )
 
   "form" should {

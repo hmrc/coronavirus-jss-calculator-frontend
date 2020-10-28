@@ -23,10 +23,11 @@
         h1: components.h1,
         p: components.p,
         h3: components.h3,
-        inputRadio: components.inputRadio
+        inputRadio: components.inputRadio,
+        yesNoRadio: components.yesNoRadio
 )
 
-@(form: Form[_], idx: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], idx: Int, maxClosedPeriods: Int)(implicit request: Request[_], messages: Messages)
 
     @govukLayout(pageTitle = Some(title(form, "businessClosedPeriods.title"))) {
 
@@ -44,7 +45,7 @@
                 id = "startDate",
                 hintText = Some("businessClosedPeriods.startDate.hint"),
                 legendAsPageHeading = false,
-                legendClasses = "govuk-label--m"
+                legendClasses = "govuk-label--s"
             )
 
             @inputDate(
@@ -53,8 +54,20 @@
                 id = "endDate",
                 hintText = Some("businessClosedPeriods.endDate.hint"),
                 legendAsPageHeading = false,
-                legendClasses = "govuk-label--m"
+                legendClasses = "govuk-label--s"
             )
+
+            @if(idx < maxClosedPeriods) {
+                @yesNoRadio(
+                    form = form,
+                    label = Text(messages("businessClosedPeriods.addAnother.label")),
+                    id = "addAnother",
+                    isPageHeading = false,
+                    classes = "govuk-fieldset__legend--s"
+                )
+            } else {
+                <input type="hidden" id="addAnother" name="addAnother" value="false" />
+            }
 
             @button("site.continue")
         }
