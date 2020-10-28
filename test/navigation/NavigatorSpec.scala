@@ -91,16 +91,48 @@ class NavigatorSpec extends SpecBase {
         ) mustBe routes.TemporaryWorkingAgreementController.onPageLoad()
       }
 
-      "go to CheckYourSTWAPeriodsController after ShortTermWorkingAgreementPeriodPage" in {
-        val userAnswers = emptyUserAnswers.setList(ShortTermWorkingAgreementPeriodPage, Seq.empty).success.value
-        navigator
-          .nextPage(
-            ShortTermWorkingAgreementPeriodPage,
-            NormalMode,
-            userAnswers,
-            Some(1)
-          ) mustBe routes.CheckYourSTWAPeriodsController
-          .onPageLoad()
+      "go from ShortTermWorkingAgreementPeriodPage to ShortTermWorkingAgreementPeriodPage for the next index" when {
+
+        "the user selects Yes on `addAnother`" in {
+          val userAnswers = emptyUserAnswers
+            .set(
+              ShortTermWorkingAgreementPeriodPage,
+              TemporaryWorkingAgreementWithDates(LocalDate.now, LocalDate.now, true),
+              Some(1)
+            )
+            .success
+            .value
+          navigator
+            .nextPage(
+              ShortTermWorkingAgreementPeriodPage,
+              NormalMode,
+              userAnswers,
+              Some(1)
+            ) mustBe routes.ShortTermWorkingAgreementPeriodController
+            .onPageLoad(2)
+        }
+      }
+
+      "go from ShortTermWorkingAgreementPeriodPage to BusinessClosedPage" when {
+
+        "the user select No on `addAnother`" in {
+          val userAnswers = emptyUserAnswers
+            .set(
+              ShortTermWorkingAgreementPeriodPage,
+              TemporaryWorkingAgreementWithDates(LocalDate.now, LocalDate.now, false),
+              Some(1)
+            )
+            .success
+            .value
+          navigator
+            .nextPage(
+              ShortTermWorkingAgreementPeriodPage,
+              NormalMode,
+              userAnswers,
+              Some(1)
+            ) mustBe routes.BusinessClosedController
+            .onPageLoad()
+        }
       }
 
       "go to BusinessClosedPage after TemporaryWorkingAgreementPage" in {

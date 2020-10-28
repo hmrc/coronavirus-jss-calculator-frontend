@@ -400,6 +400,8 @@ shortTermWorkingAgreementPeriod.periods.should.not.overlap = These dates should 
 shortTermWorkingAgreementPeriod.endDate.must.be.after.startDate = End date must be later than start date
 shortTermWorkingAgreementPeriod.startDate.outside.claimPeriod = Start date must fall with in claim period
 shortTermWorkingAgreementPeriod.period.shouldbe.minimum.7.days = Temporary working agreement must cover a minimum period of seven days
+shortTermWorkingAgreementPeriod.addAnother.label = Do you need to add more dates?
+shortTermWorkingAgreementPeriod.addAnother.error.required = Select yes if you need to add more dates
 
 shortTermWorkingAgreementPeriod.addMore.heading = Do you want to add more dates ?
 shortTermWorkingAgreementPeriod.addmore.error.required = Select yes if you want to add more dates

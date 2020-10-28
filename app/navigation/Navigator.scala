@@ -59,13 +59,19 @@ class Navigator @Inject() () {
 
   private val idxRoutes: Page => (Int, UserAnswers) => Call = {
     case UsualAndActualHoursPage             => selectUsualAndActualHoursPageRoutes
-    case ShortTermWorkingAgreementPeriodPage =>
-      (_, _) => routes.CheckYourSTWAPeriodsController.onPageLoad()
+    case ShortTermWorkingAgreementPeriodPage => shortTermWorkingAgreementPeriodRoutes
     case BusinessClosedPeriodsPage           =>
       (_, _) => routes.CheckYourBusinessClosedPeriodsController.onPageLoad()
     case _                                   =>
       (_, _) => routes.StartPageController.onPageLoad()
   }
+
+  private def shortTermWorkingAgreementPeriodRoutes(idx: Int, answers: UserAnswers): Call =
+    answers.get(ShortTermWorkingAgreementPeriodPage, Some(idx)) match {
+      case Some(answer) if answer.addAnother => routes.ShortTermWorkingAgreementPeriodController.onPageLoad(idx + 1)
+      case Some(_)                           => routes.BusinessClosedController.onPageLoad()
+      case None                              => routes.StartPageController.onPageLoad()
+    }
 
   private def payPeriodsRoute(userAnswers: UserAnswers): Call =
     userAnswers.get(PayPeriodsPage) match {

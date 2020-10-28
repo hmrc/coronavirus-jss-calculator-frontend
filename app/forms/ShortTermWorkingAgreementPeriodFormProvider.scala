@@ -33,16 +33,19 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
   ): Form[TemporaryWorkingAgreementWithDates] =
     Form(
       mapping(
-        "startDate" -> localDate(
+        "startDate"  -> localDate(
           invalidKey = "shortTermWorkingAgreementPeriod.error.invalid",
           requiredKey = "shortTermWorkingAgreementPeriod.error.required"
         ).verifying(
           "shortTermWorkingAgreementPeriod.startDate.outside.claimPeriod",
           date => isDateWithInClaim(date, claimPeriod)
         ),
-        "endDate"   -> localDate(
+        "endDate"    -> localDate(
           invalidKey = "shortTermWorkingAgreementPeriod.error.invalid",
           requiredKey = "shortTermWorkingAgreementPeriod.error.required"
+        ),
+        "addAnother" -> boolean(
+          requiredKey = "shortTermWorkingAgreementPeriod.addAnother.error.required"
         )
       )(TemporaryWorkingAgreementWithDates.apply)(TemporaryWorkingAgreementWithDates.unapply)
         .verifying(
