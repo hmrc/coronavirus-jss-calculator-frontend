@@ -366,12 +366,12 @@ comingSoon.heading = We are unable to do this calculation at the moment
 comingSoon.p = This will be available in a future version.
 comingSoon.start.another = Start another calculation
 
-temporaryWorkingAgreement.title = Did the employee have a temporary working agreement during this claim?
-temporaryWorkingAgreement.heading = Did the employee have a temporary working agreement during this claim?
+temporaryWorkingAgreement.title = Did the employee have temporary working agreements during this claim?
+temporaryWorkingAgreement.heading = Did the employee have temporary working agreements during this claim?
 temporaryWorkingAgreement.p1 = Each temporary working agreement must cover a minimum period of seven days.
 temporaryWorkingAgreement.yes = Yes
 temporaryWorkingAgreement.no = No
-temporaryWorkingAgreement.error.required = Select Yes if the employee have a temporary working agreement during this claim
+temporaryWorkingAgreement.error.required = Select yes if the employee had temporary working agreements during this claim
 
 businessClosed.title = Was your business closed and unable to trade during this claim?
 businessClosed.heading = Was your business closed and unable to trade during this claim?
