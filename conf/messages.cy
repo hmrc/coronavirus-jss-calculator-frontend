@@ -349,7 +349,6 @@ confirmation.breakdown.h3.closed.p7=Amount to pay the employee = £{0}.
 
 confirmation.confirmation.ineligible=You are ineligible
 confirmation.print.label = Print or save a copy of this page
-confirmation.webchat.label = Webchat help (opens in a new tab)
 confirmation.feedbackSurvey.label = What do you think of this service?
 
 endPayDate.title = What’s the last date of the next pay period after {0}?
