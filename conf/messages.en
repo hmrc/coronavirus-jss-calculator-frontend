@@ -382,7 +382,7 @@ temporaryWorkingAgreement.error.required = Select yes if the employee had tempor
 
 businessClosed.title = Was your business closed and unable to trade during this claim?
 businessClosed.heading = Was your business closed and unable to trade during this claim?
-businessClosed.p1 = This is called the closed period or when the business was legally required to close its premises due to government restrictions. Each closed period must cover a minimum period of seven days. The closed period must be from 1 November 2020 until 31 March 2021. You can add one or more closed periods.
+businessClosed.p1 = This is called the closed period or when the business was legally required to close its premises due to government restrictions. Employees must have a JSS Closed temporary working agreement. Each closed period must cover a minimum period of seven days. The closed period must be from 1 November 2020 until 31 March 2021. You can add one or more closed periods.
 businessClosed.yes = Yes
 businessClosed.no = No
 businessClosed.error.required = Select yes if your business closed and unable to trade during this claim

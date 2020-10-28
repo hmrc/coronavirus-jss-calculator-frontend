@@ -40,13 +40,12 @@ trait RegularPayGrantCalculator {
     val sortedTWAList = sortedTWA(temporaryWorkingAgreementWithDates)
     val sortedBCList  = sortedBusinessClosed(businessClosedWithDates)
 
-
     val results: List[PeriodSupport] = payPeriods.map { payPeriod =>
       //TODO: refactor: assess whether this pay period needs to run both calculation (efficiency)
       PeriodSupport(
         payPeriod.startDate,
         payPeriod.endDate,
-        daysInPeriod(payFrequency, payPeriod),
+        getNumberOfDaysInPayFrequency(payFrequency, payPeriod),
         calculateJobSupportOpen(
           supportClaimPeriod,
           payPeriod,
@@ -74,36 +73,33 @@ trait RegularPayGrantCalculator {
   def calculateJobSupportClosed(
     supportClaimPeriod: SupportClaimPeriod,
     periodWithHours: PeriodWithHours,
-    bcs: List[BusinessClosedWithDates],
+    businessClosedDates: List[BusinessClosedWithDates],
     payFrequency: PayFrequency,
     referencePay: Double
   ): JobSupportClosed = {
 
-    //TODO: refactor
-    val totalClosedDaysInPP = getTotalNumberOfClosedDaysInAPayPeriod(periodWithHours, bcs)
+    val numberOfClosedDaysInPayPeriod    = getNumberOfClosedDaysInAPayPeriod(periodWithHours, businessClosedDates)
+    val numberOfPayPeriodDaysInClaimDays = getNumberOfPayPeriodDaysInClaimDays(periodWithHours, supportClaimPeriod)
+    val numberOfDaysInPayFrequency       = getNumberOfDaysInPayFrequency(payFrequency, periodWithHours)
+    val adjustedReferencePay             =
+      calculateAdjustedReferencePay(referencePay, numberOfDaysInPayFrequency, numberOfPayPeriodDaysInClaimDays)
 
-    // THis is the number of days a pay period is in the claim period
-    val payPeriodClaimDays: Int = numberOfPayPeriodDaysInClaimPeriod(periodWithHours, supportClaimPeriod)
+    val referencePayCap = calculateReferencePayCap(
+      numberOfPayPeriodDaysInClaimDays,
+      !(numberOfDaysInPayFrequency == numberOfClosedDaysInPayPeriod),
+      payFrequency
+    )
 
-    // This returns the number of days in the frequency
-    val freqDays = daysInPeriod(payFrequency, periodWithHours)
+    val cap = capReferencePay(adjustedReferencePay, referencePayCap)
 
-    // The reference pay is adjusted to account for the number days in this pay period that span the claim period
-    val step3 = adjustedReferencePay(referencePay, freqDays, payPeriodClaimDays)
+    val closedSupportGrant =
+      cap * (numberOfClosedDaysInPayPeriod.toDouble / numberOfPayPeriodDaysInClaimDays.toDouble) * 2.0 / 3.0
 
-    // This gets the cap to be applied and it is apportioned appropriately
-    val step4 = referencePayCap(payPeriodClaimDays, !(freqDays == totalClosedDaysInPP), payFrequency)
-
-    // Appyly the pay cap
-    val step5 = applyCapToReferencePay(step3, step4)
-
-    val closed = step5 * (totalClosedDaysInPP / payPeriodClaimDays) * 2.0 / 3.0
-
-    JobSupportClosed(totalClosedDaysInPP.toInt, closed) //FIXME: Double to Int
+    JobSupportClosed(numberOfClosedDaysInPayPeriod, closedSupportGrant)
 
   }
 
-  def getTotalNumberOfClosedDaysInAPayPeriod(
+  def getNumberOfClosedDaysInAPayPeriod(
     periodWithHours: PeriodWithHours,
     businessClosedWithDates: List[BusinessClosedWithDates]
   ): Int =
@@ -223,19 +219,19 @@ trait RegularPayGrantCalculator {
           val numberOfDaysInTwa = totalNumberOfTwaDaysInPayPeriod(periodWithHours, twas)
 
           // THis is the number of days a pay period is in the claim period
-          val _: Int = numberOfPayPeriodDaysInClaimPeriod(periodWithHours, supportClaimPeriod)
+          val _: Int = getNumberOfPayPeriodDaysInClaimDays(periodWithHours, supportClaimPeriod)
 
           // This returns the number of days in the frequency
-          val freqDays = daysInPeriod(payFrequency, periodWithHours)
+          val freqDays = getNumberOfDaysInPayFrequency(payFrequency, periodWithHours)
 
           // The reference pay is adjusted to account for the number days in this pay period that span the claim period
           val step3 = trialadjustedReferencePay(referencePay, numberOfDaysInTwa, freqDays)
 
           // This gets the cap to be applied and it is apportioned appropriately
-          val step4 = referencePayCap(numberOfDaysInTwa, !(freqDays == numberOfDaysInTwa), payFrequency)
+          val step4 = calculateReferencePayCap(numberOfDaysInTwa, !(freqDays == numberOfDaysInTwa), payFrequency)
 
           // Apply the pay cap
-          val step5 = applyCapToReferencePay(step3, step4)
+          val step5 = capReferencePay(step3, step4)
 
           val employeeSalary =
             step5 * ((periodWithHours.usualHours - periodWithHours.actualHours) / periodWithHours.usualHours) * 0.6667
@@ -254,16 +250,16 @@ trait RegularPayGrantCalculator {
           val s = totalNumberOfTwaDaysInPayPeriod(periodWithHours, twas)
 
           // This returns the number of days in the frequency
-          val freqDays = daysInPeriod(payFrequency, periodWithHours)
+          val freqDays = getNumberOfDaysInPayFrequency(payFrequency, periodWithHours)
 
           // The reference pay is adjusted to account for the number days in this pay period that span the claim period
           val step3 = trialadjustedReferencePay(referencePay, s, freqDays)
 
           // This gets the cap to be applied and it is approptioned appropriately
-          val step4 = referencePayCap(s, !(freqDays == s), payFrequency)
+          val step4 = calculateReferencePayCap(s, !(freqDays == s), payFrequency)
 
           // Appyly the pay cap
-          val step5 = applyCapToReferencePay(step3, step4)
+          val step5 = capReferencePay(step3, step4)
 
           val employeeSalary =
             step5 * ((periodWithHours.usualHours - periodWithHours.actualHours) / periodWithHours.usualHours) * 0.6667
@@ -286,16 +282,16 @@ trait RegularPayGrantCalculator {
           val s = totalNumberOfTwaDaysInPayPeriod(periodWithHours, newAdjustedTwas)
 
           // This returns the number of days in the frequency
-          val freqDays = daysInPeriod(payFrequency, periodWithHours)
+          val freqDays = getNumberOfDaysInPayFrequency(payFrequency, periodWithHours)
 
           // The reference pay is adjusted to account for the number days in this pay period that span the claim period
           val step3 = trialadjustedReferencePay(referencePay, s, freqDays)
 
           // This gets the cap to be applied and it is approptioned appropriately
-          val step4 = referencePayCap(s, !(freqDays == s), payFrequency)
+          val step4 = calculateReferencePayCap(s, !(freqDays == s), payFrequency)
 
           // Appyly the pay cap
-          val step5 = applyCapToReferencePay(step3, step4)
+          val step5 = capReferencePay(step3, step4)
 
           val employeeSalary =
             step5 * ((periodWithHours.usualHours - periodWithHours.actualHours) / periodWithHours.usualHours) * 0.6667
@@ -767,7 +763,7 @@ trait RegularPayGrantCalculator {
   def hasOnlyTwaPeriods(businessClosedWithDates: List[BusinessClosedWithDates]): Boolean =
     businessClosedWithDates.isEmpty
 
-  def daysInPeriod(payFrequency: PayFrequency, periodWithHours: PeriodWithHours): Int =
+  def getNumberOfDaysInPayFrequency(payFrequency: PayFrequency, periodWithHours: PeriodWithHours): Int =
     payFrequency match {
       case PayFrequency.Weekly      => PayFrequency.payFrequencyDays(Weekly)
       case PayFrequency.FortNightly => PayFrequency.payFrequencyDays(FortNightly)
@@ -785,7 +781,10 @@ trait RegularPayGrantCalculator {
         return [o_s,o_e]
     }
    */
-  def numberOfPayPeriodDaysInClaimPeriod(periodWithHours: PeriodWithHours, supportClaimPeriod: SupportClaimPeriod): Int =
+  def getNumberOfPayPeriodDaysInClaimDays(
+    periodWithHours: PeriodWithHours,
+    supportClaimPeriod: SupportClaimPeriod
+  ): Int =
     if (
       supportClaimPeriod.startDate
         .isAfter(periodWithHours.endDate) || periodWithHours.startDate.isAfter(supportClaimPeriod.endDate)
@@ -796,17 +795,25 @@ trait RegularPayGrantCalculator {
       ChronoUnit.DAYS.between(LocalDate.ofEpochDay(start), LocalDate.ofEpochDay(end)).toInt + 1
     }
 
-  private def adjustedReferencePay(referencePay: Double, daysInPeriod: Int, qualifyingDaysInPeriod: Int): Double =
+  private def calculateAdjustedReferencePay(
+    referencePay: Double,
+    daysInPeriod: Int,
+    qualifyingDaysInPeriod: Int
+  ): Double =
     (referencePay / daysInPeriod.toDouble) * qualifyingDaysInPeriod.toDouble
 
   private def trialadjustedReferencePay(referencePay: Double, daysInPeriod: Int, qualifyingDaysInPeriod: Int): Double =
     referencePay * (daysInPeriod.toDouble / qualifyingDaysInPeriod.toDouble)
 
-  private def referencePayCap(daysInPeriod: Int, isPartialPeriod: Boolean, payFrequency: PayFrequency): Double =
+  private def calculateReferencePayCap(
+    daysInPeriod: Int,
+    isPartialPeriod: Boolean,
+    payFrequency: PayFrequency
+  ): Double =
     if (isPartialPeriod) daysInPeriod * 102.74
     else RegularPayGrantCalculator.fullPeriodPayCaps.getOrElse(payFrequency, 0.0)
 
-  private def applyCapToReferencePay(referencePay: Double, referencePayCap: Double): Double =
+  private def capReferencePay(referencePay: Double, referencePayCap: Double): Double =
     scala.math.min(referencePay, referencePayCap)
 
   def calculateFrequencyDaysForMonthlyFrequency(periodWithHours: PeriodWithHours): Int =
