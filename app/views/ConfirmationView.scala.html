@@ -52,14 +52,14 @@
         }
 
         <p class="govuk-body">@messages("confirmation.jss.open.p1") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalEmployeeSalary.formatted("%.2f")</span></p>
-        <p class="govuk-body">@messages("confirmation.jss.open.p2") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalGrant.formatted("%.2f")</span></p>
+        <p class="govuk-body">@messages("confirmation.jss.open.p2") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalEmployersGrant.formatted("%.2f")</span></p>
         <p class="govuk-body">@messages("confirmation.jss.open.p3")</p>
         @p {
             <span class="govuk-!-font-weight-bold">@messages("confirmation.jss.closed.label")</span>
         }
-        <p class="govuk-body">@messages("confirmation.jss.closed.p1") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalEmployeeSalary.formatted("%.2f")</span></p>
-        <p class="govuk-body">@messages("confirmation.jss.closed.p2") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalGrant.formatted("%.2f")</span></p>
-        <p class="govuk-body">@messages("confirmation.jss.closed.p3.start") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalGrant.formatted("%.2f")</span> @messages("confirmation.jss.closed.p3.end")</p>
+        <p class="govuk-body">@messages("confirmation.jss.closed.p1") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalClosed.formatted("%.2f")</span></p>
+        <p class="govuk-body">@messages("confirmation.jss.closed.p2") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalClosed.formatted("%.2f")</span></p>
+        <p class="govuk-body">@messages("confirmation.jss.closed.p3.start") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalClosed.formatted("%.2f")</span> @messages("confirmation.jss.closed.p3.end")</p>
     </div>
 
     @p {
