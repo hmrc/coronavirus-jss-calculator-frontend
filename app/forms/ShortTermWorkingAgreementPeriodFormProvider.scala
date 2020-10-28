@@ -21,7 +21,7 @@ import java.time.temporal.ChronoUnit
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.{SupportClaimPeriod, TemporaryWorkingAgreementWithDates}
+import models.{ClaimPeriod, SupportClaimPeriod, TemporaryWorkingAgreementWithDates}
 import play.api.data.Form
 import play.api.data.Forms._
 
@@ -38,7 +38,7 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
           requiredKey = "shortTermWorkingAgreementPeriod.error.required"
         ).verifying(
           "shortTermWorkingAgreementPeriod.startDate.outside.claimPeriod",
-          date => isDateWithInClaim(date, claimPeriod)
+          date => isDateValid(date, claimPeriod)
         ),
         "endDate"    -> localDate(
           invalidKey = "shortTermWorkingAgreementPeriod.error.invalid",
@@ -62,8 +62,11 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
         )
     )
 
-  private def isDateWithInClaim(date: LocalDate, claimPeriod: SupportClaimPeriod) =
-    (date.isEqual(claimPeriod.startDate) || date.isAfter(claimPeriod.startDate)) && date.isBefore(claimPeriod.endDate)
+  private def isDateValid(date: LocalDate, claimPeriod: SupportClaimPeriod) = {
+    val min = ClaimPeriod.Nov2020.supportClaimPeriod.startDate
+    val max = claimPeriod.endDate
+    onOrAfter(date, min) && onOrBefore(date, max)
+  }
 
   private def isIntersecting(
     previousPeriods: Seq[TemporaryWorkingAgreementWithDates],
@@ -75,4 +78,10 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
 
   private def isDateInteractsPeriod(date: LocalDate, period: TemporaryWorkingAgreementWithDates) =
     date.compareTo(period.startDate) >= 0 && date.compareTo(period.endDate) <= 0;
+
+  private def onOrAfter(date1: LocalDate, date2: LocalDate) =
+    date1.isEqual(date2) || date1.isAfter(date2)
+
+  private def onOrBefore(date1: LocalDate, date2: LocalDate) =
+    date1.isEqual(date2) || date1.isBefore(date2)
 }

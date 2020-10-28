@@ -289,7 +289,7 @@ actualHours.p1 = Actual hours worked in this period
 actualHours.hint = What hours did the employee actually work? (in decimal format, such as 101.4)
 actualHours.error.nonNumeric = Enter the employee’s actual hours using numbers
 actualHours.error.required = Enter the employee’s actual hours
-usualHours.error.min = Usual hours can not be negative
+usualHours.error.min = Usual hours must be a positive value
 actualHours.error.min = Actual hours can not be negative
 actualHours.cannot.be.morethan.usualHours = Actual hours can not be more than usual hours
 
