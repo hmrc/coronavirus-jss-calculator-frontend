@@ -25,7 +25,7 @@ final case class PeriodSupport(
   endDate: LocalDate,
   daysInPeriod: Int,
   open: JobSupportOpen,
-  closed: JobSupportClosed
+  closed: ClosedJobSupport
 )
 
 /*

@@ -31,14 +31,14 @@ object JobSupportOpen {
   val noSupport                               = JobSupportOpen(0, 0, 0, 0, 0)
 }
 
-final case class JobSupportClosed(
+final case class ClosedJobSupport(
   closedDays: Int,
   grant: Double
 )
 
-object JobSupportClosed {
-  implicit val format: Format[JobSupportClosed] = Json.format
-  val noSupport                                 = JobSupportClosed(0, 0)
+object ClosedJobSupport {
+  implicit val format: Format[ClosedJobSupport] = Json.format
+  val noSupport                                 = ClosedJobSupport(0, 0)
 }
 
 final case class JobSupport(
