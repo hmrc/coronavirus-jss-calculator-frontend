@@ -51,15 +51,15 @@
             <span class="govuk-!-font-weight-bold">@messages("confirmation.jss.open.label")</span>
         }
 
-        @p(Html(Messages("confirmation.jss.open.p1", "&pound;"+ jobSupport.totalEmployeeSalary.formatted("%.2f"))))
-        @p(Html(Messages("confirmation.jss.open.p2", "&pound;"+ jobSupport.totalGrant.formatted("%.2f"))))
-        @p(Html(Messages("confirmation.jss.open.p3", "&pound;"+ jobSupport.totalEmployeeSalary.formatted("%.2f"))))
+        <p class="govuk-body">@messages("confirmation.jss.open.p1") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalEmployeeSalary.formatted("%.2f")</span></p>
+        <p class="govuk-body">@messages("confirmation.jss.open.p2") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalGrant.formatted("%.2f")</span></p>
+        <p class="govuk-body">@messages("confirmation.jss.open.p3")</p>
         @p {
             <span class="govuk-!-font-weight-bold">@messages("confirmation.jss.closed.label")</span>
         }
-        @p(Html(Messages("confirmation.jss.closed.p1", "&pound;"+ jobSupport.totalEmployeeSalary.formatted("%.2f"))))
-        @p(Html(Messages("confirmation.jss.closed.p2", "&pound;"+ jobSupport.totalGrant.formatted("%.2f"))))
-        @p(Html(Messages("confirmation.jss.closed.p3", "&pound;"+ jobSupport.totalEmployeeSalary.formatted("%.2f"))))
+        <p class="govuk-body">@messages("confirmation.jss.closed.p1") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalEmployeeSalary.formatted("%.2f")</span></p>
+        <p class="govuk-body">@messages("confirmation.jss.closed.p2") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalGrant.formatted("%.2f")</span></p>
+        <p class="govuk-body">@messages("confirmation.jss.closed.p3.start") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalGrant.formatted("%.2f")</span> @messages("confirmation.jss.closed.p3.end")</p>
     </div>
 
     @p {
@@ -71,12 +71,9 @@
     @h2(Html(messages("confirmation.nextSteps.heading")), classes = Some("govuk-heading-m"))
 
     <ul class="govuk-list govuk-list--number">
-        <li>@Html(Messages("confirmation.nextSteps.l1", <a href="" onClick="window.print()" class="govuk-link">{Messages("confirmation.nextSteps.l1.print.or.save")}</a>))</li>
+        <li>@messages("confirmation.nextSteps.l1")</li>
         <li>@messages("confirmation.nextSteps.l2")</li>
-        <li>@messages("confirmation.nextSteps.l3")</li>
-        <li>@messages("confirmation.nextSteps.l4")</li>
-        <li>@Html(Messages("confirmation.nextSteps.l5", <a href="" class="govuk-link">{Messages("confirmation.nextSteps.l5.guidance")}</a>))</li>
-        <li>@Html(Messages("confirmation.nextSteps.l6", <a href="" class="govuk-link">{Messages("confirmation.nextSteps.l6.jss.claim.service")}</a>))</li>
+        <li>@Html(Messages("confirmation.nextSteps.l3", <a href="" class="govuk-link">{Messages("confirmation.nextSteps.l3.guidance")}</a>))</li>
     </ul>
 
     @button(messages("confirmation.startAgain"), href = Some(routes.ClaimPeriodController.onPageLoad()), classes = Some("govuk-button"))
