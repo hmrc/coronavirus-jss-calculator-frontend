@@ -880,10 +880,10 @@ trait RegularPayGrantCalculator {
     ) true
     else false
 
-  private def sortedTWA(in: List[TemporaryWorkingAgreementWithDates]): List[TemporaryWorkingAgreementWithDates] =
+  def sortedTWA(in: List[TemporaryWorkingAgreementWithDates]): List[TemporaryWorkingAgreementWithDates] =
     in.sortWith((x, y) => x.endDate.isBefore(y.endDate))
 
-  private def sortedBusinessClosed(in: List[BusinessClosedWithDates]): List[BusinessClosedWithDates] =
+  def sortedBusinessClosed(in: List[BusinessClosedWithDates]): List[BusinessClosedWithDates] =
     in.sortWith((x, y) => x.endDate.isBefore(y.endDate))
 
   private def isDateIntervalOverlapping(
