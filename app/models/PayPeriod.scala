@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import models.BusinessClosedPeriod
-import pages.behaviours.PageBehaviours
+import java.time.LocalDate
 
-class BusinessClosedPeriodsPageSpec extends PageBehaviours {
+import play.api.libs.json.Json
 
-  "BusinessClosedPeriodsPage" must {
+case class PayPeriod(
+  startDate: LocalDate,
+  endDate: LocalDate,
+  usualHours: Double,
+  actualHours: Double
+)
 
-    beRetrievable[BusinessClosedPeriod](BusinessClosedPeriodsPage)
-
-    beSettable[BusinessClosedPeriod](BusinessClosedPeriodsPage)
-
-    beRemovable[BusinessClosedPeriod](BusinessClosedPeriodsPage)
-  }
+object PayPeriod {
+  implicit val format = Json.format[PayPeriod]
 }
