@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.BusinessClosedPeriodsFormProvider
 import javax.inject.Inject
@@ -39,7 +40,8 @@ class BusinessClosedPeriodsController @Inject() (
   requireData: DataRequiredAction,
   formProvider: BusinessClosedPeriodsFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: BusinessClosedPeriodsView
+  view: BusinessClosedPeriodsView,
+  config: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -58,7 +60,7 @@ class BusinessClosedPeriodsController @Inject() (
           case Some(value) => form(previousBCPeriods, cp).fill(value)
         }
 
-        Ok(view(preparedForm, idx))
+        Ok(view(preparedForm, idx, config.maxClosedPeriods))
       case None     => Redirect(routes.ClaimPeriodController.onPageLoad())
     }
   }
@@ -73,7 +75,7 @@ class BusinessClosedPeriodsController @Inject() (
           form(previousBCPeriods, cp)
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, config.maxClosedPeriods))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessClosedPeriodsPage, value, Some(idx)))

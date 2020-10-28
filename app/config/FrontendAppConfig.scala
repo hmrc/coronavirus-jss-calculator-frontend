@@ -73,4 +73,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val nuanceWebchatEnabled: Boolean = configuration.get[Boolean]("features.nuance.webchat")
   val performanceTest: Boolean           = configuration.get[Boolean](s"performance-test.mode")
   val preProdMode: Boolean               = configuration.get[Boolean](s"pre-prod.mode")
+
+  val maxStwaPeriods: Int   = configuration.get[Int]("max-stwa-periods")
+  val maxClosedPeriods: Int = configuration.get[Int]("max-closed-periods")
 }

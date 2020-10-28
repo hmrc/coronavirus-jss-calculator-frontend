@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.ShortTermWorkingAgreementPeriodFormProvider
 import javax.inject.Inject
@@ -39,7 +40,8 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
   requireData: DataRequiredAction,
   formProvider: ShortTermWorkingAgreementPeriodFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: ShortTermWorkingAgreementPeriodView
+  view: ShortTermWorkingAgreementPeriodView,
+  config: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -57,7 +59,7 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
           case Some(value) => form(previousTWAPeriods, cp).fill(value)
         }
 
-        Ok(view(preparedForm, idx))
+        Ok(view(preparedForm, idx, config.maxStwaPeriods))
       case None     => Redirect(routes.ClaimPeriodController.onPageLoad())
     }
   }
@@ -72,7 +74,7 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
           form(previousTWAPeriods, cp)
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, config.maxStwaPeriods))),
               value =>
                 for {
                   updatedAnswers <-

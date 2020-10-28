@@ -391,8 +391,10 @@ shortTermWorkingAgreementPeriod.startDate.label = Start date
 shortTermWorkingAgreementPeriod.endDate.label = End date
 shortTermWorkingAgreementPeriod.startDate.hint = For example, 1 3 2020
 shortTermWorkingAgreementPeriod.endDate.hint = For example, 7 3 2020
-businessClosedPeriods.error.required = Enter a valid start date
-businessClosedPeriods.error.invalid = Enter a valid end date
+shortTermWorkingAgreementPeriod.error.required = Enter a valid start date
+shortTermWorkingAgreementPeriod.error.invalid = Enter a valid end date
+businessClosedPeriods.addAnother.label = Do you need to add more dates?
+businessClosedPeriods.addAnother.error.required = Select yes if you need to add more dates
 
 shortTermWorkingAgreementPeriod.addMore.heading = Do you want to add more dates ?
 shortTermWorkingAgreementPeriod.addmore.error.required = Select yes if you want to add more dates
@@ -407,25 +409,11 @@ businessClosedPeriods.startDate.hint = For example, 1 3 2020
 businessClosedPeriods.endDate.hint = For example, 7 3 2020
 businessClosedPeriods.error.required = Enter a valid start date
 businessClosedPeriods.error.invalid = Enter a valid end date
+businessClosedPeriods.addAnother.label = Do you need to add more dates?
+businessClosedPeriods.addAnother.error.required = Select yes if you need to add more dates
 
 businessClosedPeriods.addMore.heading = Do you want to add more dates ?
 businessClosedPeriods.addmore.error.required = Select yes if you want to add more dates
-
-checkYourSTWAPeriods.title = Check your answers
-checkYourSTWAPeriods.heading = Check your answers
-checkYourSTWAPeriods.startDate.row = Start date: {0}
-checkYourSTWAPeriods.endDate.row = End date: {0}
-checkYourSTWAPeriods.row.change.label = Change
-checkYourSTWAPeriods.row.remove.label = Remove
-checkYourSTWAPeriods.add-another-period = Add another period
-
-checkYourBusinessClosedPeriods.title = Check your answers
-checkYourBusinessClosedPeriods.heading = Check your answers
-checkYourBusinessClosedPeriods.startDate.row = Start date: {0}
-checkYourBusinessClosedPeriods.endDate.row = End date: {0}
-checkYourBusinessClosedPeriods.row.change.label = Change
-checkYourBusinessClosedPeriods.row.remove.label = Remove
-checkYourBusinessClosedPeriods.add-another-period = Add another period
 
 youAreNotEligible.title = You are not eligible to make a claim
 youAreNotEligible.heading = You are not eligible to make a claim

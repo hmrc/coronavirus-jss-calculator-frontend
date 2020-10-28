@@ -59,9 +59,4 @@ GET         /business-closed-periods                                controllers.
 POST        /business-closed-periods                                controllers.BusinessClosedPeriodsController.onSubmit(idx: Int)
 GET         /business-closed-periods/remove/:idx                    controllers.BusinessClosedPeriodsController.remove(idx: Int)
 
-GET         /check-your-stwa-periods                                controllers.CheckYourSTWAPeriodsController.onPageLoad()
-
-GET         /check-your-business-closed-periods                     controllers.CheckYourBusinessClosedPeriodsController.onPageLoad()
-GET         /confirm-your-business-closed-periods                   controllers.CheckYourBusinessClosedPeriodsController.confirm()
-
 GET         /you-are-not-eligible                                   controllers.YouAreNotEligibleController.onPageLoad()

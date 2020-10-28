@@ -38,10 +38,14 @@ class ShortTermWorkingAgreementPeriodFormProviderSpec extends DateBehaviours {
       "endDate.day"     -> endDate.getDayOfMonth.toString,
       "endDate.month"   -> endDate.getMonthValue.toString,
       "endDate.year"    -> endDate.getYear.toString,
-      "value"           -> "yes"
+      "addAnother"      -> "true"
     )
     "bind valid values" in {
-      form(List.empty, claimPeriod).bind(data).get shouldEqual TemporaryWorkingAgreementWithDates(startDate, endDate)
+      form(List.empty, claimPeriod).bind(data).get shouldEqual TemporaryWorkingAgreementWithDates(
+        startDate,
+        endDate,
+        true
+      )
     }
 
     "throw form error in case of overlapping periods" in {

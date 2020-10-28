@@ -52,7 +52,8 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
         "startDate.year"  -> startDate.getYear.toString,
         "endDate.day"     -> endDate.getDayOfMonth.toString,
         "endDate.month"   -> endDate.getMonthValue.toString,
-        "endDate.year"    -> endDate.getYear.toString
+        "endDate.year"    -> endDate.getYear.toString,
+        "addAnother"      -> "true"
       )
 
   val claimPeriod = ClaimPeriod.Nov2020
@@ -68,7 +69,8 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
     dataRequired,
     formProvider,
     component,
-    view
+    view,
+    frontendAppConfig
   )
 
   val bcPeriods = BusinessClosedWithDates(startDate, endDate)
@@ -84,7 +86,7 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(List.empty, claimPeriod.supportClaimPeriod), 1)(request, messages).toString
+        view(form(List.empty, claimPeriod.supportClaimPeriod), 1, 5)(request, messages).toString
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -98,26 +100,17 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(List.empty, claimPeriod.supportClaimPeriod).fill(bcPeriods), 1)(request, messages).toString
+        view(form(List.empty, claimPeriod.supportClaimPeriod).fill(bcPeriods), 1, 5)(request, messages).toString
     }
   }
 
-  "redirect to /check-your-business-closed-periods when valid data is submitted" in {
+  "redirect to the next page when valid data is submitted" in {
 
     val result = controller(Some(userAnswers)).onSubmit(1)(postRequest)
 
     status(result) mustEqual SEE_OTHER
 
-    redirectLocation(result).value mustEqual routes.CheckYourBusinessClosedPeriodsController.onPageLoad().url
-  }
-
-  "redirect to usual and actual hours page when valid data is submitted and radio answer is no" in {
-
-    val result = controller(Some(userAnswers)).onSubmit(1)(postRequest)
-
-    status(result) mustEqual SEE_OTHER
-
-    redirectLocation(result).value mustEqual routes.CheckYourBusinessClosedPeriodsController.onPageLoad().url
+    redirectLocation(result).value mustEqual routes.BusinessClosedPeriodsController.onPageLoad(2).url
   }
 
   "return a Bad Request and errors when invalid data is submitted" in {
