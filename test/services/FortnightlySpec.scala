@@ -25,9 +25,9 @@ class FortnightlySpec extends SpecBase {
 
   "Regular Pay Calculator" when {
 
-    "fornight" should {
+    "fortnight" should {
 
-      "sc-1" in new RegularPayGrantCalculator {
+      "scenario-1" in new RegularPayGrantCalculator {
 
         val supportClaimPeriod = SupportClaimPeriod(
           LocalDate.of(2020, 11, 1),
@@ -78,11 +78,11 @@ class FortnightlySpec extends SpecBase {
           650
         )
 
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 714.1533333333333
+        jobSupport.totalGrant mustEqual 714.15
 
       }
 
-      "sc-9" in new RegularPayGrantCalculator {
+      "scenario-9" in new RegularPayGrantCalculator {
 
         val supportClaimPeriod = SupportClaimPeriod(
           LocalDate.of(2020, 11, 1),
@@ -131,11 +131,11 @@ class FortnightlySpec extends SpecBase {
           1410.10
         )
 
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 1543.4195238095238
+        jobSupport.totalGrant mustEqual 1543.42
 
       }
 
-      "sc-10" in new RegularPayGrantCalculator {
+      "scenario-10" in new RegularPayGrantCalculator {
 
         val supportClaimPeriod = SupportClaimPeriod(
           LocalDate.of(2020, 11, 1),
@@ -184,11 +184,8 @@ class FortnightlySpec extends SpecBase {
           1439.10
         )
 
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 1574.3466666666666
-
+        jobSupport.totalGrant mustEqual 1574.34
       }
-
     }
-
   }
 }

@@ -25,9 +25,9 @@ class FourWeeklySpec extends SpecBase {
 
   "Regular Pay Calculator" when {
 
-    "4 weekly" should {
+    "4-weekly" should {
 
-      "sc2" in new RegularPayGrantCalculator {
+      "scenario-2" in new RegularPayGrantCalculator {
 
         val supportClaimPeriod = SupportClaimPeriod(
           LocalDate.of(2020, 11, 1),
@@ -72,10 +72,8 @@ class FourWeeklySpec extends SpecBase {
           2500
         )
 
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 1547.9785714285713
+        jobSupport.totalGrant mustEqual 1547.97
       }
-
     }
-
   }
 }

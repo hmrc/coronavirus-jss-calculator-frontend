@@ -27,7 +27,7 @@ class MonthlySpec extends SpecBase {
 
     "monthly " should {
 
-      "sc-5" in new RegularPayGrantCalculator {
+      "scenario-5" in new RegularPayGrantCalculator {
 
         val supportClaimPeriod = SupportClaimPeriod(
           LocalDate.of(2020, 11, 1),
@@ -66,7 +66,7 @@ class MonthlySpec extends SpecBase {
           2345.67
         )
 
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 657.5806451612904
+        jobSupport.totalGrant mustEqual 657.58
       }
 
       "sc-6" in new RegularPayGrantCalculator {
@@ -108,9 +108,8 @@ class MonthlySpec extends SpecBase {
           3330.00
         )
 
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 1428.8533333333335
+        jobSupport.totalGrant mustEqual 1428.85
       }
     }
-
   }
 }
