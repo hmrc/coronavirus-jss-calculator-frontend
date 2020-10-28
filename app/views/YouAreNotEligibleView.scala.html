@@ -16,7 +16,8 @@
 
 @this(
     govukLayout: templates.GovukLayoutWrapper,
-    h1: components.h1
+    h1: components.h1,
+    button: components.button
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -24,4 +25,8 @@
 @govukLayout(pageTitle = Some(titleNoForm("youAreNotEligible.title"))) {
 
     @h1("youAreNotEligible.heading")
+
+  <p class="govuk-body">@messages("youAreNotEligible.p1")</p>
+
+ @button(messages("youAreNotEligible.startAgain"), href = Some(routes.ClaimPeriodController.onPageLoad()), classes = Some("govuk-button"))
 }

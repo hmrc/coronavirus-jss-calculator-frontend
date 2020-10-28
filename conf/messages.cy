@@ -415,5 +415,7 @@ businessClosedPeriods.addAnother.error.required = Select yes if you need to add 
 businessClosedPeriods.addMore.heading = Do you want to add more dates ?
 businessClosedPeriods.addmore.error.required = Select yes if you want to add more dates
 
-youAreNotEligible.title = You are not eligible to make a claim
-youAreNotEligible.heading = You are not eligible to make a claim
+youAreNotEligible.title = You cannot proceed with this calculation
+youAreNotEligible.heading = You cannot proceed with this calculation
+youAreNotEligible.p1 = You have selected no to the business being closed during the claim period and no to the employee being on a temporary working agreement. Select yes to one or both of them to proceed with your calculation.
+youAreNotEligible.startAgain = Start another calculation
