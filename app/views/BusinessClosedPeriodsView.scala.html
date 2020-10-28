@@ -22,7 +22,7 @@
         button: components.button,
         h1: components.h1,
         p: components.p,
-        h3: components.h3,
+        h2: components.h2,
         inputRadio: components.inputRadio,
         yesNoRadio: components.yesNoRadio
 )
@@ -38,6 +38,8 @@
             @h1(messages("businessClosedPeriods.heading"))
 
             @p(Html(Messages("businessClosedPeriods.p1")))
+
+            @h2(messages("businessClosedPeriods.dateRange", idx), classes = Some("govuk-heading-m"))
 
             @inputDate(
                 form = form,

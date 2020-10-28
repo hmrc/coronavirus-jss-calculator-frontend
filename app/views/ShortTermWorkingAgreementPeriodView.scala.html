@@ -21,6 +21,7 @@
         formHelper: FormWithCSRF,
         button: components.button,
         h1: components.h1,
+        h2: components.h2,
         p: components.p,
         inputRadio: components.inputRadio,
         yesNoRadio: components.yesNoRadio
@@ -37,6 +38,8 @@
         @h1(messages("shortTermWorkingAgreementPeriod.heading"))
 
         @p(Html(Messages("shortTermWorkingAgreementPeriod.p1")))
+
+        @h2(messages("shortTermWorkingAgreementPeriod.dateRange", idx), classes = Some("govuk-heading-m"))
 
         @inputDate(
             form = form,

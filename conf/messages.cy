@@ -389,6 +389,8 @@ shortTermWorkingAgreementPeriod.startDate.hint = For example, 1 3 2020
 shortTermWorkingAgreementPeriod.endDate.hint = For example, 7 3 2020
 shortTermWorkingAgreementPeriod.error.required = Enter a valid start date
 shortTermWorkingAgreementPeriod.error.invalid = Enter a valid end date
+shortTermWorkingAgreementPeriod.dateRange = Date range {0}
+
 businessClosedPeriods.addAnother.label = Do you need to add more dates?
 businessClosedPeriods.addAnother.error.required = Select yes if you need to add more dates
 
@@ -407,6 +409,7 @@ businessClosedPeriods.error.required = Enter a valid start date
 businessClosedPeriods.error.invalid = Enter a valid end date
 businessClosedPeriods.addAnother.label = Do you need to add more dates?
 businessClosedPeriods.addAnother.error.required = Select yes if you need to add more dates
+businessClosedPeriods.dateRange = Date range {0}
 
 businessClosedPeriods.addMore.heading = Do you want to add more dates ?
 businessClosedPeriods.addmore.error.required = Select yes if you want to add more dates
