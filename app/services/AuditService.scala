@@ -18,15 +18,15 @@ package services
 
 import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
-import models.{JobSupport, UserAnswers}
+import models.{BusinessClosedWithDates, JobSupport, Period, PeriodSupport, TemporaryWorkingAgreementWithDates, UserAnswers, UsualAndActualHours}
 import pages._
-import play.api.libs.json.{JsBoolean, JsNumber, JsString, Json}
+import play.api.libs.json.{Format, Json}
 import play.api.mvc.Request
 import services.JobSupportSchemeCalculatorEvent.JobSupportSchemeCalculatorEvent
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.audit.model.DataEvent
+import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
@@ -35,6 +35,74 @@ object JobSupportSchemeCalculatorEvent extends Enumeration {
   type JobSupportSchemeCalculatorEvent = Value
 
   val CalculationPerformed, CalculationFailed = Value
+}
+
+case class UserAnswersAuditDetails(
+  supportClaimPeriod: String,
+  payFrequency: String,
+  lastPayDate: String,
+  endPayDate: String,
+  payMethod: String,
+  payPeriods: String,
+  selectPayPeriods: List[Period],
+  regularPayAmount: Double,
+  temporaryWorkingAgreement: String,
+  temporaryWorkingAgreementPeriods: List[TemporaryWorkingAgreementWithDates],
+  businessClosed: String,
+  businessClosedPeriods: List[BusinessClosedWithDates],
+  usualAndActualWorkingHours: List[UsualAndActualHours]
+)
+
+object UserAnswersAuditDetails {
+  def apply(userAnswers: UserAnswers): UserAnswersAuditDetails =
+    new UserAnswersAuditDetails(
+      userAnswers.get(ClaimPeriodPage).map(_.toString).getOrElse(""),
+      userAnswers.get(PayFrequencyPage).map(_.toString).getOrElse(""),
+      userAnswers.get(LastPayDatePage).map(_.toString).getOrElse(""),
+      userAnswers.get(EndPayDatePage).map(_.toString).getOrElse(""),
+      userAnswers.get(PayMethodPage).map(_.toString).getOrElse(""),
+      userAnswers.get(PayPeriodsPage).map(_.toString).getOrElse(""),
+      userAnswers.get(SelectWorkPeriodsPage).getOrElse(List.empty),
+      userAnswers.get(RegularPayAmountPage).map(_.value.toDouble).getOrElse(0.0),
+      userAnswers.get(TemporaryWorkingAgreementPage).map(_.toString).getOrElse(""),
+      userAnswers.getList(ShortTermWorkingAgreementPeriodPage),
+      userAnswers.get(BusinessClosedPage).map(_.toString).getOrElse(""),
+      userAnswers.getList(BusinessClosedPeriodsPage),
+      userAnswers.getList(UsualAndActualHoursPage)
+    )
+
+  implicit val format: Format[UserAnswersAuditDetails] = Json.format
+}
+
+case class JobSupportAuditDetails(
+  periodSupport: List[PeriodSupport],
+  referenceSalary: Double,
+  isIneligible: Boolean,
+  totalEmployeeSalary: Double,
+  totalEmployersGrant: Double,
+  totalClosed: Double,
+  totalGrant: Double
+)
+
+object JobSupportAuditDetails {
+  def apply(jobSupport: JobSupport): JobSupportAuditDetails =
+    new JobSupportAuditDetails(
+      jobSupport.periodSupport,
+      jobSupport.referenceSalary,
+      jobSupport.isIneligible,
+      jobSupport.totalEmployeeSalary,
+      jobSupport.totalEmployersGrant,
+      jobSupport.totalClosed,
+      jobSupport.totalGrant
+    )
+
+  implicit val format: Format[JobSupportAuditDetails] = Json.format
+}
+
+case class JssDetails(userAnswers: UserAnswersAuditDetails, calculationResult: JobSupportAuditDetails)
+
+object JssDetails {
+  implicit val format: Format[JssDetails] = Json.format
 }
 
 @Singleton
@@ -48,64 +116,28 @@ class AuditService @Inject() (auditConnector: AuditConnector, config: FrontendAp
     auditEvent(
       JobSupportSchemeCalculatorEvent.CalculationPerformed,
       "calculation-performed",
-      Seq(
-        "userAnswers"       -> userAnswersTransformer(userAnswers),
-        "calculationResult" -> jobSupportTransformer(jobSupport)
-      )
-    )
-
-  implicit def toJson[A](userAnswer: Option[A]) = JsString(userAnswer.map(_.toString).getOrElse(""))
-
-  private def userAnswersTransformer(userAnswers: UserAnswers) =
-    Json.obj(
-      "supportClaimPeriod"               -> toJson(userAnswers.get(ClaimPeriodPage)),
-      "payFrequency"                     -> toJson(userAnswers.get(PayFrequencyPage)),
-      "lastPayDate"                      -> toJson(userAnswers.get(LastPayDatePage)),
-      "endPayDate"                       -> toJson(userAnswers.get(EndPayDatePage)),
-      "payMethod"                        -> toJson(userAnswers.get(PayMethodPage)),
-      "payPeriods"                       -> toJson(userAnswers.get(PayPeriodsPage)),
-      "selectPayPeriods"                 -> Json.toJson(userAnswers.get(SelectWorkPeriodsPage)),
-      "regularPayAmount"                 -> toJson(userAnswers.get(RegularPayAmountPage).map(_.value.toDouble)),
-      "temporaryWorkingAgreement"        -> toJson(userAnswers.get(TemporaryWorkingAgreementPage)),
-      "temporaryWorkingAgreementPeriods" -> Json.toJson(userAnswers.getList(ShortTermWorkingAgreementPeriodPage)),
-      "businessClosed"                   -> toJson(userAnswers.get(BusinessClosedPage)),
-      "businessClosedPeriods"            -> Json.toJson(userAnswers.getList(BusinessClosedPeriodsPage)),
-      "UsualAndActualWorkingHours"       -> Json.toJson(userAnswers.getList(UsualAndActualHoursPage))
-    )
-
-  private def jobSupportTransformer(jobSupport: JobSupport) =
-    Json.obj(
-      "periodSupport"       -> Json.toJson(jobSupport.periodSupport),
-      "referenceSalary"     -> JsNumber(jobSupport.referenceSalary),
-      "isIneligible"        -> JsBoolean(jobSupport.isIneligible),
-      "totalEmployeeSalary" -> JsNumber(jobSupport.totalEmployeeSalary),
-      "totalEmployersGrant" -> JsNumber(jobSupport.totalEmployersGrant),
-      "totalClosed"         -> JsNumber(jobSupport.totalClosed),
-      "totalGrant"          -> JsNumber(jobSupport.totalClosed)
+      JssDetails(UserAnswersAuditDetails(userAnswers), JobSupportAuditDetails(jobSupport))
     )
 
   private def auditEvent(
-    event: JobSupportSchemeCalculatorEvent,
+    calculatorEvent: JobSupportSchemeCalculatorEvent,
     transactionName: String,
-    details: Seq[(String, Any)]
-  )(implicit hc: HeaderCarrier, request: Request[Any], ec: ExecutionContext): Future[Unit] =
-    send(createEvent(event, transactionName, details: _*))
-
-  private def createEvent(
-    event: JobSupportSchemeCalculatorEvent,
-    transactionName: String,
-    details: (String, Any)*
-  )(implicit hc: HeaderCarrier, request: Request[Any]): DataEvent = {
-
-    val detail = hc.toAuditDetails(details.map(pair => pair._1 -> pair._2.toString): _*)
-    val tags   = hc.toAuditTags(transactionName, request.path)
-    DataEvent(auditSource = config.appName, auditType = event.toString, tags = tags, detail = detail)
+    details: JssDetails
+  )(implicit hc: HeaderCarrier, request: Request[Any], ec: ExecutionContext): Future[Unit] = {
+    val tags  = hc.toAuditTags(transactionName, request.path)
+    val event = ExtendedDataEvent(
+      auditSource = config.appName,
+      auditType = calculatorEvent.toString,
+      tags = tags,
+      detail = Json.toJson(details)
+    )
+    send(event)
   }
 
-  private def send(events: DataEvent*)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
+  private def send(events: ExtendedDataEvent*)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
     Future {
       events.foreach { event =>
-        Try(auditConnector.sendEvent(event))
+        Try(auditConnector.sendExtendedEvent(event))
       }
     }
 
