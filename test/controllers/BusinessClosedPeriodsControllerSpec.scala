@@ -33,7 +33,7 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
 
   val view = app.injector.instanceOf[BusinessClosedPeriodsView]
 
-  private val formProvider = new BusinessClosedPeriodsFormProvider()
+  private val formProvider = app.injector.instanceOf[BusinessClosedPeriodsFormProvider]
   private def form         = formProvider
 
   private val startDate = LocalDate.of(2020, 11, 1)
@@ -86,7 +86,7 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(List.empty, claimPeriod.supportClaimPeriod), 1, 5)(request, messages).toString
+        view(form(List.empty), 1, 5)(request, messages).toString
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -100,7 +100,7 @@ class BusinessClosedPeriodsControllerSpec extends SpecBaseControllerSpecs {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(List.empty, claimPeriod.supportClaimPeriod).fill(bcPeriods), 1, 5)(request, messages).toString
+        view(form(List.empty).fill(bcPeriods), 1, 5)(request, messages).toString
     }
   }
 

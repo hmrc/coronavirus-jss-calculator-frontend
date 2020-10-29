@@ -18,20 +18,23 @@ package forms
 
 import java.time.LocalDate
 
+import base.SpecBaseControllerSpecs
 import forms.behaviours.DateBehaviours
-import models.{ClaimPeriod, TemporaryWorkingAgreementPeriod}
+import models.TemporaryWorkingAgreementPeriod
 import play.api.data.FormError
 
-class ShortTermWorkingAgreementPeriodFormProviderSpec extends DateBehaviours {
+class ShortTermWorkingAgreementPeriodFormProviderSpec extends SpecBaseControllerSpecs {
 
-  val form = new ShortTermWorkingAgreementPeriodFormProvider()
+  val dateBehaviours = new DateBehaviours()
+  import dateBehaviours._
+
+  val form = app.injector.instanceOf[ShortTermWorkingAgreementPeriodFormProvider]
 
   "form" should {
 
-    val claimPeriod = ClaimPeriod.Nov2020.supportClaimPeriod
-    val startDate   = LocalDate.of(2020, 11, 1)
-    val endDate     = startDate.plusDays(10)
-    val data        = Map(
+    val startDate = LocalDate.of(2020, 11, 1)
+    val endDate   = startDate.plusDays(10)
+    val data      = Map(
       "startDate.day"   -> startDate.getDayOfMonth.toString,
       "startDate.month" -> startDate.getMonthValue.toString,
       "startDate.year"  -> startDate.getYear.toString,
@@ -40,8 +43,9 @@ class ShortTermWorkingAgreementPeriodFormProviderSpec extends DateBehaviours {
       "endDate.year"    -> endDate.getYear.toString,
       "addAnother"      -> "true"
     )
+
     "bind valid values" in {
-      form(List.empty, claimPeriod).bind(data).get shouldEqual TemporaryWorkingAgreementPeriod(
+      form(List.empty).bind(data).get shouldEqual TemporaryWorkingAgreementPeriod(
         startDate,
         endDate,
         true
@@ -52,8 +56,30 @@ class ShortTermWorkingAgreementPeriodFormProviderSpec extends DateBehaviours {
 
       val previousPeriods = List(TemporaryWorkingAgreementPeriod(startDate.minusDays(10), startDate.plusDays(2)))
 
-      form(previousPeriods, claimPeriod).bind(data).errors shouldEqual Seq(
+      form(previousPeriods).bind(data).errors shouldEqual Seq(
         FormError("", "shortTermWorkingAgreementPeriod.periods.should.not.overlap")
+      )
+    }
+
+    "throw form error for dates outside claim start and claim end dates" in {
+
+      val previousPeriods = List(TemporaryWorkingAgreementPeriod(startDate.minusDays(10), startDate.plusDays(2)))
+
+      val startDateInput = form.config.schemeStartDate.minusDays(1)
+      val endDateInput   = form.config.schemeEndDate.plusDays(11)
+      val data           = Map(
+        "startDate.day"   -> startDateInput.getDayOfMonth.toString,
+        "startDate.month" -> startDateInput.getMonthValue.toString,
+        "startDate.year"  -> startDateInput.getYear.toString,
+        "endDate.day"     -> endDateInput.getDayOfMonth.toString,
+        "endDate.month"   -> endDateInput.getMonthValue.toString,
+        "endDate.year"    -> endDateInput.getYear.toString,
+        "addAnother"      -> "false"
+      )
+
+      form(previousPeriods).bind(data).errors shouldEqual Seq(
+        FormError("startDate", "shortTermWorkingAgreementPeriod.startDate.outside.claimPeriod"),
+        FormError("endDate", "shortTermWorkingAgreementPeriod.endDate.outside.claimPeriod")
       )
     }
   }
