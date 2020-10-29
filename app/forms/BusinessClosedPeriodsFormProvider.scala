@@ -34,15 +34,15 @@ class BusinessClosedPeriodsFormProvider @Inject() extends Mappings {
     Form(
       mapping(
         "startDate"  -> localDate(
-          invalidKey = "businessClosedPeriods.error.invalid",
-          requiredKey = "businessClosedPeriods.error.required"
+          invalidKey = "businessClosedPeriods.error.invalid.start",
+          requiredKey = "businessClosedPeriods.error.invalid.start"
         ).verifying(
           "businessClosedPeriods.startDate.outside.claimPeriod",
           date => isDateWithInClaim(date, claimPeriod)
         ),
         "endDate"    -> localDate(
-          invalidKey = "businessClosedPeriods.error.invalid",
-          requiredKey = "businessClosedPeriods.error.required"
+          invalidKey = "businessClosedPeriods.error.invalid.end",
+          requiredKey = "businessClosedPeriods.error.invalid.end"
         ),
         "addAnother" -> boolean(
           requiredKey = "businessClosedPeriods.addAnother.error.required"
