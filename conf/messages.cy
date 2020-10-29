@@ -169,7 +169,7 @@ claimPeriod.error.invalid = Select which month you will claim for
 
 startPage.title = Job Support Scheme Calculator
 startPage.heading = Job Support Scheme Calculator
-startPage.p1 = You can use this calculator to calculate the figures you will need when you complete a claim through the Job Support Scheme. It also breaks down calculations for each pay period for your records.
+startPage.p1 = You can use this calculator to calculate the figures you will need when you complete a claim through the Job Support Scheme (JSS). It also breaks down calculations for each pay period for your records.
 startPage.p2 = Remember that across the entire period, for claims under JSS Open, the employee must work at least 20% of their hours to be eligible.
 startPage.p3 = The figures are for one employee for the claim period you specify. Use the calculator again to claim for other employees and add up the results.
 startPage.p4 = You can use this calculator to claim for:
