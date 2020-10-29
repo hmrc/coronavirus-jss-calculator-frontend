@@ -28,22 +28,23 @@
         link: components.link,
         button: components.button,
         appConfig: FrontendAppConfig,
-        breakdownHelper: ConfirmationBreakdownHelper
+        breakdownHelper: ConfirmationBreakdownHelper,
+        warningText: components.warningText
 )
 
 @(jobSupport: JobSupport, calculatorVersion: String)(implicit request: Request[_], messages: Messages)
 
-@govukLayout(pageTitle = Some(titleNoForm("confirmation.title"))) {
+@govukLayout(pageTitle = Some(titleNoForm(if(jobSupport.isIneligible) "confirmation.title.p1" else "confirmation.title"))) {
+
+    @if(jobSupport.isIneligible){
+      @warningText("confirmation.confirmation.ineligible")
+    }
 
     @confirmation {
-        @h1(Html(messages("confirmation.confirmation.p1")), classes = Some(""))
+        @h1(Html(messages(if(jobSupport.isIneligible) "confirmation.confirmation.p1.ineligible" else "confirmation.confirmation.p1")), classes = Some(""))
         <div class="grant-heading">
             <p class="govuk-panel__title">&pound;@jobSupport.totalGrant.formatted("%.2f")</p>
         </div>
-    }
-
-    @if(jobSupport.isIneligible){
-        @h2(Html(messages("confirmation.confirmation.ineligible")))
     }
 
     <div class="govuk-inset-text">
