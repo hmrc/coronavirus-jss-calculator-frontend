@@ -319,7 +319,7 @@ trait RegularPayGrantCalculator {
     payPeriod: PayPeriod,
     temporaryWorkingAgreementPeriods: List[TemporaryWorkingAgreementPeriod]
   ): List[TemporaryWorkingAgreementPeriod] = temporaryWorkingAgreementPeriods.filter(temporaryWorkingAgreementPeriod =>
-    isTemporaryWorkingAgreementInPayPeriod(payPeriod, temporaryWorkingAgreementPeriod)
+    isTemporaryWorkingAgreementPeriodInPayPeriod(payPeriod, temporaryWorkingAgreementPeriod)
   )
 
   def getAllBusinessClosedPeriodsWhichOverlapTemporaryWorkingAgreementPeriod(
@@ -508,7 +508,7 @@ trait RegularPayGrantCalculator {
       false
     }
 
-  def isTemporaryWorkingAgreementInPayPeriod(
+  def isTemporaryWorkingAgreementPeriodInPayPeriod(
     payPeriod: PayPeriod,
     temporaryWorkingAgreementPeriod: TemporaryWorkingAgreementPeriod
   ): Boolean =
@@ -687,7 +687,7 @@ trait RegularPayGrantCalculator {
   ): Int = {
     val temporaryWorkingAgreementPeriodsInThisPayPeriod =
       temporaryWorkingAgreementWithDates.filter(temporaryWorkingAgreementPeriod =>
-        isTemporaryWorkingAgreementInPayPeriod(periodWithHours, temporaryWorkingAgreementPeriod)
+        isTemporaryWorkingAgreementPeriodInPayPeriod(periodWithHours, temporaryWorkingAgreementPeriod)
       )
     temporaryWorkingAgreementPeriodsInThisPayPeriod
       .map(temporaryWorkingAgreementPeriod =>
