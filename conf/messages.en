@@ -362,8 +362,8 @@ endPayDate.p1 = This is the last day in the pay period, not the date they receiv
 endPayDate.details.title = What is a pay period?
 endPayDate.details.p1 = A ‘pay period’ is the period when the employee is paid, such as weekly or monthly. The end date of a pay period is the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually receives their pay.
 endPayDate.hint = For example 01 12 2020
-endPayDate.error.required = Enter the end of the next pay period after {0}
-endPayDate.error.invalid = Enter the end of the next pay period after {0}
+endPayDate.error.required = Enter a valid end date of the next pay period after {0}
+endPayDate.error.invalid = Enter a valid end date of the next pay period after {0}
 endPayDate.error.invalid.must.be.on.or.after = The end pay date must be on or after {0}
 endPayDate.error.invalid.must.be.on.or.before = The end pay date must be on or before {0}
 
