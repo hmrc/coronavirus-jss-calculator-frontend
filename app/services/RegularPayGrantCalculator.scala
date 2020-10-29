@@ -36,12 +36,10 @@ trait RegularPayGrantCalculator {
     referencePay: Double
   ): JobSupport = {
 
-    //TODO: refactor: general sorting function
     val sortedTWAList = sortedTemporaryWorkingAgreements(temporaryWorkingAgreementWithDates)
     val sortedBCList  = sortedBusinessClosedPeriods(businessClosedWithDates)
 
     val supportBreakdowns: List[SupportBreakdown] = payPeriods.map { payPeriod =>
-      //TODO: refactor: assess whether this pay period needs to run both calculation (efficiency)
       SupportBreakdown(
         payPeriod.startDate,
         payPeriod.endDate,
@@ -77,9 +75,9 @@ trait RegularPayGrantCalculator {
     referencePay: Double
   ): OpenJobSupport = {
 
-    val totalNumberOfTwaDaysInAPayPeriod =
+    val totalNumberOfTemporaryWorkingAgreementDaysInAPayPeriod =
       getTotalNumberOfTemporaryWorkingAgreementDaysInPayPeriod(payPeriod, temporaryWorkingAgreementPeriods)
-    val numberOfDaysInPayFrequency       = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
+    val numberOfDaysInPayFrequency                             = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
 
     if (
       temporaryWorkingAgreementPeriods.isEmpty | isPayPeriodCompletelyCoveredByBusinessClosedPeriod(
@@ -99,7 +97,7 @@ trait RegularPayGrantCalculator {
         case (true, _) =>
           calculateOpenSupport(
             referencePay,
-            totalNumberOfTwaDaysInAPayPeriod,
+            totalNumberOfTemporaryWorkingAgreementDaysInAPayPeriod,
             numberOfDaysInPayFrequency,
             payFrequency,
             payPeriod
@@ -108,7 +106,7 @@ trait RegularPayGrantCalculator {
         case (false, false) =>
           calculateOpenSupport(
             referencePay,
-            totalNumberOfTwaDaysInAPayPeriod,
+            totalNumberOfTemporaryWorkingAgreementDaysInAPayPeriod,
             numberOfDaysInPayFrequency,
             payFrequency,
             payPeriod
@@ -118,12 +116,14 @@ trait RegularPayGrantCalculator {
           val splicedTemporaryWorkingAgreements =
             spliceTemporaryWorkingAgreementPeriod(temporaryWorkingAgreementPeriods, businessClosedPeriods)
 
-          val totalNumberOfTwaDaysInAPayPeriod =
+          val totalNumberOfTemporaryWorkingAgreementDaysInAPayPeriod =
             getTotalNumberOfTemporaryWorkingAgreementDaysInPayPeriod(payPeriod, splicedTemporaryWorkingAgreements)
+
+          println(s"\n Total Number of TWA days in Pay Period: $totalNumberOfTemporaryWorkingAgreementDaysInAPayPeriod")
 
           calculateOpenSupport(
             referencePay,
-            totalNumberOfTwaDaysInAPayPeriod,
+            totalNumberOfTemporaryWorkingAgreementDaysInAPayPeriod,
             numberOfDaysInPayFrequency,
             payFrequency,
             payPeriod
@@ -142,18 +142,30 @@ trait RegularPayGrantCalculator {
     val adjustedReferencePay =
       proportionReferencePay(referencePay, totalNumberOfTwaDaysInAPayPeriod, numberOfDaysInPayFrequency)
 
+    println(s"\n Adjusted Reference Pay is : $adjustedReferencePay")
+
     val referencePayCap = calculateReferencePayCap(
       totalNumberOfTwaDaysInAPayPeriod,
       !(numberOfDaysInPayFrequency == totalNumberOfTwaDaysInAPayPeriod),
       payFrequency
     )
 
+    println(s"\n Reference Pay Cap is : $referencePayCap")
+
     val actualReferencePay = capReferencePay(adjustedReferencePay, referencePayCap)
+
+    println(s"\n Actual Reference Pay is : $actualReferencePay")
 
     val employeeSalary =
       actualReferencePay * ((payPeriod.usualHours - payPeriod.actualHours) / payPeriod.usualHours) * 0.6667
 
+    println(s"\n Employee Salary is : $employeeSalary")
+
     val employersGrant = employeeSalary * (61.67 / 66.67)
+
+    println(s"\n Employee Grant is : $employersGrant")
+
+    println("\n ==============================================")
 
     OpenJobSupport(
       totalNumberOfTwaDaysInAPayPeriod,
@@ -193,6 +205,47 @@ trait RegularPayGrantCalculator {
 
     ClosedJobSupport(numberOfClosedDaysInPayPeriod, closedSupportGrant)
 
+  }
+
+  def isPayPeriodWithinClaimPeriod(payPeriod: PayPeriod, supportClaimPeriod: SupportClaimPeriod): Boolean =
+    if (
+      (
+        (payPeriod.startDate
+          .isEqual(supportClaimPeriod.startDate) && payPeriod.endDate.isBefore(supportClaimPeriod.endDate))
+        ||
+        (payPeriod.startDate
+          .isEqual(supportClaimPeriod.startDate) && payPeriod.endDate.isEqual(supportClaimPeriod.endDate))
+        ||
+        (payPeriod.startDate
+          .isAfter(supportClaimPeriod.startDate) && payPeriod.endDate.isEqual(supportClaimPeriod.endDate))
+        ||
+        (payPeriod.startDate
+          .isAfter(supportClaimPeriod.startDate) && payPeriod.endDate.isBefore(supportClaimPeriod.startDate))
+      )
+    )
+      true
+    else
+      false
+
+  def isPayPeriodCoveredCompletelyByEitherATemporaryWorkingAgreementAndOrBusinessClosedPeriod(
+    payPeriod: PayPeriod,
+    temporaryWorkingAgreementPeriods: List[TemporaryWorkingAgreementPeriod],
+    businessClosedPeriods: List[BusinessClosedPeriod]
+  ): Boolean = {
+    val daysInPayPeriod = ChronoUnit.DAYS.between(payPeriod.startDate, payPeriod.endDate) + 1
+    (temporaryWorkingAgreementPeriods.isEmpty, businessClosedPeriods.isEmpty) match {
+      case (true, true)   => false
+      case (false, true)  =>
+        val totalNumberOfClosedDaysCoveringThisPayPeriod = businessClosedPeriods
+          .map(closedPeriod => ChronoUnit.DAYS.between(closedPeriod.startDate, closedPeriod.endDate) + 1)
+          .sum
+        if (totalNumberOfClosedDaysCoveringThisPayPeriod < daysInPayPeriod) false else true
+      case (true, false)  =>
+        val totalNumberOfTemporaryWorkingAgreementsInThisPeriod =
+          temporaryWorkingAgreementPeriods.map(twa => ChronoUnit.DAYS.between(twa.startDate, twa.endDate) + 1).sum
+        if (totalNumberOfTemporaryWorkingAgreementsInThisPeriod < daysInPayPeriod) false else true
+      case (false, false) => true
+    }
   }
 
   def getTotalNumberOfClosedDaysInAPayPeriod(
@@ -313,7 +366,7 @@ trait RegularPayGrantCalculator {
       isBusinessClosedPeriodInPayPeriod(payPeriod, businessClosedPeriod)
     )
 
-  //TODO: check if this is not eliminiateing valid TWAs
+  //TODO: check if this is not eliminating valid TWAs
   // this will get all the TWAs inside this PP but also will only return that portion of the TWA inside the PP, otherwise the splicing function won't work as expect as the dates for the TWA will be outside the PP
   def getAllTemporaryWorkingAgreementsInThisPayPeriod(
     payPeriod: PayPeriod,
@@ -784,7 +837,7 @@ trait RegularPayGrantCalculator {
   private def capReferencePay(referencePay: Double, referencePayCap: Double): Double =
     scala.math.min(referencePay, referencePayCap)
 
-  def calculateFrequencyDaysForMonthlyFrequency(periodWithHours: PayPeriod): Int =
+  private def calculateFrequencyDaysForMonthlyFrequency(periodWithHours: PayPeriod): Int =
     ChronoUnit.DAYS.between(periodWithHours.startDate, periodWithHours.endDate).toInt + 1
 }
 
