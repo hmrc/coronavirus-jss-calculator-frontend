@@ -19,7 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import javax.inject.Inject
-import models.{Period, PeriodWithHours, UsualAndActualHours}
+import models.{PayPeriod, Period, UsualAndActualHours}
 import pages._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -83,7 +83,7 @@ class ConfirmationController @Inject() (
     }
 
     periods.zip(failSafeHours).map { x =>
-      PeriodWithHours(x._1.startDate, x._1.endDate, x._2.usualHours, x._2.actualHours)
+      PayPeriod(x._1.startDate, x._1.endDate, x._2.usualHours, x._2.actualHours)
     }
   }
 }

@@ -20,8 +20,8 @@ import java.time.LocalDate
 
 import base.SpecBaseControllerSpecs
 import forms.UsualAndActualHoursFormProvider
-import models.{ClaimPeriod, Period, UserAnswers, UsualAndActualHours}
-import pages.{ClaimPeriodPage, SelectWorkPeriodsPage, UsualAndActualHoursPage}
+import models.{ClaimPeriod, Period, TemporaryWorkingAgreementPeriod, UserAnswers, UsualAndActualHours}
+import pages._
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.CSRFTokenHelper._
 import play.api.test.FakeRequest
@@ -70,6 +70,15 @@ class UsualAndActualHoursControllerSpec extends SpecBaseControllerSpecs {
     .success
     .value
     .set(ClaimPeriodPage, ClaimPeriod.Nov2020)
+    .success
+    .value
+    .setList(
+      ShortTermWorkingAgreementPeriodPage,
+      List(TemporaryWorkingAgreementPeriod(startDate, startDate.plusDays(10), false))
+    )
+    .success
+    .value
+    .setList(BusinessClosedPeriodsPage, List.empty)
     .success
     .value
 

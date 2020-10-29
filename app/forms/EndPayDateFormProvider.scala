@@ -22,19 +22,19 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.Messages
-import views.ViewUtils
+import views.ViewUtils.dateToString
 
 class EndPayDateFormProvider @Inject() extends Mappings {
 
-  def apply(lastPayDate: LocalDate, claimEndDate: LocalDate)(implicit messages: Messages): Form[LocalDate] =
+  def apply(claimStartDate: LocalDate, claimEndDate: LocalDate)(implicit messages: Messages): Form[LocalDate] =
     Form(
       "value" -> localDate(
         invalidKey = "endPayDate.error.invalid",
         requiredKey = "endPayDate.error.required"
       ).verifying(
-        minDate(lastPayDate.plusDays(1), "endPayDate.error.invalid.must.be.after", ViewUtils.dateToString(lastPayDate))
+        minDate(claimStartDate, "endPayDate.error.invalid.must.be.on.or.after", dateToString(claimStartDate))
       ).verifying(
-        maxDate(claimEndDate, "endPayDate.error.invalid.must.be.before", ViewUtils.dateToString(claimEndDate))
+        maxDate(claimEndDate, "endPayDate.error.invalid.must.be.on.or.before", dateToString(claimEndDate))
       )
     )
 }

@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.ShortTermWorkingAgreementPeriodFormProvider
 import javax.inject.Inject
-import models.{NormalMode, SupportClaimPeriod, TemporaryWorkingAgreementWithDates}
+import models.{NormalMode, SupportClaimPeriod, TemporaryWorkingAgreementPeriod}
 import navigation.Navigator
 import pages.{ClaimPeriodPage, ShortTermWorkingAgreementPeriodPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -46,7 +46,7 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(previousTWAPeriod: Seq[TemporaryWorkingAgreementWithDates], claimPeriod: SupportClaimPeriod) =
+  private def form(previousTWAPeriod: Seq[TemporaryWorkingAgreementPeriod], claimPeriod: SupportClaimPeriod) =
     formProvider(previousTWAPeriod, claimPeriod: SupportClaimPeriod)
 
   def onPageLoad(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>

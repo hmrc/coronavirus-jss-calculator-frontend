@@ -24,7 +24,7 @@ sealed trait PeriodGrant
 
 object PeriodGrant {
   final case class OpenPeriodGrant(
-    period: PeriodWithHours,
+    period: PayPeriod,
     grant: BigDecimal, //TODO: change to Double
     employerContribution: Double,
     daysInPeriod: Int,
@@ -41,7 +41,7 @@ object PeriodGrant {
   }
 
   final case class ClosedPeriodGrant(
-    period: PeriodWithHours,
+    period: PayPeriod,
     amount: BigDecimal, //TODO: change to Double
     employerContribution: Double,
     daysInPeriod: Int,

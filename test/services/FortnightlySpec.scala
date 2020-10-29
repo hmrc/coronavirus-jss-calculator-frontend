@@ -19,15 +19,15 @@ package services
 import java.time.LocalDate
 
 import base.SpecBase
-import models.{BusinessClosedWithDates, JobSupport, PayFrequency, PeriodWithHours, SupportClaimPeriod, TemporaryWorkingAgreementWithDates}
+import models.{BusinessClosedPeriod, JobSupport, PayFrequency, PayPeriod, SupportClaimPeriod, TemporaryWorkingAgreementPeriod}
 
 class FortnightlySpec extends SpecBase {
 
   "Regular Pay Calculator" when {
 
-    "fornight" should {
+    "fortnight" should {
 
-      "sc-1" in new RegularPayGrantCalculator {
+      "scenario-1" in new RegularPayGrantCalculator {
 
         val supportClaimPeriod = SupportClaimPeriod(
           LocalDate.of(2020, 11, 1),
@@ -35,33 +35,33 @@ class FortnightlySpec extends SpecBase {
         )
 
         val twasList = List(
-          TemporaryWorkingAgreementWithDates(
+          TemporaryWorkingAgreementPeriod(
             LocalDate.of(2020, 11, 1),
             LocalDate.of(2020, 11, 30)
           )
         )
 
         val closedList = List(
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 2),
             LocalDate.of(2020, 11, 15)
           )
         )
 
-        val pp: List[PeriodWithHours] = List(
-          PeriodWithHours(
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
             LocalDate.of(2020, 10, 19),
             LocalDate.of(2020, 11, 1),
             10,
             5
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 2),
             LocalDate.of(2020, 11, 15),
             90.4,
             30
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 16),
             LocalDate.of(2020, 11, 29),
             89.5,
@@ -78,11 +78,11 @@ class FortnightlySpec extends SpecBase {
           650
         )
 
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 714.1533333333333
+        jobSupport.totalGrant mustEqual 714.14
 
       }
 
-      "sc-9" in new RegularPayGrantCalculator {
+      "scenario-9" in new RegularPayGrantCalculator {
 
         val supportClaimPeriod = SupportClaimPeriod(
           LocalDate.of(2020, 11, 1),
@@ -90,31 +90,31 @@ class FortnightlySpec extends SpecBase {
         )
 
         val twasList = List(
-          TemporaryWorkingAgreementWithDates(
+          TemporaryWorkingAgreementPeriod(
             LocalDate.of(2020, 11, 1),
             LocalDate.of(2020, 11, 30)
           )
         )
 
         val closedList = List(
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 2),
             LocalDate.of(2020, 11, 11)
           ),
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 18),
             LocalDate.of(2020, 11, 24)
           )
         )
 
-        val pp: List[PeriodWithHours] = List(
-          PeriodWithHours(
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
             LocalDate.of(2020, 10, 29),
             LocalDate.of(2020, 11, 11),
             10,
             4.5
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 12),
             LocalDate.of(2020, 11, 25),
             38.9,
@@ -131,11 +131,11 @@ class FortnightlySpec extends SpecBase {
           1410.10
         )
 
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 1543.4195238095238
+        jobSupport.totalGrant mustEqual 1543.41
 
       }
 
-      "sc-10" in new RegularPayGrantCalculator {
+      "scenario-10" in new RegularPayGrantCalculator {
 
         val supportClaimPeriod = SupportClaimPeriod(
           LocalDate.of(2020, 11, 1),
@@ -143,31 +143,31 @@ class FortnightlySpec extends SpecBase {
         )
 
         val twasList = List(
-          TemporaryWorkingAgreementWithDates(
+          TemporaryWorkingAgreementPeriod(
             LocalDate.of(2020, 11, 1),
             LocalDate.of(2020, 11, 30)
           )
         )
 
         val closedList = List(
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 2),
             LocalDate.of(2020, 11, 11)
           ),
-          BusinessClosedWithDates(
+          BusinessClosedPeriod(
             LocalDate.of(2020, 11, 18),
             LocalDate.of(2020, 11, 24)
           )
         )
 
-        val pp: List[PeriodWithHours] = List(
-          PeriodWithHours(
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
             LocalDate.of(2020, 10, 29),
             LocalDate.of(2020, 11, 11),
             10,
             4.5
           ),
-          PeriodWithHours(
+          PayPeriod(
             LocalDate.of(2020, 11, 12),
             LocalDate.of(2020, 11, 25),
             38.9,
@@ -184,11 +184,8 @@ class FortnightlySpec extends SpecBase {
           1439.10
         )
 
-        jobSupport.totalEmployersGrant + jobSupport.totalClosed mustEqual 1574.3466666666666
-
+        jobSupport.totalGrant mustEqual 1574.34
       }
-
     }
-
   }
 }

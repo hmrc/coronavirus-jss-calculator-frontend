@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package models
+package utils
 
-import java.time.LocalDate
+object MoneyUtils {
 
-import play.api.libs.json.{Format, Json}
+  def round(amount: Double): Double = BigDecimal(amount).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
 
-case class BusinessClosedWithDates(startDate: LocalDate, endDate: LocalDate, addAnother: Boolean = false)
-
-object BusinessClosedWithDates {
-  implicit val format: Format[BusinessClosedWithDates] = Json.format
 }

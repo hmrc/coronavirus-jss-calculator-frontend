@@ -21,16 +21,16 @@ import java.time.temporal.ChronoUnit
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.{SupportClaimPeriod, TemporaryWorkingAgreementWithDates}
+import models.{ClaimPeriod, SupportClaimPeriod, TemporaryWorkingAgreementPeriod}
 import play.api.data.Form
 import play.api.data.Forms._
 
 class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
 
   def apply(
-    previousTWAPeriods: Seq[TemporaryWorkingAgreementWithDates],
+    previousTWAPeriods: Seq[TemporaryWorkingAgreementPeriod],
     claimPeriod: SupportClaimPeriod
-  ): Form[TemporaryWorkingAgreementWithDates] =
+  ): Form[TemporaryWorkingAgreementPeriod] =
     Form(
       mapping(
         "startDate"  -> localDate(
@@ -38,7 +38,7 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
           requiredKey = "shortTermWorkingAgreementPeriod.error.required"
         ).verifying(
           "shortTermWorkingAgreementPeriod.startDate.outside.claimPeriod",
-          date => isDateWithInClaim(date, claimPeriod)
+          date => isDateValid(date, claimPeriod)
         ),
         "endDate"    -> localDate(
           invalidKey = "shortTermWorkingAgreementPeriod.error.invalid",
@@ -47,7 +47,7 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
         "addAnother" -> boolean(
           requiredKey = "shortTermWorkingAgreementPeriod.addAnother.error.required"
         )
-      )(TemporaryWorkingAgreementWithDates.apply)(TemporaryWorkingAgreementWithDates.unapply)
+      )(TemporaryWorkingAgreementPeriod.apply)(TemporaryWorkingAgreementPeriod.unapply)
         .verifying(
           "shortTermWorkingAgreementPeriod.endDate.must.be.after.startDate",
           swa => swa.endDate.compareTo(swa.startDate) > 0
@@ -62,17 +62,26 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() extends Mappings {
         )
     )
 
-  private def isDateWithInClaim(date: LocalDate, claimPeriod: SupportClaimPeriod) =
-    (date.isEqual(claimPeriod.startDate) || date.isAfter(claimPeriod.startDate)) && date.isBefore(claimPeriod.endDate)
+  private def isDateValid(date: LocalDate, claimPeriod: SupportClaimPeriod) = {
+    val min = ClaimPeriod.Nov2020.supportClaimPeriod.startDate
+    val max = claimPeriod.endDate
+    onOrAfter(date, min) && onOrBefore(date, max)
+  }
 
   private def isIntersecting(
-    previousPeriods: Seq[TemporaryWorkingAgreementWithDates],
-    newPeriod: TemporaryWorkingAgreementWithDates
+    previousPeriods: Seq[TemporaryWorkingAgreementPeriod],
+    newPeriod: TemporaryWorkingAgreementPeriod
   ) =
     previousPeriods.exists(p =>
       isDateInteractsPeriod(newPeriod.startDate, p) || isDateInteractsPeriod(newPeriod.endDate, p)
     )
 
-  private def isDateInteractsPeriod(date: LocalDate, period: TemporaryWorkingAgreementWithDates) =
+  private def isDateInteractsPeriod(date: LocalDate, period: TemporaryWorkingAgreementPeriod) =
     date.compareTo(period.startDate) >= 0 && date.compareTo(period.endDate) <= 0;
+
+  private def onOrAfter(date1: LocalDate, date2: LocalDate) =
+    date1.isEqual(date2) || date1.isAfter(date2)
+
+  private def onOrBefore(date1: LocalDate, date2: LocalDate) =
+    date1.isEqual(date2) || date1.isBefore(date2)
 }

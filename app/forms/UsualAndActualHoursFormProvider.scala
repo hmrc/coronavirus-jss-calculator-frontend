@@ -30,7 +30,7 @@ class UsualAndActualHoursFormProvider @Inject() extends Mappings {
         "usualHours"  -> double("usualHours.error.required", "usualHours.error.nonNumeric")
           .verifying(greaterThan(0.0, "usualHours.error.min")),
         "actualHours" -> double("actualHours.error.required", "actualHours.error.nonNumeric")
-          .verifying(greaterThan(0.0, "actualHours.error.min"))
+          .verifying(greaterThanOrEquals(0.0, "actualHours.error.min"))
       )(UsualAndActualHours.apply)(UsualAndActualHours.unapply)
         .verifying("actualHours.cannot.be.morethan.usualHours", uaHours => uaHours.actualHours <= uaHours.usualHours)
     )

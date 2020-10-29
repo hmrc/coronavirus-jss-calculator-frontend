@@ -17,32 +17,32 @@
 package models
 
 import play.api.libs.json.{Format, Json}
+import utils.MoneyUtils.round
 
-final case class JobSupportOpen(
-  twaDays: Int,
+final case class OpenJobSupport(
+  numberOfTemporaryWorkingDaysInPayPeriod: Int,
   usualHours: Double,
   actualHours: Double,
   salary: Double,
   grant: Double
 )
 
-object JobSupportOpen {
-  implicit val format: Format[JobSupportOpen] = Json.format
-  val noSupport                               = JobSupportOpen(0, 0, 0, 0, 0)
+object OpenJobSupport {
+  implicit val format: Format[OpenJobSupport] = Json.format
+  val zeroFinancialSupport: OpenJobSupport    = OpenJobSupport(0, 0.0, 0.0, 0.0, 0.0)
 }
 
-final case class JobSupportClosed(
-  closedDays: Int,
+final case class ClosedJobSupport(
+  numberOfClosedDaysInPayPeriod: Int,
   grant: Double
 )
 
-object JobSupportClosed {
-  implicit val format: Format[JobSupportClosed] = Json.format
-  val noSupport                                 = JobSupportClosed(0, 0)
+object ClosedJobSupport {
+  implicit val format: Format[ClosedJobSupport] = Json.format
 }
 
 final case class JobSupport(
-  periodSupport: List[PeriodSupport],
+  supportBreakdown: List[SupportBreakdown],
   referenceSalary: Double
 )
 
@@ -50,21 +50,29 @@ object JobSupport {
 
   implicit class JobSupportOps(private val jobSupport: JobSupport) {
 
-    def totalActualHours = jobSupport.periodSupport.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.actualHours)
+    def totalActualHours: Double = round(
+      jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.open.actualHours).sum
+    )
 
-    def totalUsualHours = jobSupport.periodSupport.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.usualHours)
+    def totalUsualHours: Double = round(
+      jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.open.usualHours).sum
+    )
 
     def isIneligible: Boolean = (totalActualHours / totalUsualHours) < 0.20
 
-    def totalEmployeeSalary: Double =
-      jobSupport.periodSupport.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.salary)
+    def totalEmployeeSalary: Double = round(
+      jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.open.salary).sum
+    )
 
-    def totalEmployersGrant: Double = jobSupport.periodSupport.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.grant)
+    def totalEmployersGrant: Double = round(
+      jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.open.grant).sum
+    )
 
-    def totalClosed: Double =
-      jobSupport.periodSupport.map(support => support.closed).foldLeft(0.0)((acc, f) => acc + f.grant)
+    def totalClosed: Double = round(
+      jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.closed.grant).sum
+    )
 
-    def totalGrant: Double = totalEmployersGrant + totalClosed
+    def totalGrant: Double = round(totalEmployersGrant + totalClosed)
 
   }
 

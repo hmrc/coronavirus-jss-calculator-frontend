@@ -37,9 +37,14 @@
 
         @errorSummary(form.errors)
 
-        @h1(messages("regularPayAmount.heading", dateToString(lastPayDate)))
+        @h1(messages("regularPayAmount.heading"))
 
-        @p(Html(messages("regularPayAmount.p1", dateToString(lastPayDate))))
+        @p(Html(messages("regularPayAmount.p1")))
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("regularPayAmount.l1")</li>
+            <li>@messages("regularPayAmount.l2")</li>
+        </ul>
 
         @p(Html(messages("regularPayAmount.p2")))
 
