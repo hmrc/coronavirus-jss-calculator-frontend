@@ -314,8 +314,6 @@ confirmation.calculated.p1 = The results of the calculation rely on the accuracy
 confirmation.nextSteps.heading = Next steps
 confirmation.nextSteps.l1 = Make a note of these results.
 confirmation.nextSteps.l2 = Use the calculator again for other employees you need to claim for in this claim period, and note the results.
-confirmation.nextSteps.l3 = Read {0}.
-confirmation.nextSteps.l3.guidance = guidance on how to claim
 confirmation.startAgain = Start another calculation
 
 confirmation.confirmation.p1.noteligible = This employee is not eligible for a claim
