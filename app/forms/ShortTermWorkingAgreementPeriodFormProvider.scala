@@ -36,15 +36,15 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() (val config: Fronten
     Form(
       mapping(
         "startDate"  -> localDate(
-          invalidKey = "shortTermWorkingAgreementPeriod.error.invalid",
-          requiredKey = "shortTermWorkingAgreementPeriod.error.required"
+          invalidKey = "shortTermWorkingAgreementPeriod.error.invalid.start",
+          requiredKey = "shortTermWorkingAgreementPeriod.error.required.start"
         ).verifying(
           "shortTermWorkingAgreementPeriod.startDate.outside.claimPeriod",
           date => isDateValid(date)
         ),
         "endDate"    -> localDate(
-          invalidKey = "shortTermWorkingAgreementPeriod.error.invalid",
-          requiredKey = "shortTermWorkingAgreementPeriod.error.required"
+          invalidKey = "shortTermWorkingAgreementPeriod.error.invalid.end",
+          requiredKey = "shortTermWorkingAgreementPeriod.error.required.end"
         ).verifying(
           "shortTermWorkingAgreementPeriod.endDate.outside.claimPeriod",
           date => isDateValid(date)
