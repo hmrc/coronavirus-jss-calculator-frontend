@@ -28,38 +28,44 @@
         link: components.link,
         button: components.button,
         appConfig: FrontendAppConfig,
-        breakdownHelper: ConfirmationBreakdownHelper
+        breakdownHelper: ConfirmationBreakdownHelper,
+        warningText: components.warningText
 )
 
 @(jobSupport: JobSupport, calculatorVersion: String)(implicit request: Request[_], messages: Messages)
 
-@govukLayout(pageTitle = Some(titleNoForm("confirmation.title"))) {
+@govukLayout(pageTitle = Some(titleNoForm(if(jobSupport.isIneligible) "confirmation.title.ineligible" else "confirmation.title"))) {
+
+    @if(jobSupport.isIneligible){
+      @warningText("confirmation.confirmation.ineligible")
+    }
 
     @confirmation {
-        @h1(Html(messages("confirmation.confirmation.p1")), classes = Some(""))
+        @h1(Html(messages(if(jobSupport.isIneligible) "confirmation.confirmation.p1.ineligible" else "confirmation.confirmation.p1")), classes = Some(""))
         <div class="grant-heading">
             <p class="govuk-panel__title">&pound;@jobSupport.totalGrant.formatted("%.2f")</p>
         </div>
     }
 
-    @if(jobSupport.isIneligible){
-        @h2(Html(messages("confirmation.confirmation.ineligible")))
-    }
-
     <div class="govuk-inset-text">
-        @p {
-            <span class="govuk-!-font-weight-bold">@messages("confirmation.jss.open.label")</span>
+        @if(jobSupport.totalEmployeeSalary > 0.0) {
+            @p {
+                <span class="govuk-!-font-weight-bold">@messages("confirmation.jss.open.label")</span>
+            }
+
+            <p class="govuk-body">@messages("confirmation.jss.open.p1") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalEmployeeSalary.formatted("%.2f")</span></p>
+            <p class="govuk-body">@messages("confirmation.jss.open.p2") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalEmployersGrant.formatted("%.2f")</span></p>
+            <p class="govuk-body">@messages("confirmation.jss.open.p3")</p>
         }
 
-        <p class="govuk-body">@messages("confirmation.jss.open.p1") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalEmployeeSalary.formatted("%.2f")</span></p>
-        <p class="govuk-body">@messages("confirmation.jss.open.p2") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalGrant.formatted("%.2f")</span></p>
-        <p class="govuk-body">@messages("confirmation.jss.open.p3")</p>
-        @p {
-            <span class="govuk-!-font-weight-bold">@messages("confirmation.jss.closed.label")</span>
+        @if(jobSupport.totalClosed > 0.0){
+            @p {
+                <span class="govuk-!-font-weight-bold">@messages("confirmation.jss.closed.label")</span>
+            }
+            <p class="govuk-body">@messages("confirmation.jss.closed.p1") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalClosed.formatted("%.2f")</span></p>
+            <p class="govuk-body">@messages("confirmation.jss.closed.p2") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalClosed.formatted("%.2f")</span></p>
+            <p class="govuk-body">@messages("confirmation.jss.closed.p3.start") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalClosed.formatted("%.2f")</span> @messages("confirmation.jss.closed.p3.end")</p>
         }
-        <p class="govuk-body">@messages("confirmation.jss.closed.p1") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalEmployeeSalary.formatted("%.2f")</span></p>
-        <p class="govuk-body">@messages("confirmation.jss.closed.p2") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalGrant.formatted("%.2f")</span></p>
-        <p class="govuk-body">@messages("confirmation.jss.closed.p3.start") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalGrant.formatted("%.2f")</span> @messages("confirmation.jss.closed.p3.end")</p>
     </div>
 
     @p {
@@ -73,7 +79,6 @@
     <ul class="govuk-list govuk-list--number">
         <li>@messages("confirmation.nextSteps.l1")</li>
         <li>@messages("confirmation.nextSteps.l2")</li>
-        <li>@Html(Messages("confirmation.nextSteps.l3", <a href="" class="govuk-link">{Messages("confirmation.nextSteps.l3.guidance")}</a>))</li>
     </ul>
 
     @button(messages("confirmation.startAgain"), href = Some(routes.ClaimPeriodController.onPageLoad()), classes = Some("govuk-button"))
@@ -81,7 +86,7 @@
     @h2(Html(messages("confirmation.breakdown.header")), classes = Some("govuk-heading-m"))
 
     @p(Html(Messages("confirmation.breakdown.p1", jobSupport.referenceSalary)))
-    @p(Html(Messages("confirmation.breakdown.p2", <a href="" class="govuk-link">{Messages("confirmation.breakdown.p2.guidance")}</a>)))
+    @p(Html(Messages("confirmation.breakdown.p2", <a href="https://www.gov.uk/guidance/steps-to-take-before-calculating-your-claim-through-the-job-support-scheme" class="govuk-link">{Messages("confirmation.breakdown.p2.guidance")}</a>)))
 
     @for(gfp <- jobSupport.supportBreakdown) {
         @h3(Html(messages(
@@ -89,51 +94,57 @@
             dateToStringWithoutYear(gfp.startDate),
             dateToString(gfp.endDate)
         )))
+      
+        @if(gfp.open.grant > 0.0) {
+            @p {
+                <span class="govuk-!-font-weight-bold">@messages("confirmation.breakdown.h3.p1")</span>
+            }
 
-        @p{
-            <span class="govuk-!-font-weight-bold">@messages("confirmation.breakdown.h3.p1")</span>
-         }
+            <ul class="govuk-list govuk-list--number">
+                <li>@messages("confirmation.breakdown.h3.open.p1.l1", jobSupport.referenceSalary)</li>
+                <li>@messages("confirmation.breakdown.h3.open.p1.l2", gfp.daysInPeriod)</li>
+                <li>@messages("confirmation.breakdown.h3.open.p1.l3", gfp.open.numberOfTemporaryWorkingDaysInPayPeriod)</li>
+                <li>@messages("confirmation.breakdown.h3.open.p1.l4", gfp.open.usualHours)</li>
+                <li>@messages("confirmation.breakdown.h3.open.p1.l5", gfp.open.usualHours - gfp.open.actualHours)</li>
+                <li>@messages("confirmation.breakdown.h3.open.p1.l6", gfp.open.salary)</li>
+            </ul>
 
-        <ul class="govuk-list govuk-list--number">
-            <li>@messages("confirmation.breakdown.h3.open.p1.l1", jobSupport.referenceSalary)</li>
-            <li>@messages("confirmation.breakdown.h3.open.p1.l2", gfp.daysInPeriod)</li>
-            <li>@messages("confirmation.breakdown.h3.open.p1.l3", gfp.open.numberOfTemporaryWorkingDaysInPayPeriod)</li>
-            <li>@messages("confirmation.breakdown.h3.open.p1.l4", gfp.open.usualHours)</li>
-            <li>@messages("confirmation.breakdown.h3.open.p1.l5", gfp.open.usualHours - gfp.open.actualHours)</li>
-            <li>@messages("confirmation.breakdown.h3.open.p1.l6", gfp.open.salary)</li>
-        </ul>
+            @p {
+                @messages("confirmation.breakdown.h3.p3")
+            }
 
-        @p{
-           @messages("confirmation.breakdown.h3.p3")
+            @p {
+                <span class="govuk-!-font-weight-bold">@messages("confirmation.breakdown.h3.p4")</span>
+            }
+
+            <ul class="govuk-list govuk-list--number">
+                <li>@messages("confirmation.breakdown.h3.open.p4.l1", gfp.open.salary)</li>
+                <li>@messages("confirmation.breakdown.h3.open.p4.l2")</li>
+                <li>@messages("confirmation.breakdown.h3.open.p4.l3", gfp.open.grant)</li>
+            </ul>
         }
 
+        @if(gfp.closed.grant > 0.0) {
+            @p {
+                <span class="govuk-!-font-weight-bold">@messages("confirmation.breakdown.h3.p5")</span>
+            }
 
-        @p{
-        <span class="govuk-!-font-weight-bold">@messages("confirmation.breakdown.h3.p4")</span>
+            <ul class="govuk-list govuk-list--number">
+                <li>@messages("confirmation.breakdown.h3.closed.p5.l1", jobSupport.referenceSalary)</li>
+                <li>@messages("confirmation.breakdown.h3.closed.p5.l2", gfp.closed.numberOfClosedDaysInPayPeriod)</li>
+                <li>@messages("confirmation.breakdown.h3.closed.p5.l3", gfp.closed.numberOfClosedDaysInPayPeriod)</li>
+                <li>@messages("confirmation.breakdown.h3.closed.p5.l4")</li>
+                <li>@messages("confirmation.breakdown.h3.closed.p5.l5", gfp.closed.grant)</li>
+            </ul>
+
+            @p {
+                @messages("confirmation.breakdown.h3.closed.p6", gfp.closed.grant)
+            }
+            @p {
+                @messages("confirmation.breakdown.h3.closed.p7", gfp.closed.grant)
+            }
         }
-
-        <ul class="govuk-list govuk-list--number">
-            <li>@messages("confirmation.breakdown.h3.open.p4.l1", gfp.open.salary)</li>
-            <li>@messages("confirmation.breakdown.h3.open.p4.l2")</li>
-            <li>@messages("confirmation.breakdown.h3.open.p4.l3", gfp.open.grant)</li>
-        </ul>
-
-        @p{
-        <span class="govuk-!-font-weight-bold">@messages("confirmation.breakdown.h3.p5")</span>
-        }
-
-        <ul class="govuk-list govuk-list--number">
-            <li>@messages("confirmation.breakdown.h3.closed.p5.l1", jobSupport.referenceSalary)</li>
-            <li>@messages("confirmation.breakdown.h3.closed.p5.l2", gfp.closed.numberOfClosedDaysInPayPeriod)</li>
-            <li>@messages("confirmation.breakdown.h3.closed.p5.l3", gfp.closed.numberOfClosedDaysInPayPeriod)</li>
-            <li>@messages("confirmation.breakdown.h3.closed.p5.l4")</li>
-            <li>@messages("confirmation.breakdown.h3.closed.p5.l5", gfp.closed.grant)</li>
-        </ul>
-
-        @p{@messages("confirmation.breakdown.h3.closed.p6", gfp.closed.grant)}
-        @p{@messages("confirmation.breakdown.h3.closed.p7", gfp.closed.grant)}
     }
 
-    @p(Html(link(appConfig.webchatHelpUrl, "confirmation.webchat.label", true)))
     @p(Html(link(routes.FeedbackSurveyController.startSurvey(), "confirmation.feedbackSurvey.label", true)))
 }

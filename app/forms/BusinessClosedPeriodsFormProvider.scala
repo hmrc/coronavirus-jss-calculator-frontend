@@ -19,30 +19,33 @@ package forms
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
+import config.FrontendAppConfig
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.{BusinessClosedPeriod, SupportClaimPeriod}
+import models.BusinessClosedPeriod
 import play.api.data.Form
 import play.api.data.Forms.mapping
 
-class BusinessClosedPeriodsFormProvider @Inject() extends Mappings {
+class BusinessClosedPeriodsFormProvider @Inject() (val config: FrontendAppConfig) extends Mappings with FormHelper {
 
   def apply(
-    previousBCPeriods: Seq[BusinessClosedPeriod],
-    claimPeriod: SupportClaimPeriod
+    previousBCPeriods: Seq[BusinessClosedPeriod]
   ): Form[BusinessClosedPeriod] =
     Form(
       mapping(
         "startDate"  -> localDate(
-          invalidKey = "businessClosedPeriods.error.invalid",
-          requiredKey = "businessClosedPeriods.error.required"
+          invalidKey = "businessClosedPeriods.error.invalid.start",
+          requiredKey = "businessClosedPeriods.error.invalid.start"
         ).verifying(
           "businessClosedPeriods.startDate.outside.claimPeriod",
-          date => isDateWithInClaim(date, claimPeriod)
+          date => isDateValid(date)
         ),
         "endDate"    -> localDate(
-          invalidKey = "businessClosedPeriods.error.invalid",
-          requiredKey = "businessClosedPeriods.error.required"
+          invalidKey = "businessClosedPeriods.error.invalid.end",
+          requiredKey = "businessClosedPeriods.error.invalid.end"
+        ).verifying(
+          "businessClosedPeriods.endDate.outside.claimPeriod",
+          date => isDateValid(date)
         ),
         "addAnother" -> boolean(
           requiredKey = "businessClosedPeriods.addAnother.error.required"
@@ -58,9 +61,6 @@ class BusinessClosedPeriodsFormProvider @Inject() extends Mappings {
           bcp => ChronoUnit.DAYS.between(bcp.startDate, bcp.endDate) >= 6 //endDate is exclusive for 'between' so '6'
         )
     )
-
-  private def isDateWithInClaim(date: LocalDate, claimPeriod: SupportClaimPeriod) =
-    (date.isEqual(claimPeriod.startDate) || date.isAfter(claimPeriod.startDate)) && date.isBefore(claimPeriod.endDate)
 
   private def isIntersecting(previousPeriods: Seq[BusinessClosedPeriod], newPeriod: BusinessClosedPeriod) =
     previousPeriods.exists(p =>

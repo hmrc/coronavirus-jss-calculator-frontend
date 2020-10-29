@@ -20,9 +20,9 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.ShortTermWorkingAgreementPeriodFormProvider
 import javax.inject.Inject
-import models.{NormalMode, SupportClaimPeriod, TemporaryWorkingAgreementPeriod}
+import models.{NormalMode, TemporaryWorkingAgreementPeriod, UserAnswers}
 import navigation.Navigator
-import pages.{ClaimPeriodPage, ShortTermWorkingAgreementPeriodPage}
+import pages.ShortTermWorkingAgreementPeriodPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -30,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ShortTermWorkingAgreementPeriodView
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class ShortTermWorkingAgreementPeriodController @Inject() (
   override val messagesApi: MessagesApi,
@@ -46,46 +47,42 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(previousTWAPeriod: Seq[TemporaryWorkingAgreementPeriod], claimPeriod: SupportClaimPeriod) =
-    formProvider(previousTWAPeriod, claimPeriod: SupportClaimPeriod)
+  private def form(previousTWAPeriod: Seq[TemporaryWorkingAgreementPeriod]) =
+    formProvider(previousTWAPeriod)
 
   def onPageLoad(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
     val previousTWAPeriods = request.userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
 
-    request.userAnswers.get(ClaimPeriodPage).map(_.supportClaimPeriod) match {
-      case Some(cp) =>
-        val preparedForm = request.userAnswers.get(ShortTermWorkingAgreementPeriodPage, Some(idx)) match {
-          case None        => form(previousTWAPeriods, cp)
-          case Some(value) => form(previousTWAPeriods, cp).fill(value)
-        }
-
-        Ok(view(preparedForm, idx, config.maxStwaPeriods))
-      case None     => Redirect(routes.ClaimPeriodController.onPageLoad())
+    val preparedForm = request.userAnswers.get(ShortTermWorkingAgreementPeriodPage, Some(idx)) match {
+      case None        => form(previousTWAPeriods)
+      case Some(value) => form(previousTWAPeriods).fill(value)
     }
+
+    Ok(view(preparedForm, idx, config.maxStwaPeriods))
   }
 
   def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
     implicit request =>
       val previousTWAPeriods =
         request.userAnswers.getList(ShortTermWorkingAgreementPeriodPage).zipWithIndex.filter(_._2 != idx - 1).map(_._1)
-
-      request.userAnswers.get(ClaimPeriodPage).map(_.supportClaimPeriod) match {
-        case Some(cp) =>
-          form(previousTWAPeriods, cp)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, config.maxStwaPeriods))),
-              value =>
-                for {
-                  updatedAnswers <-
-                    Future.fromTry(request.userAnswers.set(ShortTermWorkingAgreementPeriodPage, value, Some(idx)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(
-                  navigator.nextPage(ShortTermWorkingAgreementPeriodPage, NormalMode, updatedAnswers, Some(idx))
-                )
+      form(previousTWAPeriods)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, config.maxStwaPeriods))),
+          value => {
+            var updatedAnswers = request.userAnswers.set(ShortTermWorkingAgreementPeriodPage, value, Some(idx))
+            if (!value.addAnother) {
+              updatedAnswers = trimListWhenUserSaysNoToAddMore(updatedAnswers, idx)
+            }
+            for {
+              updatedAnswers <-
+                Future.fromTry(updatedAnswers)
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(
+              navigator.nextPage(ShortTermWorkingAgreementPeriodPage, NormalMode, updatedAnswers, Some(idx))
             )
-        case None     => Future.successful(Redirect(routes.ClaimPeriodController.onPageLoad()))
-      }
+          }
+        )
   }
 
   def remove(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
@@ -100,4 +97,10 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
       } yield Redirect(navigator.nextPage(ShortTermWorkingAgreementPeriodPage, NormalMode, updatedAnswers, Some(idx)))
 
   }
+
+  private def trimListWhenUserSaysNoToAddMore(userAnswers: Try[UserAnswers], idx: Int) =
+    userAnswers.flatMap { ua =>
+      val trimmedList = ua.getList(ShortTermWorkingAgreementPeriodPage).slice(0, idx)
+      ua.setList(ShortTermWorkingAgreementPeriodPage, trimmedList)
+    }
 }

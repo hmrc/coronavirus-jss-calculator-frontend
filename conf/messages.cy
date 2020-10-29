@@ -1,6 +1,6 @@
 # Site-wide Messages
 # ----------------------------------------------------------
-service.name = Coronavirus Job Support Scheme Calculator
+service.name = Job Support Scheme Calculator
 
 site.back = Back
 site.delete = Delete
@@ -56,7 +56,7 @@ feedback.after = will help us to improve it.
 
 accessibility.title = Accessibility statement for the Job Support Scheme calculator
 ## section one
-compliant.one.heading=Accessibility statement for the Eat Out to Help Out Scheme
+compliant.one.heading=Accessibility statement for the Job Support Scheme
 compliant.one.lede=This accessibility statement explains how accessible this service is, what to do if you have difficulty using it, and how to report accessibility problems with the service.
 compliant.one.p1.1=This service is part of the wider GOV.UK website. There is a separate
 compliant.one.p1.2=accessibility statement
@@ -65,7 +65,7 @@ compliant.one.p2=This page only contains information about the Job Support Schem
 
 ## section two
 compliant.two.heading=Using this service
-compliant.two.p1=<To be completed>
+compliant.two.p1=You can use this calculator to calculate the figures you will need when you complete a claim through the Job Support Scheme (JSS).
 compliant.two.p2=This service is run by HM Revenue and Customs (HMRC). We want as many people as possible to be able to use this service. This means you should be able to:
 compliant.two.l1=change colours, contrast levels and fonts
 compliant.two.l2=zoom in up to 300% without the text spilling off the screen
@@ -150,7 +150,8 @@ claimPeriod.p1 = From 1 November, claims must start and end in the same calendar
 claimPeriod.p2 = Make sure the claim periods do not overlap.
 claimPeriod.details.title = What is a claim period?
 claimPeriod.details.p1 = The claim period is when one or more of your employees are working reduced hours or unable to work due to your business having to close temporarily under the Job Support Scheme for a given period.
-claimPeriod.details.p2 = You must include all affected employees in one claim and cannot make more than one claim covering the same claim period.claimPeriod.label = Select a month
+claimPeriod.details.p2 = You must include all affected employees in one claim and cannot make more than one claim covering the same claim period.
+claimPeriod.label = Select a month
 claimPeriod.Nov2020 = November 2020
 claimPeriod.Dec2020 = December 2020
 claimPeriod.Jan2021 = January 2021
@@ -164,12 +165,12 @@ claimPeriod.Aug2021 = August 2021
 claimPeriod.Sep2021 = September 2021
 claimPeriod.Oct2021 = October 2021
 claimPeriod.Nov2021 = November 2021
-claimPeriod.error.required = Select which month you will claim for
-claimPeriod.error.invalid = Select which month you will claim for
+claimPeriod.error.required = Select month to claim for
+claimPeriod.error.invalid = Choose a claim period
 
 startPage.title = Job Support Scheme Calculator
 startPage.heading = Job Support Scheme Calculator
-startPage.p1 = You can use this calculator to calculate the figures you will need when you complete a claim through the Job Support Scheme. It also breaks down calculations for each pay period for your records.
+startPage.p1 = You can use this calculator to calculate the figures you will need when you complete a claim through the Job Support Scheme (JSS). It also breaks down calculations for each pay period for your records.
 startPage.p2 = Remember that across the entire period, for claims under JSS Open, the employee must work at least 20% of their hours to be eligible.
 startPage.p3 = The figures are for one employee for the claim period you specify. Use the calculator again to claim for other employees and add up the results.
 startPage.p4 = You can use this calculator to claim for:
@@ -193,6 +194,7 @@ startPage.p9.l2 = regular payment amounts
 startPage.p9.l3 = usual and actual hours worked
 startPage.p9.l4 = dates of Temporary Working Agreements
 startPage.p9.l5 = dates of when the business was closed
+startPage.p9.link = Steps to take before calculating your claim (opens in a new window or tab)
 startPage.beforeYouStart = Before you start
 
 payFrequency.title = How often do you pay this employee?
@@ -201,7 +203,7 @@ payFrequency.weekly = Weekly
 payFrequency.fortnightly = Every 2 weeks
 payFrequency.fourweekly = Every 4 weeks
 payFrequency.monthly = Monthly
-payFrequency.error.required = Select a payment frequency
+payFrequency.error.required = Select how often the employee is paid
 
 payMethod.title = How is this employee paid?
 payMethod.heading = How is this employee paid?
@@ -215,8 +217,8 @@ lastPayDate.heading = What’s the last day this employee was paid for before {0
 lastPayDate.p1 = This is the end of the last pay period before the claim started.
 lastPayDate.p2 = We’ll use this date to work out all the pay periods that cover your claim.
 lastPayDate.details.title = What is a pay period?
-lastPayDate.details.p1 = A ‘pay period’ is the period when the employee is paid for, such as weekly or monthly. The end date of a pay period is the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually receives their pay.
-lastPayDate.hint = For example 01 11 2020
+lastPayDate.details.p1 = A ‘pay period’ is the period when the employee is paid, such as weekly or monthly. The end date of a pay period is the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually receives their pay.
+lastPayDate.hint = For example, 31 10 2020
 lastPayDate.error.required = Enter the last date the employee was paid before {0}
 lastPayDate.error.invalid = Enter the last date the employee was paid before {0}
 lastPayDate.error.invalid.must.be.before = The last pay date must be before {0}
@@ -290,12 +292,15 @@ actualHours.p1 = Actual hours worked in this period
 actualHours.hint = What hours did the employee actually work? (in decimal format, such as 101.4)
 actualHours.error.nonNumeric = Enter the employee’s actual hours using numbers
 actualHours.error.required = Enter the employee’s actual hours
-usualHours.error.min = Usual hours can not be negative
+usualHours.error.min = Usual hours must be a positive value
 actualHours.error.min = Actual hours can not be negative
+actualHours.cannot.be.morethan.usualHours = Actual hours can not be more than usual hours
 
 confirmation.title = What you can claim for this employee
+confirmation.title.ineligible = What you could claim for this employee
 confirmation.heading = confirmation
 confirmation.confirmation.p1 = What you can claim for this employee
+confirmation.confirmation.p1.ineligible = What you could claim for this employee
 confirmation.jss.open.label = For JSS Open
 confirmation.jss.open.p1 = Amount to pay employee for hours not worked:
 confirmation.jss.open.p2 = Amount to claim from the government for hours not worked:
@@ -310,8 +315,6 @@ confirmation.calculated.p1 = The results of the calculation rely on the accuracy
 confirmation.nextSteps.heading = Next steps
 confirmation.nextSteps.l1 = Make a note of these results.
 confirmation.nextSteps.l2 = Use the calculator again for other employees you need to claim for in this claim period, and note the results.
-confirmation.nextSteps.l3 = Read {0}.
-confirmation.nextSteps.l3.guidance = guidance on how to claim
 confirmation.startAgain = Start another calculation
 
 confirmation.confirmation.p1.noteligible = This employee is not eligible for a claim
@@ -322,7 +325,7 @@ confirmation.breakdown.p1 = You told us this employee gets paid a £{0} amount e
 confirmation.breakdown.p2 = Before making a claim you must check the employee has worked at least the {0} required under JSS Open.
 confirmation.breakdown.p2.guidance = minimum amount of their usual hours
 confirmation.breakdown.h3 = For pay period {0} to {1}
-confirmation.breakdown.h3.p1 = To calculate the overall amount you must pay the employee for their non-working hours:
+confirmation.breakdown.h3.p1 = Steps to calculate total pay amount for employee (hours not worked):
 
 confirmation.breakdown.h3.open.p1.l1=Start with £{0} (the reference salary for the pay period).
 confirmation.breakdown.h3.open.p1.l2=Divide by {0} (the number of calendar days in the pay period).
@@ -334,12 +337,12 @@ confirmation.breakdown.h3.open.p2=This is made up of a 5% employer contribution,
 
 confirmation.breakdown.h3.p3=This is made up of a 5% employer contribution, and a 61.67% government contribution which can be reclaimed.
 
-confirmation.breakdown.h3.p4 = To calculate the government contribution to the employee’s pay for the non-working hours:
+confirmation.breakdown.h3.p4 = Steps to calculate government contribution to employee pay (hours not worked):
 confirmation.breakdown.h3.open.p4.l1=Start with £{0} (the total pay for the non-working hours).
 confirmation.breakdown.h3.open.p4.l2=Divide by 66.67.
 confirmation.breakdown.h3.open.p4.l3=Multiply by 61.67 = £{0}.
 
-confirmation.breakdown.h3.p5 =To calculate the overall amount you can pay the employee for time could not work:
+confirmation.breakdown.h3.p5 = Steps to calculate the total pay amount for employee (hours they were unable to work):
 confirmation.breakdown.h3.closed.p5.l1=Start with £ {0} (the reference salary for the pay period).
 confirmation.breakdown.h3.closed.p5.l2=Divide by {0} (the number of calendar days in the pay period).
 confirmation.breakdown.h3.closed.p5.l3=Multiply by {0} (the number of days the employee could not work in this pay period).
@@ -349,21 +352,21 @@ confirmation.breakdown.h3.closed.p5.l5=Divide by 3 = £{0}.
 confirmation.breakdown.h3.closed.p6=The total amount you must pay the employee for the time the business is closed during this pay period = £{0}.
 confirmation.breakdown.h3.closed.p7=Amount to pay the employee = £{0}.
 
-confirmation.confirmation.ineligible=You are ineligible
+confirmation.confirmation.ineligible = For this calculation and claim to be valid the employee must work a minimum of 20% of their usual hours in JSS Open.
 confirmation.print.label = Print or save a copy of this page
-confirmation.webchat.label = Webchat help (opens in a new tab)
 confirmation.feedbackSurvey.label = What do you think of this service?
 
-endPayDate.title = What’s the end of the next pay period after {0}?
-endPayDate.heading = What’s the end of the next pay period after {0}?
+endPayDate.title = What’s the last date of the next pay period after {0}?
+endPayDate.heading = What’s the last date of the next pay period after {0}?
 endPayDate.p1 = This is the last day in the pay period, not the date they received their pay.
 endPayDate.details.title = What is a pay period?
-endPayDate.details.p1 = A ‘pay period’ is the period when the employee is paid for, such as weekly or monthly. The end date of a pay period is the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually receives their pay.
-endPayDate.hint = For example 01 12 2020
-endPayDate.error.required = Enter the correct date to apply for the Job Support scheme
-endPayDate.error.invalid = Enter the correct date to apply for the Job Support scheme
-endPayDate.error.invalid.must.be.on.or.after = The end pay date must be on or after {0}
-endPayDate.error.invalid.must.be.on.or.before = The end pay date must be on or before ({0})
+endPayDate.details.p1 = A ‘pay period’ is the period when the employee is paid, such as weekly or monthly. The end date of a pay period is the last day they were paid for. It’s different from the ‘pay date’, which is the date the employee actually receives their pay.
+endPayDate.hint = For example, 30 11 2020
+endPayDate.error.required = Enter the last date of the next pay period after {0}
+endPayDate.error.invalid = Enter the last date of the next pay period after {0}
+endPayDate.error.invalid.must.be.after = The last date must be on or after {0}
+endPayDate.error.invalid.must.be.before = The last date must be on or before {0}
+
 
 comingSoon.title = We are unable to do this calculation at the moment
 comingSoon.heading = We are unable to do this calculation at the moment
@@ -380,7 +383,7 @@ temporaryWorkingAgreement.error.required = Select yes if the employee had tempor
 
 businessClosed.title = Was your business closed and unable to trade during this claim?
 businessClosed.heading = Was your business closed and unable to trade during this claim?
-businessClosed.p1 = This is called the closed period or when the business was legally required to close its premises due to government restrictions. Each closed period must cover a minimum period of seven days. The closed period must be from 1 November 2020 until 31 March 2021. You can add one or more closed periods.
+businessClosed.p1 = This is called the closed period or when the business was legally required to close its premises due to government restrictions. Employees must have a JSS Closed temporary working agreement. Each closed period must cover a minimum period of seven days. The closed period must be from 1 November 2020 until 31 March 2021. You can add one or more closed periods.
 businessClosed.yes = Yes
 businessClosed.no = No
 businessClosed.error.required = Select yes if your business closed and unable to trade during this claim
@@ -388,16 +391,24 @@ businessClosed.error.required = Select yes if your business closed and unable to
 shortTermWorkingAgreementPeriod.title = Enter the dates for this employee’s temporary working agreements
 shortTermWorkingAgreementPeriod.heading = Enter the dates for this employee’s temporary working agreements
 shortTermWorkingAgreementPeriod.p1 = Each temporary working agreement must cover a minimum period of seven days. These are the dates when this agreement started and ended.  You can add more than one agreement.
+shortTermWorkingAgreementPeriod.p2 = Do not include dates that you are treating as {0}.
+shortTermWorkingAgreementPeriod.p2.link = disregarded days
 shortTermWorkingAgreementPeriod.startDate.label = Start date
 shortTermWorkingAgreementPeriod.endDate.label = End date
-shortTermWorkingAgreementPeriod.startDate.hint = For example, 1 3 2020
-shortTermWorkingAgreementPeriod.endDate.hint = For example, 7 3 2020
-shortTermWorkingAgreementPeriod.error.required = Enter a valid start date
-shortTermWorkingAgreementPeriod.error.invalid = Enter a valid end date
+shortTermWorkingAgreementPeriod.startDate.hint = For example, 1 11 2020
+shortTermWorkingAgreementPeriod.endDate.hint = For example, 7 11 2020
+shortTermWorkingAgreementPeriod.error.required.start = Enter a start date
+shortTermWorkingAgreementPeriod.error.invalid.start = Enter a valid start date
+shortTermWorkingAgreementPeriod.error.required.end = Enter an end date
+shortTermWorkingAgreementPeriod.error.invalid.end = Enter a valid end date
+shortTermWorkingAgreementPeriod.periods.should.not.overlap = These dates should not overlap previously given periods
+shortTermWorkingAgreementPeriod.endDate.must.be.after.startDate = End date must be later than start date
+shortTermWorkingAgreementPeriod.startDate.outside.claimPeriod = Start date must fall with in scheme start date and scheme end dates
+shortTermWorkingAgreementPeriod.endDate.outside.claimPeriod = End date must fall with in scheme start date and scheme end dates
+shortTermWorkingAgreementPeriod.period.shouldbe.minimum.7.days = Temporary working agreement must cover a minimum period of seven days
+shortTermWorkingAgreementPeriod.addAnother.label = Do you need to add more dates?
+shortTermWorkingAgreementPeriod.addAnother.error.required = Select yes if you need to add more dates
 shortTermWorkingAgreementPeriod.dateRange = Date range {0}
-
-businessClosedPeriods.addAnother.label = Do you need to add more dates?
-businessClosedPeriods.addAnother.error.required = Select yes if you need to add more dates
 
 shortTermWorkingAgreementPeriod.addMore.heading = Do you want to add more dates ?
 shortTermWorkingAgreementPeriod.addmore.error.required = Select yes if you want to add more dates
@@ -408,16 +419,20 @@ businessClosedPeriods.heading = Enter the periods when your business was closed
 businessClosedPeriods.p1 = This is called the closed period or when the business was legally required to close its premises due to government restrictions. Each closed period must cover a minimum period of seven days. The closed period must be from 1 November 2020 until 31 March 2021. You can add one or more closed periods.
 businessClosedPeriods.startDate.label = Start date
 businessClosedPeriods.endDate.label = End date
-businessClosedPeriods.startDate.hint = For example, 1 3 2020
-businessClosedPeriods.endDate.hint = For example, 7 3 2020
-businessClosedPeriods.error.required = Enter a valid start date
-businessClosedPeriods.error.invalid = Enter a valid end date
+businessClosedPeriods.startDate.hint = For example, 1 11 2020
+businessClosedPeriods.endDate.hint = For example, 7 11 2020
+businessClosedPeriods.error.invalid.start = Enter a valid start date
+businessClosedPeriods.error.invalid.end = Enter a valid end date
+businessClosedPeriods.periods.should.not.overlap = These dates should not overlap previously given periods
+businessClosedPeriods.endDate.must.be.after.startDate = End date must be later than start date
+businessClosedPeriods.startDate.outside.claimPeriod = Start date must fall with in scheme start date and scheme end dates
+businessClosedPeriods.endDate.outside.claimPeriod = End date must fall with in scheme start date and scheme end dates
+businessClosedPeriods.addMore.heading = Do you want to add more dates ?
+businessClosedPeriods.addmore.error.required = Select yes if you want to add more dates
+businessClosedPeriods.period.shouldbe.minimum.7.days = Business closed period must cover a minimum period of seven days
 businessClosedPeriods.addAnother.label = Do you need to add more dates?
 businessClosedPeriods.addAnother.error.required = Select yes if you need to add more dates
 businessClosedPeriods.dateRange = Date range {0}
-
-businessClosedPeriods.addMore.heading = Do you want to add more dates ?
-businessClosedPeriods.addmore.error.required = Select yes if you want to add more dates
 
 youAreNotEligible.title = You cannot proceed with this calculation
 youAreNotEligible.heading = You cannot proceed with this calculation

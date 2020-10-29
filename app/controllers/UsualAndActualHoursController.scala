@@ -16,15 +16,11 @@
 
 package controllers
 
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
-import java.util.stream.Collectors
-
 import controllers.actions._
 import forms.UsualAndActualHoursFormProvider
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{BusinessClosedPeriod, NormalMode, PayPeriod, Period, TemporaryWorkingAgreementPeriod, UserAnswers, UsualAndActualHours}
+import models.{NormalMode, PayPeriod, Period, UserAnswers, UsualAndActualHours}
 import navigation.Navigator
 import pages._
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,7 +30,6 @@ import services.RegularPayGrantCalculator
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.UsualAndActualHoursView
 
-import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future}
 
 class UsualAndActualHoursController @Inject() (
@@ -119,64 +114,29 @@ class UsualAndActualHoursController @Inject() (
 
   private def isPeriodEligibleForHours(userAnswers: UserAnswers, workPeriod: Period): Boolean = {
 
-    val stwaPeriods = userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
-    val bcPeriods   = userAnswers.getList(BusinessClosedPeriodsPage)
+    val stwaPeriods                = userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
+    val bcPeriods                  = userAnswers.getList(BusinessClosedPeriodsPage)
+    val claimPeriod                = userAnswers
+      .get(ClaimPeriodPage)
+      .getOrElse(throw new RuntimeException("expected ClaimPeriod in session but not found"))
+    //FIXME: Hacky way to pass 0.0s
+    val pp                         = PayPeriod(workPeriod.startDate, workPeriod.endDate, 0.0, 0.0)
+    val closedPeriodsInPP          = getAllBusinessClosedPeriodsInThisPayPeriod(pp, bcPeriods)
+    val isPPCompletelyCoveredByBCs =
+      isPayPeriodCompletelyCoveredByBusinessClosedPeriod(claimPeriod.supportClaimPeriod, pp, closedPeriodsInPP)
 
-    //FIXME: Hacky way to pass 0.0s for hours to see if Twa intercepts PP
-    val periodWithHours = PayPeriod(workPeriod.startDate, workPeriod.endDate, 0.0, 0.0)
-
-    val twaDaysInPayPeriod = getTotalNumberOfTemporaryWorkingAgreementDaysInPayPeriod(periodWithHours, stwaPeriods)
-
-    //No TWA days in PP
-    if (twaDaysInPayPeriod == 0) {
+    if (isPPCompletelyCoveredByBCs) {
       false
-    } else { //TWA days exist in PP
-      //is TWA fully covered by BC
-      val overlappingTwaInPayPeriod =
-        stwaPeriods.filter(p =>
-          isDateInteractsPeriod(workPeriod.startDate, Period(p.startDate, p.endDate))
-            || isDateInteractsPeriod(workPeriod.endDate, Period(p.startDate, p.endDate))
-        )
+    } else {
+      val twasInPP                        = getAllTemporaryWorkingAgreementsInThisPayPeriod(pp, stwaPeriods)
+      val isEveryTwaCompletelyCoveredByBC =
+        isEveryTemporaryWorkingAgreementCompletelyCoveredABusinessClosedPeriod(twasInPP, closedPeriodsInPP)
 
-      val overlappingBcInPayPeriod =
-        bcPeriods.filter(p =>
-          isDateInteractsPeriod(workPeriod.startDate, Period(p.startDate, p.endDate))
-            || isDateInteractsPeriod(workPeriod.endDate, Period(p.startDate, p.endDate))
-        )
-
-      val hasBusinessClosedCoversAllTWA =
-        businessClosedCoversAllTWA(overlappingTwaInPayPeriod, overlappingBcInPayPeriod)
-
-      if (hasBusinessClosedCoversAllTWA) {
-        false
-      } else {
+      if (twasInPP.nonEmpty && !isEveryTwaCompletelyCoveredByBC) {
         true
+      } else {
+        false
       }
     }
   }
-
-  private def businessClosedCoversAllTWA(
-    twaPeriods: List[TemporaryWorkingAgreementPeriod],
-    bcPeriods: List[BusinessClosedPeriod]
-  ) = {
-
-    val twaDays = sortedTemporaryWorkingAgreements(twaPeriods).flatMap(d => datesIn(d.startDate, d.endDate))
-    val bcDays  = sortedBusinessClosedPeriods(bcPeriods).flatMap(d => datesIn(d.startDate, d.endDate))
-
-    val unCoveredTwaInBC = twaDays.filter(d => !bcDays.contains(d))
-
-    unCoveredTwaInBC.isEmpty
-  }
-
-  private def isDateInteractsPeriod(date: LocalDate, period: Period) =
-    date.compareTo(period.startDate) >= 0 && date.compareTo(period.endDate) <= 0;
-
-  private def datesIn(startDate: LocalDate, endDate: LocalDate) =
-    java.util.stream.Stream
-      .iterate[LocalDate](startDate, date => date.plusDays(1))
-      .limit(ChronoUnit.DAYS.between(startDate, endDate.plusDays(1)))
-      .collect(Collectors.toList())
-      .asScala
-      .toList
-
 }

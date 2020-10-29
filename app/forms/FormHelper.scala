@@ -14,8 +14,23 @@
  * limitations under the License.
  */
 
-package models
+package forms
 
 import java.time.LocalDate
 
-final case class GapInPeriod(startDate: LocalDate, endDate: LocalDate)
+import config.FrontendAppConfig
+
+trait FormHelper {
+
+  val config: FrontendAppConfig
+
+  def isDateValid(date: LocalDate): Boolean =
+    onOrAfterSchemeStart(date) && onOrBeforeSchemeEnd(date)
+
+  private def onOrAfterSchemeStart(date: LocalDate) =
+    date.isEqual(config.schemeStartDate) || date.isAfter(config.schemeStartDate)
+
+  private def onOrBeforeSchemeEnd(date: LocalDate) =
+    date.isEqual(config.schemeEndDate) || date.isBefore(config.schemeEndDate)
+
+}

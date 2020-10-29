@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
+
 @this(
         govukLayout: templates.GovukLayoutWrapper,
         errorSummary: components.errorSummary,
@@ -24,7 +26,8 @@
         h2: components.h2,
         p: components.p,
         inputRadio: components.inputRadio,
-        yesNoRadio: components.yesNoRadio
+        yesNoRadio: components.yesNoRadio,
+        hmrcNewTabLink : HmrcNewTabLink
 )
 
 @(form: Form[_], idx: Int, maxStwaPeriods: Int)(implicit request: Request[_], messages: Messages)
@@ -38,6 +41,14 @@
         @h1(messages("shortTermWorkingAgreementPeriod.heading"))
 
         @p(Html(Messages("shortTermWorkingAgreementPeriod.p1")))
+
+        <p class="govuk-body">@Html(Messages("shortTermWorkingAgreementPeriod.p2",
+            hmrcNewTabLink(NewTabLink(
+                text = Messages("shortTermWorkingAgreementPeriod.p2.link"),
+                href = Some("https://www.gov.uk/guidance/extra-steps-to-take-before-calculating-your-claim-through-the-job-support-scheme-open"),
+                language = Some("en"),
+                classList = Some("")))))
+        </p>
 
         @h2(messages("shortTermWorkingAgreementPeriod.dateRange", idx), classes = Some("govuk-heading-m"))
 

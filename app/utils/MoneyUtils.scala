@@ -20,4 +20,6 @@ object MoneyUtils {
 
   def round(amount: Double): Double = BigDecimal(amount).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
 
+  
+
 }
