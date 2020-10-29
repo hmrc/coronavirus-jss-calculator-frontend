@@ -296,8 +296,10 @@ actualHours.error.min = Actual hours can not be negative
 actualHours.cannot.be.morethan.usualHours = Actual hours can not be more than usual hours
 
 confirmation.title = What you can claim for this employee
+confirmation.title.ineligible = What you could claim for this employee
 confirmation.heading = confirmation
 confirmation.confirmation.p1 = What you can claim for this employee
+confirmation.confirmation.p1.ineligible = What you could claim for this employee
 confirmation.jss.open.label = For JSS Open
 confirmation.jss.open.p1 = Amount to pay employee for hours not worked:
 confirmation.jss.open.p2 = Amount to claim from the government for hours not worked:
@@ -351,7 +353,7 @@ confirmation.breakdown.h3.closed.p5.l5=Divide by 3 = £{0}.
 confirmation.breakdown.h3.closed.p6=The total amount you must pay the employee for the time the business is closed during this pay period = £{0}.
 confirmation.breakdown.h3.closed.p7=Amount to pay the employee = £{0}.
 
-confirmation.confirmation.ineligible=You are ineligible
+confirmation.confirmation.ineligible = For this calculation and claim to be valid the employee must work a minimum of 20% of their usual hours in JSS Open.
 confirmation.print.label = Print or save a copy of this page
 confirmation.webchat.label = Webchat help (opens in a new tab)
 confirmation.feedbackSurvey.label = What do you think of this service?
