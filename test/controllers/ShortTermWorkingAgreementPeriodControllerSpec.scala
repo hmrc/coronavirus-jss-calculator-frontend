@@ -33,7 +33,7 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
 
   val view = app.injector.instanceOf[ShortTermWorkingAgreementPeriodView]
 
-  private val formProvider = new ShortTermWorkingAgreementPeriodFormProvider()
+  private val formProvider = app.injector.instanceOf[ShortTermWorkingAgreementPeriodFormProvider]
   private def form         = formProvider
 
   private val startDate = LocalDate.of(2020, 11, 1)
@@ -88,7 +88,7 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(List.empty, claimPeriod.supportClaimPeriod), 1, 5)(request, messages).toString
+        view(form(List.empty), 1, 5)(request, messages).toString
     }
   }
 
@@ -103,7 +103,7 @@ class ShortTermWorkingAgreementPeriodControllerSpec extends SpecBaseControllerSp
     status(result) mustEqual OK
 
     contentAsString(result) mustEqual
-      view(form(List.empty, claimPeriod.supportClaimPeriod).fill(stwa), 1, 5)(request, messages).toString
+      view(form(List.empty).fill(stwa), 1, 5)(request, messages).toString
   }
 
   "redirect to the next page when valid data is submitted" in {

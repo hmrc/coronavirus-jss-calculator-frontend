@@ -16,12 +16,15 @@
 
 package config
 
+import java.time.{LocalDate, YearMonth}
+
 import com.google.inject.{Inject, Singleton}
 import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.{Call, RequestHeader}
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 import controllers.routes
+import models.ClaimPeriod.pattern
 
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {
@@ -64,7 +67,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val webchatHelpUrl: String = "#"
 
-  lazy val schemeEnds: String = configuration.get[String]("schemeEnds")
+  lazy val schemeEnds: String    = configuration.get[String]("schemeEnds")
+  val schemeEndDate: LocalDate   = YearMonth.parse(schemeEnds, pattern).atEndOfMonth()
+  val schemeStartDate: LocalDate = LocalDate.of(2020, 11, 1)
 
   lazy val calculatorVersion: String = configuration.get[String]("calculator.version")
 

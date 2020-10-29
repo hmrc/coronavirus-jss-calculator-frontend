@@ -47,7 +47,7 @@ class BusinessClosedPeriodsController @Inject() (
     with I18nSupport {
 
   private def form(previousBCPeriods: Seq[BusinessClosedPeriod], claimPeriod: SupportClaimPeriod) =
-    formProvider(previousBCPeriods, claimPeriod)
+    formProvider(previousBCPeriods)
 
   def onPageLoad(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
     val previousBCPeriods =

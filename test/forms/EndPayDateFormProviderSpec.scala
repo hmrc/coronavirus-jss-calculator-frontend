@@ -27,9 +27,10 @@ class EndPayDateFormProviderSpec extends SpecBaseControllerSpecs {
   val dateBehaviours = new DateBehaviours()
   import dateBehaviours._
 
-  def form(lastPayDate: LocalDate, claimEndDate: LocalDate) = new EndPayDateFormProvider()(lastPayDate, claimEndDate)
+  def form(lastPayDate: LocalDate, claimStartDate: LocalDate, claimEndDate: LocalDate) =
+    new EndPayDateFormProvider()(lastPayDate, claimStartDate, claimEndDate)
 
-  val lastPayDate    = LocalDate.of(2020, 10, 31)
+  val lastPayDate    = LocalDate.of(2020, 11, 1)
   val claimStartDate = LocalDate.of(2020, 11, 1)
   val claimEndDate   = LocalDate.of(2020, 11, 30)
 
@@ -42,7 +43,7 @@ class EndPayDateFormProviderSpec extends SpecBaseControllerSpecs {
         max = LocalDate.now(ZoneOffset.UTC)
       )
 
-      behave like dateField(form(claimStartDate, claimEndDate), "value", validData)
+      behave like dateField(form(lastPayDate, claimStartDate, claimEndDate), "value", validData)
     }
 
     "not bind any dates earlier than LastPayDate" in {
@@ -53,7 +54,7 @@ class EndPayDateFormProviderSpec extends SpecBaseControllerSpecs {
         s"$value.year"  -> inputDate.getYear.toString
       )
 
-      val result = form(claimStartDate, claimEndDate).bind(data)
+      val result = form(lastPayDate, claimStartDate, claimEndDate).bind(data)
       result.errors shouldBe List(
         FormError("value", List("endPayDate.error.invalid.must.be.on.or.after"), Array("1 November 2020"))
       )
@@ -67,14 +68,18 @@ class EndPayDateFormProviderSpec extends SpecBaseControllerSpecs {
         s"$value.year"  -> inputDate.getYear.toString
       )
 
-      val result = form(claimStartDate, claimEndDate).bind(data)
+      val result = form(lastPayDate, claimStartDate, claimEndDate).bind(data)
       result.errors shouldBe List(
         FormError("value", List("endPayDate.error.invalid.must.be.on.or.before"), Array("30 November 2020"))
       )
     }
 
     "fail to bind when no answers are selected" in {
-      behave like mandatoryDateField(form(claimStartDate, claimEndDate), "value", "endPayDate.error.required.all")
+      behave like mandatoryDateField(
+        form(lastPayDate, claimStartDate, claimEndDate),
+        "value",
+        "endPayDate.error.required.all"
+      )
     }
   }
 }
