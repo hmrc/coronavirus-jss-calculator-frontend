@@ -26,11 +26,14 @@ import views.ViewUtils.dateToString
 
 class EndPayDateFormProvider @Inject() extends Mappings {
 
-  def apply(claimStartDate: LocalDate, claimEndDate: LocalDate)(implicit messages: Messages): Form[LocalDate] =
+  def apply(lastPayDate: LocalDate, claimStartDate: LocalDate, claimEndDate: LocalDate)(implicit
+    messages: Messages
+  ): Form[LocalDate] =
     Form(
       "value" -> localDate(
         invalidKey = "endPayDate.error.invalid",
-        requiredKey = "endPayDate.error.required"
+        requiredKey = "endPayDate.error.required",
+        Seq(dateToString(lastPayDate))
       ).verifying(
         minDate(claimStartDate, "endPayDate.error.invalid.must.be.on.or.after", dateToString(claimStartDate))
       ).verifying(
