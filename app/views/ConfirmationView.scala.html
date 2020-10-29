@@ -17,6 +17,7 @@
 @import java.time.LocalDate
 @import config.FrontendAppConfig
 @import viewmodels.ConfirmationBreakdownHelper
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
 
 @this(
         govukLayout: templates.GovukLayoutWrapper,
@@ -29,7 +30,8 @@
         button: components.button,
         appConfig: FrontendAppConfig,
         breakdownHelper: ConfirmationBreakdownHelper,
-        warningText: components.warningText
+        warningText: components.warningText,
+        hmrcNewTabLink : HmrcNewTabLink
 )
 
 @(jobSupport: JobSupport, calculatorVersion: String)(implicit request: Request[_], messages: Messages)
@@ -86,7 +88,12 @@
     @h2(Html(messages("confirmation.breakdown.header")), classes = Some("govuk-heading-m"))
 
     @p(Html(Messages("confirmation.breakdown.p1", jobSupport.referenceSalary)))
-    @p(Html(Messages("confirmation.breakdown.p2", <a href="https://www.gov.uk/guidance/steps-to-take-before-calculating-your-claim-through-the-job-support-scheme" class="govuk-link">{Messages("confirmation.breakdown.p2.guidance")}</a>)))
+    @p(Html(Messages("confirmation.breakdown.p2",
+        hmrcNewTabLink(NewTabLink(
+            text = Messages("confirmation.breakdown.p2.guidance"),
+            href = Some("https://www.gov.uk/guidance/steps-to-take-before-calculating-your-claim-through-the-job-support-scheme"),
+            language = Some("en"),
+            classList = Some(""))))))
 
     @for(gfp <- jobSupport.supportBreakdown) {
         @h3(Html(messages(

@@ -194,7 +194,7 @@ startPage.p9.l2 = regular payment amounts
 startPage.p9.l3 = usual and actual hours worked
 startPage.p9.l4 = dates of Temporary Working Agreements
 startPage.p9.l5 = dates of when the business was closed
-startPage.p9.link = Steps to take before calculating your claim (opens in a new window or tab)
+startPage.p9.link = Steps to take before calculating your claim
 startPage.beforeYouStart = Before you start
 
 payFrequency.title = How often do you pay this employee?
