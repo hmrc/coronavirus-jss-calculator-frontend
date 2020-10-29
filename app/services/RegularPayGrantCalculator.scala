@@ -88,11 +88,11 @@ trait RegularPayGrantCalculator {
         supportClaimPeriod,
         payPeriod,
         businessClosedPeriods
+      ) || isEveryTemporaryWorkingAgreementCompletelyCoveredABusinessClosedPeriod(
+        temporaryWorkingAgreementPeriods,
+        businessClosedPeriods
       )
     ) {
-
-      println("\n i should be here")
-
       OpenJobSupport.zeroFinancialSupport
     } else
       (
@@ -159,8 +159,6 @@ trait RegularPayGrantCalculator {
     val employeeSalary =
       actualReferencePay * ((payPeriod.usualHours - payPeriod.actualHours) / payPeriod.usualHours) * 0.6667
 
-    println(s"\n Employee salayar is : $employeeSalary")
-
     val employersGrant = employeeSalary * (61.67 / 66.67)
 
     OpenJobSupport(
@@ -195,12 +193,9 @@ trait RegularPayGrantCalculator {
 
     val actualReferencePay = capReferencePay(adjustedReferencePay, referencePayCap)
 
-    println("\n here - 1")
     val closedSupportGrant = round(
       actualReferencePay * (numberOfClosedDaysInPayPeriod.toDouble / numberOfPayPeriodDaysInClaimPeriod.toDouble) * 2.0 / 3.0
     )
-
-    println("\n here - 2")
 
     ClosedJobSupport(numberOfClosedDaysInPayPeriod, closedSupportGrant)
 

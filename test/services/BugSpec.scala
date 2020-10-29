@@ -53,30 +53,30 @@ class BugSpec extends SpecBase {
         )
 
         val pp: List[PayPeriod] = List(
-//          PayPeriod(
-//            LocalDate.of(2020, 10, 28),
-//            LocalDate.of(2020, 11, 3),
-//            0,
-//            0
-//          ),
-//          PayPeriod(
-//            LocalDate.of(2020, 11, 4),
-//            LocalDate.of(2020, 11, 10),
-//            0,
-//            0
-//          ),
+          PayPeriod(
+            LocalDate.of(2020, 10, 28),
+            LocalDate.of(2020, 11, 3),
+            0,
+            0
+          ),
+          PayPeriod(
+            LocalDate.of(2020, 11, 4),
+            LocalDate.of(2020, 11, 10),
+            0,
+            0
+          ),
           PayPeriod(
             LocalDate.of(2020, 11, 11),
             LocalDate.of(2020, 11, 17),
             0,
             0
+          ),
+          PayPeriod(
+            LocalDate.of(2020, 11, 18),
+            LocalDate.of(2020, 11, 24),
+            0,
+            0
           )
-//          PayPeriod(
-//            LocalDate.of(2020, 11, 18),
-//            LocalDate.of(2020, 11, 24),
-//            0,
-//            0
-//          )
         )
 
         val jobSupport: JobSupport = calculateJobSupport(
@@ -90,8 +90,8 @@ class BugSpec extends SpecBase {
 
         jobSupport.totalEmployeeSalary mustEqual 0.0
         jobSupport.totalEmployersGrant mustEqual 0.0
-        jobSupport.totalClosed mustEqual 476.19
-        jobSupport.totalGrant mustEqual 476.19
+        jobSupport.totalClosed mustEqual 714.29
+        jobSupport.totalGrant mustEqual 714.29
       }
 
     }
