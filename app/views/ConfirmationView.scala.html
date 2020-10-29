@@ -34,7 +34,7 @@
 
 @(jobSupport: JobSupport, calculatorVersion: String)(implicit request: Request[_], messages: Messages)
 
-@govukLayout(pageTitle = Some(titleNoForm(if(jobSupport.isIneligible) "confirmation.title.p1" else "confirmation.title"))) {
+@govukLayout(pageTitle = Some(titleNoForm(if(jobSupport.isIneligible) "confirmation.title.ineligible" else "confirmation.title"))) {
 
     @if(jobSupport.isIneligible){
       @warningText("confirmation.confirmation.ineligible")
