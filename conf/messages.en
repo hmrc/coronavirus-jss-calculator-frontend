@@ -324,7 +324,7 @@ confirmation.breakdown.p1 = You told us this employee gets paid a £{0} amount e
 confirmation.breakdown.p2 = Before making a claim you must check the employee has worked at least the {0} required under JSS Open.
 confirmation.breakdown.p2.guidance = minimum amount of their usual hours
 confirmation.breakdown.h3 = For pay period {0} to {1}
-confirmation.breakdown.h3.p1 = To calculate the overall amount you must pay the employee for their non-working hours:
+confirmation.breakdown.h3.p1 = Steps to calculate total pay amount for employee (hours not worked):
 
 confirmation.breakdown.h3.open.p1.l1=Start with £{0} (the reference salary for the pay period).
 confirmation.breakdown.h3.open.p1.l2=Divide by {0} (the number of calendar days in the pay period).
@@ -336,12 +336,12 @@ confirmation.breakdown.h3.open.p2=This is made up of a 5% employer contribution,
 
 confirmation.breakdown.h3.p3=This is made up of a 5% employer contribution, and a 61.67% government contribution which can be reclaimed.
 
-confirmation.breakdown.h3.p4 = To calculate the government contribution to the employee’s pay for the non-working hours:
+confirmation.breakdown.h3.p4 = Steps to calculate government contribution to employee pay (hours not worked):
 confirmation.breakdown.h3.open.p4.l1=Start with £{0} (the total pay for the non-working hours).
 confirmation.breakdown.h3.open.p4.l2=Divide by 66.67.
 confirmation.breakdown.h3.open.p4.l3=Multiply by 61.67 = £{0}.
 
-confirmation.breakdown.h3.p5 =To calculate the overall amount you can pay the employee for time could not work:
+confirmation.breakdown.h3.p5 = Steps to calculate the total pay amount for employee (hours they were unable to work):
 confirmation.breakdown.h3.closed.p5.l1=Start with £ {0} (the reference salary for the pay period).
 confirmation.breakdown.h3.closed.p5.l2=Divide by {0} (the number of calendar days in the pay period).
 confirmation.breakdown.h3.closed.p5.l3=Multiply by {0} (the number of days the employee could not work in this pay period).
