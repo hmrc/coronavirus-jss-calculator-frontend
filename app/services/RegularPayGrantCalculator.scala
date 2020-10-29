@@ -309,6 +309,17 @@ trait RegularPayGrantCalculator {
           ) && businessClosedPeriod.endDate.isAfter(temporaryWorkingAgreementPeriod.endDate))
     )
 
+  def isAnyTemporaryWorkingAgreementCompletelyCoveredByAnyBusinessClosedPeriod(
+    temporaryWorkingAgreementPeriods: List[TemporaryWorkingAgreementPeriod],
+    businessClosedPeriods: List[BusinessClosedPeriod]
+  ): Boolean =
+    temporaryWorkingAgreementPeriods.exists(temporaryWorkingAgreementPeriod =>
+      isTemporaryWorkingAgreementCompletelyCoveredByABusinessClosedPeriod(
+        temporaryWorkingAgreementPeriod,
+        businessClosedPeriods
+      )
+    )
+
   def spliceTemporaryWorkingAgreementPeriod(
     temporaryWorkingAgreementPeriods: List[TemporaryWorkingAgreementPeriod],
     businessClosedPeriods: List[BusinessClosedPeriod]
