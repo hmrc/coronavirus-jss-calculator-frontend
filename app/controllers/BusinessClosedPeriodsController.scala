@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.BusinessClosedPeriodsFormProvider
 import javax.inject.Inject
-import models.{BusinessClosedPeriod, NormalMode, SupportClaimPeriod}
+import models.{BusinessClosedPeriod, NormalMode, SupportClaimPeriod, UserAnswers}
 import navigation.Navigator
 import pages.{BusinessClosedPeriodsPage, ClaimPeriodPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -30,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.BusinessClosedPeriodsView
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class BusinessClosedPeriodsController @Inject() (
   override val messagesApi: MessagesApi,
@@ -76,11 +77,16 @@ class BusinessClosedPeriodsController @Inject() (
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, config.maxClosedPeriods))),
-              value =>
+              value => {
+                var updatedAnswers = request.userAnswers.set(BusinessClosedPeriodsPage, value, Some(idx))
+                if (!value.addAnother) {
+                  updatedAnswers = trimListWhenUserSaysNoToAddMore(updatedAnswers, idx)
+                }
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessClosedPeriodsPage, value, Some(idx)))
+                  updatedAnswers <- Future.fromTry(updatedAnswers)
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(BusinessClosedPeriodsPage, NormalMode, updatedAnswers, Some(idx)))
+              }
             )
         case None     => Future.successful(Redirect(routes.ClaimPeriodController.onPageLoad()))
       }
@@ -97,4 +103,10 @@ class BusinessClosedPeriodsController @Inject() (
       } yield Redirect(navigator.nextPage(BusinessClosedPeriodsPage, NormalMode, updatedAnswers, Some(idx)))
 
   }
+
+  private def trimListWhenUserSaysNoToAddMore(userAnswers: Try[UserAnswers], idx: Int) =
+    userAnswers.flatMap { ua =>
+      val trimmedList = ua.getList(BusinessClosedPeriodsPage).slice(0, idx)
+      ua.setList(BusinessClosedPeriodsPage, trimmedList)
+    }
 }
