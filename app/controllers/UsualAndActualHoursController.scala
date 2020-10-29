@@ -116,10 +116,11 @@ class UsualAndActualHoursController @Inject() (
 
     val stwaPeriods                = userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
     val bcPeriods                  = userAnswers.getList(BusinessClosedPeriodsPage)
+    val claimPeriod = userAnswers.get(ClaimPeriodPage).getOrElse(throw new RuntimeException("expected ClaimPeriod in session but not found"))
     //FIXME: Hacky way to pass 0.0s
     val pp                         = PayPeriod(workPeriod.startDate, workPeriod.endDate, 0.0, 0.0)
     val closedPeriodsInPP          = getAllBusinessClosedPeriodsInThisPayPeriod(pp, bcPeriods)
-    val isPPCompletelyCoveredByBCs = isPayPeriodCompletelyCoveredByBusinessClosedPeriod(pp, closedPeriodsInPP)
+    val isPPCompletelyCoveredByBCs = isPayPeriodCompletelyCoveredByBusinessClosedPeriod(claimPeriod.supportClaimPeriod, pp, closedPeriodsInPP)
 
     if (isPPCompletelyCoveredByBCs) {
       false
