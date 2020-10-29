@@ -272,10 +272,41 @@ trait RegularPayGrantCalculator {
     businessClosedPeriods: List[BusinessClosedPeriod]
   ): Boolean =
     businessClosedPeriods.exists(businessClosedPeriod =>
-      businessClosedPeriod.startDate.isBefore(payPeriod.startDate) && businessClosedPeriod.endDate.isAfter(
-        payPeriod.endDate
-      ) || businessClosedPeriod.startDate
-        .isEqual(payPeriod.startDate) && businessClosedPeriod.endDate.isEqual(payPeriod.endDate)
+      (businessClosedPeriod.startDate.isEqual(payPeriod.startDate) && businessClosedPeriod.endDate
+        .isEqual(payPeriod.endDate))
+        ||
+          (businessClosedPeriod.startDate.isEqual(
+            payPeriod.startDate
+          ) && businessClosedPeriod.endDate.isAfter(payPeriod.endDate))
+          ||
+          (businessClosedPeriod.startDate.isBefore(
+            payPeriod.startDate
+          ) && businessClosedPeriod.endDate.isEqual(payPeriod.endDate))
+          ||
+          (businessClosedPeriod.startDate.isBefore(
+            payPeriod.startDate
+          ) && businessClosedPeriod.endDate.isAfter(payPeriod.endDate))
+    )
+
+  def isTemporaryWorkingAgreementCompletelyCoveredByABusinessClosedPeriod(
+    temporaryWorkingAgreementPeriod: TemporaryWorkingAgreementPeriod,
+    businessClosedPeriods: List[BusinessClosedPeriod]
+  ): Boolean =
+    businessClosedPeriods.exists(businessClosedPeriod =>
+      (businessClosedPeriod.startDate.isEqual(temporaryWorkingAgreementPeriod.startDate) && businessClosedPeriod.endDate
+        .isEqual(temporaryWorkingAgreementPeriod.endDate))
+        ||
+          (businessClosedPeriod.startDate.isEqual(
+            temporaryWorkingAgreementPeriod.startDate
+          ) && businessClosedPeriod.endDate.isAfter(temporaryWorkingAgreementPeriod.endDate))
+          ||
+          (businessClosedPeriod.startDate.isBefore(
+            temporaryWorkingAgreementPeriod.startDate
+          ) && businessClosedPeriod.endDate.isEqual(temporaryWorkingAgreementPeriod.endDate))
+          ||
+          (businessClosedPeriod.startDate.isBefore(
+            temporaryWorkingAgreementPeriod.startDate
+          ) && businessClosedPeriod.endDate.isAfter(temporaryWorkingAgreementPeriod.endDate))
     )
 
   def spliceTemporaryWorkingAgreementPeriod(
