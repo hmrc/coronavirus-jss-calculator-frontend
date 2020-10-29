@@ -90,7 +90,7 @@ trait RegularPayGrantCalculator {
       OpenJobSupport.zeroFinancialSupport
     } else
       (
-        hasOnlyTemporaryWorkingAgreementPeriodsInPayPeriod(businessClosedPeriods),
+        businessClosedPeriods.isEmpty,
         hasOverlappingTemporaryWorkingAgreementPeriodsAndBusinessClosedPeriods(
           temporaryWorkingAgreementPeriods,
           businessClosedPeriods
@@ -319,7 +319,7 @@ trait RegularPayGrantCalculator {
     payPeriod: PayPeriod,
     temporaryWorkingAgreementPeriods: List[TemporaryWorkingAgreementPeriod]
   ): List[TemporaryWorkingAgreementPeriod] = temporaryWorkingAgreementPeriods.filter(temporaryWorkingAgreementPeriod =>
-    isTemporaryWorkingAgreementInPayPeriod(payPeriod, temporaryWorkingAgreementPeriod)
+    isTemporaryWorkingAgreementPeriodInPayPeriod(payPeriod, temporaryWorkingAgreementPeriod)
   )
 
   def getAllBusinessClosedPeriodsWhichOverlapTemporaryWorkingAgreementPeriod(
@@ -508,59 +508,59 @@ trait RegularPayGrantCalculator {
       false
     }
 
-  def isTemporaryWorkingAgreementInPayPeriod(
+  def isTemporaryWorkingAgreementPeriodInPayPeriod(
     payPeriod: PayPeriod,
     temporaryWorkingAgreementPeriod: TemporaryWorkingAgreementPeriod
   ): Boolean =
-    if ( //1
+    if (
       temporaryWorkingAgreementPeriod.startDate.isEqual(
         temporaryWorkingAgreementPeriod.endDate
       ) && temporaryWorkingAgreementPeriod.startDate.isEqual(payPeriod.startDate)
     ) {
       true
-    } else if ( // 2
+    } else if (
       temporaryWorkingAgreementPeriod.startDate.isBefore(
         payPeriod.startDate
       ) && temporaryWorkingAgreementPeriod.endDate.isEqual(payPeriod.startDate)
     ) {
       true
-    } else if ( // 3
+    } else if (
       temporaryWorkingAgreementPeriod.startDate.isBefore(
         payPeriod.startDate
       ) && temporaryWorkingAgreementPeriod.endDate.isAfter(payPeriod.startDate)
     ) {
       true
-    } else if ( // 4
+    } else if (
       temporaryWorkingAgreementPeriod.startDate.isBefore(
         payPeriod.startDate
       ) && temporaryWorkingAgreementPeriod.endDate.isEqual(payPeriod.endDate)
     ) {
       true
-    } else if ( // 5
+    } else if (
       temporaryWorkingAgreementPeriod.startDate.isBefore(
         payPeriod.startDate
       ) && temporaryWorkingAgreementPeriod.endDate.isAfter(payPeriod.endDate)
     ) {
       true
-    } else if ( // 6
+    } else if (
       temporaryWorkingAgreementPeriod.startDate.isEqual(
         payPeriod.startDate
       ) && temporaryWorkingAgreementPeriod.endDate.isBefore(payPeriod.endDate)
     ) {
       true
-    } else if ( // 7
+    } else if (
       temporaryWorkingAgreementPeriod.startDate.isEqual(
         payPeriod.startDate
       ) && temporaryWorkingAgreementPeriod.endDate.isEqual(payPeriod.endDate)
     ) {
       true
-    } else if ( // 8
+    } else if (
       temporaryWorkingAgreementPeriod.startDate.isEqual(
         payPeriod.startDate
       ) && temporaryWorkingAgreementPeriod.endDate.isAfter(payPeriod.endDate)
     ) {
       true
-    } else if ( // 9
+    } else if (
       (temporaryWorkingAgreementPeriod.startDate.isAfter(
         payPeriod.startDate
       ) && (temporaryWorkingAgreementPeriod.startDate.isBefore(
@@ -572,7 +572,7 @@ trait RegularPayGrantCalculator {
       && temporaryWorkingAgreementPeriod.endDate.isBefore(payPeriod.endDate)
     ) {
       true
-    } else if ( // 10
+    } else if (
       (temporaryWorkingAgreementPeriod.startDate.isAfter(
         payPeriod.startDate
       ) && (temporaryWorkingAgreementPeriod.startDate.isBefore(
@@ -687,7 +687,7 @@ trait RegularPayGrantCalculator {
   ): Int = {
     val temporaryWorkingAgreementPeriodsInThisPayPeriod =
       temporaryWorkingAgreementWithDates.filter(temporaryWorkingAgreementPeriod =>
-        isTemporaryWorkingAgreementInPayPeriod(periodWithHours, temporaryWorkingAgreementPeriod)
+        isTemporaryWorkingAgreementPeriodInPayPeriod(periodWithHours, temporaryWorkingAgreementPeriod)
       )
     temporaryWorkingAgreementPeriodsInThisPayPeriod
       .map(temporaryWorkingAgreementPeriod =>
@@ -727,9 +727,6 @@ trait RegularPayGrantCalculator {
         )
       )
     )
-
-  def hasOnlyTemporaryWorkingAgreementPeriodsInPayPeriod(businessClosedPeriods: List[BusinessClosedPeriod]): Boolean =
-    businessClosedPeriods.isEmpty
 
   def getNumberOfDaysInPayFrequency(payFrequency: PayFrequency, periodWithHours: PayPeriod): Int =
     payFrequency match {
