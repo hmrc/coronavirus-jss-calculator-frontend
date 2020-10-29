@@ -79,7 +79,6 @@
     <ul class="govuk-list govuk-list--number">
         <li>@messages("confirmation.nextSteps.l1")</li>
         <li>@messages("confirmation.nextSteps.l2")</li>
-        <li>@Html(Messages("confirmation.nextSteps.l3", <a href="" class="govuk-link">{Messages("confirmation.nextSteps.l3.guidance")}</a>))</li>
     </ul>
 
     @button(messages("confirmation.startAgain"), href = Some(routes.ClaimPeriodController.onPageLoad()), classes = Some("govuk-button"))
@@ -87,7 +86,7 @@
     @h2(Html(messages("confirmation.breakdown.header")), classes = Some("govuk-heading-m"))
 
     @p(Html(Messages("confirmation.breakdown.p1", jobSupport.referenceSalary)))
-    @p(Html(Messages("confirmation.breakdown.p2", <a href="" class="govuk-link">{Messages("confirmation.breakdown.p2.guidance")}</a>)))
+    @p(Html(Messages("confirmation.breakdown.p2", <a href="https://www.gov.uk/guidance/steps-to-take-before-calculating-your-claim-through-the-job-support-scheme" class="govuk-link">{Messages("confirmation.breakdown.p2.guidance")}</a>)))
 
     @for(gfp <- jobSupport.supportBreakdown) {
         @h3(Html(messages(

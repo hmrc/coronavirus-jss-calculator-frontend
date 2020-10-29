@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.ShortTermWorkingAgreementPeriodFormProvider
 import javax.inject.Inject
-import models.{NormalMode, TemporaryWorkingAgreementPeriod}
+import models.{NormalMode, TemporaryWorkingAgreementPeriod, UserAnswers}
 import navigation.Navigator
 import pages.ShortTermWorkingAgreementPeriodPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -30,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ShortTermWorkingAgreementPeriodView
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class ShortTermWorkingAgreementPeriodController @Inject() (
   override val messagesApi: MessagesApi,
@@ -68,14 +69,19 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, config.maxStwaPeriods))),
-          value =>
+          value => {
+            var updatedAnswers = request.userAnswers.set(ShortTermWorkingAgreementPeriodPage, value, Some(idx))
+            if (!value.addAnother) {
+              updatedAnswers = trimListWhenUserSaysNoToAddMore(updatedAnswers, idx)
+            }
             for {
               updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(ShortTermWorkingAgreementPeriodPage, value, Some(idx)))
+                Future.fromTry(updatedAnswers)
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(
               navigator.nextPage(ShortTermWorkingAgreementPeriodPage, NormalMode, updatedAnswers, Some(idx))
             )
+          }
         )
   }
 
@@ -91,4 +97,10 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
       } yield Redirect(navigator.nextPage(ShortTermWorkingAgreementPeriodPage, NormalMode, updatedAnswers, Some(idx)))
 
   }
+
+  private def trimListWhenUserSaysNoToAddMore(userAnswers: Try[UserAnswers], idx: Int) =
+    userAnswers.flatMap { ua =>
+      val trimmedList = ua.getList(ShortTermWorkingAgreementPeriodPage).slice(0, idx)
+      ua.setList(ShortTermWorkingAgreementPeriodPage, trimmedList)
+    }
 }

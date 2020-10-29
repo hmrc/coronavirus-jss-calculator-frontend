@@ -48,11 +48,11 @@
 
         @inputDate(
             form = form,
-            legendContent = "",
+            legendContent = Messages("lastPayDate.heading", dateToString(firstDayOfClaim)),
             id = "value",
             hintText = Some("lastPayDate.hint"),
             legendAsPageHeading = false,
-            legendClasses = "govuk-label--m"
+            legendClasses = "govuk-visually-hidden"
         )
 
         @button("site.continue")
