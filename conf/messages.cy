@@ -65,7 +65,7 @@ compliant.one.p2=This page only contains information about the Job Support Schem
 
 ## section two
 compliant.two.heading=Using this service
-compliant.two.p1=<To be completed>
+compliant.two.p1=You can use this calculator to calculate the figures you will need when you complete a claim through the Job Support Scheme (JSS).
 compliant.two.p2=This service is run by HM Revenue and Customs (HMRC). We want as many people as possible to be able to use this service. This means you should be able to:
 compliant.two.l1=change colours, contrast levels and fonts
 compliant.two.l2=zoom in up to 300% without the text spilling off the screen
