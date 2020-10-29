@@ -114,21 +114,25 @@ class UsualAndActualHoursController @Inject() (
 
   private def isPeriodEligibleForHours(userAnswers: UserAnswers, workPeriod: Period): Boolean = {
 
-    val stwaPeriods = userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
-    val bcPeriods   = userAnswers.getList(BusinessClosedPeriodsPage)
-
+    val stwaPeriods                = userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
+    val bcPeriods                  = userAnswers.getList(BusinessClosedPeriodsPage)
     //FIXME: Hacky way to pass 0.0s
-    val pp = PayPeriod(workPeriod.startDate, workPeriod.endDate, 0.0, 0.0)
+    val pp                         = PayPeriod(workPeriod.startDate, workPeriod.endDate, 0.0, 0.0)
+    val closedPeriodsInPP          = getAllBusinessClosedPeriodsInThisPayPeriod(pp, bcPeriods)
+    val isPPCompletelyCoveredByBCs = isPayPeriodCompletelyCoveredByBusinessClosedPeriod(pp, closedPeriodsInPP)
 
-    val twasInPP                        = getAllTemporaryWorkingAgreementsInThisPayPeriod(pp, stwaPeriods)
-    val closedPeriodsInPP               = getAllBusinessClosedPeriodsInThisPayPeriod(pp, bcPeriods)
-    val isEveryTwaCompletelyCoveredByBC =
-      isEveryTemporaryWorkingAgreementCompletelyCoveredABusinessClosedPeriod(twasInPP, closedPeriodsInPP)
-
-    if (twasInPP.nonEmpty && !isEveryTwaCompletelyCoveredByBC) {
-      true
-    } else {
+    if (isPPCompletelyCoveredByBCs) {
       false
+    } else {
+      val twasInPP                        = getAllTemporaryWorkingAgreementsInThisPayPeriod(pp, stwaPeriods)
+      val isEveryTwaCompletelyCoveredByBC =
+        isEveryTemporaryWorkingAgreementCompletelyCoveredABusinessClosedPeriod(twasInPP, closedPeriodsInPP)
+
+      if (twasInPP.nonEmpty && !isEveryTwaCompletelyCoveredByBC) {
+        true
+      } else {
+        false
+      }
     }
   }
 }
