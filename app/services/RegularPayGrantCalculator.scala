@@ -47,6 +47,7 @@ trait RegularPayGrantCalculator {
         payPeriod.endDate,
         getNumberOfDaysInPayFrequency(payFrequency, payPeriod),
         calculateOpenJobSupport(
+          supportClaimPeriod,
           payPeriod,
           getAllTemporaryWorkingAgreementsInThisPayPeriod(payPeriod, sortedTWAList),
           sortedBCList,
@@ -70,6 +71,7 @@ trait RegularPayGrantCalculator {
   }
 
   def calculateOpenJobSupport(
+    supportClaimPeriod: SupportClaimPeriod,
     payPeriod: PayPeriod,
     temporaryWorkingAgreementPeriods: List[TemporaryWorkingAgreementPeriod],
     businessClosedPeriods: List[BusinessClosedPeriod],
@@ -82,8 +84,12 @@ trait RegularPayGrantCalculator {
     val numberOfDaysInPayFrequency       = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
 
     if (
-      temporaryWorkingAgreementPeriods.isEmpty | isPayPeriodCompletelyCoveredByBusinessClosedPeriod(
+      temporaryWorkingAgreementPeriods.isEmpty || isPayPeriodCompletelyCoveredByBusinessClosedPeriod(
+        supportClaimPeriod,
         payPeriod,
+        businessClosedPeriods
+      ) || isEveryTemporaryWorkingAgreementCompletelyCoveredABusinessClosedPeriod(
+        temporaryWorkingAgreementPeriods,
         businessClosedPeriods
       )
     ) {
@@ -268,25 +274,96 @@ trait RegularPayGrantCalculator {
       0
 
   def isPayPeriodCompletelyCoveredByBusinessClosedPeriod(
+    supportClaimPeriod: SupportClaimPeriod,
     payPeriod: PayPeriod,
     businessClosedPeriods: List[BusinessClosedPeriod]
   ): Boolean =
-    businessClosedPeriods.exists(businessClosedPeriod =>
-      (businessClosedPeriod.startDate.isEqual(payPeriod.startDate) && businessClosedPeriod.endDate
-        .isEqual(payPeriod.endDate))
-        ||
-          (businessClosedPeriod.startDate.isEqual(
-            payPeriod.startDate
-          ) && businessClosedPeriod.endDate.isAfter(payPeriod.endDate))
+    if (isPartialPayPeriod(payPeriod, supportClaimPeriod)) {
+      val adjustedPayPeriod = chopPartialPayPeriod(payPeriod, supportClaimPeriod)
+      businessClosedPeriods.exists(businessClosedPeriod =>
+        (businessClosedPeriod.startDate.isEqual(adjustedPayPeriod.startDate) && businessClosedPeriod.endDate
+          .isEqual(adjustedPayPeriod.endDate))
           ||
-          (businessClosedPeriod.startDate.isBefore(
-            payPeriod.startDate
-          ) && businessClosedPeriod.endDate.isEqual(payPeriod.endDate))
+            (businessClosedPeriod.startDate.isEqual(
+              adjustedPayPeriod.startDate
+            ) && businessClosedPeriod.endDate.isAfter(adjustedPayPeriod.endDate))
+            ||
+            (businessClosedPeriod.startDate.isBefore(
+              adjustedPayPeriod.startDate
+            ) && businessClosedPeriod.endDate.isEqual(adjustedPayPeriod.endDate))
+            ||
+            (businessClosedPeriod.startDate.isBefore(
+              adjustedPayPeriod.startDate
+            ) && businessClosedPeriod.endDate.isAfter(adjustedPayPeriod.endDate))
+      )
+
+    } else {
+      businessClosedPeriods.exists(businessClosedPeriod =>
+        (businessClosedPeriod.startDate.isEqual(payPeriod.startDate) && businessClosedPeriod.endDate
+          .isEqual(payPeriod.endDate))
           ||
-          (businessClosedPeriod.startDate.isBefore(
-            payPeriod.startDate
-          ) && businessClosedPeriod.endDate.isAfter(payPeriod.endDate))
-    )
+            (businessClosedPeriod.startDate.isEqual(
+              payPeriod.startDate
+            ) && businessClosedPeriod.endDate.isAfter(payPeriod.endDate))
+            ||
+            (businessClosedPeriod.startDate.isBefore(
+              payPeriod.startDate
+            ) && businessClosedPeriod.endDate.isEqual(payPeriod.endDate))
+            ||
+            (businessClosedPeriod.startDate.isBefore(
+              payPeriod.startDate
+            ) && businessClosedPeriod.endDate.isAfter(payPeriod.endDate))
+      )
+    }
+
+  def chopPartialPayPeriod(payPeriod: PayPeriod, supportClaimPeriod: SupportClaimPeriod): PayPeriod =
+    if (
+      (payPeriod.startDate.isBefore(supportClaimPeriod.startDate) && (payPeriod.endDate.isBefore(
+        supportClaimPeriod.endDate
+      ) && payPeriod.endDate.isAfter(supportClaimPeriod.startDate)))
+    ) {
+      payPeriod.copy(startDate = supportClaimPeriod.startDate)
+    } else if (
+      (payPeriod.startDate.isBefore(supportClaimPeriod.startDate) && (payPeriod.endDate.isBefore(
+        supportClaimPeriod.endDate
+      ) && payPeriod.endDate.isEqual(supportClaimPeriod.startDate)))
+    ) {
+      payPeriod.copy(startDate = supportClaimPeriod.startDate, endDate = supportClaimPeriod.startDate)
+    } else if (
+      (payPeriod.startDate.isBefore(supportClaimPeriod.endDate) && (payPeriod.endDate.isAfter(
+        supportClaimPeriod.endDate
+      ) && payPeriod.endDate.isAfter(supportClaimPeriod.startDate)))
+    ) {
+      payPeriod.copy(endDate = supportClaimPeriod.endDate)
+    } else if (
+      (payPeriod.startDate.isEqual(supportClaimPeriod.startDate) && (payPeriod.endDate.isAfter(
+        supportClaimPeriod.endDate
+      ) && payPeriod.endDate.isAfter(supportClaimPeriod.startDate)))
+    ) {
+      payPeriod.copy(startDate = supportClaimPeriod.endDate, endDate = supportClaimPeriod.endDate)
+    } else {
+      payPeriod
+    }
+
+  def isPartialPayPeriod(payPeriod: PayPeriod, supportClaimPeriod: SupportClaimPeriod): Boolean =
+    if (
+      (payPeriod.startDate.isBefore(supportClaimPeriod.startDate) && (payPeriod.endDate.isBefore(
+        supportClaimPeriod.endDate
+      ) && payPeriod.endDate.isAfter(supportClaimPeriod.startDate)))
+      ||
+      (payPeriod.startDate.isBefore(supportClaimPeriod.startDate) && (payPeriod.endDate.isBefore(
+        supportClaimPeriod.endDate
+      ) && payPeriod.endDate.isEqual(supportClaimPeriod.startDate)))
+      ||
+      (payPeriod.startDate.isBefore(supportClaimPeriod.endDate) && (payPeriod.endDate.isAfter(
+        supportClaimPeriod.endDate
+      ) && payPeriod.endDate.isAfter(supportClaimPeriod.startDate)))
+      ||
+      (payPeriod.startDate.isEqual(supportClaimPeriod.startDate) && (payPeriod.endDate.isAfter(
+        supportClaimPeriod.endDate
+      ) && payPeriod.endDate.isAfter(supportClaimPeriod.startDate)))
+    ) true
+    else false
 
   def isTemporaryWorkingAgreementCompletelyCoveredByABusinessClosedPeriod(
     temporaryWorkingAgreementPeriod: TemporaryWorkingAgreementPeriod,
