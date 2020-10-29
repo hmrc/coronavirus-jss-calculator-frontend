@@ -50,12 +50,11 @@
             <p>@Messages("claimPeriod.details.p2")</p>
         }
 
-        @p(Html(Messages("claimPeriod.label")))
-
         @inputRadio(
             form = form,
             legend = messages("claimPeriod.heading"),
             legendAsHeading = false,
+            hint = Some(Hint(content = HtmlContent(Messages("claimPeriod.label")))),
             classes = "govuk-visually-hidden",
             items = ClaimPeriod.options(form, appConfig.schemeEnds)
         )
