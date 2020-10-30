@@ -386,7 +386,7 @@ temporaryWorkingAgreement.error.required = Select yes if the employee had tempor
 
 businessClosed.title = Was your business closed and unable to trade during this claim?
 businessClosed.heading = Was your business closed and unable to trade during this claim?
-businessClosed.p1 = This is called the closed period or when the business was legally required to close its premises due to government restrictions. Employees must have a JSS Closed temporary working agreement. Each closed period must cover a minimum period of seven days. The closed period must be from 1 November 2020 until 31 March 2021. You can add one or more closed periods.
+businessClosed.p1 = This is called the closed period or when the business was legally required to close its premises due to government restrictions. Employees must have a JSS Closed temporary working agreement. Each closed period must cover a minimum period of seven days. Closed periods must be between 1st November 2020 and 31st March 2021. You can add one or more closed periods.
 businessClosed.yes = Yes
 businessClosed.no = No
 businessClosed.error.required = Select yes if your business closed and unable to trade during this claim
@@ -419,7 +419,7 @@ addMore.yes = Yes
 addMore.no = No
 businessClosedPeriods.title = Enter the periods when your business was closed
 businessClosedPeriods.heading = Enter the periods when your business was closed
-businessClosedPeriods.p1 = This is called the closed period or when the business was legally required to close its premises due to government restrictions. Each closed period must cover a minimum period of seven days. The closed period must be from 1 November 2020 until 31 March 2021. You can add one or more closed periods.
+businessClosedPeriods.p1 = This is called the closed period or when the business was legally required to close its premises due to government restrictions. Each closed period must cover a minimum period of seven days. Closed periods must be between 1st November 2020 and 31st March 2021. You can add one or more closed periods.
 businessClosedPeriods.startDate.label = Start date
 businessClosedPeriods.endDate.label = End date
 businessClosedPeriods.startDate.hint = For example, 1 11 2020
