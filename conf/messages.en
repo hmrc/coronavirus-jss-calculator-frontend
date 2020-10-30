@@ -260,6 +260,7 @@ regularPayAmount.l1 = 19 March 2020 or
 regularPayAmount.l2 = 23 September 2020
 regularPayAmount.p2 = We will use the higher pay to make your calculation.
 regularPayAmount.info = If this employee started their employment with you during the pay period, enter the amount they would have received if it was a full pay period.
+regularPayAmount.label = What is the employee’s reference pay
 regularPayAmount.error.required = Enter regular pay amount before either of these dates
 amount.error.max.2.decimals = The amount cannot have more than two decimal places
 regularPayAmount.error.nonNumeric = Enter the regular pay amount in numbers
