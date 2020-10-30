@@ -51,8 +51,8 @@ class UsualAndActualHoursController @Inject() (
   def onPageLoad(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
     implicit request =>
       val preparedForm = request.userAnswers.get(UsualAndActualHoursPage, Some(idx)) match {
-        case Some(value) if (value.usualHours > 0 && value.actualHours >= 0)  => form.fill(value)
-        case _ =>   form
+        case Some(value) if value.usualHours > 0 && value.actualHours >= 0 => form.fill(value)
+        case _                                                             => form
       }
 
       request.userAnswers.get(ClaimPeriodPage) match {
