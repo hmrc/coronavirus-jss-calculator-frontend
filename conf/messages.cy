@@ -255,7 +255,7 @@ selectWorkPeriods.error.required = Select the periods to be calculated.
 
 regularPayAmount.title = Calculation of the employee’s reference pay
 regularPayAmount.heading = Calculation of the employee’s reference pay
-regularPayAmount.p1 = Enter the higher of the amounts the employee was paid in the last full pay period ending:
+regularPayAmount.p1 = Enter the higher of the amounts the employee was paid in the last full pay period ending on or before:
 regularPayAmount.l1 = 19 March 2020 or
 regularPayAmount.l2 = 23 September 2020
 regularPayAmount.p2 = We will use the higher pay to make your calculation.
