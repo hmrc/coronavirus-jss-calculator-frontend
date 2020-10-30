@@ -64,16 +64,14 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
   def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
     implicit request =>
       val previousTWAPeriods =
-        request.userAnswers.getList(ShortTermWorkingAgreementPeriodPage).zipWithIndex.filter(_._2 != idx - 1).map(_._1)
+        request.userAnswers.getList(ShortTermWorkingAgreementPeriodPage).zipWithIndex.filter(_._2 < idx - 1).map(_._1)
       form(previousTWAPeriods)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, config.maxStwaPeriods))),
           value => {
             var updatedAnswers = request.userAnswers.set(ShortTermWorkingAgreementPeriodPage, value, Some(idx))
-            if (!value.addAnother) {
-              updatedAnswers = trimListWhenUserSaysNoToAddMore(updatedAnswers, idx)
-            }
+            updatedAnswers = invalidateList(updatedAnswers, idx)
             for {
               updatedAnswers <-
                 Future.fromTry(updatedAnswers)
@@ -98,7 +96,8 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
 
   }
 
-  private def trimListWhenUserSaysNoToAddMore(userAnswers: Try[UserAnswers], idx: Int) =
+  private def invalidateList(userAnswers: Try[UserAnswers], idx: Int) =
+    //deletes the list elements after 'idx'
     userAnswers.flatMap { ua =>
       val trimmedList = ua.getList(ShortTermWorkingAgreementPeriodPage).slice(0, idx)
       ua.setList(ShortTermWorkingAgreementPeriodPage, trimmedList)
