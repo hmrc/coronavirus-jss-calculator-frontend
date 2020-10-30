@@ -53,11 +53,11 @@ class ConfirmationController @Inject() (
     val stwaDates           = request.userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
     val bcDates             = request.userAnswers.getList(BusinessClosedPeriodsPage)
 
-    (workPeriods, usualAndActualHours, payFrequency, supportClaimPeriod, regularPay) match {
-      case (Some(wps), hours, Some(pf), Some(cp), Some(rp)) =>
+    (workPeriods, payFrequency, supportClaimPeriod, regularPay) match {
+      case (Some(wps), Some(pf), Some(cp), Some(rp)) =>
         val jobSupport = calculateJobSupport(
           cp.supportClaimPeriod,
-          periodsWithHours(wps, hours),
+          periodsWithHours(wps, usualAndActualHours),
           stwaDates,
           bcDates,
           pf,

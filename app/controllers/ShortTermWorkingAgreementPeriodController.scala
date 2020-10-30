@@ -83,19 +83,6 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
         )
   }
 
-  def remove(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
-    implicit request =>
-      val existingPeriods  = request.userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
-      val remainingPeriods = existingPeriods.zipWithIndex.filterNot(p => p._2 == idx).map(_._1)
-
-      for {
-        updatedAnswers <-
-          Future.fromTry(request.userAnswers.setList(ShortTermWorkingAgreementPeriodPage, remainingPeriods))
-        _              <- sessionRepository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(ShortTermWorkingAgreementPeriodPage, NormalMode, updatedAnswers, Some(idx)))
-
-  }
-
   private def invalidateList(userAnswers: Try[UserAnswers], idx: Int) =
     //deletes the list elements after 'idx'
     userAnswers.flatMap { ua =>

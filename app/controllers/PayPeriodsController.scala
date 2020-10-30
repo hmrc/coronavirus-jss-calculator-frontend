@@ -55,7 +55,7 @@ class PayPeriodsController @Inject() (
       case Some(value) => form.fill(value)
     }
 
-    getView(request.userAnswers, periods => Ok(view(preparedForm, periods)))
+    handleRequest(request.userAnswers, periods => Ok(view(preparedForm, periods)))
   }
 
   def onSubmit(): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
@@ -63,7 +63,7 @@ class PayPeriodsController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors =>
-          Future.successful(getView(request.userAnswers, periods => BadRequest(view(formWithErrors, periods)))),
+          Future.successful(handleRequest(request.userAnswers, periods => BadRequest(view(formWithErrors, periods)))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PayPeriodsPage, value))
@@ -72,7 +72,7 @@ class PayPeriodsController @Inject() (
       )
   }
 
-  private def getView(userAnswers: UserAnswers, result: (List[Period]) => Result) = {
+  private def handleRequest(userAnswers: UserAnswers, result: (List[Period]) => Result) = {
     val maybeClaimPeriod  = userAnswers.get(ClaimPeriodPage)
     val maybePayFrequency = userAnswers.get(PayFrequencyPage)
     val maybeLastPayDay   = userAnswers.get(LastPayDatePage)

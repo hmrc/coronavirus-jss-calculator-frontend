@@ -19,8 +19,7 @@ package controllers
 import controllers.actions._
 import forms.UsualAndActualHoursFormProvider
 import javax.inject.Inject
-import models.requests.DataRequest
-import models.{NormalMode, PayPeriod, Period, UserAnswers, UsualAndActualHours}
+import models.{NormalMode, PayPeriod, Period, SupportClaimPeriod, UserAnswers, UsualAndActualHours}
 import navigation.Navigator
 import pages._
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -53,55 +52,60 @@ class UsualAndActualHoursController @Inject() (
     implicit request =>
       val preparedForm = request.userAnswers.get(UsualAndActualHoursPage, Some(idx)) match {
         case None        => form
-        case Some(value) => form.fill(value)
+        case Some(value) => if (value.usualHours > 0 && value.actualHours >= 0) form.fill(value) else form
       }
 
-      val workPeriod = request.userAnswers.get(SelectWorkPeriodsPage).flatMap(_.lift(idx - 1)) match {
-        case Some(period) => period
-        case None         => throw new RuntimeException(s"expected WorkPeriod at index: ${idx - 1}, but it doesn't exist")
-      }
+      request.userAnswers.get(ClaimPeriodPage) match {
+        case Some(cp) =>
+          val workPeriod = getWorkPeriodAtIdx(idx, request.userAnswers)
 
-      if (isPeriodEligibleForHours(request.userAnswers, workPeriod)) {
-        val (startDateToShow, endDateToShow) = getStartAndEndDatesToShow(idx - 1, request)
-        Future.successful(Ok(view(preparedForm, idx, startDateToShow, endDateToShow)))
-      } else {
-        //store 0.0 hours in mongo and proceed to next page in the loop
-        for {
-          updatedAnswers <-
-            Future.fromTry(request.userAnswers.set(UsualAndActualHoursPage, UsualAndActualHours(0.0, 0.0), Some(idx)))
-          _              <- sessionRepository.set(updatedAnswers)
-        } yield Redirect(navigator.nextPage(UsualAndActualHoursPage, NormalMode, updatedAnswers, Some(idx)))
+          if (isPeriodEligibleForHours(request.userAnswers, workPeriod, cp.supportClaimPeriod)) {
+            val (startDateToShow, endDateToShow) = getStartAndEndDatesToShow(cp.supportClaimPeriod, workPeriod)
+            Future.successful(Ok(view(preparedForm, idx, startDateToShow, endDateToShow)))
+          } else {
+            //work period not eligible for hours page - store 0.0 hours in mongo and proceed to next page in the loop
+            for {
+              updatedAnswers <-
+                Future.fromTry(
+                  request.userAnswers.set(UsualAndActualHoursPage, UsualAndActualHours(0.0, 0.0), Some(idx))
+                )
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(UsualAndActualHoursPage, NormalMode, updatedAnswers, Some(idx)))
+          }
+        case None     => Future.successful(Redirect(routes.ClaimPeriodController.onPageLoad()))
       }
   }
 
   def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-            val (startDateToShow, endDateToShow) = getStartAndEndDatesToShow(idx - 1, request)
-            Future.successful(BadRequest(view(formWithErrors, idx, startDateToShow, endDateToShow)))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(UsualAndActualHoursPage, value, Some(idx)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(UsualAndActualHoursPage, NormalMode, updatedAnswers, Some(idx)))
-        )
+      request.userAnswers.get(ClaimPeriodPage) match {
+        case Some(cp) =>
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => {
+                val (startDateToShow, endDateToShow) =
+                  getStartAndEndDatesToShow(cp.supportClaimPeriod, getWorkPeriodAtIdx(idx, request.userAnswers))
+                Future.successful(BadRequest(view(formWithErrors, idx, startDateToShow, endDateToShow)))
+              },
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(UsualAndActualHoursPage, value, Some(idx)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(UsualAndActualHoursPage, NormalMode, updatedAnswers, Some(idx)))
+            )
+        case None     => Future.successful(Redirect(routes.ClaimPeriodController.onPageLoad()))
+      }
   }
 
-  private def getStartAndEndDatesToShow(idx: Int, request: DataRequest[_]) = {
-
-    val workPeriod = request.userAnswers.get(SelectWorkPeriodsPage).flatMap(_.lift(idx)) match {
+  private def getWorkPeriodAtIdx(idx: Int, userAnswers: UserAnswers) =
+    userAnswers.get(SelectWorkPeriodsPage).flatMap(_.lift(idx - 1)) match {
       case Some(period) => period
-      case None         => throw new RuntimeException(s"expected WorkPeriod at index: $idx, but it doesn't exist")
+      case None         =>
+        throw new RuntimeException(s"expected WorkPeriod at index: ${idx - 1}, but it doesn't exist")
     }
 
-    val supportClaimPeriod = request.userAnswers.get(ClaimPeriodPage) match {
-      case Some(cp) => cp.supportClaimPeriod
-      case None     => throw new RuntimeException(s"expected ClaimPeriod at index: $idx, but it doesn't exist")
-    }
+  private def getStartAndEndDatesToShow(supportClaimPeriod: SupportClaimPeriod, workPeriod: Period) = {
 
     val startDateToShow =
       if (workPeriod.startDate.isBefore(supportClaimPeriod.startDate)) supportClaimPeriod.startDate
@@ -112,18 +116,19 @@ class UsualAndActualHoursController @Inject() (
     (startDateToShow, endDateToShow)
   }
 
-  private def isPeriodEligibleForHours(userAnswers: UserAnswers, workPeriod: Period): Boolean = {
+  private def isPeriodEligibleForHours(
+    userAnswers: UserAnswers,
+    workPeriod: Period,
+    supportClaimPeriod: SupportClaimPeriod
+  ): Boolean = {
 
     val stwaPeriods                = userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
     val bcPeriods                  = userAnswers.getList(BusinessClosedPeriodsPage)
-    val claimPeriod                = userAnswers
-      .get(ClaimPeriodPage)
-      .getOrElse(throw new RuntimeException("expected ClaimPeriod in session but not found"))
     //FIXME: Hacky way to pass 0.0s
     val pp                         = PayPeriod(workPeriod.startDate, workPeriod.endDate, 0.0, 0.0)
     val closedPeriodsInPP          = getAllBusinessClosedPeriodsInThisPayPeriod(pp, bcPeriods)
     val isPPCompletelyCoveredByBCs =
-      isPayPeriodCompletelyCoveredByBusinessClosedPeriod(claimPeriod.supportClaimPeriod, pp, closedPeriodsInPP)
+      isPayPeriodCompletelyCoveredByBusinessClosedPeriod(supportClaimPeriod, pp, closedPeriodsInPP)
 
     if (isPPCompletelyCoveredByBCs) {
       false

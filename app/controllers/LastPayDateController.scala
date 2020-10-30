@@ -16,12 +16,12 @@
 
 package controllers
 
-import java.time.{LocalDate, YearMonth}
+import java.time.LocalDate
 
 import controllers.actions._
 import forms.LastPayDateFormProvider
 import javax.inject.Inject
-import models.{ClaimPeriod, NormalMode}
+import models.NormalMode
 import navigation.Navigator
 import pages.{ClaimPeriodPage, LastPayDatePage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -51,7 +51,7 @@ class LastPayDateController @Inject() (
   def onPageLoad(): Action[AnyContent] = (getSession andThen getData andThen requireData) { implicit request =>
     request.userAnswers.get(ClaimPeriodPage) match {
       case Some(claimPeriod) =>
-        val firstDayOfClaim = YearMonth.parse(claimPeriod, ClaimPeriod.pattern).atDay(1)
+        val firstDayOfClaim = claimPeriod.firstDayOfClaim
 
         val preparedForm = request.userAnswers.get(LastPayDatePage) match {
           case None        => form(firstDayOfClaim)
@@ -67,7 +67,7 @@ class LastPayDateController @Inject() (
   def onSubmit(): Action[AnyContent] = (getSession andThen getData andThen requireData).async { implicit request =>
     request.userAnswers.get(ClaimPeriodPage) match {
       case Some(claimPeriod) =>
-        val firstDayOfClaim = YearMonth.parse(claimPeriod, ClaimPeriod.pattern).atDay(1)
+        val firstDayOfClaim = claimPeriod.firstDayOfClaim
         form(firstDayOfClaim)
           .bindFromRequest()
           .fold(
