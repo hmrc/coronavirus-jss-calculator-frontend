@@ -90,8 +90,8 @@ class BugSpec extends SpecBase {
 
         jobSupport.totalEmployeeSalary mustEqual 0.0
         jobSupport.totalEmployersGrant mustEqual 0.0
-        jobSupport.totalClosed mustEqual 714.29
-        jobSupport.totalGrant mustEqual 714.29
+        jobSupport.totalClosed mustEqual 714.32
+        jobSupport.totalGrant mustEqual 714.32
       }
 
     }

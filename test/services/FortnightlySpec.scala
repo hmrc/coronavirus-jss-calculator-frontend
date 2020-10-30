@@ -78,7 +78,7 @@ class FortnightlySpec extends SpecBase {
           650
         )
 
-        jobSupport.totalGrant mustEqual 714.14
+        jobSupport.totalGrant mustEqual 714.16
 
       }
 
@@ -131,7 +131,7 @@ class FortnightlySpec extends SpecBase {
           1410.10
         )
 
-        jobSupport.totalGrant mustEqual 1543.41
+        jobSupport.totalGrant mustEqual 1543.47
 
       }
 
@@ -184,7 +184,7 @@ class FortnightlySpec extends SpecBase {
           1439.10
         )
 
-        jobSupport.totalGrant mustEqual 1574.34
+        jobSupport.totalGrant mustEqual 1574.41
       }
     }
   }

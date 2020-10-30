@@ -72,7 +72,7 @@ class FourWeeklySpec extends SpecBase {
           2500
         )
 
-        jobSupport.totalGrant mustEqual 1547.96
+        jobSupport.totalGrant mustEqual 1548.03
       }
     }
   }
