@@ -178,10 +178,11 @@ startPage.p4.l1 = employees who are working reduced hours while you claim under 
 startPage.p4.l2 = when your business is closed and your employees cannot work, and you’re claiming under JSS-Closed
 startPage.p5 = The calculator can be used for employees if they:
 startPage.p5.l1 = were paid weekly, two weekly, four weekly or monthly in fixed pay periods
-startPage.p5.l2 = returned from statutory leave such as maternity
+startPage.p5.l2 = received a regular/fixed amount each pay period
+startPage.p5.l3 = returned from statutory leave such as maternity
 startPage.p6 = The calculator cannot be used for employees if they:
-startPage.p6.l1 = receive director’s payments outside PAYE
-startPage.p6.l2 = receive variable pay amounts (you will be able to calculate for variable pay shortly)
+startPage.p6.l1 = receive variable pay amounts (you will be able to calculate for variable pay shortly)
+startPage.p6.l2 = have an annual pay period
 startPage.p6.l3 = have been transferred under Transfer of Undertakings (Protection of Employment) Regulations 2006 (TUPE)
 startPage.p6.l4 = were not employed continuously before the Job Support Scheme started
 startPage.p7.1 = In these cases, you can work out what you can claim manually using the
@@ -343,7 +344,7 @@ confirmation.breakdown.h3.open.p4.l2=Divide by 66.67.
 confirmation.breakdown.h3.open.p4.l3=Multiply by 61.67 = £{0}.
 
 confirmation.breakdown.h3.p5 = Steps to calculate the total pay amount for employee (hours they were unable to work):
-confirmation.breakdown.h3.closed.p5.l1=Start with £ {0} (the reference salary for the pay period).
+confirmation.breakdown.h3.closed.p5.l1=Start with £{0} (the reference salary for the pay period).
 confirmation.breakdown.h3.closed.p5.l2=Divide by {0} (the number of calendar days in the pay period).
 confirmation.breakdown.h3.closed.p5.l3=Multiply by {0} (the number of days the employee could not work in this pay period).
 confirmation.breakdown.h3.closed.p5.l4=Multiply by 2.
