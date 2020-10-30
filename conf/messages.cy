@@ -111,11 +111,11 @@ compliant.eight.p2.2=Web Content Accessibility Guidelines version 2.1 AA standar
 
 ## section nine
 compliant.nine.heading=How we tested this service
-compliant.nine.p1=The service was last tested on <date> and was checked for compliance with WCAG 2.1 AA.
+compliant.nine.p1=The service was last tested on 30 October 2020 and was checked for compliance with WCAG 2.1 AA.
 compliant.nine.p2.1=The service was built using parts that were tested by the
 compliant.nine.p2.2=Digital Accessibility Centre
 compliant.nine.p2.3=The full service was tested by HMRC and included disabled users.
-compliant.nine.p3=This page was prepared on <date>. It was last updated on <date>.
+compliant.nine.p3=This page was prepared on 30 October 2020. It was last updated on 30 October 2020.
 
 checkYourAnswers.heading = Check your answers before claiming for this business
 checkYourAnswers.guidance = Guidance for check your answers
