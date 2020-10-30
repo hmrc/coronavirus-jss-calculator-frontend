@@ -194,7 +194,7 @@ trait RegularPayGrantCalculator {
     val actualReferencePay = capReferencePay(adjustedReferencePay, referencePayCap)
 
     val closedSupportGrant = round(
-      actualReferencePay * (numberOfClosedDaysInPayPeriod.toDouble / numberOfPayPeriodDaysInClaimPeriod.toDouble) * 2.0 / 3.0
+      actualReferencePay * (numberOfClosedDaysInPayPeriod.toDouble / numberOfPayPeriodDaysInClaimPeriod.toDouble) * 0.6667
     )
 
     ClosedJobSupport(numberOfClosedDaysInPayPeriod, closedSupportGrant)

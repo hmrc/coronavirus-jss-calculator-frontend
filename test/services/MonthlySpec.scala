@@ -66,7 +66,7 @@ class MonthlySpec extends SpecBase {
           2345.67
         )
 
-        jobSupport.totalGrant mustEqual 657.58
+        jobSupport.totalGrant mustEqual 657.60
       }
 
       "scenario-6" in new RegularPayGrantCalculator {
@@ -94,7 +94,7 @@ class MonthlySpec extends SpecBase {
           PayPeriod(
             LocalDate.of(2020, 10, 29),
             LocalDate.of(2020, 11, 28),
-            310.15,
+            310.55,
             134.44
           )
         )
@@ -108,7 +108,7 @@ class MonthlySpec extends SpecBase {
           3330.00
         )
 
-        jobSupport.totalGrant mustEqual 1428.84
+        jobSupport.totalGrant mustEqual 1429.42
       }
     }
   }
