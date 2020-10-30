@@ -16,7 +16,7 @@
 
 package models
 
-import java.time.YearMonth
+import java.time.{LocalDate, YearMonth}
 import java.time.format.DateTimeFormatter
 
 import models.ClaimPeriod.pattern
@@ -29,6 +29,7 @@ sealed trait ClaimPeriod {
   def key: String                            = getClass.getSimpleName.dropRight(1)
   def yearMonth: YearMonth                   = YearMonth.parse(toString, pattern)
   def supportClaimPeriod: SupportClaimPeriod = SupportClaimPeriod(yearMonth.atDay(1), yearMonth.atEndOfMonth())
+  def firstDayOfClaim: LocalDate             = yearMonth.atDay(1)
 }
 
 object ClaimPeriod extends Enumerable.Implicits {
