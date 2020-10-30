@@ -27,7 +27,7 @@ class BugSpec extends SpecBase {
 
     "computing the JSS-O on weekly freq" should {
 
-      "bug-2" in new RegularPayGrantCalculator {
+      "bug-1" in new RegularPayGrantCalculator {
 
         val supportClaimPeriod = SupportClaimPeriod(
           LocalDate.of(2020, 11, 1),
@@ -37,23 +37,45 @@ class BugSpec extends SpecBase {
         val twasList = List(
           TemporaryWorkingAgreementPeriod(
             LocalDate.of(2020, 11, 1),
-            LocalDate.of(2020, 11, 15)
+            LocalDate.of(2020, 11, 7)
+          ),
+          TemporaryWorkingAgreementPeriod(
+            LocalDate.of(2020, 11, 8),
+            LocalDate.of(2020, 11, 14)
           )
         )
 
         val closedList = List(
           BusinessClosedPeriod(
-            LocalDate.of(2020, 11, 16),
-            LocalDate.of(2020, 11, 28)
+            LocalDate.of(2020, 11, 1),
+            LocalDate.of(2020, 11, 15)
           )
         )
 
         val pp: List[PayPeriod] = List(
           PayPeriod(
-            LocalDate.of(2020, 10, 29),
-            LocalDate.of(2020, 11, 28),
-            310.55,
-            134.44
+            LocalDate.of(2020, 10, 28),
+            LocalDate.of(2020, 11, 3),
+            0,
+            0
+          ),
+          PayPeriod(
+            LocalDate.of(2020, 11, 4),
+            LocalDate.of(2020, 11, 10),
+            0,
+            0
+          ),
+          PayPeriod(
+            LocalDate.of(2020, 11, 11),
+            LocalDate.of(2020, 11, 17),
+            0,
+            0
+          ),
+          PayPeriod(
+            LocalDate.of(2020, 11, 18),
+            LocalDate.of(2020, 11, 24),
+            0,
+            0
           )
         )
 
@@ -62,81 +84,15 @@ class BugSpec extends SpecBase {
           pp,
           twasList,
           closedList,
-          PayFrequency.Monthly,
-          3330.00
+          PayFrequency.Weekly,
+          500
         )
 
-        println(s"${jobSupport.supportBreakdown.mkString("\n")}")
-
-        jobSupport.totalGrant mustEqual 1428.89
+        jobSupport.totalEmployeeSalary mustEqual 0.0
+        jobSupport.totalEmployersGrant mustEqual 0.0
+        jobSupport.totalClosed mustEqual 714.32
+        jobSupport.totalGrant mustEqual 714.32
       }
-
-//      "bug-1" in new RegularPayGrantCalculator {
-//
-//        val supportClaimPeriod = SupportClaimPeriod(
-//          LocalDate.of(2020, 11, 1),
-//          LocalDate.of(2020, 11, 30)
-//        )
-//
-//        val twasList = List(
-//          TemporaryWorkingAgreementPeriod(
-//            LocalDate.of(2020, 11, 1),
-//            LocalDate.of(2020, 11, 7)
-//          ),
-//          TemporaryWorkingAgreementPeriod(
-//            LocalDate.of(2020, 11, 8),
-//            LocalDate.of(2020, 11, 14)
-//          )
-//        )
-//
-//        val closedList = List(
-//          BusinessClosedPeriod(
-//            LocalDate.of(2020, 11, 1),
-//            LocalDate.of(2020, 11, 15)
-//          )
-//        )
-//
-//        val pp: List[PayPeriod] = List(
-//          PayPeriod(
-//            LocalDate.of(2020, 10, 28),
-//            LocalDate.of(2020, 11, 3),
-//            0,
-//            0
-//          ),
-//          PayPeriod(
-//            LocalDate.of(2020, 11, 4),
-//            LocalDate.of(2020, 11, 10),
-//            0,
-//            0
-//          ),
-//          PayPeriod(
-//            LocalDate.of(2020, 11, 11),
-//            LocalDate.of(2020, 11, 17),
-//            0,
-//            0
-//          ),
-//          PayPeriod(
-//            LocalDate.of(2020, 11, 18),
-//            LocalDate.of(2020, 11, 24),
-//            0,
-//            0
-//          )
-//        )
-//
-//        val jobSupport: JobSupport = calculateJobSupport(
-//          supportClaimPeriod,
-//          pp,
-//          twasList,
-//          closedList,
-//          PayFrequency.Weekly,
-//          500
-//        )
-//
-//        jobSupport.totalEmployeeSalary mustEqual 0.0
-//        jobSupport.totalEmployersGrant mustEqual 0.0
-//        jobSupport.totalClosed mustEqual 714.29
-//        jobSupport.totalGrant mustEqual 714.29
-//      }
 
     }
   }
