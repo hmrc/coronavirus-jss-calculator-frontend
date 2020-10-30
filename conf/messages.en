@@ -146,7 +146,7 @@ session_expired.restart = Start another calculation
 
 claimPeriod.title = Which month will you claim for?
 claimPeriod.heading = Which month will you claim for?
-claimPeriod.p1 = From 1 November, claims must start and end in the same calendar month. The claim must include all pay periods that end within either of your specific month of November or December.
+claimPeriod.p1 = From 1 November, claims must start and end in the same calendar month. The claim must include all pay periods with an end date that falls within the claim month.
 claimPeriod.p2 = Make sure the claim periods do not overlap.
 claimPeriod.details.title = What is a claim period?
 claimPeriod.details.p1 = The claim period is when one or more of your employees are working reduced hours or unable to work due to your business having to close temporarily under the Job Support Scheme for a given period.
