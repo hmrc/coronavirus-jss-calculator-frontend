@@ -14,14 +14,11 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.html.components._
-
 @this(
         govukLayout: templates.GovukLayoutWrapper,
         h1: components.h1,
         h2: components.h2,
-        p: components.p,
-        hmrcNewTabLink : HmrcNewTabLink
+        p: components.p
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -62,11 +59,7 @@
 
   <p class="govuk-body">
       @messages("startPage.p7.1")
-      @hmrcNewTabLink(NewTabLink(
-          text = Messages("startPage.p7.link.text"),
-          href = Some("https://www.gov.uk/guidance/calculate-how-much-you-can-claim-through-the-job-support-scheme"),
-          language = Some("en"),
-          classList = Some("")))
+      <a href="https://www.gov.uk/guidance/calculate-how-much-you-can-claim-through-the-job-support-scheme" class="govuk-link">@messages("startPage.p7.link.text")</a>
       @messages("startPage.p7.2")
   </p>
 
@@ -85,11 +78,7 @@
     </ul>
 
     <p class="govuk-body">
-        @hmrcNewTabLink(NewTabLink(
-            text = Messages("startPage.p9.link"),
-            href = Some("https://www.gov.uk/guidance/steps-to-take-before-calculating-your-claim-through-the-job-support-scheme"),
-            language = Some("en"),
-            classList = Some("")))
+        <a href="https://www.gov.uk/guidance/steps-to-take-before-calculating-your-claim-through-the-job-support-scheme" class="govuk-link">@messages("startPage.p9.link")</a>
     </p>
 
     <a href="/job-support-scheme-calculator/claim-period" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button">
