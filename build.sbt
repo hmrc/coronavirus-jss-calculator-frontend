@@ -14,7 +14,7 @@ lazy val root = (project in file("."))
   .settings(DefaultBuildSettings.defaultSettings(): _*)
   .settings(SbtDistributablesPlugin.publishingSettings: _*)
   .settings(inConfig(Test)(testSettings): _*)
-  .settings(majorVersion := 0)
+  .settings(majorVersion := 1)
   .settings(useSuperShell in ThisBuild := false)
   .settings(
     scalaVersion := "2.12.10",
