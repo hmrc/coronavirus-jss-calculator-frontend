@@ -111,11 +111,11 @@ compliant.eight.p2.2=Web Content Accessibility Guidelines version 2.1 AA standar
 
 ## section nine
 compliant.nine.heading=How we tested this service
-compliant.nine.p1=The service was last tested on <date> and was checked for compliance with WCAG 2.1 AA.
+compliant.nine.p1=The service was last tested on 30 October 2020 and was checked for compliance with WCAG 2.1 AA.
 compliant.nine.p2.1=The service was built using parts that were tested by the
 compliant.nine.p2.2=Digital Accessibility Centre
 compliant.nine.p2.3=The full service was tested by HMRC and included disabled users.
-compliant.nine.p3=This page was prepared on <date>. It was last updated on <date>.
+compliant.nine.p3=This page was prepared on 30 October 2020. It was last updated on 30 October 2020.
 
 checkYourAnswers.heading = Check your answers before claiming for this business
 checkYourAnswers.guidance = Guidance for check your answers
@@ -146,7 +146,7 @@ session_expired.restart = Start another calculation
 
 claimPeriod.title = Which month will you claim for?
 claimPeriod.heading = Which month will you claim for?
-claimPeriod.p1 = From 1 November, claims must start and end in the same calendar month. The claim must include all pay periods that end within either of your specific month of November or December.
+claimPeriod.p1 = From 1 November, claims must start and end in the same calendar month. The claim must include all pay periods with an end date that falls within the claim month.
 claimPeriod.p2 = Make sure the claim periods do not overlap.
 claimPeriod.details.title = What is a claim period?
 claimPeriod.details.p1 = The claim period is when one or more of your employees are working reduced hours or unable to work due to your business having to close temporarily under the Job Support Scheme for a given period.
@@ -177,11 +177,12 @@ startPage.p4 = You can use this calculator to claim for:
 startPage.p4.l1 = employees who are working reduced hours while you claim under JSS-Open
 startPage.p4.l2 = when your business is closed and your employees cannot work, and you’re claiming under JSS-Closed
 startPage.p5 = The calculator can be used for employees if they:
-startPage.p5.l1 = were paid weekly, two weekly, four weekly or monthly in fixed pay periods
-startPage.p5.l2 = returned from statutory leave such as maternity
+startPage.p5.l1 = were paid every week, every 2 weeks, every 4 weeks or once a month in fixed pay periods
+startPage.p5.l2 = received a regular/fixed amount each pay period
+startPage.p5.l3 = returned from statutory leave such as maternity
 startPage.p6 = The calculator cannot be used for employees if they:
-startPage.p6.l1 = receive director’s payments outside PAYE
-startPage.p6.l2 = receive variable pay amounts (you will be able to calculate for variable pay shortly)
+startPage.p6.l1 = receive variable pay amounts (you will be able to calculate for variable pay shortly)
+startPage.p6.l2 = have an annual pay period
 startPage.p6.l3 = have been transferred under Transfer of Undertakings (Protection of Employment) Regulations 2006 (TUPE)
 startPage.p6.l4 = were not employed continuously before the Job Support Scheme started
 startPage.p7.1 = In these cases, you can work out what you can claim manually using the
@@ -258,7 +259,7 @@ regularPayAmount.p1 = Enter the higher of the amounts the employee was paid in t
 regularPayAmount.l1 = 19 March 2020 or
 regularPayAmount.l2 = 23 September 2020
 regularPayAmount.p2 = We will use the higher pay to make your calculation.
-regularPayAmount.info = If this employee started their employment with you during the pay period, enter the amount they will get paid from now on.
+regularPayAmount.info = If this employee started their employment with you during the pay period, enter the amount they would have received if it was a full pay period.
 regularPayAmount.error.required = Enter regular pay amount before either of these dates
 amount.error.max.2.decimals = The amount cannot have more than two decimal places
 regularPayAmount.error.nonNumeric = Enter the regular pay amount in numbers
@@ -283,7 +284,10 @@ whatToInclude.doNotInclude.l3 = non-monetary benefits like benefits in kind (suc
 
 usualAndActualHours.title = What were the employee’s usual and actual hours from {0} to {1}?
 usualAndActualHours.heading = What were the employee’s usual and actual hours from {0} to {1}?
-usualAndActualHours.p1 = Actual hours cannot be greater than usual hours.
+usualAndActualHours.p1 = The employee’s usual hours are not always the number of hours they are contracted or rota’d to work in the claim period, or the number of hours you would have expected to be worked.
+usualAndActualHours.p2 = You can calculate the usual hours using the {0}.
+usualAndActualHours.p2.link.text = calculator guidance
+usualAndActualHours.p3 = Actual hours cannot be greater than usual hours.
 usualHours.p1 = Usual hours worked in this period
 usualHours.hint = What would the employee’s usual hours have been? (in decimal format, such as 124.4)
 usualHours.error.nonNumeric = Enter the employee’s usual hours using numbers
@@ -343,7 +347,7 @@ confirmation.breakdown.h3.open.p4.l2=Divide by 66.67.
 confirmation.breakdown.h3.open.p4.l3=Multiply by 61.67 = £{0}.
 
 confirmation.breakdown.h3.p5 = Steps to calculate the total pay amount for employee (hours they were unable to work):
-confirmation.breakdown.h3.closed.p5.l1=Start with £ {0} (the reference salary for the pay period).
+confirmation.breakdown.h3.closed.p5.l1=Start with £{0} (the reference salary for the pay period).
 confirmation.breakdown.h3.closed.p5.l2=Divide by {0} (the number of calendar days in the pay period).
 confirmation.breakdown.h3.closed.p5.l3=Multiply by {0} (the number of days the employee could not work in this pay period).
 confirmation.breakdown.h3.closed.p5.l4=Multiply by 2.
@@ -382,7 +386,7 @@ temporaryWorkingAgreement.error.required = Select yes if the employee had tempor
 
 businessClosed.title = Was your business closed and unable to trade during this claim?
 businessClosed.heading = Was your business closed and unable to trade during this claim?
-businessClosed.p1 = This is called the closed period or when the business was legally required to close its premises due to government restrictions. Employees must have a JSS Closed temporary working agreement. Each closed period must cover a minimum period of seven days. The closed period must be from 1 November 2020 until 31 March 2021. You can add one or more closed periods.
+businessClosed.p1 = This is called the closed period or when the business was legally required to close its premises due to government restrictions. Employees must have a JSS Closed temporary working agreement. Each closed period must cover a minimum period of seven days. Closed periods must be between 1st November 2020 and 31st March 2021. You can add one or more closed periods.
 businessClosed.yes = Yes
 businessClosed.no = No
 businessClosed.error.required = Select yes if your business closed and unable to trade during this claim
@@ -415,7 +419,7 @@ addMore.yes = Yes
 addMore.no = No
 businessClosedPeriods.title = Enter the periods when your business was closed
 businessClosedPeriods.heading = Enter the periods when your business was closed
-businessClosedPeriods.p1 = This is called the closed period or when the business was legally required to close its premises due to government restrictions. Each closed period must cover a minimum period of seven days. The closed period must be from 1 November 2020 until 31 March 2021. You can add one or more closed periods.
+businessClosedPeriods.p1 = This is called the closed period or when the business was legally required to close its premises due to government restrictions. Each closed period must cover a minimum period of seven days. Closed periods must be between 1st November 2020 and 31st March 2021. You can add one or more closed periods.
 businessClosedPeriods.startDate.label = Start date
 businessClosedPeriods.endDate.label = End date
 businessClosedPeriods.startDate.hint = For example, 1 11 2020

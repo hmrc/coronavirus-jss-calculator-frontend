@@ -15,6 +15,7 @@
  *@
 
 @import java.time.LocalDate
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
 
 @this(
         govukLayout: templates.GovukLayoutWrapper,
@@ -22,7 +23,9 @@
         errorSummary: components.errorSummary,
         inputNumber: components.inputNumber,
         h1: components.h1,
-        button: components.button
+        button: components.button,
+        p: components.p,
+        hmrcNewTabLink : HmrcNewTabLink
 )
 
 @(form: Form[_], idx: Int, startDate: LocalDate, endDate: LocalDate)(implicit request: Request[_], messages: Messages)
@@ -36,6 +39,17 @@
         @h1(messages("usualAndActualHours.heading", dateToStringWithoutYear(startDate), dateToString(endDate)))
 
         <p class="govuk-body">@messages("usualAndActualHours.p1")</p>
+
+        @p(Html(messages("usualAndActualHours.p2",
+          hmrcNewTabLink(NewTabLink(
+            text = messages("usualAndActualHours.p2.link.text"),
+            href = Some("https://www.gov.uk/guidance/calculate-how-much-you-can-claim-through-the-job-support-scheme"),
+            language = Some("en"),
+            classList = Some("")
+          ))
+        )))
+
+        <p class="govuk-body">@messages("usualAndActualHours.p3")</p>
 
         @inputNumber(
             form,
