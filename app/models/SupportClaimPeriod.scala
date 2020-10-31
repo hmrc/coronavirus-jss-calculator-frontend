@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import play.api.libs.json.{Json, OFormat}
 
-case class SupportClaimPeriod(startDate: LocalDate, endDate: LocalDate)
+final case class SupportClaimPeriod(startDate: LocalDate, endDate: LocalDate)
 
 object SupportClaimPeriod {
   implicit val format: OFormat[SupportClaimPeriod] = Json.format[SupportClaimPeriod]

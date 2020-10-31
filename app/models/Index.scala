@@ -18,7 +18,7 @@ package models
 
 import play.api.mvc.PathBindable
 
-case class Index(position: Int) {
+final case class Index(position: Int) {
   val display: Int = position + 1
 }
 

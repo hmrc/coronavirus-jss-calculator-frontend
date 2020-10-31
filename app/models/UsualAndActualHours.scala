@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class UsualAndActualHours(usualHours: Double, actualHours: Double)
+final case class UsualAndActualHours(usualHours: Double, actualHours: Double)
 
 object UsualAndActualHours {
   implicit val format: OFormat[UsualAndActualHours] = Json.format

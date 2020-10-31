@@ -26,10 +26,6 @@ import utils.MoneyUtils.round
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 
-//TODO: put calculations in Try to catch exceptions
-//TODO: add logging
-//TODO: prevent calculations of closed if no closed period
-//TODO: we need a UI constraint which prevents overlapping TWAs or BCs otherwise we will overcompensate for the calculation to compute the number of TWAs or BCs in PP
 trait RegularPayGrantCalculator {
 
   def calculateJobSupport(
@@ -669,8 +665,6 @@ trait RegularPayGrantCalculator {
       isBusinessClosedPeriodInPayPeriod(payPeriod, businessClosedPeriod)
     )
 
-  //TODO: check if this is not eliminating valid TWAs
-  // this will get all the TWAs inside this PP but also will only return that portion of the TWA inside the PP, otherwise the splicing function won't work as expect as the dates for the TWA will be outside the PP
   def getAllTemporaryWorkingAgreementsInThisPayPeriod(
     payPeriod: PayPeriod,
     temporaryWorkingAgreementPeriods: List[TemporaryWorkingAgreementPeriod]
