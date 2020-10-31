@@ -22,7 +22,7 @@ import javax.inject.Inject
 import models.PayPeriods.writes
 import models.{Period, UserAnswers}
 import navigation.Navigator
-import pages.{ClaimPeriodPage, LastPayDatePage, PayFrequencyPage, PayPeriodsPage}
+import pages._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -73,12 +73,15 @@ class PayPeriodsController @Inject() (
     val maybeClaimPeriod  = userAnswers.get(ClaimPeriodPage)
     val maybePayFrequency = userAnswers.get(PayFrequencyPage)
     val maybeLastPayDay   = userAnswers.get(LastPayDatePage)
+    val maybeEndPayDay    = userAnswers.get(EndPayDatePage)
 
-    (maybeClaimPeriod, maybePayFrequency, maybeLastPayDay) match {
-      case (Some(cp), Some(pf), Some(lpd)) => result(getPayPeriods(lpd, pf, cp.supportClaimPeriod))
-      case (None, _, _)                    => Redirect(routes.ClaimPeriodController.onPageLoad())
-      case (_, None, _)                    => Redirect(routes.PayFrequencyController.onPageLoad())
-      case (_, _, None)                    => Redirect(routes.LastPayDateController.onPageLoad())
+    (maybeClaimPeriod, maybePayFrequency, maybeLastPayDay, maybeEndPayDay) match {
+      case (Some(claimPeriod), Some(payFrequency), Some(lastPayDay), Some(endPayDay)) =>
+        result(getPayPeriods(lastPayDay, Some(endPayDay), payFrequency, claimPeriod.supportClaimPeriod))
+      case (None, _, _, _)                                                            => Redirect(routes.ClaimPeriodController.onPageLoad())
+      case (_, None, _, _)                                                            => Redirect(routes.PayFrequencyController.onPageLoad())
+      case (_, _, None, _)                                                            => Redirect(routes.LastPayDateController.onPageLoad())
+      case (_, _, _, None)                                                            => Redirect(routes.EndPayDateController.onPageLoad())
     }
   }
 }
