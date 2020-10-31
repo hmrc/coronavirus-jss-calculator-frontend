@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.ShortTermWorkingAgreementPeriodFormProvider
 import javax.inject.Inject
-import models.{NormalMode, TemporaryWorkingAgreementPeriod, UserAnswers}
+import models.{TemporaryWorkingAgreementPeriod, UserAnswers}
 import navigation.Navigator
 import pages.ShortTermWorkingAgreementPeriodPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,8 +34,8 @@ import scala.util.Try
 
 class ShortTermWorkingAgreementPeriodController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  navigator: Navigator,
+  val sessionRepository: SessionRepository,
+  val navigator: Navigator,
   getSession: GetSessionAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
@@ -45,7 +45,8 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
   config: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with ControllerHelper {
 
   private def form(previousTWAPeriod: Seq[TemporaryWorkingAgreementPeriod]) =
     formProvider(previousTWAPeriod)
@@ -72,13 +73,7 @@ class ShortTermWorkingAgreementPeriodController @Inject() (
           value => {
             var updatedAnswers = request.userAnswers.set(ShortTermWorkingAgreementPeriodPage, value, Some(idx))
             updatedAnswers = invalidateList(updatedAnswers, idx)
-            for {
-              updatedAnswers <-
-                Future.fromTry(updatedAnswers)
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(
-              navigator.nextPage(ShortTermWorkingAgreementPeriodPage, NormalMode, updatedAnswers, Some(idx))
-            )
+            saveAndRedirect(ShortTermWorkingAgreementPeriodPage, updatedAnswers, Some(idx))
           }
         )
   }
