@@ -123,7 +123,6 @@ trait RegularPayGrantCalculator {
     val totalNumberOfTemporaryWorkingAgreementDaysInAPayPeriod =
       getTotalNumberOfTemporaryWorkingAgreementDaysInPayPeriod(payPeriod, temporaryWorkingAgreementPeriods)
 
-    println(s"\n Number of TWA days in PP: $totalNumberOfTemporaryWorkingAgreementDaysInAPayPeriod")
     val numberOfDaysInPayFrequency = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
 
     if (
