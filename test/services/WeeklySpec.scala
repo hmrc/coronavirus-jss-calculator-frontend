@@ -91,6 +91,7 @@ class WeeklySpec extends SpecBase {
         )
 
         maybeJobSupport.map { jobSupport =>
+          println(s"\n $jobSupport")
           jobSupport.totalEmployeeSalary mustEqual 268.59
           jobSupport.totalEmployersGrant mustEqual 248.45
           jobSupport.totalClosed mustEqual 400.02

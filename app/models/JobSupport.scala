@@ -24,26 +24,28 @@ final case class OpenJobSupport(
   usualHours: Double,
   actualHours: Double,
   salary: Double,
-  grant: Double
+  grant: Double,
+  isCalculated: Boolean
 )
 
 object OpenJobSupport {
   implicit val format: Format[OpenJobSupport] = Json.format
-  val zeroFinancialSupport: OpenJobSupport    = OpenJobSupport(0, 0.0, 0.0, 0.0, 0.0)
+  val zeroFinancialSupport: OpenJobSupport    = OpenJobSupport(0, 0.0, 0.0, 0.0, 0.0, isCalculated = false)
 }
 
 final case class ClosedJobSupport(
   numberOfClosedDaysInPayPeriod: Int,
-  grant: Double
+  grant: Double,
+  isCalculated: Boolean
 )
 
 object ClosedJobSupport {
   implicit val format: Format[ClosedJobSupport] = Json.format
-  val zeroFinancialSupport: ClosedJobSupport    = ClosedJobSupport(0, 0.0)
+  val zeroFinancialSupport: ClosedJobSupport    = ClosedJobSupport(0, 0.0, isCalculated = false)
 }
 
 final case class JobSupport(
-  supportBreakdowns: List[SupportBreakdown],
+  payPeriodSupportBreakdowns: List[PayPeriodSupportBreakdown],
   referenceSalary: Double
 )
 
@@ -52,28 +54,30 @@ object JobSupport {
   implicit class JobSupportOps(private val jobSupport: JobSupport) {
 
     def totalActualHours: Double = round(
-      jobSupport.supportBreakdowns.map(supportBreakdown => supportBreakdown.open.actualHours).sum
+      jobSupport.payPeriodSupportBreakdowns.map(supportBreakdown => supportBreakdown.open.actualHours).sum
     )
 
     def totalUsualHours: Double = round(
-      jobSupport.supportBreakdowns.map(supportBreakdown => supportBreakdown.open.usualHours).sum
+      jobSupport.payPeriodSupportBreakdowns.map(supportBreakdown => supportBreakdown.open.usualHours).sum
     )
 
     def isIneligible: Boolean = (totalActualHours / totalUsualHours) < 0.20
 
     def totalEmployeeSalary: Double = round(
-      jobSupport.supportBreakdowns.map(supportBreakdown => supportBreakdown.open.salary).sum
+      jobSupport.payPeriodSupportBreakdowns.map(supportBreakdown => supportBreakdown.open.salary).sum
     )
 
     def totalEmployersGrant: Double = round(
-      jobSupport.supportBreakdowns.map(supportBreakdown => supportBreakdown.open.grant).sum
+      jobSupport.payPeriodSupportBreakdowns.map(supportBreakdown => supportBreakdown.open.grant).sum
     )
 
     def totalClosed: Double = round(
-      jobSupport.supportBreakdowns.map(supportBreakdown => supportBreakdown.closed.grant).sum
+      jobSupport.payPeriodSupportBreakdowns.map(supportBreakdown => supportBreakdown.closed.grant).sum
     )
 
     def totalGrant: Double = round(totalEmployersGrant + totalClosed)
+
+    def hasJobSupport: Boolean = totalGrant > 0.0
 
   }
 
