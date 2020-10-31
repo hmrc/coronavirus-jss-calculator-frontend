@@ -21,7 +21,6 @@ import java.time.LocalDate
 import controllers.actions._
 import forms.EndPayDateFormProvider
 import javax.inject.Inject
-import models.NormalMode
 import navigation.Navigator
 import pages.{ClaimPeriodPage, EndPayDatePage, LastPayDatePage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -34,8 +33,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EndPayDateController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  navigator: Navigator,
+  val sessionRepository: SessionRepository,
+  val navigator: Navigator,
   getSession: GetSessionAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
@@ -44,7 +43,8 @@ class EndPayDateController @Inject() (
   view: EndPayDateView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with ControllerHelper {
 
   private def form(lastPayDate: LocalDate, claimStartDate: LocalDate, claimEnd: LocalDate)(implicit
     messages: Messages
@@ -74,11 +74,7 @@ class EndPayDateController @Inject() (
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lastPayDate))),
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(EndPayDatePage, value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(EndPayDatePage, NormalMode, updatedAnswers))
+            value => saveAndRedirect(EndPayDatePage, request.userAnswers.set(EndPayDatePage, value))
           )
 
       case (None, _) => Future.successful(Redirect(routes.LastPayDateController.onPageLoad()))

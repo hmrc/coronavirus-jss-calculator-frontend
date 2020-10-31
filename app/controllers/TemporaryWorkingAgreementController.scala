@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.TemporaryWorkingAgreementFormProvider
 import javax.inject.Inject
-import models.NormalMode
+import models.TemporaryWorkingAgreement.writes
 import navigation.Navigator
 import pages.TemporaryWorkingAgreementPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,14 +27,13 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.TemporaryWorkingAgreementView
-import models.TemporaryWorkingAgreement.writes
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class TemporaryWorkingAgreementController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  navigator: Navigator,
+  val sessionRepository: SessionRepository,
+  val navigator: Navigator,
   getSession: GetSessionAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
@@ -43,7 +42,8 @@ class TemporaryWorkingAgreementController @Inject() (
   view: TemporaryWorkingAgreementView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with ControllerHelper {
 
   private val form = formProvider()
 
@@ -62,10 +62,7 @@ class TemporaryWorkingAgreementController @Inject() (
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(TemporaryWorkingAgreementPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TemporaryWorkingAgreementPage, NormalMode, updatedAnswers))
+          saveAndRedirect(TemporaryWorkingAgreementPage, request.userAnswers.set(TemporaryWorkingAgreementPage, value))
       )
   }
 }

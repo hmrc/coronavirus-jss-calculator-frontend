@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.BusinessClosedPeriodsFormProvider
 import javax.inject.Inject
-import models.{BusinessClosedPeriod, NormalMode, SupportClaimPeriod, UserAnswers}
+import models.{BusinessClosedPeriod, SupportClaimPeriod, UserAnswers}
 import navigation.Navigator
 import pages.{BusinessClosedPeriodsPage, ClaimPeriodPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,8 +34,8 @@ import scala.util.Try
 
 class BusinessClosedPeriodsController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  navigator: Navigator,
+  val sessionRepository: SessionRepository,
+  val navigator: Navigator,
   getSession: GetSessionAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
@@ -45,7 +45,8 @@ class BusinessClosedPeriodsController @Inject() (
   config: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with ControllerHelper {
 
   private def form(previousBCPeriods: Seq[BusinessClosedPeriod], claimPeriod: SupportClaimPeriod) =
     formProvider(previousBCPeriods)
@@ -80,10 +81,7 @@ class BusinessClosedPeriodsController @Inject() (
               value => {
                 var updatedAnswers = request.userAnswers.set(BusinessClosedPeriodsPage, value, Some(idx))
                 updatedAnswers = invalidateList(updatedAnswers, idx)
-                for {
-                  updatedAnswers <- Future.fromTry(updatedAnswers)
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(BusinessClosedPeriodsPage, NormalMode, updatedAnswers, Some(idx)))
+                saveAndRedirect(BusinessClosedPeriodsPage, updatedAnswers, Some(idx))
               }
             )
         case None     => Future.successful(Redirect(routes.ClaimPeriodController.onPageLoad()))

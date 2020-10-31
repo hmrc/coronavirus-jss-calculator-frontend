@@ -19,7 +19,8 @@ package controllers
 import controllers.actions._
 import forms.PayPeriodsFormProvider
 import javax.inject.Inject
-import models.{NormalMode, Period, UserAnswers}
+import models.PayPeriods.writes
+import models.{Period, UserAnswers}
 import navigation.Navigator
 import pages.{ClaimPeriodPage, LastPayDatePage, PayFrequencyPage, PayPeriodsPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -28,14 +29,13 @@ import repositories.SessionRepository
 import services.PeriodHelper
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.PayPeriodsView
-import models.PayPeriods.writes
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class PayPeriodsController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  navigator: Navigator,
+  val sessionRepository: SessionRepository,
+  val navigator: Navigator,
   getSession: GetSessionAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
@@ -45,7 +45,8 @@ class PayPeriodsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
-    with PeriodHelper {
+    with PeriodHelper
+    with ControllerHelper {
 
   private val form = formProvider()
 
@@ -64,11 +65,7 @@ class PayPeriodsController @Inject() (
       .fold(
         formWithErrors =>
           Future.successful(handleRequest(request.userAnswers, periods => BadRequest(view(formWithErrors, periods)))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PayPeriodsPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PayPeriodsPage, NormalMode, updatedAnswers))
+        value => saveAndRedirect(PayPeriodsPage, request.userAnswers.set(PayPeriodsPage, value))
       )
   }
 

@@ -19,7 +19,6 @@ package controllers
 import controllers.actions._
 import forms.RegularPayAmountFormProvider
 import javax.inject.Inject
-import models.NormalMode
 import navigation.Navigator
 import pages.{LastPayDatePage, RegularPayAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -32,8 +31,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RegularPayAmountController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  navigator: Navigator,
+  val sessionRepository: SessionRepository,
+  val navigator: Navigator,
   getSession: GetSessionAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
@@ -42,7 +41,8 @@ class RegularPayAmountController @Inject() (
   view: RegularPayAmountView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with ControllerHelper {
 
   private val form = formProvider()
 
@@ -69,11 +69,7 @@ class RegularPayAmountController @Inject() (
           }
           Future.successful(result)
         },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(RegularPayAmountPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(RegularPayAmountPage, NormalMode, updatedAnswers))
+        value => saveAndRedirect(RegularPayAmountPage, request.userAnswers.set(RegularPayAmountPage, value))
       )
   }
 }

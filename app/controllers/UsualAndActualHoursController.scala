@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.UsualAndActualHoursFormProvider
 import javax.inject.Inject
-import models.{NormalMode, PayPeriod, Period, SupportClaimPeriod, UserAnswers, UsualAndActualHours}
+import models.{PayPeriod, Period, SupportClaimPeriod, UserAnswers, UsualAndActualHours}
 import navigation.Navigator
 import pages._
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -33,8 +33,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UsualAndActualHoursController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  navigator: Navigator,
+  val sessionRepository: SessionRepository,
+  val navigator: Navigator,
   getSession: GetSessionAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
@@ -44,7 +44,8 @@ class UsualAndActualHoursController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with RegularPayGrantCalculator
-    with I18nSupport {
+    with I18nSupport
+    with ControllerHelper {
 
   private val form = formProvider()
 
@@ -64,13 +65,9 @@ class UsualAndActualHoursController @Inject() (
             Future.successful(Ok(view(preparedForm, idx, startDateToShow, endDateToShow)))
           } else {
             //work period not eligible for hours page - store 0.0 hours in mongo and proceed to next page in the loop
-            for {
-              updatedAnswers <-
-                Future.fromTry(
-                  request.userAnswers.set(UsualAndActualHoursPage, UsualAndActualHours(0.0, 0.0), Some(idx))
-                )
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(UsualAndActualHoursPage, NormalMode, updatedAnswers, Some(idx)))
+            val updatedAnswers =
+              request.userAnswers.set(UsualAndActualHoursPage, UsualAndActualHours(0.0, 0.0), Some(idx))
+            saveAndRedirect(UsualAndActualHoursPage, updatedAnswers, Some(idx))
           }
         case None     => Future.successful(Redirect(routes.ClaimPeriodController.onPageLoad()))
       }
@@ -88,11 +85,10 @@ class UsualAndActualHoursController @Inject() (
                   getStartAndEndDatesToShow(cp.supportClaimPeriod, getWorkPeriodAtIdx(idx, request.userAnswers))
                 Future.successful(BadRequest(view(formWithErrors, idx, startDateToShow, endDateToShow)))
               },
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(UsualAndActualHoursPage, value, Some(idx)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(UsualAndActualHoursPage, NormalMode, updatedAnswers, Some(idx)))
+              value => {
+                val updatedAnswers = request.userAnswers.set(UsualAndActualHoursPage, value, Some(idx))
+                saveAndRedirect(UsualAndActualHoursPage, updatedAnswers, Some(idx))
+              }
             )
         case None     => Future.successful(Redirect(routes.ClaimPeriodController.onPageLoad()))
       }

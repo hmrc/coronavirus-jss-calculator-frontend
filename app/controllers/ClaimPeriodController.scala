@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.ClaimPeriodFormProvider
 import javax.inject.Inject
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import navigation.Navigator
 import pages.ClaimPeriodPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -28,14 +28,13 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ClaimPeriodView
-import models.ClaimPeriod.writes
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ClaimPeriodController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  navigator: Navigator,
+  val sessionRepository: SessionRepository,
+  val navigator: Navigator,
   getSession: GetSessionAction,
   getData: DataRetrievalAction,
   formProvider: ClaimPeriodFormProvider,
@@ -43,7 +42,8 @@ class ClaimPeriodController @Inject() (
   view: ClaimPeriodView
 )(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with ControllerHelper {
 
   private def form = formProvider()
 
@@ -66,11 +66,9 @@ class ClaimPeriodController @Inject() (
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         value =>
-          for {
-            _              <- sessionRepository.clear(request.identifier)
-            updatedAnswers <- Future.fromTry(UserAnswers(request.identifier).set(ClaimPeriodPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ClaimPeriodPage, NormalMode, updatedAnswers))
+          sessionRepository
+            .clear(request.identifier)
+            .flatMap(_ => saveAndRedirect(ClaimPeriodPage, UserAnswers(request.identifier).set(ClaimPeriodPage, value)))
       )
   }
 }

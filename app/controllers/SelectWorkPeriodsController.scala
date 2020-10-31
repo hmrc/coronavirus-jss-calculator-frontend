@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.SelectWorkPeriodsFormProvider
 import javax.inject.Inject
-import models.{NormalMode, Period, UserAnswers}
+import models.{Period, UserAnswers}
 import navigation.Navigator
 import pages.{ClaimPeriodPage, LastPayDatePage, PayFrequencyPage, SelectWorkPeriodsPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -33,8 +33,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SelectWorkPeriodsController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  navigator: Navigator,
+  val sessionRepository: SessionRepository,
+  val navigator: Navigator,
   getSession: GetSessionAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
@@ -44,7 +44,8 @@ class SelectWorkPeriodsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
-    with PeriodHelper {
+    with PeriodHelper
+    with ControllerHelper {
 
   private val form = formProvider()
 
@@ -57,7 +58,7 @@ class SelectWorkPeriodsController @Inject() (
       request.userAnswers,
       periods =>
         if (periods.length == 1) {
-          saveAndRedirect(request.userAnswers, periods)
+          saveAndRedirect(SelectWorkPeriodsPage, request.userAnswers.set(SelectWorkPeriodsPage, periods))
         } else {
           Future.successful(Ok(view(preparedForm, periods)))
         }
@@ -70,7 +71,7 @@ class SelectWorkPeriodsController @Inject() (
       .fold(
         formWithErrors =>
           getView(request.userAnswers, periods => Future.successful(BadRequest(view(formWithErrors, periods)))),
-        value => saveAndRedirect(request.userAnswers, value)
+        value => saveAndRedirect(SelectWorkPeriodsPage, request.userAnswers.set(SelectWorkPeriodsPage, value))
       )
   }
 
@@ -86,10 +87,4 @@ class SelectWorkPeriodsController @Inject() (
       case (_, _, None)                    => Future.successful(Redirect(routes.LastPayDateController.onPageLoad()))
     }
   }
-
-  private def saveAndRedirect(userAnswers: UserAnswers, periods: List[Period]) =
-    for {
-      updatedAnswers <- Future.fromTry(userAnswers.set(SelectWorkPeriodsPage, periods))
-      _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(SelectWorkPeriodsPage, NormalMode, updatedAnswers))
 }

@@ -19,7 +19,6 @@ package controllers
 import controllers.actions._
 import forms.BusinessClosedFormProvider
 import javax.inject.Inject
-import models.NormalMode
 import navigation.Navigator
 import pages.BusinessClosedPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,14 +26,13 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.BusinessClosedView
-//import models.BusinessClosed.writes
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessClosedController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  navigator: Navigator,
+  val sessionRepository: SessionRepository,
+  val navigator: Navigator,
   getSession: GetSessionAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
@@ -43,7 +41,8 @@ class BusinessClosedController @Inject() (
   view: BusinessClosedView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with ControllerHelper {
 
   private val form = formProvider()
 
@@ -61,11 +60,7 @@ class BusinessClosedController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessClosedPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessClosedPage, NormalMode, updatedAnswers))
+        value => saveAndRedirect(BusinessClosedPage, request.userAnswers.set(BusinessClosedPage, value))
       )
   }
 }
