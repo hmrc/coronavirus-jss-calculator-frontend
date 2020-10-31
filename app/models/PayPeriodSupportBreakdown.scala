@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import play.api.libs.json.{Format, Json}
 
-final case class SupportBreakdown(
+final case class PayPeriodSupportBreakdown(
   startDate: LocalDate,
   endDate: LocalDate,
   daysInPeriod: Int,
@@ -28,6 +28,6 @@ final case class SupportBreakdown(
   closed: ClosedJobSupport
 )
 
-object SupportBreakdown {
-  implicit val format: Format[SupportBreakdown] = Json.format
+object PayPeriodSupportBreakdown {
+  implicit val format: Format[PayPeriodSupportBreakdown] = Json.format
 }

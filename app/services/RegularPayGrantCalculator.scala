@@ -20,7 +20,7 @@ import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 import models.PayFrequency.{FortNightly, FourWeekly, Monthly, Weekly}
-import models.{BusinessClosedPeriod, ClosedJobSupport, Interval, JobSupport, OpenJobSupport, PayFrequency, PayPeriod, SupportBreakdown, SupportClaimPeriod, TemporaryWorkingAgreementPeriod}
+import models.{BusinessClosedPeriod, ClosedJobSupport, Interval, JobSupport, OpenJobSupport, PayFrequency, PayPeriod, PayPeriodSupportBreakdown, SupportClaimPeriod, TemporaryWorkingAgreementPeriod}
 import utils.MoneyUtils.round
 
 import scala.collection.mutable.ListBuffer
@@ -40,7 +40,7 @@ trait RegularPayGrantCalculator {
     val sortedTWAList = sortedTemporaryWorkingAgreements(temporaryWorkingAgreementPeriods)
     val sortedBCList  = sortedBusinessClosedPeriods(businessClosedPeriods)
 
-    val supportBreakdowns: List[Option[SupportBreakdown]] = payPeriods.map { payPeriod =>
+    val supportBreakdowns: List[Option[PayPeriodSupportBreakdown]] = payPeriods.map { payPeriod =>
       val numberOfTemporaryWorkingAgreementDaysInPayPeriod =
         getTotalNumberOfTemporaryWorkingAgreementDaysInPayPeriod(
           payPeriod,
@@ -86,7 +86,7 @@ trait RegularPayGrantCalculator {
       (maybeOpenJobSupport, maybeClosedJobSupport) match {
         case (Some(openJobSupport), Some(closedJobSupport)) =>
           Some(
-            SupportBreakdown(
+            PayPeriodSupportBreakdown(
               payPeriod.startDate,
               payPeriod.endDate,
               getNumberOfDaysInPayFrequency(payFrequency, payPeriod),
@@ -122,7 +122,9 @@ trait RegularPayGrantCalculator {
 
     val totalNumberOfTemporaryWorkingAgreementDaysInAPayPeriod =
       getTotalNumberOfTemporaryWorkingAgreementDaysInPayPeriod(payPeriod, temporaryWorkingAgreementPeriods)
-    val numberOfDaysInPayFrequency                             = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
+
+    println(s"\n Number of TWA days in PP: $totalNumberOfTemporaryWorkingAgreementDaysInAPayPeriod")
+    val numberOfDaysInPayFrequency = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
 
     if (
       temporaryWorkingAgreementPeriods.isEmpty || isPayPeriodCompletelyCoveredByBusinessClosedPeriod(
@@ -221,7 +223,8 @@ trait RegularPayGrantCalculator {
             payPeriod.usualHours,
             payPeriod.actualHours,
             round(support._1),
-            round(support._2)
+            round(support._2),
+            true
           )
         )
     }
@@ -232,17 +235,17 @@ trait RegularPayGrantCalculator {
     businessClosedPeriods: List[BusinessClosedPeriod],
     payFrequency: PayFrequency,
     referencePay: Double,
-    newCalcFlag: Boolean
+    usePayFrequencyCap: Boolean
   ): Option[ClosedJobSupport] =
     if (businessClosedPeriods.nonEmpty) {
-
       Try {
+
         val numberOfClosedDaysInPayPeriod      = getTotalNumberOfClosedDaysInAPayPeriod(payPeriod, businessClosedPeriods)
         val numberOfPayPeriodDaysInClaimPeriod = getNumberOfPayPeriodDaysInClaimDays(payPeriod, supportClaimPeriod)
         val numberOfDaysInPayFrequency         = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
 
         val referencePayCap = {
-          if (newCalcFlag) {
+          if (usePayFrequencyCap) {
             scala.math.min(referencePay, newCalculateReferencePayCap(payFrequency))
           } else {
             calculateReferencePayCap(
@@ -266,7 +269,7 @@ trait RegularPayGrantCalculator {
       } match {
         case Failure(_)       => None
         case Success(support) =>
-          Some(ClosedJobSupport(support._1, support._2))
+          Some(ClosedJobSupport(support._1, support._2, isCalculated = true))
       }
     } else {
       Some(ClosedJobSupport.zeroFinancialSupport)
@@ -963,85 +966,85 @@ trait RegularPayGrantCalculator {
     }
 
   def calculateNumberOfTemporaryWorkingAgreementDaysInPayPeriod(
-    periodWithHours: PayPeriod,
-    temporaryWorkingAgreementWithDates: TemporaryWorkingAgreementPeriod
+    payPeriod: PayPeriod,
+    temporaryWorkingAgreementPeriod: TemporaryWorkingAgreementPeriod
   ): Int =
     if (
-      (temporaryWorkingAgreementWithDates.startDate.isEqual(
-        temporaryWorkingAgreementWithDates.endDate
-      ) && temporaryWorkingAgreementWithDates.startDate.isEqual(periodWithHours.startDate))
+      (temporaryWorkingAgreementPeriod.startDate.isEqual(
+        temporaryWorkingAgreementPeriod.endDate
+      ) && temporaryWorkingAgreementPeriod.startDate.isEqual(payPeriod.startDate))
       ||
-      temporaryWorkingAgreementWithDates.endDate.isEqual(periodWithHours.startDate)
+      temporaryWorkingAgreementPeriod.endDate.isEqual(payPeriod.startDate)
       ||
-      temporaryWorkingAgreementWithDates.startDate.isEqual(periodWithHours.endDate)
+      temporaryWorkingAgreementPeriod.startDate.isEqual(payPeriod.endDate)
     )
       1
     else if (
-      temporaryWorkingAgreementWithDates.startDate.isBefore(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isAfter(periodWithHours.endDate)
+      temporaryWorkingAgreementPeriod.startDate.isBefore(
+        payPeriod.startDate
+      ) && temporaryWorkingAgreementPeriod.endDate.isAfter(payPeriod.endDate)
       ||
-      temporaryWorkingAgreementWithDates.startDate.isBefore(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isEqual(periodWithHours.endDate)
+      temporaryWorkingAgreementPeriod.startDate.isBefore(
+        payPeriod.startDate
+      ) && temporaryWorkingAgreementPeriod.endDate.isEqual(payPeriod.endDate)
       ||
-      temporaryWorkingAgreementWithDates.startDate.isEqual(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isEqual(periodWithHours.endDate)
+      temporaryWorkingAgreementPeriod.startDate.isEqual(
+        payPeriod.startDate
+      ) && temporaryWorkingAgreementPeriod.endDate.isEqual(payPeriod.endDate)
       ||
-      temporaryWorkingAgreementWithDates.startDate.isEqual(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isAfter(periodWithHours.endDate)
-    ) ChronoUnit.DAYS.between(periodWithHours.startDate, periodWithHours.endDate).toInt + 1
+      temporaryWorkingAgreementPeriod.startDate.isEqual(
+        payPeriod.startDate
+      ) && temporaryWorkingAgreementPeriod.endDate.isAfter(payPeriod.endDate)
+    ) ChronoUnit.DAYS.between(payPeriod.startDate, payPeriod.endDate).toInt + 1
     else if (
-      temporaryWorkingAgreementWithDates.startDate.isBefore(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isBefore(periodWithHours.endDate)
+      temporaryWorkingAgreementPeriod.startDate.isBefore(
+        payPeriod.startDate
+      ) && temporaryWorkingAgreementPeriod.endDate.isBefore(payPeriod.endDate)
     ) {
-      ChronoUnit.DAYS.between(periodWithHours.startDate, temporaryWorkingAgreementWithDates.endDate).toInt + 1
+      ChronoUnit.DAYS.between(payPeriod.startDate, temporaryWorkingAgreementPeriod.endDate).toInt + 1
     } else if (
-      temporaryWorkingAgreementWithDates.startDate.isEqual(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isBefore(periodWithHours.endDate)
+      temporaryWorkingAgreementPeriod.startDate.isEqual(
+        payPeriod.startDate
+      ) && temporaryWorkingAgreementPeriod.endDate.isBefore(payPeriod.endDate)
     ) {
-      ChronoUnit.DAYS.between(periodWithHours.startDate, temporaryWorkingAgreementWithDates.endDate).toInt + 1
+      ChronoUnit.DAYS.between(payPeriod.startDate, temporaryWorkingAgreementPeriod.endDate).toInt + 1
     } else if (
-      temporaryWorkingAgreementWithDates.startDate.isAfter(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isBefore(periodWithHours.endDate)
+      temporaryWorkingAgreementPeriod.startDate.isAfter(
+        payPeriod.startDate
+      ) && temporaryWorkingAgreementPeriod.endDate.isBefore(payPeriod.endDate)
     ) {
       ChronoUnit.DAYS
-        .between(temporaryWorkingAgreementWithDates.startDate, temporaryWorkingAgreementWithDates.endDate)
+        .between(temporaryWorkingAgreementPeriod.startDate, temporaryWorkingAgreementPeriod.endDate)
         .toInt + 1
     } else if (
-      temporaryWorkingAgreementWithDates.startDate.isAfter(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isEqual(periodWithHours.endDate)
+      temporaryWorkingAgreementPeriod.startDate.isAfter(
+        payPeriod.startDate
+      ) && temporaryWorkingAgreementPeriod.endDate.isEqual(payPeriod.endDate)
     ) {
       ChronoUnit.DAYS
-        .between(temporaryWorkingAgreementWithDates.startDate, temporaryWorkingAgreementWithDates.endDate)
+        .between(temporaryWorkingAgreementPeriod.startDate, temporaryWorkingAgreementPeriod.endDate)
         .toInt + 1
 
     } else if (
-      temporaryWorkingAgreementWithDates.startDate.isAfter(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isAfter(periodWithHours.endDate)
+      temporaryWorkingAgreementPeriod.startDate.isAfter(
+        payPeriod.startDate
+      ) && temporaryWorkingAgreementPeriod.endDate.isAfter(payPeriod.endDate)
     ) {
-      ChronoUnit.DAYS.between(temporaryWorkingAgreementWithDates.startDate, periodWithHours.endDate).toInt + 1
+      ChronoUnit.DAYS.between(temporaryWorkingAgreementPeriod.startDate, payPeriod.endDate).toInt + 1
     } else
       0
 
   def getTotalNumberOfTemporaryWorkingAgreementDaysInPayPeriod(
-    periodWithHours: PayPeriod,
-    temporaryWorkingAgreementWithDates: List[TemporaryWorkingAgreementPeriod]
+    payPeriod: PayPeriod,
+    temporaryWorkingAgreementPeriods: List[TemporaryWorkingAgreementPeriod]
   ): Int = {
     val temporaryWorkingAgreementPeriodsInThisPayPeriod =
-      temporaryWorkingAgreementWithDates.filter(temporaryWorkingAgreementPeriod =>
-        isTemporaryWorkingAgreementPeriodInPayPeriod(periodWithHours, temporaryWorkingAgreementPeriod)
+      temporaryWorkingAgreementPeriods.filter(temporaryWorkingAgreementPeriod =>
+        isTemporaryWorkingAgreementPeriodInPayPeriod(payPeriod, temporaryWorkingAgreementPeriod)
       )
     temporaryWorkingAgreementPeriodsInThisPayPeriod
       .map(temporaryWorkingAgreementPeriod =>
-        calculateNumberOfTemporaryWorkingAgreementDaysInPayPeriod(periodWithHours, temporaryWorkingAgreementPeriod)
+        calculateNumberOfTemporaryWorkingAgreementDaysInPayPeriod(payPeriod, temporaryWorkingAgreementPeriod)
       )
       .sum
   }

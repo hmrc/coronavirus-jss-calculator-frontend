@@ -47,26 +47,27 @@
         </div>
     }
 
-    <div class="govuk-inset-text">
-        @if(jobSupport.totalEmployeeSalary > 0.0) {
-            @p {
-                <span class="govuk-!-font-weight-bold">@messages("confirmation.jss.open.label")</span>
+    @if(jobSupport.hasJobSupport) {
+        <div class="govuk-inset-text">
+            @if(jobSupport.totalEmployeeSalary > 0.0) {
+                @p {
+                    <span class="govuk-!-font-weight-bold">@messages("confirmation.jss.open.label")</span>
+                }
+
+                <p class="govuk-body">@messages("confirmation.jss.open.p1") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalEmployeeSalary.formatted("%.2f")</span></p>
+                <p class="govuk-body">@messages("confirmation.jss.open.p2") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalEmployersGrant.formatted("%.2f")</span></p>
+                <p class="govuk-body">@messages("confirmation.jss.open.p3")</p>
             }
 
-            <p class="govuk-body">@messages("confirmation.jss.open.p1") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalEmployeeSalary.formatted("%.2f")</span></p>
-            <p class="govuk-body">@messages("confirmation.jss.open.p2") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalEmployersGrant.formatted("%.2f")</span></p>
-            <p class="govuk-body">@messages("confirmation.jss.open.p3")</p>
-        }
-
-        @if(jobSupport.totalClosed > 0.0){
-            @p {
-                <span class="govuk-!-font-weight-bold">@messages("confirmation.jss.closed.label")</span>
+            @if(jobSupport.totalClosed > 0.0){
+                @p {
+                    <span class="govuk-!-font-weight-bold">@messages("confirmation.jss.closed.label")</span>
+                }
+                <p class="govuk-body">@messages("confirmation.jss.closed.p1") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalClosed.formatted("%.2f")</span></p>
+                <p class="govuk-body">@messages("confirmation.jss.closed.p3.start") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalClosed.formatted("%.2f")</span> @messages("confirmation.jss.closed.p3.end")</p>
             }
-            <p class="govuk-body">@messages("confirmation.jss.closed.p1") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalClosed.formatted("%.2f")</span></p>
-            <p class="govuk-body">@messages("confirmation.jss.closed.p2") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalClosed.formatted("%.2f")</span></p>
-            <p class="govuk-body">@messages("confirmation.jss.closed.p3.start") <span class="govuk-!-font-weight-bold">&pound;@jobSupport.totalClosed.formatted("%.2f")</span> @messages("confirmation.jss.closed.p3.end")</p>
-        }
-    </div>
+        </div>
+    }
 
     @p {
         <span class="govuk-!-font-weight-bold">@messages("confirmation.calculated.on", dateToString(LocalDate.now()))</span>
@@ -77,7 +78,7 @@
     @h2(Html(messages("confirmation.nextSteps.heading")), classes = Some("govuk-heading-m"))
 
     <ul class="govuk-list govuk-list--number">
-        <li>@messages("confirmation.nextSteps.l1")</li>
+        @if(jobSupport.hasJobSupport) { <li>@messages("confirmation.nextSteps.l1")</li> }
         <li>@messages("confirmation.nextSteps.l2")</li>
     </ul>
 
@@ -93,60 +94,65 @@
             language = Some("en"),
             classList = Some(""))))))
 
-    @for(gfp <- jobSupport.supportBreakdowns) {
-        @h3(Html(messages(
+    @for(payPeriodSupportBreakdown <- jobSupport.payPeriodSupportBreakdowns) {
+
+        @if(payPeriodSupportBreakdown.open.isCalculated) {
+            @h3(Html(messages(
             "confirmation.breakdown.h3",
-            dateToStringWithoutYear(gfp.startDate),
-            dateToString(gfp.endDate)
-        )))
-      
-        @if(gfp.open.grant > 0.0) {
+            dateToStringWithoutYear(payPeriodSupportBreakdown.startDate),
+            dateToString(payPeriodSupportBreakdown.endDate)
+            )))
+
             @p {
                 <span class="govuk-!-font-weight-bold">@messages("confirmation.breakdown.h3.p1")</span>
             }
 
             <ul class="govuk-list govuk-list--number">
                 <li>@messages("confirmation.breakdown.h3.open.p1.l1", jobSupport.referenceSalary.formatted("%.2f"))</li>
-                <li>@messages("confirmation.breakdown.h3.open.p1.l2", gfp.daysInPeriod)</li>
-                <li>@messages("confirmation.breakdown.h3.open.p1.l3", gfp.open.numberOfTemporaryWorkingDaysInPayPeriod)</li>
-                <li>@messages("confirmation.breakdown.h3.open.p1.l4", gfp.open.usualHours.formatted("%.2f"))</li>
-                <li>@messages("confirmation.breakdown.h3.open.p1.l5", (gfp.open.usualHours - gfp.open.actualHours).formatted("%.2f"))</li>
-                <li>@messages("confirmation.breakdown.h3.open.p1.l6", gfp.open.salary.formatted("%.2f"))</li>
+                <li>@messages("confirmation.breakdown.h3.open.p1.l2", payPeriodSupportBreakdown.daysInPeriod)</li>
+                <li>@messages("confirmation.breakdown.h3.open.p1.l3", payPeriodSupportBreakdown.open.numberOfTemporaryWorkingDaysInPayPeriod)</li>
+                <li>@messages("confirmation.breakdown.h3.open.p1.l4", payPeriodSupportBreakdown.open.usualHours.formatted("%.2f"))</li>
+                <li>@messages("confirmation.breakdown.h3.open.p1.l5", (payPeriodSupportBreakdown.open.usualHours - payPeriodSupportBreakdown.open.actualHours).formatted("%.2f"))</li>
+                <li>@messages("confirmation.breakdown.h3.open.p1.l6", payPeriodSupportBreakdown.open.salary.formatted("%.2f"))</li>
             </ul>
 
-            @p {
-                @messages("confirmation.breakdown.h3.p3")
-            }
+            @p { @messages("confirmation.breakdown.h3.p3") }
 
-            @p {
-                <span class="govuk-!-font-weight-bold">@messages("confirmation.breakdown.h3.p4")</span>
-            }
+            @p { <span class="govuk-!-font-weight-bold">@messages("confirmation.breakdown.h3.p4")</span> }
 
             <ul class="govuk-list govuk-list--number">
-                <li>@messages("confirmation.breakdown.h3.open.p4.l1", gfp.open.salary.formatted("%.2f"))</li>
+                <li>@messages("confirmation.breakdown.h3.open.p4.l1", payPeriodSupportBreakdown.open.salary.formatted("%.2f"))</li>
                 <li>@messages("confirmation.breakdown.h3.open.p4.l2")</li>
-                <li>@messages("confirmation.breakdown.h3.open.p4.l3", gfp.open.grant.formatted("%.2f"))</li>
+                <li>@messages("confirmation.breakdown.h3.open.p4.l3", payPeriodSupportBreakdown.open.grant.formatted("%.2f"))</li>
             </ul>
         }
 
-        @if(gfp.closed.grant > 0.0) {
+        @if(payPeriodSupportBreakdown.closed.isCalculated) {
+            @if(!payPeriodSupportBreakdown.open.isCalculated){
+                @h3(Html(messages(
+                "confirmation.breakdown.h3",
+                dateToStringWithoutYear(payPeriodSupportBreakdown.startDate),
+                dateToString(payPeriodSupportBreakdown.endDate)
+                )))
+            }
+
             @p {
                 <span class="govuk-!-font-weight-bold">@messages("confirmation.breakdown.h3.p5")</span>
             }
 
             <ul class="govuk-list govuk-list--number">
                 <li>@messages("confirmation.breakdown.h3.closed.p5.l1", jobSupport.referenceSalary.formatted("%.2f"))</li>
-                <li>@messages("confirmation.breakdown.h3.closed.p5.l2", gfp.closed.numberOfClosedDaysInPayPeriod)</li>
-                <li>@messages("confirmation.breakdown.h3.closed.p5.l3", gfp.closed.numberOfClosedDaysInPayPeriod)</li>
+                <li>@messages("confirmation.breakdown.h3.closed.p5.l2", payPeriodSupportBreakdown.daysInPeriod)</li>
+                <li>@messages("confirmation.breakdown.h3.closed.p5.l3", payPeriodSupportBreakdown.closed.numberOfClosedDaysInPayPeriod)</li>
                 <li>@messages("confirmation.breakdown.h3.closed.p5.l4")</li>
-                <li>@messages("confirmation.breakdown.h3.closed.p5.l5", gfp.closed.grant.formatted("%.2f"))</li>
+                <li>@messages("confirmation.breakdown.h3.closed.p5.l5", payPeriodSupportBreakdown.closed.grant.formatted("%.2f"))</li>
             </ul>
 
             @p {
-                @messages("confirmation.breakdown.h3.closed.p6", gfp.closed.grant.formatted("%.2f"))
+                @messages("confirmation.breakdown.h3.closed.p6", payPeriodSupportBreakdown.closed.grant.formatted("%.2f"))
             }
             @p {
-                @messages("confirmation.breakdown.h3.closed.p7", gfp.closed.grant.formatted("%.2f"))
+                @messages("confirmation.breakdown.h3.closed.p7", payPeriodSupportBreakdown.closed.grant.formatted("%.2f"))
             }
         }
     }
