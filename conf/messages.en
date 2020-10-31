@@ -371,6 +371,7 @@ endPayDate.error.required = Enter the last date of the next pay period after {0}
 endPayDate.error.invalid = Enter the last date of the next pay period after {0}
 endPayDate.error.invalid.must.be.on.or.after = The last date of the next pay period must be on or after {0}
 endPayDate.error.invalid.must.be.on.or.before = The last date of the next pay period must be on or before {0}
+endPayDate.error.invalid.monthly.days = the number of days between pay dates incase of ‘Monthly’ frequency must be minimum 28 and maximum 31
 
 comingSoon.title = We are unable to do this calculation at the moment
 comingSoon.heading = We are unable to do this calculation at the moment
