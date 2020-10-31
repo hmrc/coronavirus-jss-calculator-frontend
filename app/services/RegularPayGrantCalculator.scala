@@ -217,36 +217,37 @@ trait RegularPayGrantCalculator {
     payFrequency: PayFrequency,
     referencePay: Double,
     newCalcFlag: Boolean
-  ): ClosedJobSupport = {
+  ): ClosedJobSupport =
+    if (businessClosedPeriods.nonEmpty) {
+      val numberOfClosedDaysInPayPeriod      = getTotalNumberOfClosedDaysInAPayPeriod(payPeriod, businessClosedPeriods)
+      val numberOfPayPeriodDaysInClaimPeriod = getNumberOfPayPeriodDaysInClaimDays(payPeriod, supportClaimPeriod)
+      val numberOfDaysInPayFrequency         = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
 
-    val numberOfClosedDaysInPayPeriod      = getTotalNumberOfClosedDaysInAPayPeriod(payPeriod, businessClosedPeriods)
-    val numberOfPayPeriodDaysInClaimPeriod = getNumberOfPayPeriodDaysInClaimDays(payPeriod, supportClaimPeriod)
-    val numberOfDaysInPayFrequency         = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
-
-    val referencePayCap = {
-      if (newCalcFlag) {
-        scala.math.min(referencePay, newCalculateReferencePayCap(payFrequency))
-      } else {
-        calculateReferencePayCap(
-          numberOfPayPeriodDaysInClaimPeriod,
-          !(numberOfDaysInPayFrequency == numberOfClosedDaysInPayPeriod),
-          payFrequency
-        )
+      val referencePayCap = {
+        if (newCalcFlag) {
+          scala.math.min(referencePay, newCalculateReferencePayCap(payFrequency))
+        } else {
+          calculateReferencePayCap(
+            numberOfPayPeriodDaysInClaimPeriod,
+            !(numberOfDaysInPayFrequency == numberOfClosedDaysInPayPeriod),
+            payFrequency
+          )
+        }
       }
+
+      val adjustedReferencePay =
+        calculateAdjustedReferencePay(referencePay, numberOfDaysInPayFrequency, numberOfPayPeriodDaysInClaimPeriod)
+
+      val actualReferencePay = capReferencePay(adjustedReferencePay, referencePayCap)
+
+      val closedSupportGrant = round(
+        actualReferencePay * (numberOfClosedDaysInPayPeriod.toDouble / numberOfPayPeriodDaysInClaimPeriod.toDouble) * 0.6667
+      )
+
+      ClosedJobSupport(numberOfClosedDaysInPayPeriod, closedSupportGrant)
+    } else {
+      ClosedJobSupport.zeroFinancialSupport
     }
-
-    val adjustedReferencePay =
-      calculateAdjustedReferencePay(referencePay, numberOfDaysInPayFrequency, numberOfPayPeriodDaysInClaimPeriod)
-
-    val actualReferencePay = capReferencePay(adjustedReferencePay, referencePayCap)
-
-    val closedSupportGrant = round(
-      actualReferencePay * (numberOfClosedDaysInPayPeriod.toDouble / numberOfPayPeriodDaysInClaimPeriod.toDouble) * 0.6667
-    )
-
-    ClosedJobSupport(numberOfClosedDaysInPayPeriod, closedSupportGrant)
-
-  }
 
   def isPayPeriodWithinClaimPeriod(payPeriod: PayPeriod, supportClaimPeriod: SupportClaimPeriod): Boolean =
     if (

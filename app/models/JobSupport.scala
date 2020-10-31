@@ -39,6 +39,7 @@ final case class ClosedJobSupport(
 
 object ClosedJobSupport {
   implicit val format: Format[ClosedJobSupport] = Json.format
+  val zeroFinancialSupport: ClosedJobSupport    = ClosedJobSupport(0, 0.0)
 }
 
 final case class JobSupport(
