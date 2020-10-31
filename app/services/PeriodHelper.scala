@@ -37,7 +37,7 @@ trait PeriodHelper {
         maybeEndPayDay match {
           case Some(endPayDay) =>
             val daysInBetween = ChronoUnit.DAYS.between(lastPayDay, endPayDay)
-            List(Period(endPayDay.plusDays(1), endPayDay.plusDays(daysInBetween)))
+            List(Period(lastPayDay.plusDays(1), lastPayDay.plusDays(daysInBetween)))
           case None            => sys.error("could not find end pay day")
         }
 

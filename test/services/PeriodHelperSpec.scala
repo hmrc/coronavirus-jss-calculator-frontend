@@ -32,6 +32,7 @@ class PeriodHelperSpec extends SpecBase {
         "do not extend past the claim period end date" in new PeriodHelper {
           val payPeriods: List[Period] = getPayPeriods(
             LocalDate.of(2020, 10, 26),
+            None,
             Weekly,
             SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
           )
@@ -64,6 +65,7 @@ class PeriodHelperSpec extends SpecBase {
         "and the last computed pay period which extends into the next claim period month is ignored" in new PeriodHelper {
           val payPeriods: List[Period] = getPayPeriods(
             LocalDate.of(2020, 10, 25),
+            None,
             Weekly,
             SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
           )
@@ -96,6 +98,7 @@ class PeriodHelperSpec extends SpecBase {
         val payPeriods: List[Period] =
           getPayPeriods(
             LocalDate.of(2020, 10, 31),
+            None,
             Weekly,
             SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
           )
@@ -126,6 +129,7 @@ class PeriodHelperSpec extends SpecBase {
       "calculates the correct pay periods when the last pay day is not the last day of the month before the claim period" in new PeriodHelper {
         val payPeriods: List[Period] = getPayPeriods(
           LocalDate.of(2020, 10, 15),
+          Some(LocalDate.of(2020, 11, 14)),
           Monthly,
           SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
         )
@@ -133,7 +137,7 @@ class PeriodHelperSpec extends SpecBase {
         payPeriods mustBe List(
           Period(
             LocalDate.of(2020, 10, 16),
-            LocalDate.of(2020, 11, 15)
+            LocalDate.of(2020, 11, 14)
           )
         )
       }
@@ -141,6 +145,7 @@ class PeriodHelperSpec extends SpecBase {
       "calculates the correct pay periods when the last pay day is on the last day of the month before the claim period" in new PeriodHelper {
         val payPeriods: List[Period] = getPayPeriods(
           LocalDate.of(2020, 10, 31),
+          Some(LocalDate.of(2020, 11, 30)),
           Monthly,
           SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
         )
@@ -158,6 +163,7 @@ class PeriodHelperSpec extends SpecBase {
       "calculate the correct pay periods when last pay day is before the start of the claim period month" in new PeriodHelper {
         val payPeriods: List[Period] = getPayPeriods(
           LocalDate.of(2020, 10, 24),
+          None,
           FortNightly,
           SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
         )
@@ -178,6 +184,7 @@ class PeriodHelperSpec extends SpecBase {
         "next pay date is ignored as it is before the claim period start" in new PeriodHelper {
           val payPeriods: List[Period] = getPayPeriods(
             LocalDate.of(2020, 10, 17),
+            None,
             FortNightly,
             SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
           )
@@ -198,6 +205,7 @@ class PeriodHelperSpec extends SpecBase {
         "computed last pay date is ignored as it falls outside the claim period" in new PeriodHelper {
           val payPeriods: List[Period] = getPayPeriods(
             LocalDate.of(2020, 11, 4),
+            None,
             FortNightly,
             SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
           )
@@ -213,6 +221,7 @@ class PeriodHelperSpec extends SpecBase {
       "calculate the correct pay periods when last pay day is the penultimate day before the start of the claim period month" in new PeriodHelper {
         val payPeriods: List[Period] = getPayPeriods(
           LocalDate.of(2020, 10, 30),
+          None,
           FortNightly,
           SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
         )
@@ -232,6 +241,7 @@ class PeriodHelperSpec extends SpecBase {
       "calculate the correct pay periods when last pay day is before the start of the claim period month and the last period is ignored" in new PeriodHelper {
         val payPeriods: List[Period] = getPayPeriods(
           LocalDate.of(2020, 10, 18),
+          None,
           FortNightly,
           SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
         )
@@ -259,6 +269,7 @@ class PeriodHelperSpec extends SpecBase {
       "calculate the correct pay periods when last pay day is before the start of the claim period month" in new PeriodHelper {
         val payPeriods: List[Period] = getPayPeriods(
           LocalDate.of(2020, 10, 17),
+          None,
           FourWeekly,
           SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
         )
@@ -275,6 +286,7 @@ class PeriodHelperSpec extends SpecBase {
         "period occurs before the claim period (ignore)" in new PeriodHelper {
           val payPeriods: List[Period] = getPayPeriods(
             LocalDate.of(2020, 10, 3),
+            None,
             FourWeekly,
             SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
           )
@@ -291,6 +303,7 @@ class PeriodHelperSpec extends SpecBase {
         "period cuts into the following month (ignore)" in new PeriodHelper {
           val payPeriods: List[Period] = getPayPeriods(
             LocalDate.of(2020, 10, 31),
+            None,
             FourWeekly,
             SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
           )
@@ -306,6 +319,7 @@ class PeriodHelperSpec extends SpecBase {
       "calculate 3 the correct pay periods when last pay day is before the start of the claim period month" in new PeriodHelper {
         val payPeriods: List[Period] = getPayPeriods(
           LocalDate.of(2020, 11, 2),
+          None,
           FourWeekly,
           SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
         )
@@ -321,6 +335,7 @@ class PeriodHelperSpec extends SpecBase {
       "calculate the correct pay periods when last pay day is on the last day of that month" in new PeriodHelper {
         val payPeriods: List[Period] = getPayPeriods(
           LocalDate.of(2020, 10, 30),
+          None,
           FourWeekly,
           SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
         )
@@ -337,6 +352,7 @@ class PeriodHelperSpec extends SpecBase {
         "pay is computed to be the first day of the claim period" in new PeriodHelper {
           val payPeriods: List[Period] = getPayPeriods(
             LocalDate.of(2020, 10, 4),
+            None,
             FourWeekly,
             SupportClaimPeriod(LocalDate.of(2020, 11, 1), LocalDate.of(2020, 11, 30))
           )
