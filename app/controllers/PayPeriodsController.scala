@@ -75,13 +75,12 @@ class PayPeriodsController @Inject() (
     val maybeLastPayDay   = userAnswers.get(LastPayDatePage)
     val maybeEndPayDay    = userAnswers.get(EndPayDatePage)
 
-    (maybeClaimPeriod, maybePayFrequency, maybeLastPayDay, maybeEndPayDay) match {
-      case (Some(claimPeriod), Some(payFrequency), Some(lastPayDay), Some(endPayDay)) =>
-        result(getPayPeriods(lastPayDay, Some(endPayDay), payFrequency, claimPeriod.supportClaimPeriod))
-      case (None, _, _, _)                                                            => Redirect(routes.ClaimPeriodController.onPageLoad())
-      case (_, None, _, _)                                                            => Redirect(routes.PayFrequencyController.onPageLoad())
-      case (_, _, None, _)                                                            => Redirect(routes.LastPayDateController.onPageLoad())
-      case (_, _, _, None)                                                            => Redirect(routes.EndPayDateController.onPageLoad())
+    (maybeClaimPeriod, maybePayFrequency, maybeLastPayDay) match {
+      case (Some(claimPeriod), Some(payFrequency), Some(lastPayDay)) =>
+        result(getPayPeriods(lastPayDay, maybeEndPayDay, payFrequency, claimPeriod.supportClaimPeriod))
+      case (None, _, _)                                              => Redirect(routes.ClaimPeriodController.onPageLoad())
+      case (_, None, _)                                              => Redirect(routes.PayFrequencyController.onPageLoad())
+      case (_, _, None)                                              => Redirect(routes.LastPayDateController.onPageLoad())
     }
   }
 }
