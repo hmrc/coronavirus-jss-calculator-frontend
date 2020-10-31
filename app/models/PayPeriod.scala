@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import play.api.libs.json.Json
 
-case class PayPeriod(
+final case class PayPeriod(
   startDate: LocalDate,
   endDate: LocalDate,
   usualHours: Double,

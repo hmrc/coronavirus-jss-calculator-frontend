@@ -57,7 +57,7 @@ class MonthlySpec extends SpecBase {
           )
         )
 
-        val jobSupport: JobSupport = calculateJobSupport(
+        val maybeJobSupport: Option[JobSupport] = calculateJobSupport(
           supportClaimPeriod,
           pp,
           twasList,
@@ -66,7 +66,9 @@ class MonthlySpec extends SpecBase {
           2345.67
         )
 
-        jobSupport.totalGrant mustEqual 657.60
+        maybeJobSupport.map { jobSupport =>
+          jobSupport.totalGrant mustEqual 657.60
+        }
       }
 
       "scenario-6" in new RegularPayGrantCalculator {
@@ -99,7 +101,7 @@ class MonthlySpec extends SpecBase {
           )
         )
 
-        val jobSupport: JobSupport = calculateJobSupport(
+        val maybeJobSupport: Option[JobSupport] = calculateJobSupport(
           supportClaimPeriod,
           pp,
           twasList,
@@ -108,7 +110,53 @@ class MonthlySpec extends SpecBase {
           3330.00
         )
 
-        jobSupport.totalGrant mustEqual 1429.42
+        maybeJobSupport.map { jobSupport =>
+          jobSupport.totalGrant mustEqual 1429.42
+        }
+      }
+
+      "scenario-10" in new RegularPayGrantCalculator {
+
+        val supportClaimPeriod = SupportClaimPeriod(
+          LocalDate.of(2020, 11, 1),
+          LocalDate.of(2020, 11, 30)
+        )
+
+        val twasList = List(
+          TemporaryWorkingAgreementPeriod(
+            LocalDate.of(2020, 11, 1),
+            LocalDate.of(2020, 11, 15)
+          )
+        )
+
+        val closedList = List(
+          BusinessClosedPeriod(
+            LocalDate.of(2020, 11, 16),
+            LocalDate.of(2020, 11, 30)
+          )
+        )
+
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
+            LocalDate.of(2020, 11, 1),
+            LocalDate.of(2020, 11, 30),
+            310.55,
+            134.44
+          )
+        )
+
+        val maybeJobSupport: Option[JobSupport] = calculateJobSupport(
+          supportClaimPeriod,
+          pp,
+          twasList,
+          closedList,
+          PayFrequency.Monthly,
+          3330.00
+        )
+
+        maybeJobSupport.map { jobSupport =>
+          jobSupport.totalGrant mustEqual 1588.17
+        }
       }
     }
   }

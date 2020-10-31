@@ -55,7 +55,7 @@ class ConfirmationController @Inject() (
 
     (workPeriods, payFrequency, supportClaimPeriod, regularPay) match {
       case (Some(wps), Some(pf), Some(cp), Some(rp)) =>
-        val jobSupport = calculateJobSupport(
+        val maybeJobSupport = calculateJobSupport(
           cp.supportClaimPeriod,
           payPeriods(wps, usualAndActualHours),
           twaPeriods,
@@ -64,8 +64,16 @@ class ConfirmationController @Inject() (
           rp.value.toDouble
         )
 
-        auditService.sendCalculationPerformed(request.userAnswers, jobSupport)
-        Ok(view(jobSupport, appConfig.calculatorVersion))
+        maybeJobSupport match {
+          case Some(jobSupport) =>
+            auditService.sendCalculationPerformed(request.userAnswers, jobSupport)
+            Ok(view(jobSupport, appConfig.calculatorVersion))
+          case None             =>
+            Logger.error(
+              s"no job support returned from the calculator for userAnswers: ${request.userAnswers.data}"
+            )
+            Redirect(routes.StartPageController.onPageLoad())
+        }
 
       case _ =>
         Logger.warn("expected data is missing from userAnswers, redirecting user to start page")

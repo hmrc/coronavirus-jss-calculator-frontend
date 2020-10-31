@@ -20,54 +20,94 @@ import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 import models.PayFrequency.{FortNightly, FourWeekly, Monthly, Weekly}
-import models.{BusinessClosedPeriod, ClosedJobSupport, JobSupport, OpenJobSupport, PayFrequency, PayPeriod, SupportBreakdown, SupportClaimPeriod, TemporaryWorkingAgreementPeriod}
+import models.{BusinessClosedPeriod, ClosedJobSupport, Interval, JobSupport, OpenJobSupport, PayFrequency, PayPeriod, SupportBreakdown, SupportClaimPeriod, TemporaryWorkingAgreementPeriod}
 import utils.MoneyUtils.round
 
 import scala.collection.mutable.ListBuffer
+import scala.util.{Failure, Success, Try}
 
 trait RegularPayGrantCalculator {
 
   def calculateJobSupport(
     supportClaimPeriod: SupportClaimPeriod,
     payPeriods: List[PayPeriod],
-    temporaryWorkingAgreementWithDates: List[TemporaryWorkingAgreementPeriod],
-    businessClosedWithDates: List[BusinessClosedPeriod],
+    temporaryWorkingAgreementPeriods: List[TemporaryWorkingAgreementPeriod],
+    businessClosedPeriods: List[BusinessClosedPeriod],
     payFrequency: PayFrequency,
     referencePay: Double
-  ): JobSupport = {
+  ): Option[JobSupport] = {
 
-    //TODO: refactor: general sorting function
-    val sortedTWAList = sortedTemporaryWorkingAgreements(temporaryWorkingAgreementWithDates)
-    val sortedBCList  = sortedBusinessClosedPeriods(businessClosedWithDates)
+    val sortedTWAList = sortedTemporaryWorkingAgreements(temporaryWorkingAgreementPeriods)
+    val sortedBCList  = sortedBusinessClosedPeriods(businessClosedPeriods)
 
-    val supportBreakdowns: List[SupportBreakdown] = payPeriods.map { payPeriod =>
-      //TODO: refactor: assess whether this pay period needs to run both calculation (efficiency)
-      SupportBreakdown(
-        payPeriod.startDate,
-        payPeriod.endDate,
-        getNumberOfDaysInPayFrequency(payFrequency, payPeriod),
-        calculateOpenJobSupport(
-          supportClaimPeriod,
+    val supportBreakdowns: List[Option[SupportBreakdown]] = payPeriods.map { payPeriod =>
+      val numberOfTemporaryWorkingAgreementDaysInPayPeriod =
+        getTotalNumberOfTemporaryWorkingAgreementDaysInPayPeriod(
           payPeriod,
-          getAllTemporaryWorkingAgreementsInThisPayPeriod(payPeriod, sortedTWAList),
-          sortedBCList,
-          payFrequency,
-          referencePay
-        ),
-        calculateClosedJobSupport(
-          supportClaimPeriod,
-          payPeriod,
-          getAllBusinessClosedPeriodsInThisPayPeriod(payPeriod, sortedBCList),
-          payFrequency,
+          getAllTemporaryWorkingAgreementsInThisPayPeriod(payPeriod, sortedTWAList)
+        )
+
+      val numberOfBusinessClosedPeriodDaysInPayPeriod = getTotalNumberOfClosedDaysInAPayPeriod(
+        payPeriod,
+        getAllBusinessClosedPeriodsInThisPayPeriod(payPeriod, sortedBCList)
+      )
+
+      val numberOfPayFrequencyDaysInThisPayPeriod = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
+
+      val usePayFrequencyCap =
+        if (
+          ((numberOfTemporaryWorkingAgreementDaysInPayPeriod + numberOfBusinessClosedPeriodDaysInPayPeriod)
+            >= numberOfPayFrequencyDaysInThisPayPeriod) && (!isPartialPayPeriod(
+            payPeriod,
+            supportClaimPeriod
+          ))
+        ) true
+        else false
+
+      val maybeOpenJobSupport = calculateOpenJobSupport(
+        supportClaimPeriod,
+        payPeriod,
+        getAllTemporaryWorkingAgreementsInThisPayPeriod(payPeriod, sortedTWAList),
+        sortedBCList,
+        payFrequency,
+        referencePay,
+        usePayFrequencyCap
+      )
+
+      val maybeClosedJobSupport = calculateClosedJobSupport(
+        supportClaimPeriod,
+        payPeriod,
+        getAllBusinessClosedPeriodsInThisPayPeriod(payPeriod, sortedBCList),
+        payFrequency,
+        referencePay,
+        usePayFrequencyCap
+      )
+
+      (maybeOpenJobSupport, maybeClosedJobSupport) match {
+        case (Some(openJobSupport), Some(closedJobSupport)) =>
+          Some(
+            SupportBreakdown(
+              payPeriod.startDate,
+              payPeriod.endDate,
+              getNumberOfDaysInPayFrequency(payFrequency, payPeriod),
+              openJobSupport,
+              closedJobSupport
+            )
+          )
+        case _                                              => None
+      }
+    }
+
+    if (supportBreakdowns.exists(supportBreakdown => supportBreakdown.isEmpty)) {
+      None // there's a failed calculation
+    } else {
+      Some(
+        JobSupport(
+          supportBreakdowns.flatten,
           referencePay
         )
       )
     }
-
-    JobSupport(
-      supportBreakdowns,
-      referencePay
-    )
   }
 
   def calculateOpenJobSupport(
@@ -76,12 +116,13 @@ trait RegularPayGrantCalculator {
     temporaryWorkingAgreementPeriods: List[TemporaryWorkingAgreementPeriod],
     businessClosedPeriods: List[BusinessClosedPeriod],
     payFrequency: PayFrequency,
-    referencePay: Double
-  ): OpenJobSupport = {
+    referencePay: Double,
+    usePayFrequencyCap: Boolean
+  ): Option[OpenJobSupport] = {
 
-    val totalNumberOfTwaDaysInAPayPeriod =
+    val totalNumberOfTemporaryWorkingAgreementDaysInAPayPeriod =
       getTotalNumberOfTemporaryWorkingAgreementDaysInPayPeriod(payPeriod, temporaryWorkingAgreementPeriods)
-    val numberOfDaysInPayFrequency       = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
+    val numberOfDaysInPayFrequency                             = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
 
     if (
       temporaryWorkingAgreementPeriods.isEmpty || isPayPeriodCompletelyCoveredByBusinessClosedPeriod(
@@ -93,7 +134,7 @@ trait RegularPayGrantCalculator {
         businessClosedPeriods
       )
     ) {
-      OpenJobSupport.zeroFinancialSupport
+      Some(OpenJobSupport.zeroFinancialSupport)
     } else
       (
         businessClosedPeriods.isEmpty,
@@ -105,34 +146,37 @@ trait RegularPayGrantCalculator {
         case (true, _) =>
           calculateOpenSupport(
             referencePay,
-            totalNumberOfTwaDaysInAPayPeriod,
+            totalNumberOfTemporaryWorkingAgreementDaysInAPayPeriod,
             numberOfDaysInPayFrequency,
             payFrequency,
-            payPeriod
+            payPeriod,
+            usePayFrequencyCap
           )
 
         case (false, false) =>
           calculateOpenSupport(
             referencePay,
-            totalNumberOfTwaDaysInAPayPeriod,
+            totalNumberOfTemporaryWorkingAgreementDaysInAPayPeriod,
             numberOfDaysInPayFrequency,
             payFrequency,
-            payPeriod
+            payPeriod,
+            usePayFrequencyCap
           )
 
         case (false, true) =>
           val splicedTemporaryWorkingAgreements =
             spliceTemporaryWorkingAgreementPeriod(temporaryWorkingAgreementPeriods, businessClosedPeriods)
 
-          val totalNumberOfTwaDaysInAPayPeriod =
+          val totalNumberOfTemporaryWorkingAgreementDaysInAPayPeriod =
             getTotalNumberOfTemporaryWorkingAgreementDaysInPayPeriod(payPeriod, splicedTemporaryWorkingAgreements)
 
           calculateOpenSupport(
             referencePay,
-            totalNumberOfTwaDaysInAPayPeriod,
+            totalNumberOfTemporaryWorkingAgreementDaysInAPayPeriod,
             numberOfDaysInPayFrequency,
             payFrequency,
-            payPeriod
+            payPeriod,
+            usePayFrequencyCap
           )
       }
   }
@@ -142,64 +186,252 @@ trait RegularPayGrantCalculator {
     totalNumberOfTwaDaysInAPayPeriod: Int,
     numberOfDaysInPayFrequency: Int,
     payFrequency: PayFrequency,
-    payPeriod: PayPeriod
-  ): OpenJobSupport = {
+    payPeriod: PayPeriod,
+    usePayFrequencyCap: Boolean
+  ): Option[OpenJobSupport] =
+    Try {
+      val referencePayCap = if (usePayFrequencyCap) {
+        scala.math.min(referencePay, newCalculateReferencePayCap(payFrequency))
+      } else {
+        calculateReferencePayCap(
+          totalNumberOfTwaDaysInAPayPeriod,
+          !(numberOfDaysInPayFrequency == totalNumberOfTwaDaysInAPayPeriod),
+          payFrequency
+        )
+      }
 
-    val adjustedReferencePay =
-      proportionReferencePay(referencePay, totalNumberOfTwaDaysInAPayPeriod, numberOfDaysInPayFrequency)
+      val adjustedReferencePay = if (usePayFrequencyCap) {
+        proportionReferencePay(referencePayCap, totalNumberOfTwaDaysInAPayPeriod, numberOfDaysInPayFrequency)
+      } else {
+        proportionReferencePay(referencePay, totalNumberOfTwaDaysInAPayPeriod, numberOfDaysInPayFrequency)
+      }
 
-    val referencePayCap = calculateReferencePayCap(
-      totalNumberOfTwaDaysInAPayPeriod,
-      !(numberOfDaysInPayFrequency == totalNumberOfTwaDaysInAPayPeriod),
-      payFrequency
-    )
+      val actualReferencePay = capReferencePay(adjustedReferencePay, referencePayCap)
 
-    val actualReferencePay = capReferencePay(adjustedReferencePay, referencePayCap)
-
-    val employeeSalary =
-      actualReferencePay * ((payPeriod.usualHours - payPeriod.actualHours) / payPeriod.usualHours) * 0.6667
-
-    val employersGrant = employeeSalary * (61.67 / 66.67)
-
-    OpenJobSupport(
-      totalNumberOfTwaDaysInAPayPeriod,
-      payPeriod.usualHours,
-      payPeriod.actualHours,
-      round(employeeSalary),
-      round(employersGrant)
-    )
-
-  }
+      val employeeSalary =
+        actualReferencePay * ((payPeriod.usualHours - payPeriod.actualHours) / payPeriod.usualHours) * 0.6667
+      val employersGrant = employeeSalary * (61.67 / 66.67)
+      (employeeSalary, employersGrant)
+    } match {
+      case Failure(_)       => None
+      case Success(support) =>
+        Some(
+          OpenJobSupport(
+            totalNumberOfTwaDaysInAPayPeriod,
+            payPeriod.usualHours,
+            payPeriod.actualHours,
+            round(support._1),
+            round(support._2)
+          )
+        )
+    }
 
   def calculateClosedJobSupport(
     supportClaimPeriod: SupportClaimPeriod,
     payPeriod: PayPeriod,
     businessClosedPeriods: List[BusinessClosedPeriod],
     payFrequency: PayFrequency,
-    referencePay: Double
-  ): ClosedJobSupport = {
+    referencePay: Double,
+    newCalcFlag: Boolean
+  ): Option[ClosedJobSupport] =
+    if (businessClosedPeriods.nonEmpty) {
 
-    val numberOfClosedDaysInPayPeriod      = getTotalNumberOfClosedDaysInAPayPeriod(payPeriod, businessClosedPeriods)
-    val numberOfPayPeriodDaysInClaimPeriod = getNumberOfPayPeriodDaysInClaimDays(payPeriod, supportClaimPeriod)
-    val numberOfDaysInPayFrequency         = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
-    val adjustedReferencePay               =
-      calculateAdjustedReferencePay(referencePay, numberOfDaysInPayFrequency, numberOfPayPeriodDaysInClaimPeriod)
+      Try {
+        val numberOfClosedDaysInPayPeriod      = getTotalNumberOfClosedDaysInAPayPeriod(payPeriod, businessClosedPeriods)
+        val numberOfPayPeriodDaysInClaimPeriod = getNumberOfPayPeriodDaysInClaimDays(payPeriod, supportClaimPeriod)
+        val numberOfDaysInPayFrequency         = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
 
-    val referencePayCap = calculateReferencePayCap(
-      numberOfPayPeriodDaysInClaimPeriod,
-      !(numberOfDaysInPayFrequency == numberOfClosedDaysInPayPeriod),
-      payFrequency
+        val referencePayCap = {
+          if (newCalcFlag) {
+            scala.math.min(referencePay, newCalculateReferencePayCap(payFrequency))
+          } else {
+            calculateReferencePayCap(
+              numberOfPayPeriodDaysInClaimPeriod,
+              !(numberOfDaysInPayFrequency == numberOfClosedDaysInPayPeriod),
+              payFrequency
+            )
+          }
+        }
+
+        val adjustedReferencePay =
+          calculateAdjustedReferencePay(referencePay, numberOfDaysInPayFrequency, numberOfPayPeriodDaysInClaimPeriod)
+
+        val actualReferencePay = capReferencePay(adjustedReferencePay, referencePayCap)
+
+        val closedSupportGrant = round(
+          actualReferencePay * (numberOfClosedDaysInPayPeriod.toDouble / numberOfPayPeriodDaysInClaimPeriod.toDouble) * 0.6667
+        )
+
+        (numberOfClosedDaysInPayPeriod, closedSupportGrant)
+      } match {
+        case Failure(_)       => None
+        case Success(support) =>
+          Some(ClosedJobSupport(support._1, support._2))
+      }
+    } else {
+      Some(ClosedJobSupport.zeroFinancialSupport)
+    }
+
+  def isPayPeriodWithinClaimPeriod(payPeriod: PayPeriod, supportClaimPeriod: SupportClaimPeriod): Boolean =
+    if (
+      (
+        (payPeriod.startDate
+          .isEqual(supportClaimPeriod.startDate) && payPeriod.endDate.isBefore(supportClaimPeriod.endDate))
+        ||
+        (payPeriod.startDate
+          .isEqual(supportClaimPeriod.startDate) && payPeriod.endDate.isEqual(supportClaimPeriod.endDate))
+        ||
+        (payPeriod.startDate
+          .isAfter(supportClaimPeriod.startDate) && payPeriod.endDate.isEqual(supportClaimPeriod.endDate))
+        ||
+        (payPeriod.startDate
+          .isAfter(supportClaimPeriod.startDate) && payPeriod.endDate.isBefore(supportClaimPeriod.startDate))
+      )
     )
+      true
+    else
+      false
 
-    val actualReferencePay = capReferencePay(adjustedReferencePay, referencePayCap)
+  def isPayPeriodCoveredCompletelyByEitherATemporaryWorkingAgreementAndOrBusinessClosedPeriod(
+    payPeriod: PayPeriod,
+    temporaryWorkingAgreementPeriods: List[TemporaryWorkingAgreementPeriod],
+    businessClosedPeriods: List[BusinessClosedPeriod]
+  ): Boolean = {
+    val daysInPayPeriod = ChronoUnit.DAYS.between(payPeriod.startDate, payPeriod.endDate) + 1
+    (temporaryWorkingAgreementPeriods.isEmpty, businessClosedPeriods.isEmpty) match {
+      case (true, true)   => false
+      case (false, true)  =>
+        val totalNumberOfBusinessClosedDaysCoveringThisPayPeriod = businessClosedPeriods
+          .map(closedPeriod => ChronoUnit.DAYS.between(closedPeriod.startDate, closedPeriod.endDate) + 1)
+          .sum
+        if (totalNumberOfBusinessClosedDaysCoveringThisPayPeriod < daysInPayPeriod) false else true
+      case (true, false)  =>
+        val totalNumberOfTemporaryWorkingAgreementsInThisPeriod =
+          temporaryWorkingAgreementPeriods
+            .map(temporaryWorkingAgreementPeriod =>
+              ChronoUnit.DAYS
+                .between(temporaryWorkingAgreementPeriod.startDate, temporaryWorkingAgreementPeriod.endDate) + 1
+            )
+            .sum
+        if (totalNumberOfTemporaryWorkingAgreementsInThisPeriod < daysInPayPeriod) false else true
+      case (false, false) =>
+        // This is the case where there can be overlaps. However the overlaps can happen in many different ways
+        // Best to consider the fewer? cases where they do overlap
+        val trimmedTemporaryWorkingAgreementsToPayPeriod = temporaryWorkingAgreementPeriods
+          .map(twa => trimTemporaryWorkingAgreementToPayPeriod(payPeriod, twa))
+          .map(s => Interval(s.startDate, s.endDate))
 
-    val closedSupportGrant = round(
-      actualReferencePay * (numberOfClosedDaysInPayPeriod.toDouble / numberOfPayPeriodDaysInClaimPeriod.toDouble) * 0.6667
-    )
+        val trimmedBusinessClosedPeriodsToPayPeriod = sortedBusinessClosedPeriods(
+          getAllBusinessClosedPeriodsInThisPayPeriod(payPeriod, businessClosedPeriods)
+        ).map(bc => trimBusinessClosedPeriodToPayPeriod(payPeriod, bc)).map(s => Interval(s.startDate, s.endDate))
 
-    ClosedJobSupport(numberOfClosedDaysInPayPeriod, closedSupportGrant)
+        val sortedIntervals = sortIntervals(
+          trimmedTemporaryWorkingAgreementsToPayPeriod ::: trimmedBusinessClosedPeriodsToPayPeriod
+        )
 
+        sortedIntervals.sliding(2).exists(intervals => hasIntervalGap(intervals))
+    }
   }
+
+  def hasIntervalGap(dates: List[Interval]): Boolean = {
+    val firstInterval  = dates.head
+    val secondInterval = dates.last
+
+    if (ChronoUnit.DAYS.between(firstInterval.endDate, secondInterval.startDate) > 1) {
+      true
+    } else
+      false
+  }
+
+  def trimBusinessClosedPeriodToPayPeriod(
+    payPeriod: PayPeriod,
+    businessClosedPeriod: BusinessClosedPeriod
+  ): BusinessClosedPeriod =
+    if (
+      businessClosedPeriod.startDate.isBefore(payPeriod.startDate) && businessClosedPeriod.endDate
+        .isEqual(payPeriod.startDate)
+    ) {
+      businessClosedPeriod.copy(startDate = payPeriod.startDate)
+    } else if (
+      businessClosedPeriod.startDate.isEqual(payPeriod.endDate) && businessClosedPeriod.endDate
+        .isAfter(payPeriod.endDate)
+    ) {
+      businessClosedPeriod.copy(endDate = payPeriod.endDate)
+    } else if (
+      businessClosedPeriod.startDate.isBefore(
+        payPeriod.startDate
+      ) && (businessClosedPeriod.endDate.isAfter(
+        payPeriod.startDate
+      ) && businessClosedPeriod.endDate.isBefore(payPeriod.endDate))
+    ) {
+      businessClosedPeriod.copy(startDate = payPeriod.startDate)
+    } else if (
+      businessClosedPeriod.startDate
+        .isBefore(payPeriod.endDate) && (businessClosedPeriod.endDate.isAfter(payPeriod.endDate))
+    ) {
+      businessClosedPeriod.copy(endDate = payPeriod.endDate)
+    } else if (
+      businessClosedPeriod.startDate.isEqual(payPeriod.startDate) && businessClosedPeriod.endDate
+        .isAfter(payPeriod.endDate)
+    ) {
+      businessClosedPeriod.copy(endDate = payPeriod.endDate)
+    } else if (
+      businessClosedPeriod.startDate.isBefore(payPeriod.startDate) && businessClosedPeriod.endDate
+        .isEqual(payPeriod.endDate)
+    ) {
+      businessClosedPeriod.copy(startDate = payPeriod.startDate)
+    } else if (
+      businessClosedPeriod.startDate.isBefore(payPeriod.startDate) && businessClosedPeriod.endDate
+        .isAfter(payPeriod.endDate)
+    ) {
+      businessClosedPeriod.copy(startDate = payPeriod.startDate, endDate = payPeriod.endDate)
+    } else businessClosedPeriod
+
+  def trimTemporaryWorkingAgreementToPayPeriod(
+    payPeriod: PayPeriod,
+    temporaryWorkingAgreementPeriod: TemporaryWorkingAgreementPeriod
+  ): TemporaryWorkingAgreementPeriod =
+    if (
+      temporaryWorkingAgreementPeriod.startDate.isBefore(payPeriod.startDate) && temporaryWorkingAgreementPeriod.endDate
+        .isEqual(payPeriod.startDate)
+    ) {
+      temporaryWorkingAgreementPeriod.copy(startDate = payPeriod.startDate)
+    } else if (
+      temporaryWorkingAgreementPeriod.startDate.isEqual(payPeriod.endDate) && temporaryWorkingAgreementPeriod.endDate
+        .isAfter(payPeriod.endDate)
+    ) {
+      temporaryWorkingAgreementPeriod.copy(endDate = payPeriod.endDate)
+    } else if (
+      temporaryWorkingAgreementPeriod.startDate.isBefore(
+        payPeriod.startDate
+      ) && (temporaryWorkingAgreementPeriod.endDate.isAfter(
+        payPeriod.startDate
+      ) && temporaryWorkingAgreementPeriod.endDate.isBefore(payPeriod.endDate))
+    ) {
+      temporaryWorkingAgreementPeriod.copy(startDate = payPeriod.startDate)
+    } else if (
+      temporaryWorkingAgreementPeriod.startDate
+        .isBefore(payPeriod.endDate) && (temporaryWorkingAgreementPeriod.endDate.isAfter(payPeriod.endDate))
+    ) {
+      temporaryWorkingAgreementPeriod.copy(startDate = payPeriod.startDate, endDate = payPeriod.endDate)
+    } else if (
+      temporaryWorkingAgreementPeriod.startDate.isEqual(payPeriod.startDate) && temporaryWorkingAgreementPeriod.endDate
+        .isAfter(payPeriod.endDate)
+    ) {
+      temporaryWorkingAgreementPeriod.copy(endDate = payPeriod.endDate)
+    } else if (
+      temporaryWorkingAgreementPeriod.startDate.isBefore(payPeriod.startDate) && temporaryWorkingAgreementPeriod.endDate
+        .isEqual(payPeriod.endDate)
+    ) {
+      temporaryWorkingAgreementPeriod.copy(startDate = payPeriod.startDate)
+    } else if (
+      temporaryWorkingAgreementPeriod.startDate.isBefore(payPeriod.startDate) && temporaryWorkingAgreementPeriod.endDate
+        .isAfter(payPeriod.endDate)
+    ) {
+      temporaryWorkingAgreementPeriod.copy(startDate = payPeriod.startDate, endDate = payPeriod.endDate)
+    } else {
+      temporaryWorkingAgreementPeriod
+    }
 
   def getTotalNumberOfClosedDaysInAPayPeriod(
     payPeriod: PayPeriod,
@@ -207,69 +439,70 @@ trait RegularPayGrantCalculator {
   ): Int = businessClosedPeriods.map(bc => getNumberOfClosedDaysInAPayPeriod(payPeriod, bc)).sum
 
   def getNumberOfClosedDaysInAPayPeriod(
-    periodWithHours: PayPeriod,
-    temporaryWorkingAgreementWithDates: BusinessClosedPeriod
+    payPeriod: PayPeriod,
+    businessClosedPeriod: BusinessClosedPeriod
   ): Int =
     if (
-      (temporaryWorkingAgreementWithDates.startDate.isEqual(
-        temporaryWorkingAgreementWithDates.endDate
-      ) && temporaryWorkingAgreementWithDates.startDate.isEqual(periodWithHours.startDate))
+      (businessClosedPeriod.startDate.isEqual(
+        businessClosedPeriod.endDate
+      ) && businessClosedPeriod.startDate.isEqual(payPeriod.startDate))
       ||
-      temporaryWorkingAgreementWithDates.endDate.isEqual(periodWithHours.startDate)
+      businessClosedPeriod.endDate.isEqual(payPeriod.startDate)
       ||
-      temporaryWorkingAgreementWithDates.startDate.isEqual(periodWithHours.endDate)
+      businessClosedPeriod.startDate.isEqual(payPeriod.endDate)
     ) 1
     else if (
-      temporaryWorkingAgreementWithDates.startDate.isBefore(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isAfter(periodWithHours.endDate)
+      businessClosedPeriod.startDate.isBefore(
+        payPeriod.startDate
+      ) && businessClosedPeriod.endDate.isAfter(payPeriod.endDate)
       ||
-      temporaryWorkingAgreementWithDates.startDate.isBefore(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isEqual(periodWithHours.endDate)
+      businessClosedPeriod.startDate.isBefore(
+        payPeriod.startDate
+      ) && businessClosedPeriod.endDate.isEqual(payPeriod.endDate)
       ||
-      temporaryWorkingAgreementWithDates.startDate.isEqual(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isEqual(periodWithHours.endDate)
+      businessClosedPeriod.startDate.isEqual(
+        payPeriod.startDate
+      ) && businessClosedPeriod.endDate.isEqual(payPeriod.endDate)
       ||
-      temporaryWorkingAgreementWithDates.startDate.isEqual(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isAfter(periodWithHours.endDate)
-    ) ChronoUnit.DAYS.between(periodWithHours.startDate, periodWithHours.endDate).toInt + 1
-    else if (
-      temporaryWorkingAgreementWithDates.startDate.isBefore(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isBefore(periodWithHours.endDate)
+      businessClosedPeriod.startDate.isEqual(
+        payPeriod.startDate
+      ) && businessClosedPeriod.endDate.isAfter(payPeriod.endDate)
     ) {
-      ChronoUnit.DAYS.between(periodWithHours.startDate, temporaryWorkingAgreementWithDates.endDate).toInt + 1
+      ChronoUnit.DAYS.between(payPeriod.startDate, payPeriod.endDate).toInt + 1
     } else if (
-      temporaryWorkingAgreementWithDates.startDate.isEqual(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isBefore(periodWithHours.endDate)
+      businessClosedPeriod.startDate.isBefore(
+        payPeriod.startDate
+      ) && businessClosedPeriod.endDate.isBefore(payPeriod.endDate)
     ) {
-      ChronoUnit.DAYS.between(periodWithHours.startDate, temporaryWorkingAgreementWithDates.endDate).toInt + 1
+      ChronoUnit.DAYS.between(payPeriod.startDate, businessClosedPeriod.endDate).toInt + 1
     } else if (
-      temporaryWorkingAgreementWithDates.startDate.isAfter(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isBefore(periodWithHours.endDate)
+      businessClosedPeriod.startDate.isEqual(
+        payPeriod.startDate
+      ) && businessClosedPeriod.endDate.isBefore(payPeriod.endDate)
+    ) {
+      ChronoUnit.DAYS.between(payPeriod.startDate, businessClosedPeriod.endDate).toInt + 1
+    } else if (
+      businessClosedPeriod.startDate.isAfter(
+        payPeriod.startDate
+      ) && businessClosedPeriod.endDate.isBefore(payPeriod.endDate)
     ) {
       ChronoUnit.DAYS
-        .between(temporaryWorkingAgreementWithDates.startDate, temporaryWorkingAgreementWithDates.endDate)
+        .between(businessClosedPeriod.startDate, businessClosedPeriod.endDate)
         .toInt + 1
     } else if (
-      temporaryWorkingAgreementWithDates.startDate.isAfter(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isEqual(periodWithHours.endDate)
+      businessClosedPeriod.startDate.isAfter(
+        payPeriod.startDate
+      ) && businessClosedPeriod.endDate.isEqual(payPeriod.endDate)
     ) {
       ChronoUnit.DAYS
-        .between(temporaryWorkingAgreementWithDates.startDate, temporaryWorkingAgreementWithDates.endDate)
+        .between(businessClosedPeriod.startDate, businessClosedPeriod.endDate)
         .toInt + 1
     } else if (
-      temporaryWorkingAgreementWithDates.startDate.isAfter(
-        periodWithHours.startDate
-      ) && temporaryWorkingAgreementWithDates.endDate.isAfter(periodWithHours.endDate)
+      businessClosedPeriod.startDate.isAfter(
+        payPeriod.startDate
+      ) && businessClosedPeriod.endDate.isAfter(payPeriod.endDate)
     ) {
-      ChronoUnit.DAYS.between(temporaryWorkingAgreementWithDates.startDate, periodWithHours.endDate).toInt + 1
+      ChronoUnit.DAYS.between(businessClosedPeriod.startDate, payPeriod.endDate).toInt + 1
     } else
       0
 
@@ -432,8 +665,6 @@ trait RegularPayGrantCalculator {
       isBusinessClosedPeriodInPayPeriod(payPeriod, businessClosedPeriod)
     )
 
-  //TODO: check if this is not eliminiateing valid TWAs
-  // this will get all the TWAs inside this PP but also will only return that portion of the TWA inside the PP, otherwise the splicing function won't work as expect as the dates for the TWA will be outside the PP
   def getAllTemporaryWorkingAgreementsInThisPayPeriod(
     payPeriod: PayPeriod,
     temporaryWorkingAgreementPeriods: List[TemporaryWorkingAgreementPeriod]
@@ -823,6 +1054,9 @@ trait RegularPayGrantCalculator {
   def sortedBusinessClosedPeriods(businessClosedPeriods: List[BusinessClosedPeriod]): List[BusinessClosedPeriod] =
     businessClosedPeriods.sortWith((x, y) => x.endDate.isBefore(y.endDate))
 
+  def sortIntervals(intervals: List[Interval]): List[Interval] =
+    intervals.sortWith((x, y) => x.endDate.isBefore(y.startDate))
+
   private def isTemporaryWorkingAgreementPeriodOverlappedByBusinessClosedPeriod(
     temporaryWorkingAgreementPeriod: TemporaryWorkingAgreementPeriod,
     businessClosedPeriod: BusinessClosedPeriod
@@ -897,10 +1131,15 @@ trait RegularPayGrantCalculator {
     if (isPartialPeriod) daysInPeriod * 102.74
     else RegularPayGrantCalculator.fullPeriodPayCaps.getOrElse(payFrequency, 0.0)
 
+  private def newCalculateReferencePayCap(
+    payFrequency: PayFrequency
+  ): Double =
+    RegularPayGrantCalculator.fullPeriodPayCaps.getOrElse(payFrequency, 0.0)
+
   private def capReferencePay(referencePay: Double, referencePayCap: Double): Double =
     scala.math.min(referencePay, referencePayCap)
 
-  def calculateFrequencyDaysForMonthlyFrequency(periodWithHours: PayPeriod): Int =
+  private def calculateFrequencyDaysForMonthlyFrequency(periodWithHours: PayPeriod): Int =
     ChronoUnit.DAYS.between(periodWithHours.startDate, periodWithHours.endDate).toInt + 1
 }
 

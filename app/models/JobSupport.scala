@@ -39,10 +39,11 @@ final case class ClosedJobSupport(
 
 object ClosedJobSupport {
   implicit val format: Format[ClosedJobSupport] = Json.format
+  val zeroFinancialSupport: ClosedJobSupport    = ClosedJobSupport(0, 0.0)
 }
 
 final case class JobSupport(
-  supportBreakdown: List[SupportBreakdown],
+  supportBreakdowns: List[SupportBreakdown],
   referenceSalary: Double
 )
 
@@ -51,25 +52,25 @@ object JobSupport {
   implicit class JobSupportOps(private val jobSupport: JobSupport) {
 
     def totalActualHours: Double = round(
-      jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.open.actualHours).sum
+      jobSupport.supportBreakdowns.map(supportBreakdown => supportBreakdown.open.actualHours).sum
     )
 
     def totalUsualHours: Double = round(
-      jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.open.usualHours).sum
+      jobSupport.supportBreakdowns.map(supportBreakdown => supportBreakdown.open.usualHours).sum
     )
 
     def isIneligible: Boolean = (totalActualHours / totalUsualHours) < 0.20
 
     def totalEmployeeSalary: Double = round(
-      jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.open.salary).sum
+      jobSupport.supportBreakdowns.map(supportBreakdown => supportBreakdown.open.salary).sum
     )
 
     def totalEmployersGrant: Double = round(
-      jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.open.grant).sum
+      jobSupport.supportBreakdowns.map(supportBreakdown => supportBreakdown.open.grant).sum
     )
 
     def totalClosed: Double = round(
-      jobSupport.supportBreakdown.map(supportBreakdown => supportBreakdown.closed.grant).sum
+      jobSupport.supportBreakdowns.map(supportBreakdown => supportBreakdown.closed.grant).sum
     )
 
     def totalGrant: Double = round(totalEmployersGrant + totalClosed)

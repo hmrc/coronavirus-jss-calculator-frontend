@@ -21,7 +21,7 @@ import forms.SelectWorkPeriodsFormProvider
 import javax.inject.Inject
 import models.{Period, UserAnswers}
 import navigation.Navigator
-import pages.{ClaimPeriodPage, LastPayDatePage, PayFrequencyPage, SelectWorkPeriodsPage}
+import pages._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -79,12 +79,14 @@ class SelectWorkPeriodsController @Inject() (
     val maybeClaimPeriod  = userAnswers.get(ClaimPeriodPage)
     val maybePayFrequency = userAnswers.get(PayFrequencyPage)
     val maybeLastPayDay   = userAnswers.get(LastPayDatePage)
+    val maybeEndPayDay    = userAnswers.get(EndPayDatePage)
 
     (maybeClaimPeriod, maybePayFrequency, maybeLastPayDay) match {
-      case (Some(cp), Some(pf), Some(lpd)) => result(getPayPeriods(lpd, pf, cp.supportClaimPeriod))
-      case (None, _, _)                    => Future.successful(Redirect(routes.ClaimPeriodController.onPageLoad()))
-      case (_, None, _)                    => Future.successful(Redirect(routes.PayFrequencyController.onPageLoad()))
-      case (_, _, None)                    => Future.successful(Redirect(routes.LastPayDateController.onPageLoad()))
+      case (Some(claimPeriod), Some(payFrequency), Some(lastPayDay)) =>
+        result(getPayPeriods(lastPayDay, maybeEndPayDay, payFrequency, claimPeriod.supportClaimPeriod))
+      case (None, _, _)                                              => Future.successful(Redirect(routes.ClaimPeriodController.onPageLoad()))
+      case (_, None, _)                                              => Future.successful(Redirect(routes.PayFrequencyController.onPageLoad()))
+      case (_, _, None)                                              => Future.successful(Redirect(routes.LastPayDateController.onPageLoad()))
     }
   }
 }

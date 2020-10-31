@@ -19,7 +19,7 @@ package models
 import services.NuanceCryptoService
 import uk.gov.hmrc.http.HeaderCarrier
 
-case class EncryptedNuanceData private (nuanceSessionId: String, mdtpSessionID: String, deviceID: String)
+final case class EncryptedNuanceData private (nuanceSessionId: String, mdtpSessionID: String, deviceID: String)
 
 object EncryptedNuanceData {
 

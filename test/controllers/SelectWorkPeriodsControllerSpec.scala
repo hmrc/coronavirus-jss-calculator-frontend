@@ -22,7 +22,7 @@ import base.SpecBaseControllerSpecs
 import forms.SelectWorkPeriodsFormProvider
 import models.PayFrequency.Monthly
 import models.{ClaimPeriod, PayFrequency, Period, UserAnswers}
-import pages.{ClaimPeriodPage, LastPayDatePage, PayFrequencyPage, SelectWorkPeriodsPage}
+import pages.{ClaimPeriodPage, EndPayDatePage, LastPayDatePage, PayFrequencyPage, SelectWorkPeriodsPage}
 import play.api.libs.json.{JsString, Json}
 import play.api.test.Helpers._
 import views.html.SelectWorkPeriodsView
@@ -42,13 +42,15 @@ class SelectWorkPeriodsControllerSpec extends SpecBaseControllerSpecs {
   val claimPeriod  = ClaimPeriod.Nov2020
   val payFrequency = PayFrequency.FortNightly
   val lastPayDate  = "2020-10-31"
+  val endPayDate   = "2020-11-30"
 
   val userAnswers = UserAnswers(
     userAnswersId,
     Json.obj(
       ClaimPeriodPage.toString  -> JsString(claimPeriod),
       PayFrequencyPage.toString -> JsString(payFrequency),
-      LastPayDatePage.toString  -> JsString(lastPayDate)
+      LastPayDatePage.toString  -> JsString(lastPayDate),
+      EndPayDatePage.toString   -> JsString(endPayDate)
     )
   )
 

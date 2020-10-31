@@ -87,7 +87,7 @@ case class JobSupportAuditDetails(
 object JobSupportAuditDetails {
   def apply(jobSupport: JobSupport): JobSupportAuditDetails =
     new JobSupportAuditDetails(
-      jobSupport.supportBreakdown,
+      jobSupport.supportBreakdowns,
       jobSupport.referenceSalary,
       jobSupport.isIneligible,
       jobSupport.totalEmployeeSalary,

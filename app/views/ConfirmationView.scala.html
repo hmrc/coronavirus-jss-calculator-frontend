@@ -16,7 +16,6 @@
 
 @import java.time.LocalDate
 @import config.FrontendAppConfig
-@import viewmodels.ConfirmationBreakdownHelper
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 
 @this(
@@ -29,7 +28,6 @@
         link: components.link,
         button: components.button,
         appConfig: FrontendAppConfig,
-        breakdownHelper: ConfirmationBreakdownHelper,
         warningText: components.warningText,
         hmrcNewTabLink : HmrcNewTabLink
 )
@@ -95,7 +93,7 @@
             language = Some("en"),
             classList = Some(""))))))
 
-    @for(gfp <- jobSupport.supportBreakdown) {
+    @for(gfp <- jobSupport.supportBreakdowns) {
         @h3(Html(messages(
             "confirmation.breakdown.h3",
             dateToStringWithoutYear(gfp.startDate),

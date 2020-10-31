@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBaseControllerSpecs
 import forms.PayPeriodsFormProvider
 import models.{ClaimPeriod, PayFrequency, PayPeriods, Period, UserAnswers}
-import pages.{ClaimPeriodPage, LastPayDatePage, PayFrequencyPage, PayPeriodsPage}
+import pages.{ClaimPeriodPage, EndPayDatePage, LastPayDatePage, PayFrequencyPage, PayPeriodsPage}
 import play.api.libs.json.{JsString, Json}
 import play.api.test.Helpers._
 import views.html.PayPeriodsView
@@ -52,13 +52,15 @@ class PayPeriodsControllerSpec extends SpecBaseControllerSpecs {
   val claimPeriod  = ClaimPeriod.Nov2020
   val payFrequency = PayFrequency.Monthly
   val lastPayDate  = "2020-10-30"
+  val endPayDate   = "2020-11-30"
 
   val userAnswers = UserAnswers(
     userAnswersId,
     Json.obj(
       ClaimPeriodPage.toString  -> JsString(claimPeriod),
       PayFrequencyPage.toString -> JsString(payFrequency),
-      LastPayDatePage.toString  -> JsString(lastPayDate)
+      LastPayDatePage.toString  -> JsString(lastPayDate),
+      EndPayDatePage.toString   -> JsString(endPayDate)
     )
   )
   val periods     = List(Period(LocalDate.of(2020, 10, 31), LocalDate.of(2020, 11, 30)))
