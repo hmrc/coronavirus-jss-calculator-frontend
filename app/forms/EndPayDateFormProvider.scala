@@ -17,6 +17,7 @@
 package forms
 
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit.DAYS
 
 import forms.mappings.Mappings
 import javax.inject.Inject
@@ -38,6 +39,11 @@ class EndPayDateFormProvider @Inject() extends Mappings {
         minDate(claimStartDate, "endPayDate.error.invalid.must.be.on.or.after", dateToString(claimStartDate))
       ).verifying(
         maxDate(claimEndDate, "endPayDate.error.invalid.must.be.on.or.before", dateToString(claimEndDate))
-      )
+      ).verifying("endPayDate.error.invalid.monthly.days", date => hasValidNofDays(lastPayDate, date))
     )
+
+  private def hasValidNofDays(lastPayDate: LocalDate, endPayDate: LocalDate): Boolean = {
+    val days = DAYS.between(lastPayDate, endPayDate)
+    days >= 28 && days <= 31
+  }
 }

@@ -56,7 +56,8 @@ class EndPayDateFormProviderSpec extends SpecBaseControllerSpecs {
 
       val result = form(lastPayDate, claimStartDate, claimEndDate).bind(data)
       result.errors shouldBe List(
-        FormError("value", List("endPayDate.error.invalid.must.be.on.or.after"), Array("1 November 2020"))
+        FormError("value", List("endPayDate.error.invalid.must.be.on.or.after"), Array("1 November 2020")),
+        FormError("value", List("endPayDate.error.invalid.monthly.days"))
       )
     }
 
@@ -79,6 +80,21 @@ class EndPayDateFormProviderSpec extends SpecBaseControllerSpecs {
         form(lastPayDate, claimStartDate, claimEndDate),
         "value",
         "endPayDate.error.required.all"
+      )
+    }
+
+    "validate minimum 28 and maximum 31 days constraint" in {
+      val lastPayDate = LocalDate.of(2020, 10, 10)
+      val endPayDate  = lastPayDate.plusDays(32)
+      val data        = Map(
+        s"$value.day"   -> endPayDate.getDayOfMonth.toString,
+        s"$value.month" -> endPayDate.getMonthValue.toString,
+        s"$value.year"  -> endPayDate.getYear.toString
+      )
+
+      val result = form(lastPayDate, claimStartDate, claimEndDate).bind(data)
+      result.errors shouldBe List(
+        FormError("value", List("endPayDate.error.invalid.monthly.days"))
       )
     }
   }

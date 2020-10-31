@@ -141,7 +141,7 @@ error.summary.title = There is a problem
 
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
-session_expired.guidance = The details you have given have been deleted because you did not continue the service for 15 minutes.
+session_expired.guidance = The details you have given have been deleted because you did not continue the service for 60 minutes.
 session_expired.restart = Start another calculation
 
 claimPeriod.title = Which month will you claim for?
@@ -260,6 +260,7 @@ regularPayAmount.l1 = 19 March 2020 or
 regularPayAmount.l2 = 23 September 2020
 regularPayAmount.p2 = We will use the higher pay to make your calculation.
 regularPayAmount.info = If this employee started their employment with you during the pay period, enter the amount they would have received if it was a full pay period.
+regularPayAmount.label = What is the employee’s reference pay
 regularPayAmount.error.required = Enter regular pay amount before either of these dates
 amount.error.max.2.decimals = The amount cannot have more than two decimal places
 regularPayAmount.error.nonNumeric = Enter the regular pay amount in numbers
@@ -370,6 +371,7 @@ endPayDate.error.required = Enter the last date of the next pay period after {0}
 endPayDate.error.invalid = Enter the last date of the next pay period after {0}
 endPayDate.error.invalid.must.be.on.or.after = The last date of the next pay period must be on or after {0}
 endPayDate.error.invalid.must.be.on.or.before = The last date of the next pay period must be on or before {0}
+endPayDate.error.invalid.monthly.days = the number of days between pay dates incase of ‘Monthly’ frequency must be minimum 28 and maximum 31
 
 comingSoon.title = We are unable to do this calculation at the moment
 comingSoon.heading = We are unable to do this calculation at the moment
