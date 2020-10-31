@@ -17,7 +17,7 @@
 package services
 
 import java.time.LocalDate
-import java.time.temporal.TemporalAdjusters.lastDayOfMonth
+import java.time.temporal.ChronoUnit
 
 import models.{PayFrequency, Period, SupportClaimPeriod}
 
@@ -28,17 +28,20 @@ trait PeriodHelper {
 
   def getPayPeriods(
     lastPayDay: LocalDate,
+    maybeEndPayDay: Option[LocalDate],
     payFrequency: PayFrequency,
     supportClaimPeriod: SupportClaimPeriod
   ): List[Period] =
     payFrequency match {
       case PayFrequency.Monthly =>
-        if (lastPayDay.isEqual(lastPayDay.`with`(lastDayOfMonth()))) {
-          List(Period(lastPayDay.plusDays(1), supportClaimPeriod.endDate))
-        } else {
-          List(Period(lastPayDay.plusDays(1), lastPayDay.plusMonths(1)))
+        maybeEndPayDay match {
+          case Some(endPayDay) =>
+            val daysInBetween = ChronoUnit.DAYS.between(lastPayDay, endPayDay)
+            List(Period(endPayDay.plusDays(1), endPayDay.plusDays(daysInBetween)))
+          case None            => sys.error("could not find end pay day")
         }
-      case _                    =>
+
+      case _ =>
         computePayPeriods(PayFrequency.payFrequencyDays(payFrequency), lastPayDay, supportClaimPeriod)
     }
 
