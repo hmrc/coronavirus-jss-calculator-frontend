@@ -118,22 +118,25 @@ class UsualAndActualHoursController @Inject() (
     supportClaimPeriod: SupportClaimPeriod
   ): Boolean = {
 
-    val stwaPeriods                = userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
-    val bcPeriods                  = userAnswers.getList(BusinessClosedPeriodsPage)
+    val stwaPeriods                                         = userAnswers.getList(ShortTermWorkingAgreementPeriodPage)
+    val bcPeriods                                           = userAnswers.getList(BusinessClosedPeriodsPage)
     //FIXME: Hacky way to pass 0.0s
-    val pp                         = PayPeriod(workPeriod.startDate, workPeriod.endDate, 0.0, 0.0)
-    val closedPeriodsInPP          = getAllBusinessClosedPeriodsInThisPayPeriod(pp, bcPeriods)
-    val isPPCompletelyCoveredByBCs =
-      isPayPeriodCompletelyCoveredByBusinessClosedPeriod(supportClaimPeriod, pp, closedPeriodsInPP)
+    val payPeriod                                           = PayPeriod(workPeriod.startDate, workPeriod.endDate, 0.0, 0.0)
+    val businessClosedPeriods                               = getAllBusinessClosedPeriodsInThisPayPeriod(payPeriod, bcPeriods)
+    val isPayPeriodCompletelyCoveredByBusinessClosedPeriods =
+      isPayPeriodCompletelyCoveredByBusinessClosedPeriod(supportClaimPeriod, payPeriod, businessClosedPeriods)
 
-    if (isPPCompletelyCoveredByBCs) {
+    if (isPayPeriodCompletelyCoveredByBusinessClosedPeriods) {
       false
     } else {
-      val twasInPP                        = getAllTemporaryWorkingAgreementsInThisPayPeriod(pp, stwaPeriods)
-      val isEveryTwaCompletelyCoveredByBC =
-        isEveryTemporaryWorkingAgreementCompletelyCoveredABusinessClosedPeriod(twasInPP, closedPeriodsInPP)
+      val temporaryWorkingAgreementPeriods = getAllTemporaryWorkingAgreementsInThisPayPeriod(payPeriod, stwaPeriods)
+      val isEveryTwaCompletelyCoveredByBC  =
+        isEveryTemporaryWorkingAgreementCompletelyCoveredABusinessClosedPeriod(
+          temporaryWorkingAgreementPeriods,
+          businessClosedPeriods
+        )
 
-      if (twasInPP.nonEmpty && !isEveryTwaCompletelyCoveredByBC) {
+      if (temporaryWorkingAgreementPeriods.nonEmpty && !isEveryTwaCompletelyCoveredByBC) {
         true
       } else {
         false

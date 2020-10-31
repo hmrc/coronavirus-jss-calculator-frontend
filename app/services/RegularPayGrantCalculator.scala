@@ -25,7 +25,6 @@ import utils.MoneyUtils.round
 
 import scala.collection.mutable.ListBuffer
 
-//TODO: add new calc
 //TODO: put calculations in Try to catch exceptions
 //TODO: add logging
 //TODO: prevent calculations of closed if no closed period
@@ -45,9 +44,6 @@ trait RegularPayGrantCalculator {
     val sortedBCList  = sortedBusinessClosedPeriods(businessClosedPeriods)
 
     val supportBreakdowns: List[SupportBreakdown] = payPeriods.map { payPeriod =>
-      // TODO: calculate here first whether for this period it is completely covered by a TWA or BC or a combination of both and this is not partial period - if so set the flag to do new calc else set the flag to do the old calc and
-      // pass that flag into these functions
-
       val numberOfTemporaryWorkingAgreementDaysInPayPeriod =
         getTotalNumberOfTemporaryWorkingAgreementDaysInPayPeriod(
           payPeriod,
@@ -61,11 +57,13 @@ trait RegularPayGrantCalculator {
 
       val numberOfPayFrequencyDaysInThisPayPeriod = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
 
-      val isPartialPayPeriodFlag = isPartialPayPeriod(payPeriod, supportClaimPeriod)
-
-      val newCalcFlag =
+      val usePayFrequencyCap =
         if (
-          (numberOfTemporaryWorkingAgreementDaysInPayPeriod + numberOfBusinessClosedPeriodDaysInPayPeriod >= numberOfPayFrequencyDaysInThisPayPeriod) && (!isPartialPayPeriodFlag)
+          ((numberOfTemporaryWorkingAgreementDaysInPayPeriod + numberOfBusinessClosedPeriodDaysInPayPeriod)
+            >= numberOfPayFrequencyDaysInThisPayPeriod) && (!isPartialPayPeriod(
+            payPeriod,
+            supportClaimPeriod
+          ))
         ) true
         else false
 
@@ -80,7 +78,7 @@ trait RegularPayGrantCalculator {
           sortedBCList,
           payFrequency,
           referencePay,
-          newCalcFlag
+          usePayFrequencyCap
         ),
         calculateClosedJobSupport(
           supportClaimPeriod,
@@ -88,7 +86,7 @@ trait RegularPayGrantCalculator {
           getAllBusinessClosedPeriodsInThisPayPeriod(payPeriod, sortedBCList),
           payFrequency,
           referencePay,
-          newCalcFlag
+          usePayFrequencyCap
         )
       )
     }
@@ -220,11 +218,6 @@ trait RegularPayGrantCalculator {
     referencePay: Double,
     newCalcFlag: Boolean
   ): ClosedJobSupport = {
-
-    /*
-      We need a flag before these functions are called to tell us whether or not this PP is completely covered
-      by a TWA or BC in this period. If so apply the new calc or apply the current one
-     */
 
     val numberOfClosedDaysInPayPeriod      = getTotalNumberOfClosedDaysInAPayPeriod(payPeriod, businessClosedPeriods)
     val numberOfPayPeriodDaysInClaimPeriod = getNumberOfPayPeriodDaysInClaimDays(payPeriod, supportClaimPeriod)
