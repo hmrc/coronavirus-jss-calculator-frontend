@@ -95,7 +95,7 @@
             language = Some("en"),
             classList = Some(""))))))
 
-    @for(gfp <- jobSupport.supportBreakdown) {
+    @for(gfp <- jobSupport.supportBreakdowns) {
         @h3(Html(messages(
             "confirmation.breakdown.h3",
             dateToStringWithoutYear(gfp.startDate),

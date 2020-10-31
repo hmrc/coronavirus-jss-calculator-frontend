@@ -28,21 +28,6 @@ final case class SupportBreakdown(
   closed: ClosedJobSupport
 )
 
-/*
-  //TODO: draft implementation of the calculator - needs refactoring and re-design
- */
 object SupportBreakdown {
-
   implicit val format: Format[SupportBreakdown] = Json.format
-
-  implicit class PeriodSupportOps(private val periodSupports: List[SupportBreakdown]) {
-    def totalEmployeeSalary: Double =
-      periodSupports.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.salary)
-
-    def totalEmployersGrant: Double = periodSupports.map(s => s.open).foldLeft(0.0)((acc, f) => acc + f.grant)
-
-    def totalClosed: Double = periodSupports.map(s => s.closed).foldLeft(0.0)((acc, f) => acc + f.grant)
-
-    def totalGrant: Double = totalEmployersGrant + totalClosed
-  }
 }

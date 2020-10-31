@@ -24,6 +24,7 @@ import models.{BusinessClosedPeriod, ClosedJobSupport, Interval, JobSupport, Ope
 import utils.MoneyUtils.round
 
 import scala.collection.mutable.ListBuffer
+import scala.util.{Failure, Success, Try}
 
 //TODO: put calculations in Try to catch exceptions
 //TODO: add logging
@@ -38,12 +39,12 @@ trait RegularPayGrantCalculator {
     businessClosedPeriods: List[BusinessClosedPeriod],
     payFrequency: PayFrequency,
     referencePay: Double
-  ): JobSupport = {
+  ): Option[JobSupport] = {
 
     val sortedTWAList = sortedTemporaryWorkingAgreements(temporaryWorkingAgreementPeriods)
     val sortedBCList  = sortedBusinessClosedPeriods(businessClosedPeriods)
 
-    val supportBreakdowns: List[SupportBreakdown] = payPeriods.map { payPeriod =>
+    val supportBreakdowns: List[Option[SupportBreakdown]] = payPeriods.map { payPeriod =>
       val numberOfTemporaryWorkingAgreementDaysInPayPeriod =
         getTotalNumberOfTemporaryWorkingAgreementDaysInPayPeriod(
           payPeriod,
@@ -67,34 +68,50 @@ trait RegularPayGrantCalculator {
         ) true
         else false
 
-      SupportBreakdown(
-        payPeriod.startDate,
-        payPeriod.endDate,
-        getNumberOfDaysInPayFrequency(payFrequency, payPeriod),
-        calculateOpenJobSupport(
-          supportClaimPeriod,
-          payPeriod,
-          getAllTemporaryWorkingAgreementsInThisPayPeriod(payPeriod, sortedTWAList),
-          sortedBCList,
-          payFrequency,
-          referencePay,
-          usePayFrequencyCap
-        ),
-        calculateClosedJobSupport(
-          supportClaimPeriod,
-          payPeriod,
-          getAllBusinessClosedPeriodsInThisPayPeriod(payPeriod, sortedBCList),
-          payFrequency,
-          referencePay,
-          usePayFrequencyCap
+      val maybeOpenJobSupport = calculateOpenJobSupport(
+        supportClaimPeriod,
+        payPeriod,
+        getAllTemporaryWorkingAgreementsInThisPayPeriod(payPeriod, sortedTWAList),
+        sortedBCList,
+        payFrequency,
+        referencePay,
+        usePayFrequencyCap
+      )
+
+      val maybeClosedJobSupport = calculateClosedJobSupport(
+        supportClaimPeriod,
+        payPeriod,
+        getAllBusinessClosedPeriodsInThisPayPeriod(payPeriod, sortedBCList),
+        payFrequency,
+        referencePay,
+        usePayFrequencyCap
+      )
+
+      (maybeOpenJobSupport, maybeClosedJobSupport) match {
+        case (Some(openJobSupport), Some(closedJobSupport)) =>
+          Some(
+            SupportBreakdown(
+              payPeriod.startDate,
+              payPeriod.endDate,
+              getNumberOfDaysInPayFrequency(payFrequency, payPeriod),
+              openJobSupport,
+              closedJobSupport
+            )
+          )
+        case _                                              => None
+      }
+    }
+
+    if (supportBreakdowns.exists(supportBreakdown => supportBreakdown.isEmpty)) {
+      None // there's a failed calculation
+    } else {
+      Some(
+        JobSupport(
+          supportBreakdowns.flatten,
+          referencePay
         )
       )
     }
-
-    JobSupport(
-      supportBreakdowns,
-      referencePay
-    )
   }
 
   def calculateOpenJobSupport(
@@ -104,8 +121,8 @@ trait RegularPayGrantCalculator {
     businessClosedPeriods: List[BusinessClosedPeriod],
     payFrequency: PayFrequency,
     referencePay: Double,
-    newCalcFlag: Boolean
-  ): OpenJobSupport = {
+    usePayFrequencyCap: Boolean
+  ): Option[OpenJobSupport] = {
 
     val totalNumberOfTemporaryWorkingAgreementDaysInAPayPeriod =
       getTotalNumberOfTemporaryWorkingAgreementDaysInPayPeriod(payPeriod, temporaryWorkingAgreementPeriods)
@@ -121,7 +138,7 @@ trait RegularPayGrantCalculator {
         businessClosedPeriods
       )
     ) {
-      OpenJobSupport.zeroFinancialSupport
+      Some(OpenJobSupport.zeroFinancialSupport)
     } else
       (
         businessClosedPeriods.isEmpty,
@@ -137,7 +154,7 @@ trait RegularPayGrantCalculator {
             numberOfDaysInPayFrequency,
             payFrequency,
             payPeriod,
-            newCalcFlag
+            usePayFrequencyCap
           )
 
         case (false, false) =>
@@ -147,7 +164,7 @@ trait RegularPayGrantCalculator {
             numberOfDaysInPayFrequency,
             payFrequency,
             payPeriod,
-            newCalcFlag
+            usePayFrequencyCap
           )
 
         case (false, true) =>
@@ -163,7 +180,7 @@ trait RegularPayGrantCalculator {
             numberOfDaysInPayFrequency,
             payFrequency,
             payPeriod,
-            newCalcFlag
+            usePayFrequencyCap
           )
       }
   }
@@ -174,41 +191,44 @@ trait RegularPayGrantCalculator {
     numberOfDaysInPayFrequency: Int,
     payFrequency: PayFrequency,
     payPeriod: PayPeriod,
-    newCalcFlag: Boolean
-  ): OpenJobSupport = {
+    usePayFrequencyCap: Boolean
+  ): Option[OpenJobSupport] =
+    Try {
+      val referencePayCap = if (usePayFrequencyCap) {
+        scala.math.min(referencePay, newCalculateReferencePayCap(payFrequency))
+      } else {
+        calculateReferencePayCap(
+          totalNumberOfTwaDaysInAPayPeriod,
+          !(numberOfDaysInPayFrequency == totalNumberOfTwaDaysInAPayPeriod),
+          payFrequency
+        )
+      }
 
-    val referencePayCap = if (newCalcFlag) {
-      scala.math.min(referencePay, newCalculateReferencePayCap(payFrequency))
-    } else {
-      calculateReferencePayCap(
-        totalNumberOfTwaDaysInAPayPeriod,
-        !(numberOfDaysInPayFrequency == totalNumberOfTwaDaysInAPayPeriod),
-        payFrequency
-      )
+      val adjustedReferencePay = if (usePayFrequencyCap) {
+        proportionReferencePay(referencePayCap, totalNumberOfTwaDaysInAPayPeriod, numberOfDaysInPayFrequency)
+      } else {
+        proportionReferencePay(referencePay, totalNumberOfTwaDaysInAPayPeriod, numberOfDaysInPayFrequency)
+      }
+
+      val actualReferencePay = capReferencePay(adjustedReferencePay, referencePayCap)
+
+      val employeeSalary =
+        actualReferencePay * ((payPeriod.usualHours - payPeriod.actualHours) / payPeriod.usualHours) * 0.6667
+      val employersGrant = employeeSalary * (61.67 / 66.67)
+      (employeeSalary, employersGrant)
+    } match {
+      case Failure(_)       => None
+      case Success(support) =>
+        Some(
+          OpenJobSupport(
+            totalNumberOfTwaDaysInAPayPeriod,
+            payPeriod.usualHours,
+            payPeriod.actualHours,
+            round(support._1),
+            round(support._2)
+          )
+        )
     }
-
-    val adjustedReferencePay = if (newCalcFlag) {
-      proportionReferencePay(referencePayCap, totalNumberOfTwaDaysInAPayPeriod, numberOfDaysInPayFrequency)
-    } else {
-      proportionReferencePay(referencePay, totalNumberOfTwaDaysInAPayPeriod, numberOfDaysInPayFrequency)
-    }
-
-    val actualReferencePay = capReferencePay(adjustedReferencePay, referencePayCap)
-
-    val employeeSalary =
-      actualReferencePay * ((payPeriod.usualHours - payPeriod.actualHours) / payPeriod.usualHours) * 0.6667
-
-    val employersGrant = employeeSalary * (61.67 / 66.67)
-
-    OpenJobSupport(
-      totalNumberOfTwaDaysInAPayPeriod,
-      payPeriod.usualHours,
-      payPeriod.actualHours,
-      round(employeeSalary),
-      round(employersGrant)
-    )
-
-  }
 
   def calculateClosedJobSupport(
     supportClaimPeriod: SupportClaimPeriod,
@@ -217,36 +237,43 @@ trait RegularPayGrantCalculator {
     payFrequency: PayFrequency,
     referencePay: Double,
     newCalcFlag: Boolean
-  ): ClosedJobSupport =
+  ): Option[ClosedJobSupport] =
     if (businessClosedPeriods.nonEmpty) {
-      val numberOfClosedDaysInPayPeriod      = getTotalNumberOfClosedDaysInAPayPeriod(payPeriod, businessClosedPeriods)
-      val numberOfPayPeriodDaysInClaimPeriod = getNumberOfPayPeriodDaysInClaimDays(payPeriod, supportClaimPeriod)
-      val numberOfDaysInPayFrequency         = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
 
-      val referencePayCap = {
-        if (newCalcFlag) {
-          scala.math.min(referencePay, newCalculateReferencePayCap(payFrequency))
-        } else {
-          calculateReferencePayCap(
-            numberOfPayPeriodDaysInClaimPeriod,
-            !(numberOfDaysInPayFrequency == numberOfClosedDaysInPayPeriod),
-            payFrequency
-          )
+      Try {
+        val numberOfClosedDaysInPayPeriod      = getTotalNumberOfClosedDaysInAPayPeriod(payPeriod, businessClosedPeriods)
+        val numberOfPayPeriodDaysInClaimPeriod = getNumberOfPayPeriodDaysInClaimDays(payPeriod, supportClaimPeriod)
+        val numberOfDaysInPayFrequency         = getNumberOfDaysInPayFrequency(payFrequency, payPeriod)
+
+        val referencePayCap = {
+          if (newCalcFlag) {
+            scala.math.min(referencePay, newCalculateReferencePayCap(payFrequency))
+          } else {
+            calculateReferencePayCap(
+              numberOfPayPeriodDaysInClaimPeriod,
+              !(numberOfDaysInPayFrequency == numberOfClosedDaysInPayPeriod),
+              payFrequency
+            )
+          }
         }
+
+        val adjustedReferencePay =
+          calculateAdjustedReferencePay(referencePay, numberOfDaysInPayFrequency, numberOfPayPeriodDaysInClaimPeriod)
+
+        val actualReferencePay = capReferencePay(adjustedReferencePay, referencePayCap)
+
+        val closedSupportGrant = round(
+          actualReferencePay * (numberOfClosedDaysInPayPeriod.toDouble / numberOfPayPeriodDaysInClaimPeriod.toDouble) * 0.6667
+        )
+
+        (numberOfClosedDaysInPayPeriod, closedSupportGrant)
+      } match {
+        case Failure(_)       => None
+        case Success(support) =>
+          Some(ClosedJobSupport(support._1, support._2))
       }
-
-      val adjustedReferencePay =
-        calculateAdjustedReferencePay(referencePay, numberOfDaysInPayFrequency, numberOfPayPeriodDaysInClaimPeriod)
-
-      val actualReferencePay = capReferencePay(adjustedReferencePay, referencePayCap)
-
-      val closedSupportGrant = round(
-        actualReferencePay * (numberOfClosedDaysInPayPeriod.toDouble / numberOfPayPeriodDaysInClaimPeriod.toDouble) * 0.6667
-      )
-
-      ClosedJobSupport(numberOfClosedDaysInPayPeriod, closedSupportGrant)
     } else {
-      ClosedJobSupport.zeroFinancialSupport
+      Some(ClosedJobSupport.zeroFinancialSupport)
     }
 
   def isPayPeriodWithinClaimPeriod(payPeriod: PayPeriod, supportClaimPeriod: SupportClaimPeriod): Boolean =

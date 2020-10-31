@@ -63,7 +63,7 @@ class FourWeeklySpec extends SpecBase {
           )
         )
 
-        val jobSupport: JobSupport = calculateJobSupport(
+        val maybeJobSupport: Option[JobSupport] = calculateJobSupport(
           supportClaimPeriod,
           pp,
           twasList,
@@ -72,7 +72,9 @@ class FourWeeklySpec extends SpecBase {
           2500
         )
 
-        jobSupport.totalGrant mustEqual 1548.03
+        maybeJobSupport.map { jobSupport =>
+          jobSupport.totalGrant mustEqual 1548.03
+        }
       }
 
       "scenario-9" in new RegularPayGrantCalculator {
@@ -109,7 +111,7 @@ class FourWeeklySpec extends SpecBase {
           )
         )
 
-        val jobSupport: JobSupport = calculateJobSupport(
+        val maybeJobSupport: Option[JobSupport] = calculateJobSupport(
           supportClaimPeriod,
           pp,
           twasList,
@@ -118,7 +120,9 @@ class FourWeeklySpec extends SpecBase {
           2884.70
         )
 
-        jobSupport.totalGrant mustEqual 1730.59
+        maybeJobSupport.map { jobSupport =>
+          jobSupport.totalGrant mustEqual 1730.59
+        }
       }
     }
   }

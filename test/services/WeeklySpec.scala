@@ -81,7 +81,7 @@ class WeeklySpec extends SpecBase {
           )
         )
 
-        val jobSupport: JobSupport = calculateJobSupport(
+        val maybeJobSupport: Option[JobSupport] = calculateJobSupport(
           supportClaimPeriod,
           payPeriods,
           temporaryWorkingAgreementPeriods,
@@ -90,12 +90,12 @@ class WeeklySpec extends SpecBase {
           300
         )
 
-        println(s"Job support: ${jobSupport.supportBreakdown.mkString("\n\n")}")
-
-        jobSupport.totalEmployeeSalary mustEqual 268.59
-        jobSupport.totalEmployersGrant mustEqual 248.45
-        jobSupport.totalClosed mustEqual 400.02
-        jobSupport.totalGrant mustEqual 648.47
+        maybeJobSupport.map { jobSupport =>
+          jobSupport.totalEmployeeSalary mustEqual 268.59
+          jobSupport.totalEmployersGrant mustEqual 248.45
+          jobSupport.totalClosed mustEqual 400.02
+          jobSupport.totalGrant mustEqual 648.47
+        }
       }
 
       "scenario-2" in new RegularPayGrantCalculator {
@@ -156,7 +156,7 @@ class WeeklySpec extends SpecBase {
           )
         )
 
-        val jobSupport: JobSupport = calculateJobSupport(
+        val maybeJobSupport: Option[JobSupport] = calculateJobSupport(
           supportClaimPeriod,
           pp,
           twasList,
@@ -165,10 +165,12 @@ class WeeklySpec extends SpecBase {
           350
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 252.48
-        jobSupport.totalEmployersGrant mustEqual 233.55
-        jobSupport.totalClosed mustEqual 533.37
-        jobSupport.totalGrant mustEqual 766.92
+        maybeJobSupport.map { jobSupport =>
+          jobSupport.totalEmployeeSalary mustEqual 252.48
+          jobSupport.totalEmployersGrant mustEqual 233.55
+          jobSupport.totalClosed mustEqual 533.37
+          jobSupport.totalGrant mustEqual 766.92
+        }
       }
 
       "scenario-3" in new RegularPayGrantCalculator {
@@ -215,7 +217,7 @@ class WeeklySpec extends SpecBase {
           )
         )
 
-        val jobSupport: JobSupport = calculateJobSupport(
+        val maybeJobSupport: Option[JobSupport] = calculateJobSupport(
           supportClaimPeriod,
           pp,
           twasList,
@@ -223,11 +225,12 @@ class WeeklySpec extends SpecBase {
           PayFrequency.Weekly,
           525.56
         )
-
-        jobSupport.totalEmployeeSalary mustEqual 0.0
-        jobSupport.totalEmployersGrant mustEqual 0.0
-        jobSupport.totalClosed mustEqual 1401.56
-        jobSupport.totalGrant mustEqual 1401.56
+        maybeJobSupport.map { jobSupport =>
+          jobSupport.totalEmployeeSalary mustEqual 0.0
+          jobSupport.totalEmployersGrant mustEqual 0.0
+          jobSupport.totalClosed mustEqual 1401.56
+          jobSupport.totalGrant mustEqual 1401.56
+        }
       }
 
       "scenario-4" in new RegularPayGrantCalculator {
@@ -274,7 +277,7 @@ class WeeklySpec extends SpecBase {
           )
         )
 
-        val jobSupport: JobSupport = calculateJobSupport(
+        val maybeJobSupport: Option[JobSupport] = calculateJobSupport(
           supportClaimPeriod,
           pp,
           twasList,
@@ -283,10 +286,12 @@ class WeeklySpec extends SpecBase {
           623.21
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 0.0
-        jobSupport.totalEmployersGrant mustEqual 0.0
-        jobSupport.totalClosed mustEqual 890.34
-        jobSupport.totalGrant mustEqual 890.34
+        maybeJobSupport.map { jobSupport =>
+          jobSupport.totalEmployeeSalary mustEqual 0.0
+          jobSupport.totalEmployersGrant mustEqual 0.0
+          jobSupport.totalClosed mustEqual 890.34
+          jobSupport.totalGrant mustEqual 890.34
+        }
       }
 
       "scenario-5" in new RegularPayGrantCalculator {
@@ -337,7 +342,7 @@ class WeeklySpec extends SpecBase {
           )
         )
 
-        val jobSupport: JobSupport = calculateJobSupport(
+        val maybeJobSupport: Option[JobSupport] = calculateJobSupport(
           supportClaimPeriod,
           pp,
           twasList,
@@ -346,10 +351,12 @@ class WeeklySpec extends SpecBase {
           456.66
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 386.84
-        jobSupport.totalEmployersGrant mustEqual 357.82
-        jobSupport.totalClosed mustEqual 0.0
-        jobSupport.totalGrant mustEqual 357.82
+        maybeJobSupport.map { jobSupport =>
+          jobSupport.totalEmployeeSalary mustEqual 386.84
+          jobSupport.totalEmployersGrant mustEqual 357.82
+          jobSupport.totalClosed mustEqual 0.0
+          jobSupport.totalGrant mustEqual 357.82
+        }
       }
 
       "scenario-6" in new RegularPayGrantCalculator {
@@ -394,7 +401,7 @@ class WeeklySpec extends SpecBase {
           )
         )
 
-        val jobSupport: JobSupport = calculateJobSupport(
+        val maybeJobSupport: Option[JobSupport] = calculateJobSupport(
           supportClaimPeriod,
           pp,
           twasList,
@@ -403,10 +410,12 @@ class WeeklySpec extends SpecBase {
           700.10
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 248.32
-        jobSupport.totalEmployersGrant mustEqual 229.70
-        jobSupport.totalClosed mustEqual 466.76
-        jobSupport.totalGrant mustEqual 696.46
+        maybeJobSupport.map { jobSupport =>
+          jobSupport.totalEmployeeSalary mustEqual 248.32
+          jobSupport.totalEmployersGrant mustEqual 229.70
+          jobSupport.totalClosed mustEqual 466.76
+          jobSupport.totalGrant mustEqual 696.46
+        }
       }
 
       "scenario-7" in new RegularPayGrantCalculator {
@@ -463,7 +472,7 @@ class WeeklySpec extends SpecBase {
           )
         )
 
-        val jobSupport: JobSupport = calculateJobSupport(
+        val maybeJobSupport: Option[JobSupport] = calculateJobSupport(
           supportClaimPeriod,
           pp,
           twasList,
@@ -472,10 +481,12 @@ class WeeklySpec extends SpecBase {
           690.12
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 307.12
-        jobSupport.totalEmployersGrant mustEqual 284.09
-        jobSupport.totalClosed mustEqual 460.10
-        jobSupport.totalGrant mustEqual 744.19
+        maybeJobSupport.map { jobSupport =>
+          jobSupport.totalEmployeeSalary mustEqual 307.12
+          jobSupport.totalEmployersGrant mustEqual 284.09
+          jobSupport.totalClosed mustEqual 460.10
+          jobSupport.totalGrant mustEqual 744.19
+        }
       }
 
       "scenario-8" in new RegularPayGrantCalculator {
@@ -530,7 +541,7 @@ class WeeklySpec extends SpecBase {
           )
         )
 
-        val jobSupport: JobSupport = calculateJobSupport(
+        val maybeJobSupport: Option[JobSupport] = calculateJobSupport(
           supportClaimPeriod,
           pp,
           twasList,
@@ -539,10 +550,12 @@ class WeeklySpec extends SpecBase {
           500
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 190.48
-        jobSupport.totalEmployersGrant mustEqual 176.20
-        jobSupport.totalClosed mustEqual 857.19
-        jobSupport.totalGrant mustEqual 1033.39
+        maybeJobSupport.map { jobSupport =>
+          jobSupport.totalEmployeeSalary mustEqual 190.48
+          jobSupport.totalEmployersGrant mustEqual 176.20
+          jobSupport.totalClosed mustEqual 857.19
+          jobSupport.totalGrant mustEqual 1033.39
+        }
       }
 
       "scenario-9" in new RegularPayGrantCalculator {
@@ -597,7 +610,7 @@ class WeeklySpec extends SpecBase {
           )
         )
 
-        val jobSupport: JobSupport = calculateJobSupport(
+        val maybeJobSupport: Option[JobSupport] = calculateJobSupport(
           supportClaimPeriod,
           payPeriods,
           temporaryWorkingAgreementPeriods,
@@ -606,10 +619,12 @@ class WeeklySpec extends SpecBase {
           1000
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 274.74
-        jobSupport.totalEmployersGrant mustEqual 254.14
-        jobSupport.totalClosed mustEqual 1235.37
-        jobSupport.totalGrant mustEqual 1489.51
+        maybeJobSupport.map { jobSupport =>
+          jobSupport.totalEmployeeSalary mustEqual 274.74
+          jobSupport.totalEmployersGrant mustEqual 254.14
+          jobSupport.totalClosed mustEqual 1235.37
+          jobSupport.totalGrant mustEqual 1489.51
+        }
       }
 
       "scenario-10" in new RegularPayGrantCalculator {
@@ -664,7 +679,7 @@ class WeeklySpec extends SpecBase {
           )
         )
 
-        val jobSupport: JobSupport = calculateJobSupport(
+        val maybeJobSupport: Option[JobSupport] = calculateJobSupport(
           supportClaimPeriod,
           pp,
           twasList,
@@ -673,10 +688,12 @@ class WeeklySpec extends SpecBase {
           500
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 349.23
-        jobSupport.totalEmployersGrant mustEqual 323.03
-        jobSupport.totalClosed mustEqual 857.19
-        jobSupport.totalGrant mustEqual 1180.22
+        maybeJobSupport.map { jobSupport =>
+          jobSupport.totalEmployeeSalary mustEqual 349.23
+          jobSupport.totalEmployersGrant mustEqual 323.03
+          jobSupport.totalClosed mustEqual 857.19
+          jobSupport.totalGrant mustEqual 1180.22
+        }
       }
 
       "scenario-11" in new RegularPayGrantCalculator {
@@ -731,7 +748,7 @@ class WeeklySpec extends SpecBase {
           )
         )
 
-        val jobSupport: JobSupport = calculateJobSupport(
+        val maybeJobSupport: Option[JobSupport] = calculateJobSupport(
           supportClaimPeriod,
           pp,
           twasList,
@@ -740,10 +757,12 @@ class WeeklySpec extends SpecBase {
           500
         )
 
-        jobSupport.totalEmployeeSalary mustEqual 0.0
-        jobSupport.totalEmployersGrant mustEqual 0.0
-        jobSupport.totalClosed mustEqual 714.32
-        jobSupport.totalGrant mustEqual 714.32
+        maybeJobSupport.map { jobSupport =>
+          jobSupport.totalEmployeeSalary mustEqual 0.0
+          jobSupport.totalEmployersGrant mustEqual 0.0
+          jobSupport.totalClosed mustEqual 714.32
+          jobSupport.totalGrant mustEqual 714.32
+        }
       }
     }
   }
