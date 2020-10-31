@@ -44,11 +44,11 @@ class EndPayDateControllerSpec extends SpecBaseControllerSpecs {
   private lazy val getRequest: FakeRequest[AnyContentAsEmpty.type] =
     fakeRequest(GET, endPayDateRouteGet)
 
-  val lastPayDate    = LocalDate.of(2020, 11, 20)
+  val lastPayDate    = LocalDate.of(2020, 10, 10)
   val claimStartDate = LocalDate.of(2020, 11, 1)
   val claimEndDate   = LocalDate.of(2020, 11, 30)
 
-  private val validAnswer = lastPayDate.plusDays(10)
+  private val validAnswer = lastPayDate.plusDays(30)
 
   private lazy val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
     fakeRequest(POST, endPayDateRoutePost)
