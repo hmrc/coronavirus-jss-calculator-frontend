@@ -68,7 +68,11 @@ class ConfirmationController @Inject() (
           case Some(jobSupport) =>
             auditService.sendCalculationPerformed(request.userAnswers, jobSupport)
             Ok(view(jobSupport, appConfig.calculatorVersion))
-          case None             => Redirect(routes.StartPageController.onPageLoad())
+          case None             =>
+            Logger.error(
+              s"no job support returned from the calculator for userAnswers: ${request.userAnswers.data}"
+            )
+            Redirect(routes.StartPageController.onPageLoad())
         }
 
       case _ =>
