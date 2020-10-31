@@ -66,7 +66,7 @@ class MonthlySpec extends SpecBase {
           2345.67
         )
 
-        jobSupport.totalGrant mustEqual 657.58
+        jobSupport.totalGrant mustEqual 657.60
       }
 
       "scenario-6" in new RegularPayGrantCalculator {
@@ -94,7 +94,7 @@ class MonthlySpec extends SpecBase {
           PayPeriod(
             LocalDate.of(2020, 10, 29),
             LocalDate.of(2020, 11, 28),
-            310.15,
+            310.55,
             134.44
           )
         )
@@ -108,7 +108,49 @@ class MonthlySpec extends SpecBase {
           3330.00
         )
 
-        jobSupport.totalGrant mustEqual 1428.84
+        jobSupport.totalGrant mustEqual 1429.42
+      }
+
+      "scenario-10" in new RegularPayGrantCalculator {
+
+        val supportClaimPeriod = SupportClaimPeriod(
+          LocalDate.of(2020, 11, 1),
+          LocalDate.of(2020, 11, 30)
+        )
+
+        val twasList = List(
+          TemporaryWorkingAgreementPeriod(
+            LocalDate.of(2020, 11, 1),
+            LocalDate.of(2020, 11, 15)
+          )
+        )
+
+        val closedList = List(
+          BusinessClosedPeriod(
+            LocalDate.of(2020, 11, 16),
+            LocalDate.of(2020, 11, 30)
+          )
+        )
+
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
+            LocalDate.of(2020, 11, 1),
+            LocalDate.of(2020, 11, 30),
+            310.55,
+            134.44
+          )
+        )
+
+        val jobSupport: JobSupport = calculateJobSupport(
+          supportClaimPeriod,
+          pp,
+          twasList,
+          closedList,
+          PayFrequency.Monthly,
+          3330.00
+        )
+
+        jobSupport.totalGrant mustEqual 1588.17
       }
     }
   }

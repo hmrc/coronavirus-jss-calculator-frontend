@@ -29,11 +29,11 @@
 
 @(form: Form[_], firstDayOfClaim: LocalDate)(implicit request: Request[_], messages: Messages)
 
-@govukLayout(pageTitle = Some(title(form, "lastPayDate.title"))) {
+@govukLayout(pageTitle = Some(title(form, "lastPayDate.title", None, Seq(dateToString(firstDayOfClaim))))) {
 
     @formHelper(action = LastPayDateController.onSubmit(), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors, Some("value.day"))
+        @errorSummary(form.errors, Map("value" -> "value.day"))
 
         @h1(Messages("lastPayDate.heading", dateToString(firstDayOfClaim)))
 

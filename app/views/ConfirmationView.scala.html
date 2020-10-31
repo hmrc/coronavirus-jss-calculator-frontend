@@ -17,6 +17,7 @@
 @import java.time.LocalDate
 @import config.FrontendAppConfig
 @import viewmodels.ConfirmationBreakdownHelper
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
 
 @this(
         govukLayout: templates.GovukLayoutWrapper,
@@ -29,7 +30,8 @@
         button: components.button,
         appConfig: FrontendAppConfig,
         breakdownHelper: ConfirmationBreakdownHelper,
-        warningText: components.warningText
+        warningText: components.warningText,
+        hmrcNewTabLink : HmrcNewTabLink
 )
 
 @(jobSupport: JobSupport, calculatorVersion: String)(implicit request: Request[_], messages: Messages)
@@ -85,8 +87,13 @@
 
     @h2(Html(messages("confirmation.breakdown.header")), classes = Some("govuk-heading-m"))
 
-    @p(Html(Messages("confirmation.breakdown.p1", jobSupport.referenceSalary)))
-    @p(Html(Messages("confirmation.breakdown.p2", <a href="https://www.gov.uk/guidance/steps-to-take-before-calculating-your-claim-through-the-job-support-scheme" class="govuk-link">{Messages("confirmation.breakdown.p2.guidance")}</a>)))
+    @p(Html(Messages("confirmation.breakdown.p1", jobSupport.referenceSalary.formatted("%.2f"))))
+    @p(Html(Messages("confirmation.breakdown.p2",
+        hmrcNewTabLink(NewTabLink(
+            text = Messages("confirmation.breakdown.p2.guidance"),
+            href = Some("https://www.gov.uk/guidance/check-if-you-can-claim-the-job-support-scheme-open-if-your-business-is-still-operating"),
+            language = Some("en"),
+            classList = Some(""))))))
 
     @for(gfp <- jobSupport.supportBreakdown) {
         @h3(Html(messages(
@@ -101,12 +108,12 @@
             }
 
             <ul class="govuk-list govuk-list--number">
-                <li>@messages("confirmation.breakdown.h3.open.p1.l1", jobSupport.referenceSalary)</li>
+                <li>@messages("confirmation.breakdown.h3.open.p1.l1", jobSupport.referenceSalary.formatted("%.2f"))</li>
                 <li>@messages("confirmation.breakdown.h3.open.p1.l2", gfp.daysInPeriod)</li>
                 <li>@messages("confirmation.breakdown.h3.open.p1.l3", gfp.open.numberOfTemporaryWorkingDaysInPayPeriod)</li>
-                <li>@messages("confirmation.breakdown.h3.open.p1.l4", gfp.open.usualHours)</li>
-                <li>@messages("confirmation.breakdown.h3.open.p1.l5", gfp.open.usualHours - gfp.open.actualHours)</li>
-                <li>@messages("confirmation.breakdown.h3.open.p1.l6", gfp.open.salary)</li>
+                <li>@messages("confirmation.breakdown.h3.open.p1.l4", gfp.open.usualHours.formatted("%.2f"))</li>
+                <li>@messages("confirmation.breakdown.h3.open.p1.l5", (gfp.open.usualHours - gfp.open.actualHours).formatted("%.2f"))</li>
+                <li>@messages("confirmation.breakdown.h3.open.p1.l6", gfp.open.salary.formatted("%.2f"))</li>
             </ul>
 
             @p {
@@ -118,9 +125,9 @@
             }
 
             <ul class="govuk-list govuk-list--number">
-                <li>@messages("confirmation.breakdown.h3.open.p4.l1", gfp.open.salary)</li>
+                <li>@messages("confirmation.breakdown.h3.open.p4.l1", gfp.open.salary.formatted("%.2f"))</li>
                 <li>@messages("confirmation.breakdown.h3.open.p4.l2")</li>
-                <li>@messages("confirmation.breakdown.h3.open.p4.l3", gfp.open.grant)</li>
+                <li>@messages("confirmation.breakdown.h3.open.p4.l3", gfp.open.grant.formatted("%.2f"))</li>
             </ul>
         }
 
@@ -130,18 +137,18 @@
             }
 
             <ul class="govuk-list govuk-list--number">
-                <li>@messages("confirmation.breakdown.h3.closed.p5.l1", jobSupport.referenceSalary)</li>
+                <li>@messages("confirmation.breakdown.h3.closed.p5.l1", jobSupport.referenceSalary.formatted("%.2f"))</li>
                 <li>@messages("confirmation.breakdown.h3.closed.p5.l2", gfp.closed.numberOfClosedDaysInPayPeriod)</li>
                 <li>@messages("confirmation.breakdown.h3.closed.p5.l3", gfp.closed.numberOfClosedDaysInPayPeriod)</li>
                 <li>@messages("confirmation.breakdown.h3.closed.p5.l4")</li>
-                <li>@messages("confirmation.breakdown.h3.closed.p5.l5", gfp.closed.grant)</li>
+                <li>@messages("confirmation.breakdown.h3.closed.p5.l5", gfp.closed.grant.formatted("%.2f"))</li>
             </ul>
 
             @p {
-                @messages("confirmation.breakdown.h3.closed.p6", gfp.closed.grant)
+                @messages("confirmation.breakdown.h3.closed.p6", gfp.closed.grant.formatted("%.2f"))
             }
             @p {
-                @messages("confirmation.breakdown.h3.closed.p7", gfp.closed.grant)
+                @messages("confirmation.breakdown.h3.closed.p7", gfp.closed.grant.formatted("%.2f"))
             }
         }
     }

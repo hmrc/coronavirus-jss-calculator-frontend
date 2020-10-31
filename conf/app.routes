@@ -53,10 +53,8 @@ POST        /business-closed                                        controllers.
 
 GET         /short-term-working-agreement-period                    controllers.ShortTermWorkingAgreementPeriodController.onPageLoad(idx: Int)
 POST        /short-term-working-agreement-period                    controllers.ShortTermWorkingAgreementPeriodController.onSubmit(idx: Int)
-GET         /short-term-working-agreement-period/remove/:idx        controllers.ShortTermWorkingAgreementPeriodController.remove(idx: Int)
 
 GET         /business-closed-periods                                controllers.BusinessClosedPeriodsController.onPageLoad(idx: Int)
 POST        /business-closed-periods                                controllers.BusinessClosedPeriodsController.onSubmit(idx: Int)
-GET         /business-closed-periods/remove/:idx                    controllers.BusinessClosedPeriodsController.remove(idx: Int)
 
 GET         /you-are-not-eligible                                   controllers.YouAreNotEligibleController.onPageLoad()

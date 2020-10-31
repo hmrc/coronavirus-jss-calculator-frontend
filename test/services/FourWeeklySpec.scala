@@ -72,7 +72,53 @@ class FourWeeklySpec extends SpecBase {
           2500
         )
 
-        jobSupport.totalGrant mustEqual 1547.96
+        jobSupport.totalGrant mustEqual 1548.03
+      }
+
+      "scenario-9" in new RegularPayGrantCalculator {
+
+        val supportClaimPeriod = SupportClaimPeriod(
+          LocalDate.of(2020, 11, 1),
+          LocalDate.of(2020, 11, 30)
+        )
+
+        val twasList = List(
+          TemporaryWorkingAgreementPeriod(
+            LocalDate.of(2020, 11, 1),
+            LocalDate.of(2020, 11, 30)
+          )
+        )
+
+        val closedList = List(
+          BusinessClosedPeriod(
+            LocalDate.of(2020, 11, 2),
+            LocalDate.of(2020, 11, 11)
+          ),
+          BusinessClosedPeriod(
+            LocalDate.of(2020, 11, 18),
+            LocalDate.of(2020, 11, 24)
+          )
+        )
+
+        val pp: List[PayPeriod] = List(
+          PayPeriod(
+            LocalDate.of(2020, 11, 1),
+            LocalDate.of(2020, 11, 28),
+            88.45,
+            17.2
+          )
+        )
+
+        val jobSupport: JobSupport = calculateJobSupport(
+          supportClaimPeriod,
+          pp,
+          twasList,
+          closedList,
+          PayFrequency.FourWeekly,
+          2884.70
+        )
+
+        jobSupport.totalGrant mustEqual 1730.59
       }
     }
   }

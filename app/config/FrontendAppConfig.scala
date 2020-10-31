@@ -65,8 +65,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
     configuration.get[String]("feedback-frontend.host") + configuration.get[String]("feedback-frontend.url")
   lazy val exitSurveyUrl             = s"$exitSurveyBaseUrl/$serviceIdentifier"
 
-  lazy val webchatHelpUrl: String = "#"
-
   lazy val schemeEnds: String    = configuration.get[String]("schemeEnds")
   val schemeEndDate: LocalDate   = YearMonth.parse(schemeEnds, pattern).atEndOfMonth()
   val schemeStartDate: LocalDate = LocalDate.of(2020, 11, 1)

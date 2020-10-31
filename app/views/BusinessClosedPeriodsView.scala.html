@@ -33,7 +33,13 @@
 
         @formHelper(action = BusinessClosedPeriodsController.onSubmit(idx), 'autoComplete -> "off") {
 
-            @errorSummary(form.errors, errorFieldSuffix = Some(".day"))
+            @errorSummary(
+                form.errors,
+                Map(
+                    "startDate" -> "startDate.day",
+                    "endDate"   -> "endDate.day"
+                )
+            )
 
             @h1(messages("businessClosedPeriods.heading"))
 

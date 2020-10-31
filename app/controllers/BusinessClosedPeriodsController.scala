@@ -69,7 +69,7 @@ class BusinessClosedPeriodsController @Inject() (
   def onSubmit(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
     implicit request =>
       val previousBCPeriods =
-        request.userAnswers.getList(BusinessClosedPeriodsPage).zipWithIndex.filter(_._2 != idx - 1).map(_._1)
+        request.userAnswers.getList(BusinessClosedPeriodsPage).zipWithIndex.filter(_._2 < idx - 1).map(_._1)
 
       request.userAnswers.get(ClaimPeriodPage).map(_.supportClaimPeriod) match {
         case Some(cp) =>
@@ -79,9 +79,7 @@ class BusinessClosedPeriodsController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, config.maxClosedPeriods))),
               value => {
                 var updatedAnswers = request.userAnswers.set(BusinessClosedPeriodsPage, value, Some(idx))
-                if (!value.addAnother) {
-                  updatedAnswers = trimListWhenUserSaysNoToAddMore(updatedAnswers, idx)
-                }
+                updatedAnswers = invalidateList(updatedAnswers, idx)
                 for {
                   updatedAnswers <- Future.fromTry(updatedAnswers)
                   _              <- sessionRepository.set(updatedAnswers)
@@ -92,19 +90,8 @@ class BusinessClosedPeriodsController @Inject() (
       }
   }
 
-  def remove(idx: Int): Action[AnyContent] = (getSession andThen getData andThen requireData).async {
-    implicit request =>
-      val existingPeriods  = request.userAnswers.getList(BusinessClosedPeriodsPage)
-      val remainingPeriods = existingPeriods.zipWithIndex.filterNot(p => p._2 == idx).map(_._1)
-
-      for {
-        updatedAnswers <- Future.fromTry(request.userAnswers.setList(BusinessClosedPeriodsPage, remainingPeriods))
-        _              <- sessionRepository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(BusinessClosedPeriodsPage, NormalMode, updatedAnswers, Some(idx)))
-
-  }
-
-  private def trimListWhenUserSaysNoToAddMore(userAnswers: Try[UserAnswers], idx: Int) =
+  private def invalidateList(userAnswers: Try[UserAnswers], idx: Int) =
+    //deletes the list elements after 'idx'
     userAnswers.flatMap { ua =>
       val trimmedList = ua.getList(BusinessClosedPeriodsPage).slice(0, idx)
       ua.setList(BusinessClosedPeriodsPage, trimmedList)
