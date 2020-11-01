@@ -49,286 +49,289 @@ class DateMappingsSpec
 
   val missingField: Gen[Option[String]] = Gen.option(Gen.const(""))
 
-  "bind valid data" in {
+  "LocalDateFormatter" - {
 
-    forAll(validData -> "valid date") { date =>
-      val data = Map(
-        "value.day"   -> date.getDayOfMonth.toString,
-        "value.month" -> date.getMonthValue.toString,
-        "value.year"  -> date.getYear.toString
-      )
+    "bind valid data" in {
 
-      val result = form.bind(data)
-
-      result.value.value mustEqual date
-    }
-  }
-
-  "fail to bind an empty date" in {
-
-    val result = form.bind(Map.empty[String, String])
-
-    result.errors must contain only FormError("value", "error.required", Seq("foo"))
-  }
-
-  "fail to bind a date with a missing day" in {
-
-    forAll(validData -> "valid date", missingField -> "missing field") { (date, field) =>
-      val initialData = Map(
-        "value.month" -> date.getMonthValue.toString,
-        "value.year"  -> date.getYear.toString
-      )
-
-      val data = field.fold(initialData) { value =>
-        initialData + ("value.day" -> value)
-      }
-
-      val result = form.bind(data)
-
-      result.errors must contain only FormError("value", "error.required", Seq("foo"))
-    }
-  }
-
-  "fail to bind a date with an invalid day" in {
-
-    forAll(validData -> "valid date", invalidField -> "invalid field") { (date, field) =>
-      val data = Map(
-        "value.day"   -> field,
-        "value.month" -> date.getMonthValue.toString,
-        "value.year"  -> date.getYear.toString
-      )
-
-      val result = form.bind(data)
-
-      result.errors must contain(
-        FormError("value", "error.invalid", Seq("foo"))
-      )
-    }
-  }
-
-  "fail to bind a date with a missing month" in {
-
-    forAll(validData -> "valid date", missingField -> "missing field") { (date, field) =>
-      val initialData = Map(
-        "value.day"  -> date.getDayOfMonth.toString,
-        "value.year" -> date.getYear.toString
-      )
-
-      val data = field.fold(initialData) { value =>
-        initialData + ("value.month" -> value)
-      }
-
-      val result = form.bind(data)
-
-      result.errors must contain only FormError("value", "error.required", Seq("foo"))
-    }
-  }
-
-  "fail to bind a date with an invalid month" in {
-
-    forAll(validData -> "valid data", invalidField -> "invalid field") { (date, field) =>
-      val data = Map(
-        "value.day"   -> date.getDayOfMonth.toString,
-        "value.month" -> field,
-        "value.year"  -> date.getYear.toString
-      )
-
-      val result = form.bind(data)
-
-      result.errors must contain(
-        FormError("value", "error.invalid", Seq("foo"))
-      )
-    }
-  }
-
-  "fail to bind a date with a missing year" in {
-
-    forAll(validData -> "valid date", missingField -> "missing field") { (date, field) =>
-      val initialData = Map(
-        "value.day"   -> date.getDayOfMonth.toString,
-        "value.month" -> date.getMonthValue.toString
-      )
-
-      val data = field.fold(initialData) { value =>
-        initialData + ("value.year" -> value)
-      }
-
-      val result = form.bind(data)
-
-      result.errors must contain only FormError("value", "error.required", Seq("foo"))
-    }
-  }
-
-  "fail to bind a date with an invalid year" in {
-
-    forAll(validData -> "valid data", invalidField -> "invalid field") { (date, field) =>
-      val data = Map(
-        "value.day"   -> date.getDayOfMonth.toString,
-        "value.month" -> date.getMonthValue.toString,
-        "value.year"  -> field
-      )
-
-      val result = form.bind(data)
-
-      result.errors must contain(
-        FormError("value", "error.invalid", Seq("foo"))
-      )
-    }
-  }
-
-  "fail to bind a date with a missing day and month" in {
-
-    forAll(validData -> "valid date", missingField -> "missing day", missingField -> "missing month") {
-      (date, dayOpt, monthOpt) =>
-        val day = dayOpt.fold(Map.empty[String, String]) { value =>
-          Map("value.day" -> value)
-        }
-
-        val month = monthOpt.fold(Map.empty[String, String]) { value =>
-          Map("value.month" -> value)
-        }
-
-        val data: Map[String, String] = Map(
-          "value.year" -> date.getYear.toString
-        ) ++ day ++ month
-
-        val result = form.bind(data)
-
-        result.errors must contain only FormError("value", "error.required", Seq("foo"))
-    }
-  }
-
-  "fail to bind a date with a missing day and year" in {
-
-    forAll(validData -> "valid date", missingField -> "missing day", missingField -> "missing year") {
-      (date, dayOpt, yearOpt) =>
-        val day = dayOpt.fold(Map.empty[String, String]) { value =>
-          Map("value.day" -> value)
-        }
-
-        val year = yearOpt.fold(Map.empty[String, String]) { value =>
-          Map("value.year" -> value)
-        }
-
-        val data: Map[String, String] = Map(
-          "value.month" -> date.getMonthValue.toString
-        ) ++ day ++ year
-
-        val result = form.bind(data)
-
-        result.errors must contain only FormError("value", "error.required", Seq("foo"))
-    }
-  }
-
-  "fail to bind a date with a missing month and year" in {
-
-    forAll(validData -> "valid date", missingField -> "missing month", missingField -> "missing year") {
-      (date, monthOpt, yearOpt) =>
-        val month = monthOpt.fold(Map.empty[String, String]) { value =>
-          Map("value.month" -> value)
-        }
-
-        val year = yearOpt.fold(Map.empty[String, String]) { value =>
-          Map("value.year" -> value)
-        }
-
-        val data: Map[String, String] = Map(
-          "value.day" -> date.getDayOfMonth.toString
-        ) ++ month ++ year
-
-        val result = form.bind(data)
-
-        result.errors must contain only FormError("value", "error.required", Seq("foo"))
-    }
-  }
-
-  "fail to bind an invalid day and month" in {
-
-    forAll(validData -> "valid date", invalidField -> "invalid day", invalidField -> "invalid month") {
-      (date, day, month) =>
+      forAll(validData -> "valid date") { date =>
         val data = Map(
-          "value.day"   -> day,
-          "value.month" -> month,
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> date.getMonthValue.toString,
           "value.year"  -> date.getYear.toString
         )
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid", Seq("foo"))
+        result.value.value mustEqual date
+      }
     }
-  }
 
-  "fail to bind an invalid day and year" in {
+    "fail to bind an empty date" in {
 
-    forAll(validData -> "valid date", invalidField -> "invalid day", invalidField -> "invalid year") {
-      (date, day, year) =>
-        val data = Map(
-          "value.day"   -> day,
+      val result = form.bind(Map.empty[String, String])
+
+      result.errors must contain only FormError("value", "error.required", Seq("foo"))
+    }
+
+    "fail to bind a date with a missing day" in {
+
+      forAll(validData -> "valid date", missingField -> "missing field") { (date, field) =>
+        val initialData = Map(
           "value.month" -> date.getMonthValue.toString,
-          "value.year"  -> year
+          "value.year"  -> date.getYear.toString
+        )
+
+        val data = field.fold(initialData) { value =>
+          initialData + ("value.day" -> value)
+        }
+
+        val result = form.bind(data)
+
+        result.errors must contain only FormError("value", "error.required", Seq("foo"))
+      }
+    }
+
+    "fail to bind a date with an invalid day" in {
+
+      forAll(validData -> "valid date", invalidField -> "invalid field") { (date, field) =>
+        val data = Map(
+          "value.day"   -> field,
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> date.getYear.toString
         )
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid", Seq("foo"))
+        result.errors must contain(
+          FormError("value", "error.invalid", Seq("foo"))
+        )
+      }
     }
-  }
 
-  "fail to bind an invalid month and year" in {
+    "fail to bind a date with a missing month" in {
 
-    forAll(validData -> "valid date", invalidField -> "invalid month", invalidField -> "invalid year") {
-      (date, month, year) =>
+      forAll(validData -> "valid date", missingField -> "missing field") { (date, field) =>
+        val initialData = Map(
+          "value.day"  -> date.getDayOfMonth.toString,
+          "value.year" -> date.getYear.toString
+        )
+
+        val data = field.fold(initialData) { value =>
+          initialData + ("value.month" -> value)
+        }
+
+        val result = form.bind(data)
+
+        result.errors must contain only FormError("value", "error.required", Seq("foo"))
+      }
+    }
+
+    "fail to bind a date with an invalid month" in {
+
+      forAll(validData -> "valid data", invalidField -> "invalid field") { (date, field) =>
         val data = Map(
           "value.day"   -> date.getDayOfMonth.toString,
-          "value.month" -> month,
-          "value.year"  -> year
+          "value.month" -> field,
+          "value.year"  -> date.getYear.toString
         )
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid", Seq("foo"))
+        result.errors must contain(
+          FormError("value", "error.invalid", Seq("foo"))
+        )
+      }
     }
-  }
 
-  "fail to bind an invalid day, month and year" in {
+    "fail to bind a date with a missing year" in {
 
-    forAll(invalidField -> "valid day", invalidField -> "invalid month", invalidField -> "invalid year") {
-      (day, month, year) =>
+      forAll(validData -> "valid date", missingField -> "missing field") { (date, field) =>
+        val initialData = Map(
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> date.getMonthValue.toString
+        )
+
+        val data = field.fold(initialData) { value =>
+          initialData + ("value.year" -> value)
+        }
+
+        val result = form.bind(data)
+
+        result.errors must contain only FormError("value", "error.required", Seq("foo"))
+      }
+    }
+
+    "fail to bind a date with an invalid year" in {
+
+      forAll(validData -> "valid data", invalidField -> "invalid field") { (date, field) =>
         val data = Map(
-          "value.day"   -> day,
-          "value.month" -> month,
-          "value.year"  -> year
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> field
         )
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid", Seq("foo"))
+        result.errors must contain(
+          FormError("value", "error.invalid", Seq("foo"))
+        )
+      }
     }
-  }
 
-  "fail to bind an invalid date" in {
+    "fail to bind a date with a missing day and month" in {
 
-    val data = Map(
-      "value.day"   -> "30",
-      "value.month" -> "2",
-      "value.year"  -> "2018"
-    )
+      forAll(validData -> "valid date", missingField -> "missing day", missingField -> "missing month") {
+        (date, dayOpt, monthOpt) =>
+          val day = dayOpt.fold(Map.empty[String, String]) { value =>
+            Map("value.day" -> value)
+          }
 
-    val result = form.bind(data)
+          val month = monthOpt.fold(Map.empty[String, String]) { value =>
+            Map("value.month" -> value)
+          }
 
-    result.errors must contain(
-      FormError("value", "error.invalid", Seq("foo"))
-    )
-  }
+          val data: Map[String, String] = Map(
+            "value.year" -> date.getYear.toString
+          ) ++ day ++ month
 
-  "unbind a date" in {
+          val result = form.bind(data)
 
-    forAll(validData -> "valid date") { date =>
-      val filledForm = form.fill(date)
+          result.errors must contain only FormError("value", "error.required", Seq("foo"))
+      }
+    }
 
-      filledForm("value.day").value.value mustEqual date.getDayOfMonth.toString
-      filledForm("value.month").value.value mustEqual date.getMonthValue.toString
-      filledForm("value.year").value.value mustEqual date.getYear.toString
+    "fail to bind a date with a missing day and year" in {
+
+      forAll(validData -> "valid date", missingField -> "missing day", missingField -> "missing year") {
+        (date, dayOpt, yearOpt) =>
+          val day = dayOpt.fold(Map.empty[String, String]) { value =>
+            Map("value.day" -> value)
+          }
+
+          val year = yearOpt.fold(Map.empty[String, String]) { value =>
+            Map("value.year" -> value)
+          }
+
+          val data: Map[String, String] = Map(
+            "value.month" -> date.getMonthValue.toString
+          ) ++ day ++ year
+
+          val result = form.bind(data)
+
+          result.errors must contain only FormError("value", "error.required", Seq("foo"))
+      }
+    }
+
+    "fail to bind a date with a missing month and year" in {
+
+      forAll(validData -> "valid date", missingField -> "missing month", missingField -> "missing year") {
+        (date, monthOpt, yearOpt) =>
+          val month = monthOpt.fold(Map.empty[String, String]) { value =>
+            Map("value.month" -> value)
+          }
+
+          val year = yearOpt.fold(Map.empty[String, String]) { value =>
+            Map("value.year" -> value)
+          }
+
+          val data: Map[String, String] = Map(
+            "value.day" -> date.getDayOfMonth.toString
+          ) ++ month ++ year
+
+          val result = form.bind(data)
+
+          result.errors must contain only FormError("value", "error.required", Seq("foo"))
+      }
+    }
+
+    "fail to bind an invalid day and month" in {
+
+      forAll(validData -> "valid date", invalidField -> "invalid day", invalidField -> "invalid month") {
+        (date, day, month) =>
+          val data = Map(
+            "value.day"   -> day,
+            "value.month" -> month,
+            "value.year"  -> date.getYear.toString
+          )
+
+          val result = form.bind(data)
+
+          result.errors must contain only FormError("value", "error.invalid", Seq("foo"))
+      }
+    }
+
+    "fail to bind an invalid day and year" in {
+
+      forAll(validData -> "valid date", invalidField -> "invalid day", invalidField -> "invalid year") {
+        (date, day, year) =>
+          val data = Map(
+            "value.day"   -> day,
+            "value.month" -> date.getMonthValue.toString,
+            "value.year"  -> year
+          )
+
+          val result = form.bind(data)
+
+          result.errors must contain only FormError("value", "error.invalid", Seq("foo"))
+      }
+    }
+
+    "fail to bind an invalid month and year" in {
+
+      forAll(validData -> "valid date", invalidField -> "invalid month", invalidField -> "invalid year") {
+        (date, month, year) =>
+          val data = Map(
+            "value.day"   -> date.getDayOfMonth.toString,
+            "value.month" -> month,
+            "value.year"  -> year
+          )
+
+          val result = form.bind(data)
+
+          result.errors must contain only FormError("value", "error.invalid", Seq("foo"))
+      }
+    }
+
+    "fail to bind an invalid day, month and year" in {
+
+      forAll(invalidField -> "valid day", invalidField -> "invalid month", invalidField -> "invalid year") {
+        (day, month, year) =>
+          val data = Map(
+            "value.day"   -> day,
+            "value.month" -> month,
+            "value.year"  -> year
+          )
+
+          val result = form.bind(data)
+
+          result.errors must contain only FormError("value", "error.invalid", Seq("foo"))
+      }
+    }
+
+    "fail to bind an invalid date" in {
+
+      val data = Map(
+        "value.day"   -> "30",
+        "value.month" -> "2",
+        "value.year"  -> "2018"
+      )
+
+      val result = form.bind(data)
+
+      result.errors must contain(
+        FormError("value", "error.invalid", Seq("foo"))
+      )
+    }
+
+    "unbind a date" in {
+
+      forAll(validData -> "valid date") { date =>
+        val filledForm = form.fill(date)
+
+        filledForm("value.day").value.value mustEqual date.getDayOfMonth.toString
+        filledForm("value.month").value.value mustEqual date.getMonthValue.toString
+        filledForm("value.year").value.value mustEqual date.getYear.toString
+      }
     }
   }
 }

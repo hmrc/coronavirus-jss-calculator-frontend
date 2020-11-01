@@ -18,9 +18,9 @@ package forms.mappings
 
 import java.time.LocalDate
 
+import models.{Enumerable, StartAndEndDate}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
-import models.Enumerable
 
 trait Mappings extends Formatters with Constraints {
 
@@ -51,6 +51,31 @@ trait Mappings extends Formatters with Constraints {
     args: Seq[String] = Seq.empty
   ): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, requiredKey, args))
+
+  protected def localDateAfterAnother(
+    otherField: String,
+    otherPeriods: Seq[StartAndEndDate],
+    minimumDaysBetween: Int,
+    invalidKey: String,
+    requiredKey: String,
+    mustBeAfterKey: String,
+    daysBetweenKey: String,
+    mustNotOverlapKey: String,
+    args: Seq[String] = Nil
+  ): FieldMapping[LocalDate] =
+    of(
+      new LocalDateAfterAnotherFormatter(
+        otherField,
+        otherPeriods,
+        minimumDaysBetween,
+        invalidKey,
+        requiredKey,
+        mustBeAfterKey,
+        daysBetweenKey,
+        mustNotOverlapKey,
+        args
+      )
+    )
 
   protected def decimal(
     requiredKey: String = "error.required",

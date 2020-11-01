@@ -16,9 +16,6 @@
 
 package forms
 
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
-
 import config.FrontendAppConfig
 import forms.mappings.Mappings
 import javax.inject.Inject
@@ -38,35 +35,24 @@ class BusinessClosedPeriodsFormProvider @Inject() (val config: FrontendAppConfig
           requiredKey = "businessClosedPeriods.error.invalid.start"
         ).verifying(
           "businessClosedPeriods.startDate.outside.claimPeriod",
-          date => isDateValid(date)
+          date => isDateWithinSchemeDates(date)
         ),
-        "endDate"    -> localDate(
+        "endDate"    -> localDateAfterAnother(
+          otherField = "startDate",
+          otherPeriods = previousBCPeriods,
+          minimumDaysBetween = 6,
           invalidKey = "businessClosedPeriods.error.invalid.end",
-          requiredKey = "businessClosedPeriods.error.invalid.end"
+          requiredKey = "businessClosedPeriods.error.invalid.end",
+          mustBeAfterKey = "businessClosedPeriods.endDate.must.be.after.startDate",
+          daysBetweenKey = "businessClosedPeriods.period.shouldbe.minimum.7.days",
+          mustNotOverlapKey = "businessClosedPeriods.periods.should.not.overlap"
         ).verifying(
           "businessClosedPeriods.endDate.outside.claimPeriod",
-          date => isDateValid(date)
+          date => isDateWithinSchemeDates(date)
         ),
         "addAnother" -> boolean(
           requiredKey = "businessClosedPeriods.addAnother.error.required"
         )
       )(BusinessClosedPeriod.apply)(BusinessClosedPeriod.unapply)
-        .verifying(
-          "businessClosedPeriods.endDate.must.be.after.startDate",
-          bcp => bcp.endDate.compareTo(bcp.startDate) > 0
-        )
-        .verifying("businessClosedPeriods.periods.should.not.overlap", bcp => !isIntersecting(previousBCPeriods, bcp))
-        .verifying(
-          "businessClosedPeriods.period.shouldbe.minimum.7.days",
-          bcp => ChronoUnit.DAYS.between(bcp.startDate, bcp.endDate) >= 6 //endDate is exclusive for 'between' so '6'
-        )
     )
-
-  private def isIntersecting(previousPeriods: Seq[BusinessClosedPeriod], newPeriod: BusinessClosedPeriod) =
-    previousPeriods.exists(p =>
-      isDateInteractsPeriod(newPeriod.startDate, p) || isDateInteractsPeriod(newPeriod.endDate, p)
-    )
-
-  private def isDateInteractsPeriod(date: LocalDate, period: BusinessClosedPeriod) =
-    date.compareTo(period.startDate) >= 0 && date.compareTo(period.endDate) <= 0;
 }

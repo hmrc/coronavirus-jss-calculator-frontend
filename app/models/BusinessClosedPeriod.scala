@@ -21,6 +21,7 @@ import java.time.LocalDate
 import play.api.libs.json.{Format, Json}
 
 final case class BusinessClosedPeriod(startDate: LocalDate, endDate: LocalDate, addAnother: Boolean = false)
+    extends StartAndEndDate
 
 object BusinessClosedPeriod {
   implicit val format: Format[BusinessClosedPeriod] = Json.format
