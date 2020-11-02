@@ -24,7 +24,7 @@ import pages._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditService, RegularPayGrantCalculator}
+import services.{AuditService, PagerDutyAlerting, RegularPayGrantCalculator}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ConfirmationView
 
@@ -38,7 +38,8 @@ class ConfirmationController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: ConfirmationView,
   appConfig: FrontendAppConfig,
-  auditService: AuditService
+  auditService: AuditService,
+  pagerDutyAlerting: PagerDutyAlerting
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -69,6 +70,8 @@ class ConfirmationController @Inject() (
             auditService.sendCalculationPerformed(request.userAnswers, jobSupport)
             Ok(view(jobSupport, appConfig.calculatorVersion))
           case None             =>
+            //If we change this alert message, we have to change it in the 'alert-config' too
+            pagerDutyAlerting.alert("Couldn't calculate jobSupport for the userAnswers")
             Logger.error(
               s"no job support returned from the calculator for userAnswers: ${request.userAnswers.data}"
             )
