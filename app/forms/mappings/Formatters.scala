@@ -160,7 +160,7 @@ trait Formatters {
           .right
           .map(_.replace(",", ""))
           .map(_.replace("£", ""))
-          .map(_.trim)
+          .map(_.replace(" ", ""))
           .right
           .flatMap { case s =>
             nonFatalCatch

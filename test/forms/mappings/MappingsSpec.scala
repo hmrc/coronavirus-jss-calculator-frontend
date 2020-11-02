@@ -234,6 +234,12 @@ class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Map
       result.get mustEqual 1000
     }
 
+    "bind a number with spaces" in {
+      val result = testForm.bind(Map("value" -> " 123 .45 "))
+      result.get mustEqual 123.45
+      result.errors mustBe empty
+    }
+
     "not bind an empty value" in {
       val result = testForm.bind(Map("value" -> ""))
       result.errors must contain(FormError("value", "error.required"))
