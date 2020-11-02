@@ -16,7 +16,7 @@
 
 package controllers
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.LocalDate
 
 import base.SpecBaseControllerSpecs
 import forms.LastPayDateFormProvider
@@ -38,7 +38,7 @@ class LastPayDateControllerSpec extends SpecBaseControllerSpecs {
 
   private def form = formProvider
 
-  private val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  private val validAnswer = LocalDate.of(2020, 10, 31)
 
   private lazy val lastPayDateRouteGet  = routes.LastPayDateController.onPageLoad().url
   private lazy val lastPayDateRoutePost = routes.LastPayDateController.onSubmit().url

@@ -146,6 +146,33 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
+  private[mappings] def currencyFormatter(
+    requiredKey: String,
+    nonNumericKey: String,
+    args: Seq[String] = Seq.empty
+  ): Formatter[BigDecimal] =
+    new Formatter[BigDecimal] {
+      private val baseFormatter = stringFormatter(requiredKey)
+
+      override def bind(key: String, data: Map[String, String]) =
+        baseFormatter
+          .bind(key, data)
+          .right
+          .map(_.replace(",", ""))
+          .map(_.replace("£", ""))
+          .map(_.replace(" ", ""))
+          .right
+          .flatMap { case s =>
+            nonFatalCatch
+              .either(BigDecimal(s))
+              .left
+              .map(_ => Seq(FormError(key, nonNumericKey, args)))
+          }
+
+      override def unbind(key: String, value: BigDecimal) =
+        baseFormatter.unbind(key, value.toString)
+    }
+
   private[mappings] def doubleFormatter(
     requiredKey: String,
     nonNumericKey: String,

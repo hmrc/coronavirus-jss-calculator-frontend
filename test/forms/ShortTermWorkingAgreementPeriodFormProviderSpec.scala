@@ -57,28 +57,44 @@ class ShortTermWorkingAgreementPeriodFormProviderSpec extends SpecBaseController
       val previousPeriods = List(TemporaryWorkingAgreementPeriod(startDate.minusDays(10), startDate.plusDays(2)))
 
       form(previousPeriods).bind(data).errors shouldEqual Seq(
-        FormError("", "shortTermWorkingAgreementPeriod.periods.should.not.overlap")
+        FormError("endDate", "shortTermWorkingAgreementPeriod.periods.should.not.overlap")
       )
     }
 
-    "throw form error for dates outside claim start and claim end dates" in {
-
-      val previousPeriods = List(TemporaryWorkingAgreementPeriod(startDate.minusDays(10), startDate.plusDays(2)))
+    "throw a form error for a start date before the scheme start date" in {
 
       val startDateInput = form.config.schemeStartDate.minusDays(1)
-      val endDateInput   = form.config.schemeEndDate.plusDays(11)
-      val data           = Map(
+
+      val data = Map(
         "startDate.day"   -> startDateInput.getDayOfMonth.toString,
         "startDate.month" -> startDateInput.getMonthValue.toString,
         "startDate.year"  -> startDateInput.getYear.toString,
+        "endDate.day"     -> endDate.getDayOfMonth.toString,
+        "endDate.month"   -> endDate.getMonthValue.toString,
+        "endDate.year"    -> endDate.getYear.toString,
+        "addAnother"      -> "false"
+      )
+
+      form(Nil).bind(data).errors shouldEqual Seq(
+        FormError("startDate", "shortTermWorkingAgreementPeriod.startDate.outside.claimPeriod")
+      )
+    }
+
+    "throw a form error for an end date after the scheme end date" in {
+
+      val endDateInput = form.config.schemeEndDate.plusDays(1)
+
+      val data = Map(
+        "startDate.day"   -> startDate.getDayOfMonth.toString,
+        "startDate.month" -> startDate.getMonthValue.toString,
+        "startDate.year"  -> startDate.getYear.toString,
         "endDate.day"     -> endDateInput.getDayOfMonth.toString,
         "endDate.month"   -> endDateInput.getMonthValue.toString,
         "endDate.year"    -> endDateInput.getYear.toString,
         "addAnother"      -> "false"
       )
 
-      form(previousPeriods).bind(data).errors shouldEqual Seq(
-        FormError("startDate", "shortTermWorkingAgreementPeriod.startDate.outside.claimPeriod"),
+      form(Nil).bind(data).errors shouldEqual Seq(
         FormError("endDate", "shortTermWorkingAgreementPeriod.endDate.outside.claimPeriod")
       )
     }

@@ -209,4 +209,55 @@ class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Map
     }
   }
 
+  "currency" must {
+
+    val testForm: Form[BigDecimal] = Form("value" -> currency())
+
+    "bind a valid integer" in {
+      val result = testForm.bind(Map("value" -> "1.0"))
+      result.get mustEqual 1.0
+      result.errors mustBe empty
+    }
+
+    "bind a valid decimal" in {
+      val result = testForm.bind(Map("value" -> "1.1"))
+      result.get mustEqual 1.1
+    }
+
+    "bind a number with commas" in {
+      val result = testForm.bind(Map("value" -> "1,000.10"))
+      result.get mustEqual 1000.10
+    }
+
+    "bind a number with pound sign" in {
+      val result = testForm.bind(Map("value" -> "£1000"))
+      result.get mustEqual 1000
+    }
+
+    "bind a number with spaces" in {
+      val result = testForm.bind(Map("value" -> " 123 .45 "))
+      result.get mustEqual 123.45
+      result.errors mustBe empty
+    }
+
+    "not bind an empty value" in {
+      val result = testForm.bind(Map("value" -> ""))
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "not bind an empty map" in {
+      val result = testForm.bind(Map.empty[String, String])
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "not bind a non-numeric string" in {
+      val result = testForm.bind(Map("value" -> "foo"))
+      result.errors must contain(FormError("value", "error.nonNumeric"))
+    }
+
+    "unbind a valid value" in {
+      val result = testForm.fill(1337.13)
+      result("value").value.value mustEqual "1337.13"
+    }
+  }
 }
