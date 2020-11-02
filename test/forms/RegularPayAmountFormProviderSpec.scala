@@ -42,6 +42,13 @@ class RegularPayAmountFormProviderSpec extends BigDecimalFieldBehaviours {
       )
     }
 
+    "bind otherwise valid values with a £" in {
+      forAll(positiveBigDecimalsWith2dp -> "bigDecimals") { bigDecimal: BigDecimal =>
+        val result = form.bind(Map(fieldName -> s"£$bigDecimal")).apply(fieldName)
+        result.errors shouldEqual Seq.empty
+      }
+    }
+
     behave like mandatoryField(
       form,
       fieldName,

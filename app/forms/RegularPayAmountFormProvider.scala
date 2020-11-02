@@ -26,7 +26,7 @@ class RegularPayAmountFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Amount] = Form(
     mapping(
-      "value" -> bigDecimal(
+      "value" -> currency(
         requiredKey = "regularPayAmount.error.required",
         nonNumericKey = "regularPayAmount.error.nonNumeric"
       ).verifying(greaterThan(BigDecimal(0.0), "regularPayAmount.error.negative"))

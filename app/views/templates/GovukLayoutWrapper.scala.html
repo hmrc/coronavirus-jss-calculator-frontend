@@ -53,9 +53,9 @@
             countdown = Some(appConfig.countdown),
             keepAliveUrl = Some("#"),
             keepAliveButtonText = Some(messages("timeout.keepAlive")),
-            signOutUrl = Some(routes.StartPageController.onPageLoad().url), // TODO: Check whether this should be None, or e.g. redirect to home
+            signOutUrl = Some(routes.StartPageController.onPageLoad().url),
             signOutButtonText = Some(messages("timeout.signOut")),
-            title = Some(messages("timeout.title")),
+            title = None,
             message = Some(messages("timeout.message"))
         )
     )

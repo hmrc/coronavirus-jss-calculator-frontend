@@ -18,11 +18,7 @@ package models
 
 import java.time.LocalDate
 
-import play.api.libs.json.{Format, Json}
-
-final case class TemporaryWorkingAgreementPeriod(startDate: LocalDate, endDate: LocalDate, addAnother: Boolean = false)
-    extends StartAndEndDate
-
-object TemporaryWorkingAgreementPeriod {
-  implicit val format: Format[TemporaryWorkingAgreementPeriod] = Json.format
+trait StartAndEndDate {
+  val startDate: LocalDate
+  val endDate: LocalDate
 }

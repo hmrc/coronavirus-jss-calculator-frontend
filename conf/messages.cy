@@ -40,10 +40,9 @@ language.switcher = Language switcher
 
 # Timeout Messages
 # ----------------------------------------------------------
-timeout.title = You’re about to be signed out
-timeout.message = For security reasons, you will be signed out of this service in
-timeout.keepAlive = Stay signed in
-timeout.signOut = Sign out
+timeout.message = For your security, we will delete your answers in
+timeout.keepAlive = Continue your calculation
+timeout.signOut = Delete your answers
 
 # BETA Banner
 # ----------------------------------------------------------
@@ -285,7 +284,7 @@ whatToInclude.doNotInclude.l3 = non-monetary benefits like benefits in kind (suc
 
 usualAndActualHours.title = What were the employee’s usual and actual hours from {0} to {1}?
 usualAndActualHours.heading = What were the employee’s usual and actual hours from {0} to {1}?
-usualAndActualHours.p1 = The employee’s usual hours are not always the number of hours they are contracted or rota’d to work in the claim period, or the number of hours you would have expected to be worked.
+usualAndActualHours.p1 = The employee’s usual hours are not always the number of hours they are contracted or on a rota to work in the claim period, or the number of hours you would have expected to be worked.
 usualAndActualHours.p2 = You can calculate the usual hours using the {0}.
 usualAndActualHours.p2.link.text = calculator guidance
 usualAndActualHours.p3 = Actual hours cannot be greater than usual hours.

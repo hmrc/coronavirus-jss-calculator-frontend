@@ -24,7 +24,7 @@ trait FormHelper {
 
   val config: FrontendAppConfig
 
-  def isDateValid(date: LocalDate): Boolean =
+  def isDateWithinSchemeDates(date: LocalDate): Boolean =
     onOrAfterSchemeStart(date) && onOrBeforeSchemeEnd(date)
 
   private def onOrAfterSchemeStart(date: LocalDate) =

@@ -16,9 +16,6 @@
 
 package forms
 
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
-
 import config.FrontendAppConfig
 import forms.mappings.Mappings
 import javax.inject.Inject
@@ -40,41 +37,24 @@ class ShortTermWorkingAgreementPeriodFormProvider @Inject() (val config: Fronten
           requiredKey = "shortTermWorkingAgreementPeriod.error.required.start"
         ).verifying(
           "shortTermWorkingAgreementPeriod.startDate.outside.claimPeriod",
-          date => isDateValid(date)
+          date => isDateWithinSchemeDates(date)
         ),
-        "endDate"    -> localDate(
+        "endDate"    -> localDateAfterAnother(
+          otherField = "startDate",
+          otherPeriods = previousTWAPeriods,
+          minimumDaysBetween = 6,
           invalidKey = "shortTermWorkingAgreementPeriod.error.invalid.end",
-          requiredKey = "shortTermWorkingAgreementPeriod.error.required.end"
+          requiredKey = "shortTermWorkingAgreementPeriod.error.invalid.end",
+          mustBeAfterKey = "shortTermWorkingAgreementPeriod.endDate.must.be.after.startDate",
+          daysBetweenKey = "shortTermWorkingAgreementPeriod.period.shouldbe.minimum.7.days",
+          mustNotOverlapKey = "shortTermWorkingAgreementPeriod.periods.should.not.overlap"
         ).verifying(
           "shortTermWorkingAgreementPeriod.endDate.outside.claimPeriod",
-          date => isDateValid(date)
+          date => isDateWithinSchemeDates(date)
         ),
         "addAnother" -> boolean(
           requiredKey = "shortTermWorkingAgreementPeriod.addAnother.error.required"
         )
       )(TemporaryWorkingAgreementPeriod.apply)(TemporaryWorkingAgreementPeriod.unapply)
-        .verifying(
-          "shortTermWorkingAgreementPeriod.endDate.must.be.after.startDate",
-          swa => swa.endDate.compareTo(swa.startDate) > 0
-        )
-        .verifying(
-          "shortTermWorkingAgreementPeriod.periods.should.not.overlap",
-          swa => !isIntersecting(previousTWAPeriods, swa)
-        )
-        .verifying(
-          "shortTermWorkingAgreementPeriod.period.shouldbe.minimum.7.days",
-          swa => ChronoUnit.DAYS.between(swa.startDate, swa.endDate) >= 6 //endDate is exclusive for 'between' so '6'
-        )
     )
-
-  private def isIntersecting(
-    previousPeriods: Seq[TemporaryWorkingAgreementPeriod],
-    newPeriod: TemporaryWorkingAgreementPeriod
-  ) =
-    previousPeriods.exists(p =>
-      isDateInteractsPeriod(newPeriod.startDate, p) || isDateInteractsPeriod(newPeriod.endDate, p)
-    )
-
-  private def isDateInteractsPeriod(date: LocalDate, period: TemporaryWorkingAgreementPeriod) =
-    date.compareTo(period.startDate) >= 0 && date.compareTo(period.endDate) <= 0;
 }
